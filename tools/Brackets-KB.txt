@@ -1,0 +1,375 @@
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		Brackets Editor
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+Keyboard Shortcuts
+
+https://github.com/adobe/brackets/wiki/Brackets-Shortcuts
+
+Ctrl-P				= navigate quick open (overriden for Sublime style)
+Alt-`					= moving between splitted windows (ext.)
+
+Ctrl-Alt-B		= beautify
+
+Ctrl+X				= cut
+Ctrl+D				= duplicate line
+Ctrl-Shift-D 	= delete line
+Ctrl-Shift-/	= block comment toggle
+
+Ctrl-Shift-J	= join lines with space char  (join lines ext.)
+Ctrl-Alt-J		= join lines (join lines ext.)
+
+Ctrl-Enter				= create new line below
+Ctrl-Shift-Enter	= create new line above
+Ctrl-Shift-H			= hide/show sidebar
+
+Ctrl-Space				= bring back the Html hinting
+Ctrl-Shift-C			= live preview highlight
+
+Ctrl-K						= Quick Doc (QuickDocs plugins)
+
+Tab								= jump out of closing character (tab-out extension)
+
+Html Autocompletion
+-------------------
+
+https://www.granneman.com/webdev/editors/brackets/better-html-auto-completion/
+Brackets already automatically creates the closing tag for you.
+
+NOTE: do NOT just paste it in - instead, start typing "closeTags" and use autocompletion to help you along.
+
+Add this to your brackets.json:
+
+"closeTags": {
+		"dontCloseTags": [],
+		"indentTags": ["address","article","aside","audio","blockquote",
+	 "body","canvas","div","dl","figure","footer","form",
+	 "head","header","iframe","main","map","nav","object",
+	 "ol","p","pre","section","style","table",
+	 "tbody","td","tfoot","th","thead","tr","ul","video"],
+		"whenClosing": true,
+		"whenOpening": true
+
+Now, when you create, say <div> a newline will be inserted before the closing tag.
+
+
+Preferences
+***********
+
+see https://github.com/adobe/brackets/wiki/How-to-Use-Brackets
+
+	user-global:	your default settings
+					Debug > Open Preferences File
+					brackets.json
+					Windows: %USERPROFILE%\AppData\Roaming\Brackets\brackets.json
+
+	project-leve:	override any number of preferences on a project-specific
+					basis
+					create .brackets.json file in the root of your project
+
+================================================================
+	Key Bindings
+	************
+https://github.com/adobe/brackets/wiki/User-Key-Bindings
+
+User can update key bindings in Brackets.
+Default commands can be overridden.
+Debug > Open User Key Map > keymap.json
+
+Mac: ~/Library/Applicaion Support/Brackets
+Win: ~/AppData/Roaming/Brackets (aka %appdata%\Brackets)
+Lin: ~/.config/brackets (aka $XDG_CONFIG_HOME/brackets)
+
+Format:
+{
+    "overrides": {
+        "<key>": "<command-id>"
+        [, "<key>": "<command-id>"]
+    }
+}
+
+Here are my customizations:
+{
+    "documentation": "https://github.com/adobe/brackets/wiki/User-Key-Bindings",
+    "overrides": {
+        "Ctrl-P":       "navigate.quickOpen",
+        "Alt-`":        "moving-between-splitted-windows.switch"
+    }
+}
+
+
+================================================================
+
+	Extension Manager
+	*****************
+
+	Debug > Reload with Extensions
+
+to use extension manager, you may have to set "proxy" in brackets.json:
+
+{
+    "proxy": "http://proxy.standard.com:8080/"
+}
+
+On linux, I also experienced "Installation failed. Unknown internal error."
+
+One post suggested troubleshooting steps:
+
+Debug > Show Developer Tools (or F12) - this may uncover some problems.
+Ultimately, I got google-chrome to work on Ubuntu, rebooted and Brackets extension manager also started to work.
+
+=================================================================
+
+	brackets NPM registry
+	*********************
+
+https://github.com/zaggino/brackets-npm-registry
+
+How to install brackets-npm-registry
+
+mac
+
+cd ~/Library/Application\ Support/Brackets/extensions/user/
+git clone https://github.com/zaggino/brackets-npm-registry.git brackets-npm-registry
+cd brackets-npm-registry
+npm install
+
+windows
+
+cd /D %HOMEDRIVE%%HOMEPATH%\AppData\Roaming\Brackets\extensions\user
+
+	or C:\Users\<user>> cd AppData\Roaming\Brackets\extensions\user
+
+git clone https://github.com/zaggino/brackets-npm-registry.git brackets-npm-registry
+cd brackets-npm-registry
+npm install
+
+linux
+
+cd ~/.config/Brackets/extensions/user
+git clone https://github.com/zaggino/brackets-npm-registry.git brackets-npm-registry
+cd brackets-npm-registry
+npm install
+
+How to use brackets-npm-registry
+--------------------------------
+
+You'll get a new icon in the right toolbar to open this extensions registry.
+
+
+
+=================================================================
+	Brackets Plugins
+	****************
+brackets-eslint (by Martin Zagora)
+---------------
+	https://github.com/zaggino/brackets-eslint
+
+	Brackets extension which provides file linting with ESLint.
+
+	Uses CLIEngine from https://www.npmjs.com/package/eslint which should provide same results as linting in the command line (respecting all .eslintrc files)
+	Includes support for custom parsers and plugins.
+
+	NOTE: requires brackets-npm-registry for installation
+
+	how to install
+		use brackets-npm-registry 
+		(https://github.com/zaggino/brackets-npm-registry)
+
+	how to configure
+		Use standard .eslint file like this one
+		
+	how to use custom rules
+		move them to .eslintrules folder in your project root
+
+	custom parsers and plugins
+		tries to use plugins installed in the current project and if not found, falls back to globally installed ones
+
+		npm install --global eslint-plugin-react
+
+	configuration defaults
+
+		To disable both warning and error icons in the gutter you can configure the brackets.json as:
+
+		{
+  			"brackets-eslint.gutterMarks": false
+		}
+
+		or only disable warnings icons:
+
+		{
+		  "brackets-eslint.gutterMarks": { "warning" : false}
+		}
+
+
+
+Brackets Bower
+--------------
+
+brackets-file-tree-exclude
+--------------------------
+
+Grunt for Brackets
+------------------
+
+Brackets Git
+-------------
+
+Brackets TypeScript
+-------------------
+
+Brackets Gulp
+--------------
+
+Sublime Text style scrollbar
+----------------------------
+
+brackets-compare
+----------------
+	https://github.com/bomsy/brackets-compare
+	- click "view" and "vertical" or "horizontal-split"
+	- select the files to be compared
+	- click "show diff" button in the toolbar on the right.
+	- after viewing diffs, click the "hide diff" button in the toolbar.
+
+special HTML characters
+
+Themes for Brackets
+
+JSHint
+------
+
+	To enable JSHint in place of the default JSLint built into Brackets:
+
+	1. Debug > Open Preferences File
+	2. Add the following to brackets.json:
+
+	"language": {
+		"javascript": {
+			"linting.prefer": ["JSHint"],
+			"linting.usePreferredOnly": true
+		}
+	}
+
+	This disables JSLint and enables JSHint instead.
+
+
+Preferences Editor
+
+New Project Creator
+	Install "New Project Creator" by Jeffy Booher
+	Out of the box, it offers an HTML5 template, but you can customize it
+		Mac: go to your documents folder
+
+Brackets Beautify
+-----------------
+https://github.com/brackets-beautify/brackets-beautify/archive/master.zip
+
+	use the Toolbar Button with the wand icon, or
+	Edit > Beautify
+	Ctrl-Alt-B
+	or define your own:
+	{
+	    "documentation": "https://github.com/adobe/brackets/wiki/User-Key-Bindings",
+	    "overrides": {
+	        "Ctrl-Alt-F": "bb.beautify.beautify"
+	    }
+	}
+
+	comes with beautifiers for JS, HTML and CSS.  You can add languages by adding their ids to the "bb.beautify.languages" setting.
+
+	Options for Beautify on Save
+	This example .brackets.json enables "Beautify on Save" generally but disables it for any JS file in "thirparty", any JS file whose name contains "min" and any PHP file:
+
+	{
+	    "bb.beautify.onSave": true,
+	    "path": {
+	        "thirdparty/**.js": {
+	            "bb.beautify.onSave": false
+	        },
+	        "**min**.js": {
+	            "bb.beautify.onSave": false
+	        }
+	    },
+	    "language": {
+	        "php": {
+	            "bb.beautify.onSave": false
+	        }
+	    }
+	}
+
+Join-Lines
+------------
+	https://github.com/hamdanjaveed/Join-Lines
+
+	Ctrl-Shift-J with space
+	Ctrl-Alt-J without space
+
+Tab-out
+-------
+	http://github.com/dag0310/tab-out
+	Allows you to use Tab key to leave the closing characters ", ', ), ], }
+
+	Does not work with other plugins that make use of the Tab key.
+	So, you will have to remap the keybinding.
+	After installing try:
+		var test = [{'key1': "value1", 'key2': "value2"}];
+	and use "TAB" to jump over the closing characters.
+
+Paste and Indent
+----------------
+	automatically apply the correct indentation to pasted text
+
+File Tree Exclude
+----------------
+	excludes folders from the file tree, find files and quick open.
+	By default, excludes node_modules folder.
+
+Code Folding
+------------
+		Performs code folding based on brace matching.
+
+Brackets Snippets (by edc)
+------------------
+		Ability to define snippets
+
+Display Shortcuts
+-----------------
+	https://github.com/redmunds/brackets-display-shortcuts
+	Help > Show Shortcuts
+	Ctrl-Alt-/
+	"Override Shortcut for Command"
+	"Disable shortcuts"
+
+
+Shortcut for moving between split windows
+-----------------------------------------
+	by default Alt-W, but can be reassigned in keymap.json for the command:
+
+		moving-between-splitted-windows.switch
+
+Guidelines  (limited benefit)
+----------
+	https://github.com/yellowhangar/Guidelines
+	Users can set the column number at which to draw the guideline and the guideline color via the menu at: View > Guidelines.
+
+	The extension can also be disabled via the menu.
+
+	===> Does not WRAP at ruler .. so limited benefit
+
+Indent softwrapped lines
+-------------------------
+
+	https://github.com/scriptin/brackets-indent-softwraps
+	When a line does not fit in editing area, it is softwrapped. This extension makes it so the wrapped part (2nd and subsequent lines) has the same indentation as the 1st line.
+
+Show whitespace
+----------------
+	by Dennis Kehrig
+
+
+=================================================================

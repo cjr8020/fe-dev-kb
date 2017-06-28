@@ -1,0 +1,151 @@
+
+	@@@@@@@@@@@@@@@@@@@@
+
+		ATOM Editor
+
+	@@@@@@@@@@@@@@@@@@@@
+
+
+Keyboard Shortcuts:
+
+ctrl-shift-;	= jump-over-symbol jump out of brackets|braces|quotes
+
+ctrl-shift-P	= Command Palette
+
+Split
+pane:split-right
+
+
+
+============================================================
+
+keymap customizations
+---------------------
+
+# move cursor out of parenthesis, quotes or brackets
+'atom-text-editor:not([mini])':
+  'ctrl-shift-;': 'custom:jump-over-symbol'
+# assign ctrl-shift-W to toggle soft wrap
+'.workspace .editor:not(.mini)':
+  'ctrl-shift-W': 'editor:toggle-soft-wrap'
+
+
+============================================================
+
+$ atom <folder_name>
+
+$ atom <file_name>
+
+============================================================
+
+Q: How to make atom show the getting started guide at every startup?
+
+A: You can put this in your ~/.atom/init.coffee:
+
+atom.config.set 'welcome.showOnStartup', true
+
+============================================================
+	Themes
+	******
+
+UI Themes					Syntax Themes
+----------					--------------
+One Dark 					Atom Dark
+flatland-dark-ui (sublime)	Base16 Tomorrow Dark
+
+============================================================
+
+	Jump out of quotes, brackets and parenthesis
+	********************************************
+
+http://stackoverflow.com/questions/30274597/jump-over-end-parenthesis-bracket-quotation-in-atom-editor-with-tab
+
+
+ctrl-shift-J as key
+
+
+Step 1: Go to the file menu and select 'Open Your Init Script', then paste the following code into the file. This defines a command that can move the cursor forward, jumping over a single bracket, brace, or quotation mark.
+
+SymbolRegex = /\s*[(){}<>[\]/'"]/
+atom.commands.add 'atom-text-editor', 'custom:jump-over-symbol': (event) ->
+  editor = atom.workspace.getActiveTextEditor()
+  cursorMoved = false
+  for cursor in editor.getCursors()
+    range = cursor.getCurrentWordBufferRange(wordRegex: SymbolRegex)
+    unless range.isEmpty()
+      cursor.setBufferPosition(range.end)
+      cursorMoved = true
+  event.abortKeyBinding() unless cursorMoved
+
+Step 2: open your keymap [keymap.scon] and enter a keybinding for the new command:
+
+# create new key mapping for "jump-over-symbol"
+# jump out of quotes, brackets and parenthesis
+# which is the same as my Sublime key mapping
+'atom-text-editor:not([mini])':
+  'ctrl-shift-;': 'custom:jump-over-symbol'
+
+============================================================
+
+	installing packages - GUI
+	*************************
+
+Edit > Preferences > Packages
+or
+ctrl-shift-P
+		to bring up the command pallete and start typing, "packages".
+		you should see the "Settings View: Install Packages"
+
+============================================================
+
+	Atom package manager (apm)
+	**************************
+
+$ apm -v
+$ apm update
+
+$ cat ~/.atom/.apmrc
+proxy=http://my-proxy:8080
+https-proxy=http://my-proxy:8080
+
+============================================================
+
+	spellcheck
+	***********
+
+Spellcheck toggle is available to disable spellcheck temporarily for this given file and for this time only.
+
+============================================================
+
+	autoclose-html
+	**************
+
+$ apm install autoclose-html
+
+============================================================
+
+	creating projects in ATOM
+	*************************
+
+$ apm install project-manager
+
+or
+	open Atom and go to Preferences > Install and search for project-manager
+
+Usages:
+
+List Projects
+-------------
+	ctrl-cmd-p (mac) / alt-shift-P (win & linux) or Project Manager: List Projects in the Command Palette.
+
+	You can filter projects by title, group and template. group: atom would list all projects with the group atom. Default is title
+
+Save Project
+-------------
+	Project Manager: Save Project in the Command Palette and write the title you want to save the project as.
+
+Edit Projects
+-------------
+	All projects are saved in a .cson file which you can easily reach by searching for Project Manager: Edit Projects in the Command Palette.
+
+============================================================

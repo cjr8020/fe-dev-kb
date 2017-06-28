@@ -1,0 +1,456 @@
+
+
+Keyboard Shortcuts
+*******************
+
+
+========================================================================
+
+Regular Expressions replacments
+*******************************
+
+CTRL-H
+
+press "RegEx" button in the lower left-hand corner.
+
+Enter regular expression in the "Find" field.  E.g.
+
+    ^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}).*$
+    
+Then, enter replacement string
+
+    $1
+    
+Replace All    
+
+========================================================================
+
+Settings | Key Bindings - User
+*******************************
+
+Move cursor out of parens, quotes, brackets:		ctrl+shift+;
+
+[
+    { "keys": ["ctrl+shift+;"], "command": "move", "args": {"by": "characters", "forward": true} }	
+]
+
+Show output panel:   F12
+
+	{ "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} }
+
+
+===================================================================================
+
+	mouse stopped working
+	*********************
+
+http://sublimetext.userecho.com/topic/29127-mouse-stopped-working-cant-click-on-text-in-build-2051-on-ubuntu-1010-x64/
+
+ctrl-alt-del, esc
+
+	you got this odd behaviour:
+- mouse in Windows works some times and some times not. 
+- mouse almost _never_ works in Sublime (you can't click at text, but can at menus, etc)
+- ctrl-alt-del, esc - fixes problem for some time in Windows.
+
+===================================================================================
+
+	install Package Control
+	************************
+https://packagecontrol.io/installation
+
+Simple installation
+--------------------
+The simplest method of installation is through the Sublime Text console. The console is accessed via the ctrl+` shortcut or the View > Show Console menu. Once open, paste the appropriate Python code for your version of Sublime Text into the console.
+
+import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
+
+Manual
+------
+If for some reason the console installation instructions do not work for you (such as having a proxy on your network), perform the following steps to manually install Package Control:
+
+Click the Preferences > Browse Packages… menu
+Browse up a folder and then into the Installed Packages/ folder
+Download Package Control.sublime-package and copy it into the Installed Packages/ directory
+Restart Sublime Text
+
+===================================================================================
+
+	installing plugins with Package Control
+	***************************************
+
+1. Open Package Control: Install Package
+2. Type in the name of the package to find.	
+3. install
+4. restart
+
+
+===================================================================================
+
+	Sublime Text Git
+	****************
+
+https://github.com/kemayo/sublime-text-git
+
+Bring up the Command Palette (Command+Shift+p on OS X, Control+Shift+p on Linux/Windows).
+Select "Package Control: Install Package" (it'll take a few seconds)
+Select Git when the list appears.
+
+===================================================================================
+
+	Git Gutter
+	**********
+https://github.com/jisaacks/GitGutter
+
+A sublime text 2/3 plugin to show an icon in the gutter area indicating whether a line has been inserted, modified or deleted.
+
+===================================================================================
+
+	Emmet
+	*****
+
+http://emmet.io/
+
+
+There are a lot of things that you can accomplish with Emmet, but I will just tell you my favorite here. Type html:5 and press Ctrl/Cmd + e, and it is expanded to a basic HTML 5 page template. Simple!
+
+
+
+===================================================================================
+
+	Sublime Terminal
+	****************
+http://wbond.net/sublime_packages/terminal
+
+Opens a terminal in the folder containing the currently edited file
+Opens a terminal in the project folder containing the currently edited file
+
+
+Installation
+
+Download Package Control and use the Package Control: Install Package command from the command palette. Using Package Control ensures Terminal will stay up to date automatically.
+
+Usage
+
+Open Terminal at File
+	
+	Press ctrl+shift+t on Windows and Linux, or cmd+shift+t on OS X
+
+Open Terminal at Project Folder
+
+	Press ctrl+alt+shift+t on Windows and Linux, or cmd+alt+shift+t on OS X
+
+
+===================================================================================
+
+	SublimeREPL
+	***********
+
+https://github.com/wuub/SublimeREPL
+
+SublimeREPL lets you run an interpreter of a range of languages (NodeJS, Python, Ruby, Scala and Haskell to name a few) right inside Sublime Text. 
+
+===================================================================================
+
+	ColorPicker
+	***********
+
+http://weslly.github.io/ColorPicker/
+
+Installation
+Install this repository via Package Control	
+
+Usage
+	To insert or change a selected color, use:
+
+	Linux: ctrl+shift+c
+	Windows: ctrl+shift+c
+	OS X: super+shift+c
+
+
+===================================================================================	
+
+	Markdown Editing
+	****************
+
+https://github.com/SublimeText-Markdown/MarkdownEditing
+
+Overriding extension mapping
+----------------------------
+
+	NOTE: by default, a "txt" is considered Markdown in "Markdown GFM Settings - Default":
+	{
+		"extensions":
+		[
+			"md",
+			"mdown",
+			"txt"
+		],
+		...
+	}
+
+	Override that in "Markdown.sublime-settings--User"
+	{
+		"extensions":
+		[
+			"md",
+			"mdown"
+		]
+	}
+
+Change color scheme to "Dark"
+-----------------------------
+in "user", add:
+
+	"color_scheme": "Packages/MarkdownEditing/MarkdownEditor-Dark.tmTheme"
+
+
+Fenced code blocks gets syntax highlighting inside
+------------------
+
+~~~~~~
+
+~~~~~~
+
+===================================================================================
+
+	GitHub Markdown preview
+	************************
+
+https://packagecontrol.io/packages/GitHub%20Flavored%20Markdown%20Preview
+
+Installation
+
+Install the Sublime Package Control package: https://sublime.wbond.net/installation
+Use Package Control to install this package (GitHubMarkdownPreview)
+
+Key bindings
+
+	"ctrl+shift+g"	
+
+
+===================================================================================
+
+	Pretty JSON
+	***********
+
+Ctrl-Alt-J
+
+
+https://github.com/dzhibas/SublimePrettyJson
+
+
+Usage:
+	make a selection or the entire view buffer will be used
+
+	ctrl-alt-j
+or
+	ctrl-shift-p and find "Pretty JSON: Format (Pretty Print) JSON"
+
+
+===================================================================================
+
+	Pretty XML
+	**********
+
+Plugin: Indent XML
+
+It can indent only selected text - including multiple selections and even mixed XML / JSON selections. It is smart enough to recognize XML or JSON even if you are editing plain text. 
+
+Usage: select text, then either go to "Selection | Format" or use keyboard shortcut
+below.
+
+Indent plugin won’t mess up your keyboard shortcuts because it uses “chord” command Ctrl+K, Ctrl+F (this mean hold Ctrl, press K then press F, release Ctrl) and also available in “Selection” menu.
+
+===================================================================================
+	
+
+	View in Browser
+	***************
+https://github.com/adampresley/sublime-view-in-browser
+https://github.com/adampresley/sublime-view-in-browser/wiki/Configuring-Browsers
+
+Copy Package Settings | View in Browser | Default 
+to User, then modify..
+
+- indicate which browser from the list you want launched
+- modify path to your browser
+
+Key bindings
+
+	by default
+
+		CTRL + ALT + F - Firefox
+		CTRL + ALT + C - Chrome
+		CTRL + ALT + I - Internet Explorer
+		CTRL + ALT + S - Safari
+
+	which can be modified like any other key binding in Sublime:
+
+[
+    { "keys": [ "ctrl+alt+v" ], "command": "view_in_browser" },
+    { "keys": [ "ctrl+alt+f" ], "command": "view_in_browser", "args": { "browser": "firefox" } },
+    { "keys": [ "ctrl+alt+c" ], "command": "view_in_browser", "args": { "browser": "chrome" } },
+    { "keys": [ "ctrl+alt+i" ], "command": "view_in_browser", "args": { "browser": "iexplore" } },
+    { "keys": [ "ctrl+alt+s" ], "command": "view_in_browser", "args": { "browser": "safari" } }
+]		
+
+
+===================================================================================
+
+	JavaScript console in Sublime
+	*****************************
+http://www.wikihow.com/Create-a-Javascript-Console-in-Sublime-Text
+
+Two methods
+
+1. 	Using JSC (Mac OS X)
+-------------------------
+	JSC is a command-line Javascript runner, cooked directly into Mac OS X. Because your Mac already contains everything you need to run the script, creating the build system in Sublime Text is incredibly easy. (If you have a Windows computer, see the directions for Node.js below.)
+
+
+		Create new Build System
+
+			Go to "Tools > Build System > New Build System" in the top bar.
+
+		Paste this code into untitled.sublime-build file that opens:
+
+{
+	"cmd": ["/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc", "$file"],
+	"selector": "source.js"
+}		
+
+
+		Save As "JSC.sublime-build" in the default "User" folder.
+
+
+		Usage:
+
+			1. Open the Javascript file that you want to run in Sublime Text.
+			2. Use debug() instead of console.log() in your script
+			3. Go to "Tools > Build System" in the top bar and select "JSC".
+			4. Build the javascript file using Command+B on Mac (CTRL-B Windows)
+
+			the console will now appear showing the results of your script.
+			close the console using Esc key.
+
+
+2. Using NodeJS
+
+
+		Create new Build System
+
+			Go to "Tools > Build System > New Build System" in the top bar.
+
+		Paste this code into untitled.sublime-build file that opens:
+
+{
+	"cmd": ["node", "$file"],
+	"selector": "source.js"
+}	
+
+
+		Save As "node.sublime-build" in the default "User" folder.
+
+
+		Usage:
+
+			1. Open the Javascript file that you want to run in Sublime Text.
+			2. Use debug() instead of console.log() in your script
+			3. Go to "Tools > Build System" in the top bar and select "JSC".
+			4. Build the javascript file using Command+B on Mac (CTRL-B Windows)
+
+			the console will now appear showing the results of your script.
+			close the console using Esc key.	
+
+
+===================================================================================
+
+	Show/Hide build results window
+	******************************
+https://www.sublimetext.com/forum/viewtopic.php?f=2&t=3270
+
+Create a short-cut [F12] in Preferences > Key Bindings > User by adding
+
+	{ "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} },
+
+E.g.
+
+[
+    { "keys": ["control+shift+enter"], "command": "move", "args": {"by": "characters", "forward": true} },
+    { "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} }
+]
+
+u can hide panel pressing ESC
+
+===================================================================================
+
+	launch html file in browser
+	****************************
+http://michaelcrump.net/getting-sublime-3-to-launch-your-html-page-in-a-browser-with-a-key-combo/
+
+
+
+
+
+===================================================================================
+
+
+  SublimeAStyleFormatter
+  ***********************
+
+https://github.com/timonwong/SublimeAStyleFormatter
+
+  
+  SublimeAStyleFormatter is a simple code formatter plugin for Sublime Text 2.
+  It provides ability to format C, C++, C#, and Java files.
+  
+  Usage
+  -----
+  ### Key Bindings
+  The default key bindings for this plugin:
+  
+  **Windows, Linux:**
+  + `ctrl+alt+f`: Format current file
+  + `ctrl+k, ctrl+f`: Format current selection
+  
+  **OSX:**
+  + `ctrl+alt+f`: Format current file
+  + `super+k,super+f`: Format current selection
+  
+  ### Command Palette
+  Open the command palette, it apperas as `SublimeAStyleFormatter: Format Current File`
+  and `SublimeAStyleFormatter Format Current Selection`.
+
+===================================================================================
+
+	HTML-CSS-JS Prettify
+	********************
+
+aka Sublime HTML Prettify
+https://github.com/victorporof/Sublime-HTMLPrettify
+
+Installation
+------------
+
+Through Sublime Package Manager
+
+	Ctrl+Shift+P or Cmd+Shift+P in Linux/Windows/OS X
+	type install, select Package Control: Install Package
+	type prettify, select HTML-CSS-JS Prettify
+
+
+
+
+===================================================================================  
+
+	JsFormat
+	********
+https://github.com/jdc0589/JsFormat
+
+Uses jsbeautifier.
+
+Don't need this if using HTMLPrettify?
+
+
+===================================================================================
