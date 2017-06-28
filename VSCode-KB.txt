@@ -1,0 +1,902 @@
+$ sudo dpkg -i <filename>.deb
+$ sudo apt-get install -f 
+
+    @@@@@@@@@@@@@@@@
+
+        VSCode
+
+    @@@@@@@@@@@@@@@@
+
+ctrl-`          open terminal (and toggle terminal windows in and out of view)
+ctrl-shift-`    create another terminal window.
+
+shift-alt-1     switch between hirozontal/virtical layout
+
+F2              rename (variable names)
+
+ctrl-p          Quick Open
+
+Ctrl-Shift-P    command pallette
+
+Ctrl-k Ctrl-H   toggle output (also command-pallette -> Toggle Output)
+
+
+refactor
+--------
+
+  ctrl-shift-f2            rename symbol (all occurrences in file)
+    !! don't do this with mstsc over citrix!!
+
+    note: default key mapping is ctrl-f2 but on ubuntu, this clashes with
+    switch virtual desktop.
+
+    on ubuntu, ctrl-F1|F2|F3|F4 switches virtual desktops
+
+
+        TypeScript Hero key bindings
+
+  showCmdGui	                  ctrl+alt+g
+  resolve.addImport	            ctrl+alt+i
+  resolve.addImportUnderCursor	ctrl+alt+shift+i
+  resolve.organizeImports	      ctrl+alt+o                
+
+        TypeScript Toolbox Extension key bindings
+
+  ctrl-shift-p  and search for 'Import'  |   'Generate Getter Setter or Constructor
+  alt-shift-g   quick selection pop-up
+
+
+preview
+-------
+
+  ctrl-shift-h  preview HTML (when editor text in focus)
+
+  ctrl-shift-b  open your file in browser (configured via Task)
+
+  ctrl-shift-v  markdown show preview
+
+  ctrl-k v      markdown open preview to side
+
+
+Basic Editing
+-------------
+
+  ctrl-enter    insert line after (below)
+  ctrl-shift-enter  
+                insert line before
+
+  ctrl-shift-alt-down  --> remapped to ctrl-shift-D
+  ctrl-shift-alt-up  
+                copy line(s) down/up              
+
+  Ctrl-Shift-K  delete (kill) line
+  Alt-Down      move line Down
+  Alt-Up        move line up
+
+  ctrl-d        add selection to next find match
+  ctrl-k ctrl-d
+                move selection to next find match
+
+  alt+z         toggle word wrapping 
+
+  ctrl+j        join lines [via Join Lines Extension]
+
+
+Search / Find
+
+  ctrl-h        activate Find and Replace                 
+
+selections
+----------
+
+shift+alt+drag  column or box text selection
+              
+
+
+
+Navigation
+----------
+
+ctrl+shift+\      bracket matching
+
+Folding
+-------
+fold regions of source code.
+
+Fold (Ctrl+Shift+[) folds the innermost uncollapsed region at the cursor
+Unfold (Ctrl+Shift+]) unfolds the collapsed region at the cursor
+Fold All (Ctrl+K Ctrl+0) folds all region in the editor
+Unfold All (Ctrl+K Ctrl+J) unfolds all regions in the editor
+
+
+
+
+Window Management
+-----------------
+  ctrl-shift-n    new window
+  ctrl-shift-w    close window
+
+  Ctrl+K F	     Close Folder	workbench.action.closeFolder
+  unassigned	   Cycle Between Editor Groups
+
+  Ctrl+\	       Split Editor	workbench.action.splitEditor
+  Ctrl+1	       Focus into Left Editor Group
+  Ctrl+2	       Focus into Side Editor Group
+  Ctrl+3	       Focus into Right Editor Group
+
+  Ctrl+K Ctrl+Left	Focus into Editor Group on the Left
+  Ctrl+K Ctrl+Right	Focus into Editor Group on the Right
+  Ctrl+K Left	  Move Active Editor Group Left
+  Ctrl+K Right	Move Active Editor Group Right
+
+
+Find Widget
+-----------
+
+Alt-C           toggles case sensitivity of the find Widget
+                toggleFindCaseSensitive
+Alt-W           toggleFindWholeWord
+
+Ctrl-D          editor.action.addSelectionToNextFindMatch
+                place cursor on word/symbol
+                press ctrl-d repeatedly to add every next match to the selection
+                by putting multiple cursors on every occurrence
+
+                used for refactoring/renaming all variable references, e.g.
+
+F2              rename symbol
+                Some languages support "rename symbol" across files.
+                Press F2 and then type the new desired name and press Enter.
+                All usages of the symbol will be renamed in all files.
+                E.g. renaming a publicly availabe function on an Angular service.
+
+ctrl+shift+f2   editor.action.changeAll
+                allows to rename/refactor all occurrences of a symbol.
+                similar to ctrl+d but you have to hit ctrl+d repeatedly
+
+
+Rich Language Editing
+---------------------
+
+f12             go to definition
+
+Peek
+shift+f12       show references (in peeked editor)
+ctrl+shift+f10  peek definition
+
+  Format Code
+  -----------
+
+Entire document: 
+
+Windows:        shift-alt-f
+Linux:          ctrl-shift-i   
+
+ctrl-k ctrl-f   format SELECTION
+
+ctlr+shift+o    goto symbol
+                this will pop up a pallette where you can select 
+                symbols available in your file.
+                press ":" to group symbols by category.
+
+ctrl+t          Open symbol by name.
+                type 1st, 2nd letter to narrow down..
+
+shift+alt+Left
+shift+alt+Right
+                shrink/expand the current selection
+                expanding will select more and more code line by line.
+
+
+
+ctrl+shift+m    display the PROBLEMS panel
+f8 or shift+f8  loop thru errors or warnings.
+
+
+
+
+
+
+Debug
+----- 
+  F5            launch debugger
+  Ctrl-Shift-Y  debug console
+  Ctrl-j        debug console (was originally, but now overridden by join-lines)
+
+====================================================================
+
+Task Runners
+************
+
+Build Task
+----------
+    command-pallette -> Build Task    (ctlr-shift-b)
+
+
+Launch HTML file in Chrome
+--------------------------
+
+  ctrl-shift-p  and type "Configure task runner".
+  vscode will create new file
+    .vscode/tasks.json
+  and open it in the editor.  Create a new task:
+
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "0.1.0",
+  "command": "Chrome",
+  "windows": {
+    "command": "C:\\Programs\\Chrome\\chrome.exe"
+  },    
+  "linux": {
+    "command": "/usr/bin/google-chrome-stable"
+  },
+  "args": ["${file}"]
+}
+
+Now, press ctrl-shift-b to open your file in Chrome.
+
+
+
+
+====================================================================
+
+  Debug
+  *****
+
+Debug Button   => configure icon (gear icon) at the top of the screen.
+Select "NodeJS" as your debug environment.
+That will create another file to your project - launch.json
+
+Look at the launch configurations in launch.json
+
+"program" says which file to debug (e.g. app.ts)
+"sourceMaps" true - tell the debug to look for the JS file
+"outDir": "js" identifies the directory where source maps are located.
+"externalConsole": true - would open a new terminal to which the debug will go.
+
+"preLaunchTask": "someTask"
+
+
+After configuring..
+Launch the debugger with "green arrow" at the top of the debugger pane (F5)
+
+
+====================================================================
+
+  Color Scheme
+
+Monokai Vivid
+
+====================================================================
+
+    Settings
+    ********
+
+VS Code provides two different scopes for settings:
+
+User
+    these settings apply globally to any instance of VS Code you open
+
+Settings File Locations
+
+    Depending on your platform, the user settings file is located here:
+
+    Windows %APPDATA%\Code\User\settings.json
+    Mac $HOME/Library/Application Support/Code/User/settings.json
+    Linux $HOME/.config/Code/User/settings.json
+
+Workspace
+    these settings are stored inside your workspace in a .vscode folder and only apply when the workspace is opened. Settings defined on this scope overwrite the user scope.
+
+    project/
+        .vscode/
+            settings.json
+
+
+settings.json
+--------------
+
+The settings.json file is divided into these sections:
+
+    Editor
+        - font, word wrapping, tab size, line numbers, indentation, ...
+    Window
+        - restore folders, zoom level, ...
+    Files
+        - excluded file filters, default encoding, trim trailing whitespace, ...
+    File Explorer
+        - encoding, OPEN EDITORS behavior, ...
+    HTTP
+        - proxy settings
+    Search
+        - file exclude filters
+    Git
+        - disable Git integration, auto fetch behavior
+    Telemetry
+        - disable telemetry reporting, crash reporting
+    HTML
+        - HTML format configuration
+    CSS
+        - CSS linting configuration
+    JavaScript
+        - Language specific settings
+    JSON
+        - Schemas associated with certain JSON files
+    Markdown
+        - Add a custom CSS to the Markdown preview
+    Less
+        - Control linting for Less
+    SCSS
+        - Control linting for Sass
+    TypeScript
+        - Language specific settings
+    PHP - PHP linter configuration
+
+
+
+
+========================================================================
+
+  Customizations
+  **************
+
+Settings.json
+-------------
+{
+    // Controls auto save of dirty files. Accepted values:  "off", "afterDelay", "onFocusChange". If set to "afterDelay" you can configure the delay in "files.autoSaveDelay".
+    "files.autoSave": "onFocusChange",
+    
+    // ---------------
+    // Editor
+    // ---------------
+
+    // Controls the delay in ms after which quick suggestions will show up
+    "editor.quickSuggestionsDelay": 100,
+ 
+    // The number of spaces a tab is equal to.
+    "editor.tabSize": 2,
+
+    // When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
+    "editor.detectIndentation": false,
+
+      // Columns at which to show vertical rulers
+      "editor.rulers": [80, 120],
+    
+    // ------------------
+    // TypeScript
+    // ------------------
+
+    // Complete functions with their parameter signature.
+    "typescript.useCodeSnippetsOnMethodSuggest": true
+}
+
+Keybindings
+-----------
+
+default keybindings overrides:
+C:\Users\<user>\AppData\Roaming\Code\User\keybindings.json
+
+
+// Place your key bindings in this file to overwrite the defaults
+[
+  // remapped from ctrl+f2 because it clashes with
+  // multiple desktop selector on Linux
+{ "key": "ctrl+shift+f2",           "command": "editor.action.changeAll",
+                                       "when": "editorTextFocus" },
+{ "key": "ctrl+shift+;",            "command": "cursorEnd",
+                                     "when": "editorTextFocus" }, 
+  // remaped tabout extension keybinding                                                                           
+{ "key": "ctrl+;",                   "command": "tabout",
+                                     "when": "editorTextFocus && !suggestWidgetVisible" }
+]
+
+================================================================================
+
+  **************
+  
+    Extensions
+
+  **************
+
+
+tabout
+--------------------------------------------------------------------
+
+  https://github.com/albertromkes/tabout
+
+  conflicts with code snippet tab stops
+
+  the default "tab" key is overridden in keybindings.json
+
+
+
+auto close tag
+--------------------------------------------------------------------
+
+  https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-close-tag
+
+  Usages:
+
+    1. [default] after typing in the closing bracket of the openning tag,
+       the closing tag will be inserted automatically
+
+By default, autoclose is enabled:
+
+{
+    "auto-close-tag.enableAutoCloseTag": true
+}
+
+
+    2. to add close tag manually:
+
+        ctrl-alt-.
+
+  Sublime Text 3 mode:
+
+    To automatically add close tag when </ is typed, add to settings:
+
+        {
+            "auto-close-tag.SublimeText3Mode": true
+        }
+
+  To install:
+  Launch command pallette (ctrl+p) and type:
+  ext install auto-close-tag.
+
+  Configuration:
+  Add entry into 'auto-close-tag.activationOnLanguage' to set the 
+  languages that the extension will be activated.
+  Default: ["*"] - all languages.
+
+  {
+      "auto-close-tag.activationOnLanguage": [
+          "html",
+          "xml",
+          "php",
+          "javascript"
+      ]
+  }
+
+    Note: The setting should be set with language id defined in VS Code. 
+    Taking javascript definition as an example, we need to use javascript for .js and .es6, 
+    use javascriptreact for .jsx. 
+    So, if you want to enable this extension on .js file, 
+    you need to add javascript in settings.json.  
+
+  You could also set the tag list that would not be auto closed.
+  Below are the default settings for void elements in the HTML spec, that you could override.
+
+  {
+      "auto-close-tag.excludedTags": [
+          "area",
+          "base",
+          "br",
+          "col",
+          "command",
+          "embed",
+          "hr",
+          "img",
+          "input",
+          "keygen",
+          "link",
+          "meta",
+          "param",
+          "source",
+          "track",
+          "wbr"
+      ]
+  }  
+
+
+
+HTML code snippets
+----------------------------------------------------------------------
+
+https://github.com/abusaidm/html-snippets
+
+Type part of snippet, press "enter" -> snippet unfolds. E.g.
+
+div --> <div></div>
+p   --> <p></p>
+
+
+
+
+
+
+File Templates
+----------------------------------------------------------------------
+
+https://marketplace.visualstudio.com/items?itemName=brpaz.file-templates
+
+  to install:
+
+    Ctrl-P and type "ext install file-templates"
+
+  Usage:
+
+    - right-click on the folder where you want to create new file.
+    - you should see an option: "Files: new from template"
+    - select one of the available options
+    - new file will be created.
+
+    to create a template from an open file:
+
+    - r-click on any opened file and choose from context menu.
+
+  Tempalte locations:
+
+    Linux:
+      $HOME/.config/Code/User/FileTemplates
+    Win:
+      C:\Users\User\AppData\Roaming\Code\User\FileTemplates
+    Mac:
+      $HOME/Library/Application Support/Code/User/FileTemplates      
+
+  Suggestion:
+    templates from
+      https://github.com/h5bp/html5-boilerplate
+      http://www.creativebloq.com/web-design/how-use-html-boilerplate-11513798
+
+
+
+
+
+Join Lines Extension
+----------------------------------------------------------------------
+
+  https://github.com/wmaurer/vscode-join-lines
+
+  Use Ctrl+j | ⌘+j to join lines, just like in Atom and similar to Sublime Text: the next line is joined to the 
+  current line, and all whitespace is replaced with a single space.
+
+
+
+TypeScript Importer
+----------------------------------------------------------------------
+
+  automatically searches for TS definitions in the workspace files and
+  provides all known symbols as completion item to allow auto import.
+
+  Installation:
+    Launch VS Code Quick Open (ctrl-p)
+    ext install tsimporter
+
+  Configuration:
+    can be configured in ".vscode/settings.json"
+
+    tsimporter.filesToScan
+      defaults to ['**/*.ts', '**/*.tsx']
+
+    tsimporter.filesToExcude
+      files to exclude from watch and scan
+      e.g. ./out/**
+      defaults to nothing
+
+    tsimporter.showNotifications
+      default is false
+
+    tsimporter.doubleQuotes
+      use doubleQuotes rather than single
+
+    tsimporter.spaceBetweenBraces
+      insert spaces between the import braces
+        
+    tsimporter.disabled
+      disables the extension
+
+    tsimporter.removeFileExtensions
+      default is '.d.ts,.ts,.tsx'
+
+    tsimporter.lowImportance    
+      if true, the completion items will be sorted back to the build in completion items
+      defaults to false
+
+    tsimporter.emitSemicolon
+      default is true
+
+    tsimporter.tsconfigName
+      an alternative tsconfig.json filename.
+      default: 'tsconfig.json'    
+
+
+!!!  will TypeScript Hero conflict with tsimporter? ???? 
+
+
+
+TypeScript hero
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=rbbit.typescript-hero
+
+
+  provides additional tooling for TypeScript Language
+
+  * add imports to your current file
+  * add an import to the current name under the cursor
+  * add all missing imports of a file with one command
+  * Intellisense that suggests symbols and automatically adds imports
+  * "light bulb feater" that fixes your code
+  * sort and organize your imports
+  * restart your debug session when your code changes
+
+  All setting are preceeded by 'typescriptHero'
+
+  commands:
+
+  showCmdGui	
+  	Shows a small gui with all available internal commands
+  resolve.addImport	
+  	Shows a pick list with all recognized, importable symbols
+  resolve.addImportUnderCursor		
+    Imports the symbol under the cursor
+  resolve.addMissingImports		
+    Imports all missing symbols for the actual document
+  resolve.organizeImports		
+    Removes unused imports and orders all imports
+  resolve.rebuildCache		
+    Rebuilds the whole symbol cache (or index)
+  restartDebugger.toggle	
+    debug restarter	Toggles the active state of the debug restarter
+
+
+
+  Default keybindings:
+
+  showCmdGui	                  ctrl+alt+g
+  resolve.addImport	            ctrl+alt+i
+  resolve.addImportUnderCursor	ctrl+alt+shift+i
+  resolve.organizeImports	      ctrl+alt+o
+
+
+
+
+
+TypeScript Toolbox
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=DSKWRK.vscode-generate-getter-setter
+
+add and optimize imports
+generate getters/setters and constructors
+
+    installation:
+    ctrl-p
+    ext install vscode-generate-getter-setter
+
+    Usage:
+
+  1. Just place your cursor within a TypeScript class definition in the text editor window
+  2. Open the command palette ctrl+shift+P / cmd+shift+P.
+  3. Search for 'Import', 'Generate Getter', 'Setter' or 'Constructor'
+
+  or
+
+  1. Just place your cursor within a TypeScript class definition in the text editor window
+  2. Press alt+shift+G for a quick selection pop-up
+  3. Select the preferred function from the pop-up menu
+
+  or
+
+  1. Click on the little Eye-Icon in your statusbar
+  2. Select the preferred function from the pop-up menu
+
+    The generated method will be placed at the cursors position.  
+
+
+  NOTE:
+
+  Best practice is naming your variables with a _ for private use.
+  The extension will remove the _ when generating the methods.
+
+  This: 
+
+    private _name: string;
+
+  Will render in:
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
+    }
+
+
+
+
+
+
+
+??? npm Intellisense
+----------------------------------------------------------------------
+
+??? ngrx for Angular 2 Snippets
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=davidpiercedev.code-ngrx-snippets
+
+Reactive Extensions for Angular2
+https://github.com/ngrx
+
+
+
+
+??? npm
+----------------------------------------------------------------------
+
+  npm commands for VSCode
+
+??? TsTools
+----------------------------------------------------------------------
+
+??? Angular 2 TypeScript Snippets
+----------------------------------------------------------------------
+
+??? Types auto installer
+----------------------------------------------------------------------
+
+
+??? Typings auto installer
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=jvitor83.typings-autoinstaller
+
+
+  Any time you save either package.json or bower.json 
+  the typings package will be installed/uninstalled automatically in the background.
+
+  will this be provided in core VSCode 1.7?
+
+  Commands:
+
+  To initially install all typings of a project, 
+  open the Command Palette with F1 and 
+  type in Typings: Install definitions for all dependencies, 
+  press Enter to select it.
+
+
+??? Debugger fro Chrome
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome
+
+
+
+
+
+??? VSCode Icons
+----------------------------------------------------------------------
+
+
+??? Add Angular2 Files
+----------------------------------------------------------------------
+https://marketplace.visualstudio.com/items?itemName=sebastianbaar.vscode-add-angular2-files
+
+  NOTE: seems mostly same as $ ng generate <...>
+
+
+----------------------------------------------------------------------
+
+
+
+================================================================
+
+  Support for GO Language
+  ***********************
+
+https://github.com/Microsoft/vscode-go#options  
+
+
+
+================================================================
+    Jasmine and TypeScript
+    **********************
+
+To use Jasmine, you'll need jasmine-core (not jasmine) installed with npm
+either globally or locally to your project (in your node_modules)
+
+Intellisense for Jasmine
+
+To allow VSCode to provide Intellisense for Jasmine, you'll need to install type definitions using Typings, again either globally or locally.
+
+$ npm install -g typings 
+
+Use Typings to install type definitions for Jasmine
+
+$ typings install jasmine --save-dev --ambient
+
+This command will result in the addition of a 'typings' folder in your project which contains a 'main.d.ts' file with references to installed type definitions.
+The '-save-dev" argument will persist the specified typing as a dev dependency in a typings.json file, so that you could re-install the typings later, or after code checkout.
+'--ambient' is required to include Definitely Typed in the lookup.
+
+
+
+
+================================================================
+  HTML Editing
+  ************
+
+HTML auto closing of tags
+-------------------------
+
+has been replaced with '</'  - when you start typing the closing 
+tag, it will be filled in.
+
+There is also Auto Close Tag Extension.
+
+
+
+================================================================
+
+  markdown support
+  ****************
+
+Out of the box:
+
+ctrl+shift+v    while editing a .md file, toggle  switch to preview
+
+ctrl+k v        open a side-by-side preview of md file in the editor.
+  
+================================================================
+
+  support for experimental decorators
+  ***********************************
+
+tsconfig.json
+-------------
+
+{
+  "compilerOptions": {
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es6", "dom"],
+    "mapRoot": "./",
+    "module": "es6",
+    "moduleResolution": "node",
+    "outDir": "../dist/out-tsc",
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": [
+      "../node_modules/@types"
+    ]
+  }
+}
+
+
+
+================================================================
+
+  Version of TypeScript 
+  **********************
+
+VS Code ships with a recent stable version of TypeScript.
+It also performs version checking for any version of TypeScript you may have
+installed globally or locally in your workspace.
+
+  $ npm list typescript // locally 
+
+  $ npm list typescript -g // globally
+
+By default, VS Code will warn if your global version is different than VS Code's
+TS version since this may cause inconsistent compiler errors when building
+your project within VS Code and in an external terminal.
+
+You can also direct VS Code to use your workspace TypeScript version with the
+'typescript.tsdk' setting pointing to a directory containing the TS 
+'tsserver.js' file.
+
+e.g. to instruct VS Code to use the TS version in your workspace node_modules:
+
+  workspace settings.json:
+
+    {
+      "typescript.tsdk": "./node_modules/typescript/lib"
+    }
+
+After setting typescript.tsdk, restart VS Code and the TypeScript version
+will be shown in the bottom right of the Status Bar when you open a JavaScript
+or TypeScript file.
+
+
+================================================================
+

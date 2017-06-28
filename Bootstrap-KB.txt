@@ -1,0 +1,499 @@
+
+@@@@@@@@@@@@@@@@@@
+
+Bootstrap
+
+@@@@@@@@@@@@@@@@@@
+
+currently v3.3.4
+
+Twitter's Bootstrap library is the most popular responsive design framework.
+Based on mobile-first design strategy.
+
+jQuery required
+---------------
+Please note that all JavaScript plugins require jQuery to be included, as shown in the starter template. Consult our bower.json to see which versions of jQuery are supported.
+
+
+================================================================================
+  Responsive Patterns
+  *******************
+
+http://www.lukew.com/ff/entry.asp?1514
+
+https://bradfrost.github.io/this-is-responsive/patterns.html
+
+Multi-device web design
+
+Mostly fluid
+  stacks columns vertically in its narrowest incarnations
+  a multi-column layout that introduces larger margins on big screens
+  relies on fluid grids and images to scale from large screens down to small.
+
+  "mostly fluid" because the core structure of the layout really doesn't change
+  until the smallest screen width.
+
+Column Drop
+  as the screen size gets smaller, columns start dropping one by one to the 
+  bottom of the page.
+  Unlike Mostly Fluid which changes only on the smallest screen size, 
+  the Column Drop pattern  can drop columns at any visual break point.
+
+Layout Shifter
+  significant changes to the layout happen across the device sizes.
+  a column shown in a large browser may become a row in a medium sized divice.
+  entire sections of the disign move around as the designer sees fit.
+
+Tiny Tweaks
+  single column web pages or even entire web sites
+  makes small changes to a single column page across all device sizes.
+  this pattern was the least popular because few companies have the luxury
+  of brutally simple Web pages..
+
+Content Reflow
+  content moves around depending on the device size
+  For instance, 3 columns of different content in large size..
+  columns stacking with captions to the side of the image in medium size..
+  captions under images in small size..
+
+  e.g. http://codepen.io/ramonlapenta/full/nhlqg
+
+
+================================================================================
+
+  meta name viewport
+  ******************
+http://getbootstrap.com/css/  
+http://blog.javierusobiaga.com/stop-using-the-viewport-tag-until-you-know-ho
+
+
+<meta name="viewport"> will tell smart phones that your website is created with
+responsive design in mind.
+
+Most of the time, that's all you need..
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+device-width
+
+  e.g.:
+    content="width=device-width" = website adapts to your width.
+
+    if we use this parameter on a non-responsive site, the website will zoom
+    to the top-left corner, forcing the users to zoom out (to understand where
+    they are) and zoom in to see the details.
+
+initial-scale
+
+  this parameter sets the initial zoom level (since the browser tends to scale
+  the website).
+  i.e.  1 CSS pixel == 1 viewport pixel (which is not always the same as 1 physical
+  pixel)
+
+  a responsive site should work without this parameter, but it might help
+  fixing some issues with certain browsers when changing the orientation mode,
+  or preventing a default zooming.
+
+
+
+Any additional parameters in the "content" attribute usually just screw up 
+user's experience.
+
+
+But here's the rest of it:
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+maximum-scale
+
+  this means setting maximum zoom.
+  on a website where the access to the information is the top priority
+  (most if not all) setting "maximum-scale=1" won't allow the user to zoom.
+  This might seem unimportant if you have a responsive website, but there are 
+  lots of cases when the user might need/want to zoom: small body font, checking
+  some details in a photograph...
+
+user-scalable=no
+
+  you can disable zooming capabilities on mobile devices by adding this.
+  the users are now only able to scroll.
+
+  your site will feel like a native application.
+  not recommended for every site - use with caution.  
+
+
+================================================================================
+  Bootstrap Grid Classes
+  **********************
+
+Container
+
+  Everything needs to happen within a container
+
+    .container
+    .container-fluid (will always pick up full width of the browser)
+
+  These could be assigned to <body>, <div> or some other grouping element.
+
+Row
+
+  inside container we need another <div> or other grouping element with class of
+  .row
+  and we can have several rows per container.
+
+  row is where we have our 12-column grid
+
+.col-sm-4
+.col-sm-8
+
+  elements that help spread visual DOM elements across the 12 columns.
+
+Visual break points
+
+  There are four visual break points:
+
+    extra-small devices (phones)    xs        <768px (less then iPad)
+    small devices (tablets)         sm        >=768px
+    medium devices (desktops)       md        >=992px
+    large devices (desktops)        lg        >=1200px
+
+  These break points will be activated when the viewport reaches the width 
+  indicated in pixels.
+
+  E.g., "sm" will be activated when the viewport is between 768 and 992 px.
+
+  example: .col-sm-8
+  If we assign .col-sm-8 to a visual DOM element, it is going to take 8 grid
+  columns on small devices and everything larger.  But for extra-small devices, 
+  this class does not take effect, and the DOM element will take the whole 
+  width.
+
+  example: .col-xs-4   
+  because it is the smallest size, the DOM element will take up 
+  4 columns on ALL device sizes.
+
+  example: .col-sm-4 and .col-lg-2
+    a DOM element is assigned both of these classes:
+    at XS size, the element will take up full width of the screen.
+    at SM and MD size, the element will be allocated 4 columns
+    but when you get to large, the elements will get only 2 columns
+
+    
+
+
+
+
+
+================================================================================
+
+Bootstrap 3 Containers
+**********************
+
+bootstrap provides fixed- and fluid-width containers.
+
+The CSS classes, .containers and .container-fluid, are used to set up the base layout.
+
+.container
+===========
+
+<head>
+<link rel="stylesheet" href="../asset/css/bootstrap.min.css">
+<title>Responsive product Store</title>
+</head>
+<body>
+<div class="container"></div>
+</body>
+
+.container-fluid
+================	
+
+<head>
+<link rel="stylesheet" href="../asset/css/bootstrap.min.css">
+<title>Responsive product Store</title>
+</head>
+<body>
+<div class="container-fluid"></div>
+</body>
+
+
+container vs container-fluid
+*****************************
+http://stackoverflow.com/questions/22262311/container-fluid-vs-container
+
+Quick version: .container has one fixed width for each screen size in bootstrap (xs,sm,md,lg); .container-fluid expands to fill the available width.
+
+
+The difference between container and container-fluid comes from these lines of CSS:
+
+@media (min-width: 568px) {
+.container {
+width: 550px;
+}
+}
+@media (min-width: 992px) {
+.container {
+width: 970px;
+}
+}
+@media (min-width: 1200px) {
+.container {
+width: 1170px;
+}
+}
+
+Depending on the width of the viewport that the webpage is being viewed on, the container class gives its div a specific fixed width. These lines don't exist in any form for container-fluid, so its width changes every time the viewport width changes.
+
+So for example, say your browser window is 1000px wide. As it's greater than the min-width of 992px, your .container element will have a width of 970px. You then slowly widen your browser window. The width of your .container won't change until you get to 1200px, at which it will jump to 1170px wide and stay that way for any larger browser widths.
+
+Your .container-fluid element, on the other hand, will constantly resize as you make even the smallest changes to your browser width.
+
+===========================================================================================
+
+navbar toggle
+*************
+
+with the following attributes, you the navbar toggle when your screen is resized smaller
+
+data-toggle
+this attribute has the value for the property of the effect, collapse in this case
+data-toggle="collapse"
+
+data-target
+has the value for the target DOM element that will expand and collapse on click event:
+data-target="#navbar"
+===========================================================================================
+
+jumbotron
+*********
+
+jumbotron - a large collout 
+
+===========================================================================================
+
+Bootstrap's JavaScript requires jQuery
+**************************************
+
+Make sure you are loading your libraries in proper order:
+
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/wow.min.js"></script>
+
+==========================================================================================
+
+navbar-fixed-top overlapping page content
+*****************************************
+
+http://stackoverflow.com/questions/11124777/twitter-bootstrap-navbar-fixed-top-overlapping-site
+
+The answer is in the docs: http://getbootstrap.com/components/#navbar-fixed-top
+
+Fixed to top
+------------
+Add .navbar-fixed-top and include a .container or .container-fluid to center and pad navbar content.
+
+<nav class="navbar navbar-default navbar-fixed-top">
+<div class="container">
+...
+</div>
+</nav>
+
+==> Body padding required <==
+
+The fixed navbar will overlay your other content, unless you add padding to the top of the <body>. Try out your own values or use our snippet below. 
+
+Tip: By default, the navbar is 50px high.
+
+body { padding-top: 70px; }
+
+Make sure to include this after the core Bootstrap CSS.
+
+navbar-static-top
+-----------------
+
+For bootstrap 3, navbar-static-top instead of fixed prevents this issue, unless you need the navbar to always be visible.
+
+==========================================================================================
+
+  Push and Pull Classes
+  *********************
+
+pull and pash classes are for reordering content.
+at the most basic level, here is an example:
+
+<div class="row">
+    <div class="col-md-9 col-md-push-3">This is content that comes <strong>first in the markup</strong>, but looks like it comes second in the view.</div>
+    <div class="col-md-3 col-md-pull-9">This is the sidebar, that comes <strong>second in the markup</strong>, but looks like it comes first in the view.</div>
+</div>
+
+In the above example, the first element is listed first in the markup code, but 
+will appear second (pushed into 2nd position) in the view.
+while the second element will be pulled into the 1st position.
+
+Main use:
+
+The main use of these classes is for reordering columns so that they stack 
+properly (i.e. in the right order) on smaller devices.
+
+Tips for Reordering columns
+---------------------------
+
+1. take bootstrap "mobile first" approach and create your content mobile first.
+
+2. it is easier to pull/push columns on larger devices taht it is on smaller.
+
+
+
+
+==========================================================================================
+
+  HTML 5 
+  **************
+
+<section>
+
+  the HTML <section> element represents a generic section of a document, i.e. 
+  a thematic grouping of content, typically with a heading (<h1> - <h6>) as a child
+  of the <section> element.
+
+<aside>
+
+  1. The aside element can be used within or outside the article element
+
+  2. When used inside the content of the aside element must be relevant to the 
+  article content
+  
+  3. If you can remove the content of the <aside> element and the article content, 
+  to which it is relevant, becomes incomplete then you should not be using 
+  the <aside> element
+  
+  4. When used outside the article element the content of the aside element 
+  must be relevant o your entire web page
+  
+  5. The aside element is a block level element
+  
+  6. You can use both block level elements (such as headings, <h1> - <h6>) and inline elements (such as emphasize, <em>) inside of the <aside> element
+
+  
+  
+  can be used in two different contexts.  This depends on whether or not it is 
+  inside or outside the article element.
+
+  In magazines, you often see info-boxes pulled away from the actual content of
+  the article, highlighting something with relevance to the article 
+
+
+  <aside> inside the <article>
+  -----------------------------
+
+  <article>
+        <header>
+                <h1>All About Flour<h1>
+                <p class="byline">by Jane Doe</p> 
+        </header>
+        <section>
+                <h2>The Two Types of Wheat</h2>
+                <p>There … to rise.</p>
+                <p>Where … with less protein.</p>
+        </section>
+        <aside>
+                If you use organic flour you very often get better bread
+        </aside>
+  </article>
+
+  <aside> outside the <article>
+  -----------------------------
+
+  used to mark up content which is relevant to your page as a whole - blogrolls,
+  additional navigation, even adds - and wheh this is the scope of your aside, 
+  it has to be placed outside of the <article> element.
+
+  <aside>
+          <h3>Foodblogs I like</h3>
+          <a href="http://www.bakerella.com">Bakerella</a>
+          <a href="http://sourdough.com/"> Sourdough.com</a>
+          <a href="http://www.bakingobsession.com">BakingObsession</a>
+  </aside>
+  <article>
+          <header>
+                  <h1>All About Flour<h1>
+                  <p class="byline">by Jane Doe</p> 
+          </header>
+          <section>
+                  <h2>The Two Types of Wheat</h2>
+                  <p>There … to rise.</p>
+                  <p>Where … with less protein.</p>
+          </section>
+  </article>  
+
+
+
+
+
+================================================================================
+
+  CSS
+  ***
+
+CSS Selectors
+--------------  
+
+CSS selector without (.) target all HTML elements by this tag, e.g.
+
+  p {
+    color: green;
+  }
+  
+CSS selector with (.)   specifies a class, e.g. 
+
+  .green {
+    color: green;
+  }  
+
+  <p class="green">i'm going green</p>
+  <p>i'm just plain paragraph</p>
+  <p class="green">i'm going green too!</p>
+
+CSS selector with (#)   specifies an ID, e.g. 
+
+  #myElement {
+    ...
+  }
+
+You can have ONLY one element with a particular ID.
+But you can have many elements in a particular class.
+So, if you want to target once specific element, you can give that element an ID,
+and target it with a hash ('#') in your CSS statement.
+
+
+More specific CSS Selectors
+---------------------------
+
+find all TAGs that have particular class
+e.g. 
+
+  .warning {
+    background-color: red;
+    color: white;
+  }
+
+  // this finds all <p> paragraphs with the class of "warning"
+  p.warning {
+    border: 5px solid orange;
+  }
+
+find all X tags inside an element that has a particular class
+e.g.
+
+  .warning {
+    background-color: red;
+    color: white;
+  }
+  // this finds all <p> tags inside an element that has a class of "warning"
+  .warning p {
+
+  } 
+
+
+
+================================================================================

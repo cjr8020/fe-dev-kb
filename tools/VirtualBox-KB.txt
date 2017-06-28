@@ -1,0 +1,223 @@
+﻿
+
+Host key: Right Ctrl
+
+Access VirtualBox main menu bar in full-screen mode:
+	Host + Home
+
+Full-screen mode:	Host-F
+Seamless mode: 		Host-L
+Scaled mode:		Host-C
+Adjust window size: Host-A
+
+The main menu bar is hidden in full-screen mode.
+You can access it by pressing Host+Home
+
+
+=========================================================================
+
+	Installing Xubuntu on virtual box
+	*********************************
+
+New -> 	Name: "xubuntu-16.04"
+		Memory size: 16 (of 32)
+		Fixed virtual HDD: 100GB
+
+		this will take 20-30min
+
+set CD to boot
+
+	-> Storage "+" -> select your xubunutu-16.04.iso to mount
+		Set Boot Order
+
+Start the VM to install Xubuntu
+	- after installation, the VM will want to reboot but will stall with 
+	"intel_rapl" error. Just shut down and restart the VM...
+
+
+Install Guess Additions (see below)
+
+Enable clipboard integration
+
+Mount shared folders (see below)
+
+
+
+
+
+
+=======================================================================
+
+	proxy settings in ubuntu in VirtualBox
+	**************************************
+
+http://askubuntu.com/questions/531906/virtualbox-proxy-settings-with-14-04
+
+Test this:
+
+Open a terminal.Ctrl + Alt + T
+
+Run it:
+
+$ sudo -i
+# nano /etc/bash.bashrc
+Put the following lines in the file:
+
+export http_proxy=http://username:password@proxyserver.net:port/
+export https_proxy=https://username:password@proxyserver.net:port/
+export ftp_proxy=http://username:password@proxyserver.net:port/
+export no_proxy="localhost,127.0.0.1,*.standard.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+$ sudo -i
+# nano /etc/environment
+
+Put the following lines in the file
+
+http_proxy=http://username:password@proxyserver.net:port/
+https_proxy=https://username:password@proxyserver.net:port/
+ftp_proxy=http://username:password@proxyserver.net:port/
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+$ sudo -i
+# nano /etc/apt/apt.conf
+Put the following lines in the file:
+
+Acquire::http::Proxy "http://username:password@proxyserver.net:port";
+Acquire::https::Proxy "https://username:password@proxyserver.net:port";
+Acquire::ftp::Proxy "http://username:password@proxyserver.net:port";
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+
+config on xubi-one
+------------------
+
+/etc/bash.bashrc
+
+export http_proxy=http://proxy.standard.com:8080/
+export https_proxy=http://proxy.standard.com:8080/
+export ftp_proxy=http://proxy.standard.com:8080/
+export no_proxy="localhost,127.0.0.1,*.standard.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
+
+
+/etc/environment
+
+http_proxy=http://proxy.standard.com:8080/
+https_proxy=http://proxy.standard.com:8080/
+ftp_proxy=http://proxy.standard.com:8080/
+no_proxy="127.0.0.1, localhost, *.standard.com, 192.168.0.0/16, 10.0.0.0/8, 172.20.0.0/16"
+
+/etc/apt/apt.conf
+
+Acquire::http::Proxy "http://proxy.standard.com:8080";
+Acquire::https::Proxy "http://proxy.standard.com:8080";
+Acquire::ftp::Proxy "http://proxy.standard.com:8080";
+
+
+
+
+
+
+
+
+
+
+=======================================================================
+
+Guest Additions
+****************
+
+Provide additional capability to your guest VM:
+- folder sharing
+- screen size
+- mouse pointer integration
+- better video support.
+- share clipboard
+
+Make sure the current user has sudo:
+
+$ sudo adduser <username> sudo
+
+To install Guess Additions:
+---------------------------
+
+Click the "Devices" menu in VB and choose "Install Guest Additions CD image".
+Open terminal:
+
+$ sudo /media/<hostname|username>/VBOXADDITIONS_x.x.x/VBoxLinuxAdditions.run
+
+Reboot OS when done.
+
+
+
+=======================================================================
+
+	Shared Clipboard "Bidirectional"
+	********************************
+
+VirtualBox > Devices > Shared Clipboard > Bidirectional
+
+=======================================================================
+
+	Share Folders
+	*************
+
+VirtualBox > Devices > Shared Folders settings ...
+Select "Machine Folders" and hit the "add button" + sign
+Check
+- auto-mount
+- make permanent
+
+Click OK
+
+setup permissions
+-----------------
+
+Now, open a terminal in ubuntu:
+
+type "terminal" in Dash to open a Terminal.
+
+	$ sudo adduser <username> vboxsf
+
+The shared folders will be under /media with "sf_" prefix:
+
+	/media/sf_ws
+
+
+=======================================================================
+
+	display > enabled 3D acceleration
+	*********************************
+
+causes a strange problem with terminal windows, 'save as' dialog windows, etc. to open and stay in the background relative to other windows.
+
+
+=======================================================================
+
+
+	intel_rapl: no valid rapl domains found in package 0
+	****************************************************
+
+Error message at boot time in Ubuntu VM.
+
+The VM appears to hang during first reboot after install.
+
+add to the end of
+/etc/modprobe.d/blacklist.conf
+
+blacklist intel_rapl
+
+
+I tried to enable PAE/NX in VirtualBox settings.. but no luck.
+
+=======================================================================
+
+	update apt-get
+	--------------
+
+	$ sudo apt-get update
+
+=======================================================================

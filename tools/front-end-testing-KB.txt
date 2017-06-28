@@ -1,0 +1,556 @@
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		Front-End Testing
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+Mocha
+******
+
+Mocha is a feature-rich JavaScript test framework running on Node.js and the browser, making asynchronous testing simple and fun. It does just about everything a JavaScript developer needs, and yet remains customisable enough to support both behaviour-driven and test-driven development styles. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught exceptions to the correct test cases.
+
+Chai
+****			
+
+Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
+
+Chai aims to be an expressive and easily approachable way to write assertions for JavaScript project testing. Developers have already started expanding on Chai’s available language through plugins such as spies, mocks/stubs, and jQuery support.
+
+Interesting is that the motivation for Chai came about with the release of Mocha. At the time, there was no apparent assertion library to pair with it that would allow for the same assertions to be used on both server and client with the inherent simplicity that Mocha provides
+
+
+===================================================================================
+
+
+	Assertions
+	**********
+
+Mocha allows you to use any assertion library you want - if it throws an error, it will work!	
+The following is a list of known assertion libraries for node and/or the browser:
+
+should.js BDD style shown throughout these docs
+expect.js expect() style assertions
+chai expect(), assert() and should style assertions
+better-assert c-style self-documenting assert()
+
+===================================================================================
+
+	Testing Synchronous Code
+	************************
+
+When testing synchronous code, omit the callback and Mocha will automatically continue on to the next test.
+
+describe('Array', function(){
+  describe('#indexOf()', function(){
+    it('should return -1 when the value is not present', function(){
+      [1,2,3].indexOf(5).should.equal(-1);
+      [1,2,3].indexOf(0).should.equal(-1);
+    })
+  })
+})	
+
+===================================================================================
+
+	Testing Asynch Code
+	*******************
+
+To test code asynchronously, invoke the callback when your test is complete.
+By adding a callback (usually named "done")	 to it() Mocha will now that it should wait for completion.
+
+
+===================================================================================
+
+	grunt-mocha
+	***********
+
+https://github.com/kmiyashiro/grunt-mocha
+https://gist.github.com/maicki/7781943
+
+
+This specifies which HTML spec files to run with PhantomJS.
+These are the same files you would open to run tests in a browser.
+
+	mocha: {
+	  test: {
+	    src: ['tests/**/*.html'],
+	  },
+	},
+
+
+options.urls
+------------
+
+Instead of files, hit these URLs. Usually used in conjunction with the connect task to spin up a server for testing.
+
+	connect: {
+	  server: {
+	    options: {
+	      port: 8888,
+	      base: '.',
+	    },
+	  },
+	},
+	mocha: {
+	  test: {
+	    options: {
+	      urls: [ 'http://localhost:8888/example/test/test2.html' ],
+	    },
+	  },
+	},
+
+
+        /* this requires 'connect:test' step in 'test' task */
+		mocha: {
+			silent: {
+				options: {
+					urls: ['http://localhost:<%= connect.test.options.port %>/testrunner.html'],
+					run: true,
+				}
+			},
+            verbose: {
+                options: {
+                    urls: ['http://localhost:<%= connect.test.options.port %>/testrunner.html'],
+                    run: true,
+                    log: true,
+                }
+            }
+		},
+
+
+
+	connect.test.open = true
+	------------------------
+
+	this will launch the browser at the same time as running tests.
+
+		connect: {
+			...
+			test: {
+				options: {
+					open: true,
+					port: 9002,
+					base: [
+						'.tmp',
+						'test',
+						'<%= app %>'
+					]
+				}
+			}
+		},
+
+
+
+===================================================================================
+
+	Adding test support to a project
+	********************************
+
+
+Add grunt-mocha
+---------------
+
+1. /package.json 
+   add grunt-mocha  to devDependencies:
+
+    "grunt-mocha": "~0.4.11"
+
+2. run
+
+	$ npm install // any time you modify package.json
+
+Setup Test
+-----------
+
+1. Create test directory
+
+2. create .bowerrc in that directory
+
+{
+    "directory": "bower_components"
+}
+
+3. Create bower.json with test dependencies:
+
+{
+  "name": "policy-inquiry-web-test",
+  "private": true,
+  "dependencies": {
+    "chai": "~1.8.0",
+    "mocha": "~1.14.0"
+  },
+  "devDependencies": {}
+}
+
+
+
+4. run 
+    $ cd test
+	$ bower install
+
+  this will create "test/bower_components"
+
+
+5. add mocha config to initConfig in Gruntfile
+
+        mocha: {
+            test: {
+                src: ['test/testrunner.html']
+            },
+            options: {
+                run: true,
+                log: true // if you want console log to be printed.
+            }
+        },
+
+6. add test task
+
+	grunt.registerTask('test', [
+		'clean:tmpdir',
+		'compile-sass',
+        'mocha'
+	]);
+
+
+
+7. In your test directory, create test spec (test.js) and testrunner.html
+
+  test
+    |
+    +--- spec/test.js
+    +--- testrunner.html
+
+test.js
+-------
+
+/* global describe, it, should */
+
+(function () {
+    'use strict';
+
+    describe("Tests for Hello Module", function() {
+       // say hello in english
+        it("should say 'Hello' in English", function() {
+            assert.equal("HELLO", HELLO.sayHello("English"));
+        })
+    });
+
+
+
+})();
+
+
+testrunner.html
+---------------
+
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mocha Spec Runner</title>
+    <link rel="stylesheet" href="bower_components/mocha/mocha.css">
+</head>
+
+<body>
+<div id="mocha"></div>
+<script src="bower_components/mocha/mocha.js"></script>
+<script>mocha.setup('bdd')</script>
+<script src="bower_components/chai/chai.js"></script>
+<script>
+    var assert = chai.assert;
+    var expect = chai.expect;
+    var should = chai.should();
+</script>
+
+<!-- bower.js -->
+<!-- endbower -->
+
+<!-- include source files here .. -->
+<script src="../app/js/modulepattern.js"></script>
+
+<!-- include spec files here ... -->
+<script src="spec/test.js"></script>
+
+<!-- run mocha after all test are loaded -->
+<script type="text/javascript" charset="utf-8">
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        mocha.run();
+    }
+</script>
+</body>
+</html>
+
+
+
+
+
+===================================================================================
+
+
+	How to organize my test spec files
+	***********************************  
+http://stackoverflow.com/questions/12175866/how-to-organize-my-spec-files
+
+if you have example.js, I would expect example.tests.js to begin with...
+
+
+http://stackoverflow.com/questions/24153261/joining-tests-from-multiple-files-with-mocha-js
+
+
+Example of test subdir structure
+---------------------------------
+
+.
+└── test
+    ├── a
+    │   └── a.js
+    ├── b
+    │   └── b.js
+    ├── common.js
+    └── top.js
+
+
+top.js:
+-------    
+function importTest(name, path) {
+    describe(name, function () {
+        require(path);
+    });
+}
+
+var common = require("./common");
+
+describe("top", function () {
+    beforeEach(function () {
+       console.log("running something before each test");
+    });
+    importTest("a", './a/a');
+    importTest("b", './b/b');
+    after(function () {
+        console.log("after all tests");
+    });
+});
+
+
+
+
+
+Organizing tests within a test file:
+------------------------------------
+
+Here is an example of Bubble sort tests:
+
+	describe('bubbleSort', function () {  
+	  it('should have a function `bubbleSort`', function () {
+	    expect(bubbleSort).to.be.a('function');
+	  });
+	  it('should return arrays of length < 2', function () {
+	    expect(bubbleSort([1])).to.eql([1]);
+	  });
+
+	  it('should sort an array of length > 2', function () {
+	    expect(bubbleSort([4,5,1,2,3])).to.eql([1,2,3,4,5]);
+	  });
+
+	  it('should handle an array in reverse order', function() {
+	    expect(bubbleSort([5,4,3,2,1])).to.eql([1,2,3,4,5]);
+	  });
+	});
+
+
+===================================================================================	
+
+	Using JSHint with Mocha and Chai
+	********************************
+
+http://stackoverflow.com/questions/23265076/using-jshint-with-mocha-and-chai
+
+
+
+
+
+
+Q: 
+
+   test/spec/test.js
+     14 |                assert.equal('HELLO', sayHelloInEnglish());
+                         ^ 'assert' is not defined.
+
+A: 
+	http://stackoverflow.com/questions/26091744/jshint-thinks-jasmine-functions-are-undefined
+
+	.jshintrc:
+
+	"predef": [
+	    "assert"
+	]
+
+	"predef": [
+	    "jasmine",
+	    "describe",
+	    "xdescribe",
+	    "before",
+	    "beforeEach",
+	    "after",
+	    "afterEach",
+	    "it",
+	    "xit",
+	    "it",
+	    "inject",
+	    "expect",
+	    "spyOn",
+	]
+
+
+Q:
+
+     14 |                assert.equal('HELLO', sayHelloInEnglish());
+                                               ^ 'sayHelloInEnglish' is not defined.
+     18 |                sayHelloInSpanish().should.equal('Hola');
+                         ^ 'sayHelloInSpanish' is not defined.
+
+
+
+
+
+
+===================================================================================
+
+	enable console logging in mocha tests
+	*************************************
+
+using grunt-mocha
+------------------	
+
+options.log	
+
+Print any console.log calls from PhantomJS to the command line. Only used for very quick and dirty debugging. It is highly recommended that you open the failing spec file in a browser so you can use much richer debugging tools.
+
+mocha: {
+  test: {
+    src: ['tests/**/*.html'],
+    options: {
+      log: true,
+    },
+  },
+},
+
+
+see "Adding test support to a project" above...
+
+==================================================================================
+
+	Failed to load resource: net::ERR_FAILED chrome-extension
+	*********************************************************
+
+http://stackoverflow.com/questions/25814914/chrome-youtube-cast-sender-js-console-error
+
+
+You see the following in Chrome JavaScript console:
+
+Failed to load resource: net::ERR_FAILED chrome-extension://enhhojjnijigcajfphajepfemndkmdlo/cast_sender.js
+Failed to load resource: net::ERR_FAILED chrome-extension://hfaagokkkhdbgiakmmlclaapfelnkoah/cast_sender.js
+Failed to load resource: net::ERR_FAILED chrome-extension://enhhojjnijigcajfphajepfemndkmdlo/cast_sender.js
+Failed to load resource: net::ERR_FAILED chrome-extension://fmfcbgogabcbclcofgocippekhfcmgfj/cast_sender.js
+Failed to load resource: net::ERR_FAILED
+
+A:
+... it appears that Chrome attempts to get cast_sender.js on pages that have YouTube content. I'm guessing when Chrome sees media that it can stream it attempts to access the Chromecast extension. When the extension isn't present, the error is thrown.
+
+The only solution I've come across is to install the Google Cast extension, whether you need it or not. You may then hide the toolbar button. 
+
+
+
+===========================================================================
+
+	Protractor
+	**********
+e2e testing framework for Angular apps.
+runs test against your app running in a real browser, interacting with it as a user would.
+
+Setup
+-----
+
+$ npm install -g protractor
+
+This installs two commmand-line tools: protractor and webdriver-manager.
+
+
+	ng e2e errors
+-------------------------------------------------------------	
+
+	craiskin@xubi-one:~/ws/0git/8020/angular/angular2-todo-app $ ng e2e
+	(node:16074) fs: re-evaluating native module sources is not supported. If you are using the graceful-fs module, please update it to a more recent version.
+	Could not start watchman; falling back to NodeWatcher for file system events.
+	Visit http://ember-cli.com/user-guide/#watchman for more info.
+
+	> angular2-todo-app@0.0.0 pree2e /home/craiskin/ws/0git/8020/angular/angular2-todo-app
+	> webdriver-manager update
+
+	Updating selenium standalone to version 2.52.0
+	downloading https://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar...
+	Updating chromedriver to version 2.21
+	downloading https://chromedriver.storage.googleapis.com/2.21/chromedriver_linux64.zip...
+	chromedriver_2.21linux64.zip downloaded to /home/craiskin/ws/0git/8020/angular/angular2-todo-app/node_modules/protractor/selenium/chromedriver_2.21linux64.zip
+	selenium-server-standalone-2.52.0.jar downloaded to /home/craiskin/ws/0git/8020/angular/angular2-todo-app/node_modules/protractor/selenium/selenium-server-standalone-2.52.0.jar
+
+	> angular2-todo-app@0.0.0 e2e /home/craiskin/ws/0git/8020/angular/angular2-todo-app
+	> protractor "config/protractor.conf.js"
+
+	[12:17:30] I/direct - Using ChromeDriver directly...
+	[12:17:30] I/launcher - Running 1 instances of WebDriver
+	Spec started
+
+	  angular2-todo-app App
+	    ✗ should display message saying app works
+	      - Failed: Cannot read property 'ver' of null
+
+	**************************************************
+	*                    Failures                    *
+	**************************************************
+
+	1) angular2-todo-app App should display message saying app works
+	  - Failed: Cannot read property 'ver' of null
+
+	Executed 1 of 1 spec (1 FAILED) in 8 secs.
+	[12:17:46] I/launcher - 0 instance(s) of WebDriver still running
+	[12:17:46] I/launcher - chrome #01 failed 1 test(s)
+	[12:17:46] I/launcher - overall: 1 failed spec(s)
+	[12:17:46] E/launcher - Process exited with error code 1
+
+
+	npm ERR! Linux 4.4.0-34-generic
+	npm ERR! argv "/usr/local/bin/node" "/usr/local/bin/npm" "run" "e2e" "--" "config/protractor.conf.js"
+	npm ERR! node v6.2.2
+
+$ protractor config/protractor.conf.js
+
+	$ protractor config/protractor.conf.js 
+	[10:51:00] I/direct - Using ChromeDriver directly...
+	[10:51:00] I/launcher - Running 1 instances of WebDriver
+	[10:51:00] E/launcher - Error: Error: Could not find chromedriver at /usr/local/lib/node_modules/protractor/selenium/chromedriver_2.21
+	    at Direct.getNewDriver (/usr/local/lib/node_modules/protractor/built/
+
+
+
+$ which protractor
+	/usr/local/bin/protractor
+
+$ which webdriver-manager
+	/usr/local/bin/webdriver-manager
+
+$ sudo webdriver-manager update
+
+	Updating selenium standalone to version 2.52.0
+	downloading https://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar...
+	Updating chromedriver to version 2.21
+	downloading https://chromedriver.storage.googleapis.com/2.21/chromedriver_linux64.zip...
+	chromedriver_2.21linux64.zip downloaded to /usr/local/lib/node_modules/protractor/selenium/chromedriver_2.21linux64.zip
+	selenium-server-standalone-2.52.0.jar downloaded to /usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.52.0.jar
+
+
+
+
+===========================================================================

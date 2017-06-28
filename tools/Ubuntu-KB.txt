@@ -1,0 +1,647 @@
+﻿
+    *************************
+
+        ubuntu
+
+    *************************
+
+
+Most useful
+***********
+
+install deb package
+-------------------
+
+
+check whether package is installed
+----------------------------------
+
+$ whereis <package-name>
+
+$ dpkg -l | grep <package-name> | awk '{print $2, $3}'
+
+$ dpkg --get-selections | grep chromium
+
+
+uninstall package
+------------------
+
+$ sudo apt-get remove <package-name>
+$ whereis <package-name>
+
+
+
+===============================================================
+
+  apt vs dpkg
+  ************
+
+when you use apt to install a package, internally it uses 'dpkg'.
+when you install a package using apt, it first creates a list of all the 
+dependencies and downloads it from the repository.  
+
+if you have a .deb file:
+
+To install using
+
+  $ sudo dpkg -i /path/to/file
+  $ sudo apt-get install -f
+
+You can also install .deb file using `apt-get install package-name`, but first 
+move your deb file to /var/cache/apt/archives/ directory.   The command will
+automatically download all dependencies.
+
+===============================================================
+
+
+Nautilus
+	default ubuntu file manager.
+
+Unity
+	graphical shell for the GNOME desktop environment
+
+Xfce
+	another desktop environment that is relatively light-weight
+
+Xubuntu
+	a version of ubuntu that comes with Xfce as default
+
+===============================================================
+
+
+	@@@@@@@@@@@@@
+
+		Xfce4
+
+	@@@@@@@@@@@@@
+
+Gnome and KDE may be the preferred desktop environment for most Linux users, but for those who prefer something that is not resource intensive, XFCE is a great alternative. XFCE is lightweight, fully customizable and is almost like the good old Gnome 2.x that everyone misses.
+
+
+Post installation Steps
+***********************
+
+
+Incomplete Language Support
+------------------------------
+Active internet connection is required.
+To install missing components at a later time, please use Language Support
+click the icon at the very right of the top bar and select
+"System Settings.. -> Language Support"
+
+
+Proxy settings
+--------------
+
+http://askubuntu.com/questions/531906/virtualbox-proxy-settings-with-14-04
+
+NOTE: at Standard, on my xubunty VM, all the settings below are without "username:password".
+
+
+Open a terminal.Ctrl + Alt + T
+
+Run it:
+
+$ sudo -i
+# nano /etc/bash.bashrc
+Put the following lines in the file:
+
+export http_proxy=http://username:password@proxyserver.net:port/
+export https_proxy=https://username:password@proxyserver.net:port/
+export ftp_proxy=http://username:password@proxyserver.net:port/
+export no_proxy="localhost,127.0.0.0/8,*standard.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+$ sudo -i
+# nano /etc/environment
+
+Put the following lines in the file
+
+http_proxy=http://username:password@proxyserver.net:port/
+https_proxy=https://username:password@proxyserver.net:port/
+ftp_proxy=http://username:password@proxyserver.net:port/
+no_proxy="127.0.0.0/8,localhost,*.standard.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+$ sudo -i
+# nano /etc/apt/apt.conf
+Put the following lines in the file:
+
+Acquire::http::Proxy "http://username:password@proxyserver.net:port";
+Acquire::https::Proxy "https://username:password@proxyserver.net:port";
+Acquire::ftp::Proxy "http://username:password@proxyserver.net:port";
+
+Ctrl + O, save file. Ctrl + X, close nano.
+
+
+apt-get
+-------
+
+$ sudo apt-get update
+
+
+intel_rapl: no valid rapl domains found in package 0
+----------------------------------------------------
+
+Error message at boot time in Ubuntu VM.
+
+The VM appears to hang during first reboot after install.
+
+add to the end of
+/etc/modprobe.d/blacklist.conf
+
+blacklist intel_rapl
+
+I tried to enable PAE/NX in VirtualBox settings.. but no luck...
+Blacklisting got rid of the message..
+
+===============================================================
+
+	enable workspaces or virtual desks
+	**********************************
+
+To enable additional workspaces:
+
+open the System / Settings window
+Workspaces
+
+===============================================================
+
+	installing docky
+	----------------
+
+To use the Docky Stable PPA, for Ubuntu 10.04 (Lucid Lynx) and later:
+
+  sudo add-apt-repository ppa:docky-core/stable
+  sudo apt-get update
+  sudo apt-get install docky
+
+I'm using settings:
+- transparent
+- hiding: window dodge
+- icon size: 25
+- zoom 200%
+
+When you open docky settings, it will offer "drag to reposition" handle.
+
+To create new launchers, you can just r-click on desktop and create a new launcher, then just drag it over to docky.
+
+
+
+===============================================================
+
+	install Xfce alongside Unity
+	****************************
+
+!!! NOTE: or just install xubuntu distribution!!!	
+
+http://askubuntu.com/questions/223536/how-can-i-install-xfce-along-side-unity
+
+There are no conflicts between Xfce and Unity.
+If you wish to install Xfce in Ubuntu, install either
+- xubuntu-desktop (for Xfce and Xubuntu branding and all Xubuntu default apps), or
+- just Xfce by itself
+
+$ sudo apt-get install xubuntu-desktop
+
+or
+
+$ sudo apt-get install -y xfce4 xfce4-goodies
+
+I've found that Xubuntu boots and runs much more quickly than Ubuntu
+
+===============================================================
+
+	Customizing Xfce4
+	*****************
+
+Managing Panels
+---------------
+
+Xfce is similar to Gnome 2.x - it comes with panels where you can customize and place your applications/applets on it.
+
+To customize panels:
+
+r-click, Panel > Panel Prefs
+
+Preferred Applications
+----------------------apt
+
+Whisker Menu > Settings > Preferred  Applications
+Default:
+Web Browser: Firefox
+File Manager: Thunar
+Terminal Emulator: Xfce Terminal
+
+
+System monitoring
+-----------------
+
+	indicator-multiload (System Load Indicator)
+
+$ sudo apt-get install indicator-multiload
+
+Use dash or launch from command-line. It will run in the taskbar.
+
+In Dash, it is under System > System Load Indicator
+
+	gnome-system-monitor (System Monitor)
+
+$ gnome-system-monitor
+
+
+Cycle thru tabs in xfce4-terminal
+----------------------------------
+
+CTRL-PgUp/PgDown - to cycle
+
+Alt-N goes to the tab # (where N is the tab ordinal number)
+
+
+===============================================================
+
+	creating xfce program launchers
+	*******************************
+
+http://unix.stackexchange.com/questions/75902/how-to-run-xfce-terminal-with-different-commands-per-tab-and-keep-using-the-tabs
+
+If you want to start a command as a job of an interactive shell in the xfce4-terminal terminal emulator and keep the shell running and use it interactively after the application has exited, with bash, you can make use of the $PROMPT_COMMAND environment variable, to have xfce-terminal start an interactive shell that starts the given command just before the first prompt.
+
+xfce4-terminal \
+  -T eclipse \
+  --working-directory=/home/stefan/oximity \
+  -e 'env PROMPT_COMMAND="unset PROMPT_COMMAND; /opt/eclipse/eclipse" bash' \
+  \
+  --tab -T arandr \
+  --working-directory=/home/stefan/oximity \
+  -e 'env PROMPT_COMMAND="unset PROMPT_COMMAND; arandr /home/stefan/.screenlayout/oximity.sh" bash' \
+  \
+  --tab -T bash \
+  --working-directory=/home/stefan/oximity \
+  ...
+
+That way, the commands are jobs of that shell which means you can suspend them with Ctrl-Z and resume them later with fg/bg as if you had entered them at the prompt of that interactive shell.
+
+That assumes though that you don't set the $PROMPT_COMMAND in your ~/.bashrc. Also note that the exit status of the command will not be available in $?.
+
+To make it even more like the command was entered at the shell prompt, you can even add it to the history list:
+
+xfce4-terminal -T /etc/motd -e 'env PROMPT_COMMAND="
+  unset PROMPT_COMMAND
+  history -s vi\ /etc/motd
+  vi /etc/motd" bash'
+
+
+That way, once you exit vi, you can press the Up key to recall that same vi command.
+
+An easier way to write it:
+
+PROMPT_COMMAND='unset PROMPT_COMMAND; history -s "$CMD"; eval "$CMD"' \
+  xfce4-terminal \
+          -T /etc/motd -e 'env CMD="vi /etc/passwd" bash' \
+    --tab -T top -e 'env CMD=top bash'
+
+===============================================================
+
+	atom on ubuntu
+	**************
+
+$ sudo add-apt-repository ppa:webupd8team/atom
+$ sudo apt-get update
+$ sudo apt-get install atom
+
+
+===============================================================
+
+	vi / vim on xubuntu
+	*******************
+vi is really vim
+
+However, the default may not support clipboard and xtermclipboard features.
+For that, you need to install the vim GUI packages (vim-gnome, vim-gtk, vim-athena)
+
+
+$ sudo apt-get install vim-gtk
+
+Now, you should be able to use clipboard registers (* and +):
+
+E.g. select what you want using the mouse, then 
+
+	"+y
+
+to paste to vim from clipboard, type:
+
+	"+p  
+
+shift+insert should also work to paste.	
+
+
+===============================================================
+
+	Customize path
+	***************
+
+.profile
+
+
+	Customize bash prompt
+	*********************
+https://help.ubuntu.com/community/CustomizingBashPrompt
+
+$ vi .bashrc
+Find PS1 and modify it.
+
+
+	change default terminal emulator
+	********************************
+
+Run from terminal (Ctrl+Alt+T):
+
+$ exo-preferred-applications
+
+You may need to install it first:
+
+$ sudo apt-get install exo-utils
+
+Under utilities tab, you can change Terminal Emulator to "Xfce Terminal"
+
+===============================================================
+  xfce4-terminal corner grabbing resizing handles accuracy
+
+To resize, use Alt-rclick and drag.
+===============================================================
+
+  git config
+  **********
+  
+  [user]
+          name = Chris Raiskin
+          email = chris.raiskin@standard.com
+  [core]
+          editor = vim
+          safecrlf = false
+          autocrlf = input
+          ignorecase = false
+  [http]
+          sslVerify = true
+  [http "https://pdxlghubd001.standard.com"]
+          sslVerify = false
+  [http "https://pdxlghubp001.standard.com"]
+          sslVerify = false
+  [status]
+          submoduleSummary = true
+  [diff]
+          submodule = log
+  [push]
+          default = simple
+  [credential]
+  	helper = cache --timeout=86400
+
+
+
+===============================================================
+
+	Installing Google Chromme
+	*************************
+http://askubuntu.com/questions/510056/how-to-install-google-chrome
+
+1. Add Key:
+
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+
+2. Set repository:
+
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+
+3. Install package:
+
+sudo apt-get update
+sudo apt-get install google-chrome-stable
+
+
+  google-chrome proxy
+  *******************
+
+You cannot configure proxy via chrome UI - google-chrome will pickup your environment (see proxy section)
+
+
+============================================================
+
+WARNING: i think installing Opera messed by other two browsers video playback.
+
+	Installing Opera
+	****************
+
+To install opera via PPA on Ubuntu, run these commands
+
+	Setup key with:
+
+	wget -O - http://deb.opera.com/archive.key | sudo apt-key add -
+	Setup repository with:
+
+	sudo sh -c 'echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list'
+	Setup package with:
+
+	sudo apt-get update
+	sudo apt-get install opera
+
+Source
+
+	Alternatively, you can install the .deb via a terminal with
+
+	sudo dpkg -i path/to/your/deb
+	It already contains the PPA
+
+============================================================
+
+  Personal Package Archives (PPA)
+  *******************************
+
+PPA
+  is the only way to get your software updated in Ubuntu between distro releases.
+  a special software repository for uploading source packages to be built and pulished as an APT repository by Launchpad.
+
+============================================================
+
+	Ubuntu 16.04 Utilities and Configuration
+	****************************************
+http://linuxsagas.digitaleagle.net/2016/05/15/ubuntu-16-04-utilities-and-configuration/
+
+
+xfce4-taskmanager
+-----------------
+
+
+MenuLibre
+---------
+	The MenuLibre tool makes it easy to add shortcuts that allow you to launch programs from the Unity menu. It is a must have if you install anything manually without using a deb pacakge.
+
+	Install:
+
+	sudo apt-get install menulibre
+
+Compression
+------------
+
+I use the File Roller application usually. But, I wanted the 7zip and rar libraries available:
+
+sudo apt-get install p7zip-full p7zip-rar
+
+Monitor Settings
+----------------
+For my dual screen setup at my desk, I have a few tweaks that I like to make. I can open the “Displays” settings app to make these changes:
+	Sticky edges: off
+	Launcher placement: only 1 screen
+
+Package Managing Tools
+------------------------
+With as much trouble as I am having with the Ubuntu Software app, I want the power of Synaptic.
+
+	sudo apt-get install synaptic
+
+Another tool is the Y PPA Manager from Web Upd8:
+
+	sudo add-apt-repository ppa:webupd8team/y-ppa-manager
+	sudo apt-get update
+	sudo apt-get install y-ppa-manager
+
+
+Caffeine
+------------
+	A status bar application able to temporarily prevent the activation of both the screen saver and the "sleep" powersaving mode.
+
+	You can install it from the PPA:
+	https://launchpad.net/~caffeine-developers/+archive/ppa
+	or download a deb or tarball on the downloads page.
+
+	However this works on 16.04
+
+	$ sudo apt-get install caffeine
+
+	It is now fully automatic ...
+
+	Ubuntu 16.04 Programming tools
+	******************************
+
+http://linuxsagas.digitaleagle.net/2016/06/07/ubuntu-16-04-programming-tools/
+
+
+sudo apt-get install \
+    vim \
+    vim-gnome \
+    git-cola \
+    meld \
+    nautilus-compare
+
+
+Git-Cola is git GUI client
+Meld - compare tool like Beyond Compare.
+
+Web Dev
+-------
+
+Brackets: I used WebUpd8’s repository to install Brackets:
+
+sudo add-apt-repository ppa:webupd8team/brackets
+sudo apt-get update
+sudo apt-get install brackets
+
+Brackets plugins:
+	Brackets Bower
+	brackets-file-tree-exclude
+	Grunt for Brackets
+	Brackets Git
+	Brackets TypeScript (François de Campredon)
+	Brackets-Gulp
+
+Node JS, the NPM installer, Bower, and Protractor
+
+sudo apt-get install nodejs
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+sudo apt-get install npm
+sudo npm install bower -g
+sudo npm install -g protractor
+sudo npm install -g gulp
+
+$ npm -g ls --depth=0
+/usr/local/lib
+├── bower@1.7.9
+├── gulp@3.9.1
+├── jspm@0.16.35
+├── protractor@3.3.0
+├── typescript@1.8.10
+└── typings@1.0.4
+
+Java
+-------
+ I just used Web Upd8’s repository.
+
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+
+Soap UI
+--------
+I downloaded Soap UI from their website.
+
+I just ran the shell script without sudo/root access.
+
+sh SoapUI-x64-5.2.1.sh
+
+
+Media Programs
+=========================
+
+Screenshot or Shutter for screeshots
+----------------------
+
+Visual
+---------
+Gimp: for editing photos
+Inkscape: vector-based drawing
+Xournal: has features that allow marking up a PDF
+sudo apt-get install \
+    gimp \
+    gimp-data-extras \
+    inkscape \
+    xournal
+For the scanner to work over the network, I had to put in the IP address into /etc/sane.d/net.conf.
+
+Audio
+------------
+Audacity: sound editing
+	$ sudo apt-get install audacity
+MuseScore: sheet music editor
+soundconverter: converting audio between formats
+winff: Front end to ffmpeg
+
+Video
+-------------
+mplayer – nice general video/music player from the command line
+mplayer-gui
+gnome-mplayer
+vlc – video player
+kdenlive – video editor
+openshot – video editor
+cheese – nice for testing to make sure the webcam works (already installed)
+EasyTAG
+YouTube Downloader — downloads videos from Youtube
+sudo apt-get install \
+    gnome-mplayer \
+    vlc \
+    kdenlive \
+    openshot \
+    youtube-dl
+
+Then, I installed the codecs for videos:
+
+sudo apt-get install \
+    libdvdnav4 \
+    libdvdread4 \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    ubuntu-restricted-extras
+
+============================================================

@@ -1,0 +1,322 @@
+﻿
+
+Alt-F7          find usages (in separate window below)
+
+Ctrl-Alt-F7     show usages
+
+                If not working, do File | Invalidate Caches (just invalidate)
+
+Ctrl-Shift-Backspace
+                Navigate to previous Edit Location
+
+Ctrl-Alt-Left   Navigate Back
+
+Ctrl-Tab        switch to most recent tab
+
+
+Ctrl-Alt-B      Go to interface implementations
+
+
+Ctrl-Shift-I	pops up a quick definition
+
+Ctrl-Q			javadoc for the element
+
+    To quickly see the documentation for a class or method at caret, press Ctrl+Q
+
+
+Ctrl-N			Open class|type: ctrl-N and type part of the name class
+
+    open any class quickly - start typing class name
+
+Ctrl-U			go to superclass
+
+Ctrl-H			class hierarchy
+
+
+Ctrl-Shift-A	quickly find an action by name
+
+				e.g.
+				action="inspect"
+
+Break points:
+				single click
+F8				step through the code
+
+
+Ctrl-Space      code completion
+
+Ctrl-Alt-O      organize imports
+
+Ctrl-O          override methods of the base class
+Ctrl-I          implement methods of the interfaces that the current class implements.
+
+Ctrl+Shift+Space
+                SmartType code completion: new GregorianCalendar(T) with cursor after T
+
+
+Editing code
+===============
+
+create new class
+
+                if you're already in Project View --> Alt-Insert
+                (Project View can be activated using Alt+1)
+
+                or
+
+                from Navigation Bar, --> Alt-Home (NavBar) and Alt-Ins (new class)
+
+                or
+
+                Alt-F1 (Project View) and Alt+Ins
+
+                or just type new class name where you want to use it, IDEA will highlight it RED, then press Alt-Enter and choose Create Class
+
+Refactor
+                Shift-F6
+
+
+Ctrl-Y          delete line at caret
+
+Ctrl-F11        bookmarks
+
+    Pressing Ctrl+F11 at the line where a bookmark already exists toggles this bookmark
+
+Shift-Enter     add new line after caret and move caret to beginning of that line.
+
+Ctrl-Shift-Enter
+
+                finishes the statement you're writing and puts semicolon at end of line
+
+Ctrl-D
+                duplicate line
+
+Ctrl-Y          remove line
+
+Shift-Alt-Up|Down
+
+                move line up|down
+
+Ctrl-Shift-Up|Down
+
+                select and move statement up|down
+
+Ctrl-Shift-J
+                join lines
+
+
+Search
+===============
+
+Ctrl-F          search file
+
+Ctrl-Shift-F
+                find in path (search whole project)
+
+Ctrl-Shift-N
+                find and open file in project
+
+
+Configure IDEA
+===============
+
+Ctrl-Alt-S      IDE Settings
+
+
+                    | File and Code Templates
+
+Line numbers
+
+                File | Settings | IDE Settings | Editor | Appearance
+
+
+Code Completion
+===============
+
+sout-Tab        System.out.println(
+
+
+
+
+
+
+Tools
+******
+
+Alt-F12         open terminal | cmd window
+
+
+
+
+
+HTML/JavaScript support
+-----------------------
+
+Ctrl-Shift-I	quick view of resource (image)
+
+Ctrl-Space		list of available attributes
+
+				insert default image width/height
+
+Shift-F2		code inspection
+Alt-Space		suggested fix
+
+Alt-V			Open the View menu
+Alt-B			Open in Browser
+
+Ctrl-P			parameter list
+Ctrl-B			go to declaration
+
+Ctrl-Alt-F7		shows element's usages
+
+Alt-F7			thorough search for element's usages
+
+        find all places where a particular class, method or variable is used in the whole project by positioning the caret at the symbol's name or at its usage in code and pressing Alt+F7
+
+Esc				closes search dialog
+
+Ctrl-W			quickly selects blocks of adjasent code
+
+
+Alt-Ctrl-T		sourround selection with code, e.g. with <div> tag...
+
+Ctrl-Alt-L		reformat code according to your style settings
+
+=====================================================================================
+
+
+    @@@@@@@@@@@@@@@@@@@@@
+
+    	 Plugins
+
+    @@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+    innerbuilder Intellij Plugin
+    ****************************
+
+https://github.com/analytically/innerbuilder
+
+adds a 'Buider' action to the Generate menu (Alt+Ins) which 
+generates an inner builder class as discussed in Effective Java.    
+
+
+Usage
+
+Use Shift+Alt+B or Alt+Insert and select Builder.... Choose the fields to be included and press OK. When generating a builder when a builder already exists, the plugin will try to update it. It will add missing fields and builder methods, but never remove any fields or methods.
+
+
+================================================================================
+  
+    Maven Helper Plugin
+    *******************
+
+http://plugins.jetbrains.com/plugin/7179
+
+Dependency Analyzer:
+
+    Open pom file, click on 'Dependency Analyzer' tab, right click in the tree for context actions.
+
+
+Right click in Editor or in Project View
+
+    Run Maven
+
+
+Since IDEA v 14.x - Dependency Diagram does not show conflicts
+Issue: https://youtrack.jetbrains.com/issue/IDEA-133331
+    IDEA-133331
+
+FIX:
+
+    if your project is Maven2 compatible, you could try one of the following:
+
+        you could try to add -Dmaven3.use.compat.resolver option to File | Settings | Build, Execution, Deployment | Build Tools | Maven | Importing | VM options for importer
+
+            NOTE: -Didea.maven3.use.compat.resolver in IJ 14.1
+
+            (this worked for me..)
+
+        or turn off File | Settings | Build, Execution, Deployment | Build Tools | Maven | Importing | Use Maven3 to import project setting
+
+
+================================================================================
+
+    Maven effective POM
+    *******************
+
+Use the Maven Projects tool window, right click on the project, Show Dependencies
+
+
+
+
+    compact empty middle packages
+    *****************************
+
+disabling this setting will list every package level on their own line
+
+
+================================================================================
+
+    Tool window quick access
+    ************************
+
+Click button in the lower left corner of the workspace - this provide quick access to tool windows.
+
+================================================================================
+
+    Intellij - why so red?
+    **********************
+
+Language level changed
+maven projects - problem with maven dependencies
+
+IntelliJ sometime gets confused after importing maven projects and then changing poms externally or generating sources outside IntelliJ.
+
+You might want to try a maven->force reimport from within intellij on the project root
+
+     oddly enough, this actually caused a "red alert condition" for me that invalidating caches subsequently cleared
+
+
+================================================================================
+
+    Restore Defaults
+    ****************
+
+delete the whole configuration folder ${user.home}/.IntelliJIdea60/config
+
+
+
+================================================================================
+
+    Added Generated Sources as src directory
+    ****************************************
+http://wiki.jetbrains.net/intellij/Maven_FAQ
+
+In order to get generated sources automatically imported as source folders configure corresponding plugins so that they put them into target/generated-sources/<subdir>, where subdir is any folder name you prefer. The subdir folder is necessary to distinguish sources from different tools and also to exclude some special generated sources (e.g. groovy stubs).
+
+Any time you want to generate sources you simply execute the corresponding goal, bound for generation (usually generate-sources, generate-test-sources). After that IDEA will pick up new folders and set them up.
+
+Generated test sources/resources should be placed in target/generated-test-sources/<subdir>.
+
+
+Generated Sources in Non-standard location
+------------------------------------------
+
+If it is not possible to configure the plugin you should use Update Folders action available from Maven Projects tool window and for each Maven project in the list. This action takes special steps to discover plugin configuration and configure source folders.
+To specify a phase that should be used during this action go to Settings->Maven->Import.
+
+
+================================================================================
+
+  Installing on Linux
+  ********************
+
+$ sudo tar -xvf ideaIC-*.tar.gz -C /opt/
+
+
+
+
+================================================================================

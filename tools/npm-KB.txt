@@ -1,0 +1,399 @@
+
+
+	@@@@@@@@@@@
+
+		npm
+
+	@@@@@@@@@@@
+
+
+list installed packages
+
+	$ npm list -g --depth=0 [ | grep <package-name> ]
+
+
+using npm-check-updates
+-----------------------
+
+$ sudo npm install npm-check-updates -g
+
+
+Check which dependencies can be updated:
+
+	$ npm-check-updates
+	$ ncu
+
+To only see certain dependencies:
+
+	$ ncu -f gulp-sass	
+
+to update package.json
+
+	$ ncu -u
+
+show version for a particular npm package:
+
+	$ npm view <package-name> versions
+
+==============================================================================
+
+	updating
+	********
+
+Upgrading node first:
+
+To upgrade node on ubuntu:
+
+$ sudo npm cache clean -f
+$ sudo npm install -g n
+$ sudo n stable | latest
+$ sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
+
+
+One windows, download the latest MSI and run.
+
+program 'node' is currently not installed
+-----------------------------------------
+$ node -v
+The program 'node' is currently not installed. You can install it by typing:
+sudo apt install nodejs-legacy
+
+
+To upgrade npm on Windows
+----------------------------------
+
+Download and run node installer.
+
+Use npm-windows-upgrade to update npm:
+
+First, ensure that you can execute scripts on your system by running the following command from an elevated PowerShell. To run PowerShell as Administrator, click Start, search for PowerShell, right-click PowerShell and select Run as Administrator.
+
+> Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force
+
+Then, to install and use this upgrade tool, run (also from elevated PowerShell):
+
+> npm install --global --production npm-windows-upgrade
+> npm-windows-upgrade
+
+NOTE: the elevated PowerShell may not have 'npm-windows-upgrade' in its path, so:
+
+> C:\Users\<user>\AppData\Roaming\npm\npm-windows-upgrade
+
+
+==============================================================================
+
+.npmrc
+------
+
+loglevel=info
+registry=https://nexus-dev.standard.com:8443/nexus/content/groups/npm-all/
+strict-ssl=false
+
+==============================================================================
+
+	switching between npm/node versions with n
+	******************************************
+
+
+
+==============================================================================
+
+
+>npm --version
+2.7.4
+
+	How to find the version of an installed npm package?
+	****************************************************
+
+List local packages
+-------------------
+
+> npm list	 # for local packages
+
+List global packages
+--------------------
+> npm list -g # for global
+
+> npm list -g --depth=0
+npm info it worked if it ends with ok
+npm info using npm@2.7.4
+npm info using node@v0.12.2
+C:\Users\craiskin\AppData\Roaming\npm
+├── bower@1.4.1
+├── dalek-cli@0.0.5
+├── dalekjs@0.0.9
+├── generator-angular@0.11.1
+├── generator-bootstrap-kickstart@1.2.2
+├── generator-bootstrap-less@3.2.1
+├── generator-foundation-five@0.1.0
+├── generator-karma@1.0.0
+├── generator-mocha@0.1.7
+├── generator-webapp@0.5.1
+├── generator-zf5@0.9.8
+├── grunt-cli@0.1.13
+└── yo@1.4.6
+
+npm info ok
+
+$ npm list -g | grep grunt
+
+View available versions
+-----------------------
+
+$ npm view angular-cli versions
+
+'1.0.0-beta.11-webpack',
+'1.0.0-beta.11-webpack.2',
+'1.0.0-beta.11-webpack.3',
+'1.0.0-beta.11-webpack.4',
+'1.0.0-beta.11-webpack.5',
+'1.0.0-beta.11-webpack.6',
+'1.0.0-beta.11-webpack.7',
+'1.0.0-beta.11-webpack.8',
+'1.0.0-beta.2-mobile',
+'1.0.0-beta.2-mobile.1',
+'1.0.0-beta.2-mobile.2',
+'1.0.0-beta.2-mobile.3',
+'1.0.0-beta.2-mobile.4' ]
+
+
+if the list is too long..
+
+$ npm view typescript@'>1.8.0' | grep 1.9
+
+
+==============================================================================
+
+	npm-check-updates
+	*****************
+
+cli tool to upgrade your package.json or bower.json dependencies to the latest versions, regardless of existing version constraints.
+
+npm-check-updates maintains your existing semantic versioning policies, i.e. it will upgrade your 
+
+	"express": 	"^4.11.2"
+
+to 
+
+	"express": 	"^5.0.0"	
+
+To show dependencies for the project in the current directory:	
+
+$ ncu
+
+ @angular/common                      2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/compiler                    2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/core                        2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/forms                            0.2.0  →          0.3.0 
+ @angular/http                        2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/platform-browser            2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/platform-browser-dynamic    2.0.0-rc.4  →     2.0.0-rc.5 
+ @angular/router                    3.0.0-beta.2  →     3.0.0-rc.1 
+ reflect-metadata                          0.1.3  →          0.1.8 
+ rxjs                               5.0.0-beta.6  →  5.0.0-beta.11 
+ systemjs                                0.19.26  →        0.19.37 
+ zone.js                                  0.6.12  →         0.6.17 
+ codelyzer                                0.0.20  →         0.0.28 
+ ember-cli-inject-live-reload              1.4.0  →          1.4.1 
+ jasmine-spec-reporter                     2.5.0  →          2.7.0 
+ karma                                   0.13.22  →          1.2.0 
+ karma-chrome-launcher                     0.2.3  →          2.0.0 
+ karma-jasmine                             0.3.8  →          1.0.2 
+ protractor                                3.3.0  →          4.0.4 
+ ts-node                                   0.5.5  →          1.3.0 
+ tslint                                   3.11.0  →         3.15.1 
+ typings                                   1.3.1  →          1.3.2 
+
+Run with -u to upgrade package.json
+
+==============================================================================
+
+npm	ERR! extraneous
+
+means a package is installed but is not listed in your project's package.json.
+
+If you're listing packages that have been installed globally, it's going to give you a lot of extraneous errors that can be simply ignored because most things installed globally will not be in your project's 'package.json'
+
+
+==============================================================================
+
+	troubleshooting
+	***************
+
+turn up verbosity to max
+
+	> npm -ddd install -g bower
+
+
+clean cache
+
+	> npm cache clean
+
+
+==============================================================================
+
+	npm and Node.js behind a corporate proxy
+	****************************************
+
+npm uses a configuration file and it can be added to via the command line
+
+	npm config set ....
+
+The key to getting it right is the spelling of the settings.
+
+Getting npm to work behind a proxy requires setting the proxy and https-proxy settings. The key is noticing the - (dash) is not an _ (underscore).
+
+
+	> npm config set proxy http://proxy.company.com:8080
+	> npm config set https-proxy http://proxy.company.com:8080
+
+what was also suggested in the context of
+
+	> npm install -g generator-bootstrap-kickstart
+
+npm config set proxy http://localhost:3128
+npm config set https-proxy http://localhost:3128
+npm config set registry "http://registry.npmjs.org/"
+npm config set strict-ssl "false"
+
+so you .npmrc looks like
+
+proxy=http://localhost:3128/
+https-proxy=http://localhost:3128/
+loglevel=info
+registry=http://registry.npmjs.org/
+strict-ssl=false
+
+==============================================================================
+
+npm cache clean
+npm uninstall generator-webapp && npm install generator-webapp
+
+==============================================================================
+	/usr/bin/env: 'node' no such file or directory
+
+	$ node -v
+	the program 'node' is not currently installed
+
+	$ sudo apt install nodejs-legacy
+
+==============================================================================
+
+	npm-scripts
+	***********
+
+npm supports the "scripts" property of the packages.json
+
+  "name": "angular2-todo-app",
+  "version": "0.0.0",
+  "license": "MIT",
+  "angular-cli": {},
+  "scripts": {
+    "start": "ng serve",
+    "postinstall": "typings install",
+    "lint": "tslint \"src/**/*.ts\"",
+    "test": "ng test",
+    "pree2e": "webdriver-manager update",
+    "e2e": "protractor"
+   }    
+
+So you can run:
+
+$ npm [start | postinstall | list | test | pree2e | e2e ]
+
+
+==============================================================================
+
+	install node/npm by building from source
+	****************************************
+
+1. download source
+
+	node-v6.9.1.tar.gz
+
+   extract
+
+    $ tar zxvf node-v6.9.1.tar.gz
+
+Installing on Enterprise Linux (RHEL / CentOS)
+----------------------------------------------
+
+https://www.digitalocean.com/community/tutorials/how-to-compile-node-js-with-npm-from-source-on-centos-6
+
+
+RHEL 6 / CentOS 6
+
+Prerequisites:
+
+# yum install gcc gcc-c++ automake autoconf libtoolize make
+
+$ ./configure
+$ make
+
+	NOTE: compile will fail if you gcc/g++ version is <= 4.7
+	      need 4.8 or above.
+
+	      SEE below how to get gcc/g++ 4.8 ..
+
+# make install
+
+or
+
+$ sudo make install
+
+
+
+
+==============================================================================
+
+	installing gcc 4.8 on RHEL6 / CentOS 6
+	**************************************
+
+https://gist.github.com/stephenturner/e3bc5cfacc2dc67eca8b
+
+First, verify which version of CentOS you're using:
+
+$ cat /etc/centos-release
+CentOS release 6.7 (Final)
+Import CERN's GPG key:
+
+	# sudo rpm --import http://ftp.scientificlinux.org/linux/scientific/5x/x86_64/RPM-GPG-KEYs/RPM-GPG-KEY-cern
+
+Save repository information as /etc/yum.repos.d/slc6-devtoolset.repo on your system:
+
+	# wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+
+Install:
+
+	# sudo yum install devtoolset-2	
+
+Enable the environment:
+
+	# scl enable devtoolset-2 bash
+
+	or 
+
+	$ source /opt/rh/devtoolset-2/enable
+
+Test:
+
+	$ gcc --version
+	gcc (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
+	...
+
+	$ g++ --version
+	g++ (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
+	...
+
+	$ gfortran --version
+	GNU Fortran (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
+	...
+
+	Optional: Permanently enable scl toolchain by putting this in your .bashrc (warning: don't try to use the scl enable devtoolset-2 bash command from before in your .bashrc. This spawns a new bash shell, and if that's in your .bashrc, it creates a new shell, which loads your .bashrc, which creates a new shell, etc.)
+
+	source /opt/rh/devtoolset-2/enable
+
+
+
+
+==============================================================================

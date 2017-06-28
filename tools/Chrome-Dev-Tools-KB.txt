@@ -1,0 +1,326 @@
+
+
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		Front-end Debugging Tools
+
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
+
+
+************************************
+
+	ng-inspector Chrome extension
+
+************************************
+https://chrome.google.com/webstore/detail/ng-inspector-for-angularj/aadgmnobpdmgmigaicncghmmoeflnamj?hl=en
+
+
+
+
+========================================================================================
+========================================================================================
+========================================================================================
+
+
+
+	@@@@@@@@@@@@@@@@@@@@@@@@
+
+		Chrome-Dev-Tools
+
+	@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+CTRL-SHIFT-I
+
+
+========================================================================================
+
+	How do I display Angular $scope variable?
+	*****************************************
+
+Pick an element in the HTML panel of the developer tools and type this in the console:
+
+	angular.element($0).scope()
+
+	// Access whole scope
+	angular.element(myDomElement).scope();
+
+	// Access and change variable in scope
+
+	angular.element($0).scope().original # displays the value...
+
+	angular.element(myDomElement).scope().myVar = 5;
+	angular.element(myDomElement).scope().myArray.push(newItem);
+
+	// Update page to reflect changed variables
+	angular.element(myDomElement).scope().$apply();	
+
+
+========================================================================================
+
+	using Watch Expressions
+	***********************
+
+1. In Sources, select your JS file, or whatever you want to debug.
+2. Breakpoint: insert a breakpoint
+3. Under "Watch", or "Watch Expressions" on the right hand side
+	- click "+" sign and 
+	- enter some expressions to watch.  e.g:
+		$scope.deviation
+		$scope.original
+
+
+========================================================================================
+
+Elements Panel
+**************
+
+Working with the DOM
+====================
+
+
+	Inspect Element
+	---------------
+
+		if you're looking at your rendered HTML page and wondering what HTML creatd that particular elemnt, right click on the element > Inspect Element
+
+		shows HTML + CSS for this element
+
+
+	Magnifying Glass
+	-----------------
+
+	Live Updates on the page
+	-------------------------
+
+		right-click on element:
+		- add / edit attribute
+		- edit node as HTML
+		- click and drag element
+
+	Styles View
+	-----------
+
+		Toggle ELement State
+
+			Force the selected element into a particular state:
+			- active state
+			- focus state
+			- hover state
+			- visited state
+
+
+	Source Panel
+	-------------			
+
+		To see modifications made to a particular file, R-click and select
+		"Local Modifications"
+			- "apply revision" for each change
+
+		"Save As"			
+
+
+========================================================================================
+
+JavaScript
+***********		
+
+	Console
+
+		- log
+		- CLI
+
+
+	Console helper methods
+	----------------------
+
+NOTE: in jQuery
+
+	# - specifies to select element by its ID
+
+		e.g. select element with id="events"
+		$('#events')
+
+	. - specifies to select element by its Class	
+
+		e.g. select the first element with class="event"
+		$('.event')[0]
+
+	Bling
+
+		$('#some_id')		
+
+		e.g.
+
+		document.querySelector('#kitchen-sink')
+		or
+		$('#kitchen-sink')
+
+		note: if you are using a JS library which has its own bling implementation, it will override the console's version of bling..
+
+		Usage: use bling to grab an element from page by id and then locate it on the page
+
+			inspect($('#date')[0])
+
+		the inspect() method will then select this node in the elements panel.			
+
+		if you want the reverse - select an element on the page and then work with it in the JS console - Chrome keeps of your selection in bling $ array.. so most recent selection will be in 
+			$0
+			$1
+			...
+
+		JQuery remove() method:
+		-----------------------
+
+			a.remove();
+
+		E.g. you have just selected an element in the Elements panel.
+		Now it is available via $0.. so you can call remove() on it:
+
+		$0.remove()
+
+Debugging
+**********
+
+	"Pause on Exceptions" icon in top right.
+
+
+	Pretty Print {} button will make minified code more readable..
+
+
+	Caught excpetions
+	-----------------
+
+	we do not want to pause on caught exceptions.
+
+	Debugger mode 
+
+		click "pause on exceptions" button the second time and "pause on uncaught exceptions ONLY" mode will be activated.
+
+
+	Local Storage
+	--------------
+
+	Resources tab > Local Storage
+
+
+======================================================================================
+
+
+	Network
+	********
+
+HTML pages typically triggers a number of network requests:
+
+	html
+	css
+	js
+	ajax calls
+
+Network panel - Timeline waterfall
+
+	identifies all the calls and how long they take 
+
+	- Blue line at the end of the timeline
+
+		represents when the DOM document.contentLoaded event fired
+		i.e. when the browser is done parsing our HTML file.. but it still could be loading resources
+
+	- Red line signifies load event, or when all resources were done downloading
+
+
+Note: 304 Not Modified - the browser is using cached copy of this resource
+
+	So if I want to trigger re-download for cached resources - press Shift-Refresh
+
+
+	More ways to disable the cache 
+
+		e.g. when debugging performance..
+
+		1. File | New Incognito window
+
+			it will refresh cache, and
+			any cookies that have been already stored
+
+		2. Go to DevTools gear box (settings) and select "Disable cache"
+
+
+Performance Optimizations
+-------------------------
+
+	1. minify your resources
+	2. combine them into one
+	3. remove unneeded requests (e.g. images that aren't even being used)
+	4. page load order
+		(i.e. CSS before JS)
+
+		if your JS is only needed for user interaction. ie. after the page is loaded, and when the user starts interacting with the page, then you can postpone JS loading to allow your page to load sooner.
+
+		<script async src="...."
+
+		The "async" attribute will delay loading of that particular script until after the page is loaded.
+
+
+	5. make sure that the images you're downloading are sized for the display size
+
+		e.g. if you're displaying the imnage at 35x35 px but the actual image yo're downloading
+		is 204x204 --> you're downloading a bigger image then you need and letting the browser 
+		scale it down.
+
+
+	6. also jpg is good for images but not icons 
+
+		convert icon images as png
+
+
+CPU Profiler
+-------------
+
+	slow code executing on the browser side
+
+	Frames
+	-------
+
+	browsers have frame rate - slower frame rate - page load starts to stutter
+
+	Timelines panel > Record button > trigger some activities
+
+		Frames View
+
+		Green: time spent painting
+
+
+	Profiles panel > "Collect JS CPU Profile" > Start
+
+		- perform some Action
+		- click "Stop"
+
+		xyz function is taking 50% of the time!!!
+
+
+Memory Leaks
+-------------
+
+	Finding memory leaks
+
+		Timeline panel > Memory
+
+		Record and interact with the application 
+
+		The app is consuming more and more memory over time...
+
+	Heap Snapshots
+
+		Go to Profiles panel
+		select "Take Heap Snapshot" and click "Take Snapshot"
+			- this snapshot will show what the app looks like before we've performed any action...
+
+		now, perform an action
+		take another snapshot (press the solid round gray button)
+
+		Look for dropdown option next to "Summary" and select "Comparison"
+		now sort by Constructor column, and
+		look for "Detached DOM tree" in the list
+

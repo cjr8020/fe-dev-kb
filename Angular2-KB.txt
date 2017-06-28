@@ -1,0 +1,1898 @@
+
+	@@@@@@@@@@@@@@@@@
+
+		Angular 2
+
+	@@@@@@@@@@@@@@@@@
+
+
+
+root module bootstrap
+---------------------
+change from RC4 to RC5+, instead of having bootstrap in main.ts, now the root component is bootstraped in
+
+app.module.ts
+
+1. import the root component:
+
+  import { AppComponent } from './app.component';
+
+2. declare in declarations:
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+
+3. and announce that this component should be bootstraped:
+
+  bootstrap: [AppComponent]
+
+in main.ts
+----------
+
+we now import 
+
+  import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+and execute .bootstrapModule(AppModule) method on it.  
+
+adding other components
+------------------------
+
+Now instead of adding other components as directives on the root component as directives
+add other components to app.module.ts:
+
+  import { OtherComponent } from './other/other.component';
+
+  @NgModule({
+    declarations: [
+      AppComponent,
+      OtherComponent
+    ],
+
+angular-cli will do this when you run '$ ng g c other'
+
+Advantage: when you declare other modules in app.module.ts, they are all available to 
+other components.
+
+
+
+======================================================================
+
+  components
+  ----------
+
+Components are the main way we build and specify elements and logic on the page.
+
+In angular 1, this was done with directives/controllers/scope.  In angular2, 
+all those concepts are combined into components.
+
+Here is a simple component:
+
+import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-component',
+    // templateUrl: './my.component.html',
+    // styleUrls: ['./my.component.css']
+    template: '<div>Hello my name is {{name}}. <button (click)="sayMyName()">Say my name</button></div>'
+  })
+  export class MyComponent {
+    console.log('My name is', this.name);
+  }
+
+selector
+--------
+
+  selectors work like a CSS selector.  so if we were to have 
+
+    <my-component>
+
+  element in our HTML document, angular would know what to load here.. 
+
+  You can also use "hashtag" syntax:
+
+    selector: '#app-root'
+
+  Now, you can reference that selector via div id:
+
+    <div id="app-root"> 
+
+
+
+
+======================================================================
+
+  Angular Modules 
+  ***************
+
+Angular Modules help organize an application into cohesive blocks of 
+functionality.
+
+Modules are a great way to organize the application and extend it with capabilities
+from external libraries.  Many libraries are modules (e.g. FormsModule, HttpModule,
+RouterModule).  Many 3rd party libs are available as Angular modules (e.g. Material
+Design, Ionic, AngularFire2).
+
+Modules consolidate components, directives and pipes into cohesive blocks of 
+functionality, each focused on a feature area, application business domain, etc..
+
+Modules can be loaded eagerly when the app starts, or lazy loaded asynch by the 
+router.
+
+Every Angular app has at least once module class - the root module.
+We bootstrap that module to launch the application.
+
+The root module is all we need in a simple application with a few components.
+As the app grows, we refactor the root module into feature modules, and we
+import these modules into root module.
+
+An Angular Module is a class adorned with the @NgModule decorator function.
+
+root module
+-----------
+
+By convention, root module is a class called 'AppModule' in a file named
+app.module.ts
+
+  import { NgModule }      from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
+
+  import
+        { AppComponent }  from './app.component';
+
+  @NgModule({
+    imports: [ BrowserModule ],
+    declarations: [ AppComponent ],
+    bootstrap:    [ AppComponent ]
+  })
+  export class AppModule { }
+
+NgModule
+  this decorator defines the metadata for the module.
+  this metadata imports a single helper module - BrowserModule - which 
+  every browser app must import.
+
+BrowserModule
+  registers critical app service providers and 
+  includes common directives like NgIf and NgFor
+
+declarations
+  this list identifies the application's only component, the root component
+  "AppComponent"
+
+bootstrap
+  this property identies this AppComponent as the bootstrap component.
+  When Angular launches the app, it places the HTML rendering of AppComponent
+  in the DOM, inside the <my-app> element tags of the index.html.  
+
+app/app.component.ts
+----------------------
+
+
+
+  
+
+======================================================================
+
+  View Encapsulation
+  ------------------
+
+angular 2 emulates the concept of shadow DOM:
+
+  an HTML element has its 'shadow' DOM
+
+<div>
+  <component _nghost-pax-1>
+    <h1 _ngcontent-pax-1>... </h1>
+  </component>
+  <h1>won't be styled the same</h1>
+</div>
+
+  This is based on CSS Attribute Selectors.
+
+  a[target] {
+    background-color: yellow;
+  }
+
+========================================================================
+
+	Architecture
+	*************
+
+https://angular.io/docs/ts/latest/guide/architecture.html
+
+
+Angular applications are composed of:
+	1. HTML templates with angularized markup,
+	2. component classes to manage those templates
+	3. services with application logic
+	4. modules combing components and services
+
+You launch the app by bootstrapping the root module
+
+
+8 main building blocks of an Angular app:
+
+1. Modules
+2. Components
+3. Templates
+4. Metadata
+5. Data binding
+6. Directives
+7. Services
+8. DI
+
+Angular 2 rendering architecture
+https://docs.google.com/document/d/1M9FmT05Q6qpsjgvH1XvCm840yn2eWEg0PMskSQz7k4E/edit
+
+
+Routing
+-------
+
+  Routing is another name for navigation.
+  The router is the mechanism for navigating from view to view.
+  Routes tell the router which views to display when a user clicks a link
+  or pastes a URL into the browsers' address bar.
+
+
+  Router 
+
+  Angular router is an external optional Angular NgModule called RouterModule.
+
+  It's a combination of 
+   - multiple provided services (RouterModule)
+   - multiple directives (RouterOutlet, RouterLink, RouterLinkActive)
+   - configuration (Routes)
+
+  When the router navigates to a new component view, it updates the browser's 
+  location and history with a URL for that view.  This is a strictly local URL.
+  The browser should not send this URL to the server and should NOT reload the
+  page.
+
+  The Angular Router supports two techniques for achieving that with the help
+  of two LocationStrategy providers:
+
+  1. PathLocationStrategy - the default "HTML 5 pushState" style
+  2. HashLocationStrategy - the "hash URL" style
+
+  The first one relies on the modern HTML 5 browsers' support for history.pushState
+  technique.
+
+  Older browsers send page requests to the server when the location URL changes.. 
+  unless the change occurs after a "#" hash.  Routers take advantage of this
+  exception by composing in-application route URLs with hashes. e.g.:
+
+    localhost:3002/src/#/crisis-center/
+
+
+
+   <head>
+    <base href="/">
+
+    base href is important to make history.pushState work
+    add the base href just under the <head> tag.
+
+    if the "app" folder is the application root, set the href value to "/".
+
+    The Router uses the browser's pushState for navigation.
+    Thanks to pushState, we can make our in-app URL paths look the way 
+    we want them to look.
+
+    Our in-app URLs can be indistinguishable from server URLs.
+
+    The browser also needs the base <href> value to prefix relative URLs.
+
+
+1. Modules
+-----------
+	
+	NOTE: JavaScript also has modules which are different from Angular modules.
+
+	http://exploringjs.com/es6/ch_modules.html
+
+	Prior to ES6, JS modules were implemented via libraries, not built into language.
+	ES6 introduces JavaScript built-in modules.
+
+	Angular ships as a collection of JS modules. think of them as library modules.
+	Each Angular library name begins with the '@angular' prefix.
+	YOu install them with npm, and import parts of them with JavaScript
+	'import' statement:
+		import { Component } from '@angular/core';
+
+
+every app has at least one module - root - named "AppModule"
+other modules are "feature" modules
+each module is a cohesive block of code dedicated to an app domain, a workflow, 
+or a closely related set of capabilities.
+
+any module, root or feature, is a class with @NgModule decorator
+
+	NgModule is a decorator function that takes a single metadata object whose
+	properties describe a module.
+
+		- declarations
+			= view classes that belong to this module. 3 types of view classes:
+				1. components
+				2. directives
+				3. pipes
+		- exports
+			= subset of the declarations that should be visible and usable 
+			in the component templates of OTHER modules
+		- imports
+			= other modules whose exported classes are needed by component
+			templates declared in this module
+		- providers
+			= creators of services that this module contributes 
+			to the global collection of services
+			they become accessible in all parts of the app
+		- bootstrap [ROOT only]
+			= the main application view, called 'root component'
+			only ROOT module should set this "bootstrap" property
+
+example of root module
+
+	import { NgModule }      from '@angular/core';
+	import { BrowserModule } from '@angular/platform-browser';
+
+	@NgModule({
+	  imports:      [ BrowserModule ],
+	  providers:    [ Logger ],
+	  declarations: [ AppComponent ],
+	  exports:      [ AppComponent ], // just for demo - no one needs root module
+	  bootstrap:    [ AppComponent ]
+	})
+	export class AppModule { }
+
+bootstrap root in main.ts
+
+app/main.ts:
+
+	import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+	import { AppModule } from './app.module';
+
+	platformBrowserDynamic().bootstrapModule(AppModule);
+
+Angular modules and JavaScript modules
+
+	be aware that you're using the two systems side by side:
+
+		import { Component } from '@angular/core';
+		.
+		.
+		.
+		@NgModule({
+			imports:	[ BrowserModule ],
+			...
+		})
+
+2. Components
+----------------------------------------
+
+	 a component controls a patch of screen called a 'view'
+	 e.g., the following views are controlled by components:
+	 	- app root with navigation links
+	 	- list of heros
+	 	- hero editor
+
+	you define a component's logic - what it does to support the view - inside
+	a class.  The class interacts with the view thru an API of properties and
+	methods.
+
+    e.g. this HeroListcomponent has a 'heroes' property that returns an array
+    of heroes that is acquires from a service.
+    it also has a selectHero() method that sets a selectedHero property when
+    a user clicks to choose a hero from that list.
+
+
+3. Templates
+----------------------------------------
+
+  you define a component's view with its companion template.
+  a template is a form of HTML that tells Angular how to render the component.
+  In addition to HTML, templates use Angular's template syntax.
+
+
+  Template syntax
+  ***************
+
+  Templates display data and consume user events with the help of data binding.
+
+    MVC or MVVM (mode-view-viewmodel)
+
+  In Angular, the component plays the part of the Controller/Viewmodel, and
+  the template represents the view.
+
+    Basic Elements of Template syntax
+
+  HTML
+  Interpolcation
+  Template expressions
+  Template statements
+  Binding syntax
+  Property binding
+  Attribute, class and style bindings
+  Event binding
+  Two-way data binding
+  Built-in directives (NgClass, NgStyle, NgIf, NgFor, etc.)
+
+  HTML
+    almost all HTML syntax is valid template syntax.
+    <script> element is notable exception - forbidden due to injection risk
+
+  interpolation
+    we use interpolation to weave calculated strings into the text between HTML element
+    tags and within attribute assignments
+
+        <h3>
+          {{title}}
+          <img src="{{heroImg}}" ... >
+        </h3>
+
+  template expressions
+    produce a value
+    angular executes the expression and assigns it to a property of a binding target
+
+      [property]="expression"
+
+      [disabled]="isUnchanged"
+
+    template expressions cannot refer to anything in the global namespace.
+    can't refer to window or document, can't call console.log or Math.max
+
+    the expression context is typically the component instance which is the source
+    of binding values.
+
+    Guidelines:
+
+      - a template expression should not change any application state other than
+        the value of the target property
+
+      - quick execution
+        template expressions execute frequently - can be called every key press or
+        mouse move        
+
+      - simplicity: a property or method call should be the norm. ! is OK occasionally
+
+      - idempotence: should be free from side effects
+
+        Binding syntax
+
+          from data source to view target:
+
+        {{expression}}
+        [target-property] = "expression"
+
+          from view target to data source:
+
+        (target) = "statement"
+        on-target = "statement"
+
+
+          two-way
+
+        [(target)] = "expression"
+        bindon-target = "expression"
+
+    <button disabled>Save</button>
+
+  with data binding
+
+    <button [disabled]="isUnchanged">Save</button>                  
+
+
+    Binding Targets
+
+      the target of data binding is something in DOM.
+      it could be a element | component | diretive property
+      an event (element | component | directive) 
+
+      binding type: property
+
+        target:
+
+          element property:
+
+                <img [src] = "heroImgUrl">
+
+              component property
+
+                <hero-detail [hero]="currentHero"></hero-detail>
+
+              directive property:
+
+                <div [ngClass] = "{selected: isSelected}"></div>
+
+      binding type: event                  
+
+        target: 
+
+          element event
+
+              <button (click) = "onSave()">Save</button>
+
+          component event
+
+              <hero-detail (deleteRequest)="deleteHero()"></hero-detail>
+
+          directive event
+
+              <div (myClick)="clicked=$event">click me</div>
+
+
+
+      binding type: two-way              
+
+        target
+
+          event and property
+
+              <input [(ngModel)]="heroName">
+
+
+      attribute
+
+        <button [attr.aria-label]="help">help</button>
+
+      class
+
+        <div [class.special]j="isSpecial">Special</div>
+
+      style
+
+        <button [style.color] = "isSpecial ? 'red' : 'green'">
+
+
+      How the parent and child components can communicate with each other:
+      ---------------------------------------------------------------------
+
+        <hero-detail [hero]="currentHero"></hero-detail>
+      
+
+
+4. Metadata
+----------------------------------------
+5. Data binding
+----------------------------------------
+     
+
+6. Directives
+----------------------------------------
+
+  A directive is a class with directive metadata.
+  In TS, apply the @Directive decorator to attach metadata to the class.
+
+  A component is a "directive-with-a-template".
+  @Component decorator is actually a @Directive extended with template-oriented
+  features.
+
+  two other kinds of directives exist:
+
+  1. structural
+  2. attribute
+
+  structural directives
+  ...................................
+
+    alter layout by adding, removing, and replacing elements in DOM.
+    the example template uses two built-in structural directives
+
+      <li *ngFor="let hero of heroes"></li>
+      <hero-detail *ngIf="selectedHero"></hero-detail>
+
+    *ngFor tells Angular to stamp out one <li> per hero in the 'heroes' list
+
+    *ngIf includes the HeroDetail component only if a selected hero exists.
+
+
+
+  attribute directives
+  ...................................    
+
+    alter the appearance or behaviour of an existing element.
+    In templates, they look like regular HTML attributes, hence the name.
+
+    ngModel directive implements two-way binding and is an example of an
+    attribute directive.
+
+    it modifies the behaviour of an existing element (typically <input>) by 
+    setting its display value property and responding to change events:
+
+      <input [(ngModel)]="hero.name">
+
+  custom attribute directive
+  .....................................
+
+  $ ng g d highlight
+
+    import { Directive, ElementRef, Renderer } from '@angular/core';
+
+    @Directive({
+      selector: '[highlight]'
+    )}
+    export class HighlightDirective {
+
+      // this is a short cut for creating a private field at the class level
+      // and assigning to it in the constructor/method call
+      constructor(private elementRef: ElementRef, private renderer: Renderer) {
+        this.renderer.setElementStyle(
+          this.elementRef.nativeElement, 
+          'background-color', 
+          'green');
+      }
+
+    }
+          
+
+
+7. Services
+----------------------------------------
+
+  Service is a broad category encompassing any value, function, or feture that
+  your application needs.
+
+  Almost anything can be a service.
+  Typically is a class with a narrow, well-defined purpose.
+  Examples:
+  - logging service
+  - data service
+  - message bus
+  - tax calculator
+  - application configuration
+
+Angular has no definition of services.
+There is no service base class, and no place to register a service.
+Yet services are fundamental - components are big consumers of services.
+
+example of a service class that logs to browser console:
+app/logger.service.ts:
+
+  export class Logger {
+    log(msg: any) { console.log(msg); }
+    error(msg: any) { console.error(msg); }
+    warn(msg: any) { console.warn(msg); }
+  }
+
+example of HeroService that fetches heroes and returns them in a resolved
+Promise.  This services also depends on the Logger service and another 
+BackendService that handles the server comm grunt work:
+
+app/hero.service.ts
+
+  export class HeroService {
+    private heroes: Hero[] = [];
+
+    constructor(
+      private backend: BackendService,
+      private logger: Logger
+    ) {}
+
+    getHeroes() {
+      this.backend.getAll(Hero).then(
+        (heroes: Hero[]) => {
+          // ... 
+        });
+      );
+    }
+  }
+
+Component classes should be lean - they don't fetch data from the server,
+validate user input, or log directly to the console.
+They delegate such tasks to services.
+
+A component's job is to enable the user experience - nothing more. 
+It mediates between the view (rendered by the template) and the application
+logic (which often includes some notion of a model).
+
+A good component presents properties and methods for data binding.
+It delegates everything non-trivial to services.
+
+
+
+  Async Services and Promises
+  ...........................
+
+if a service calls a remote server like
+
+  this.heroes = this.heroService.getHeroes();
+
+the method call sig is synchronous - and we will have to wait for the server to
+respond and we won't be able to block the UI while we wait.
+
+  Promises
+  --------
+
+A Promise is a promise to call us back later when the results are ready - 
+we ask an async service to do some work and give it a callback function.
+
+
+
+8. DI
+----------------------------------------
+
+Main points:
+
+  injector - main DI mechanism
+
+    maintains a container of service instances that it created
+
+    can create a new service instance from a provider
+
+  provider is a recipe for creating a service
+
+  you register providers with injector
+  
+      
+		 	
+  Services and DI
+  ---------------
+
+Most dependencies are services - Angular uses DI to provide new components with the 
+services they need.
+Angular can tell which services a component needs by looking at the types of 
+its constructor parameters.
+
+E.g. constuctor of the HeroListcomponent:
+
+  constructor(private service: HeroService) {}
+
+When Angular creates the component, it asks an INJECTOR for the services that 
+the component requires.
+
+An injector maintains a container of service instances that it has previously
+created.  If a requested service instance is not in the container, the 
+injector makes one and adds it to the container before returning the service 
+to Angular.
+
+    How does the injector know how to make one?
+
+You must have previously registered a PROVIDER of the HeroService with the 
+injector.  A provider is something that can create or return a service, 
+typically a service class itself.  You can register providers in modules or
+in components.
+
+In general, add providers to the root module so that the same instance of a
+service is available everywhere.
+
+    root module
+    app/app.module.ts
+
+      providers: [
+        BackendService,
+        HeroService,
+        Logger
+      ],
+
+alternatively, register at a component level in the providers property of 
+the @Component metadata:
+
+  app/hero-list.component.ts
+
+    @Component({
+      moduleId: module.id,
+      selector: 'hero-list',
+      templateUrl: 'hero-list.component.html',
+      providers: [ HeroService ]
+    })
+
+registering at a component level means you get a NEW instance of the service
+with each NEW instance of that component.
+
+
+
+Pipes
+------------------------------------------
+
+Pipes are a good way to format strings, currency amounts, dates and other
+display data.
+
+Angular ships with several pipes and we can write out own.
+
+
+==============================================================================
+
+  template syntax
+  ***************
+
+https://angular.io/docs/ts/latest/guide/template-syntax.html
+
+interpolation  
+----------------------------------------
+
+  {{title}}
+  {{ 1 + 1 + getVal() }}
+
+
+template expressions
+----------------------------------------
+  produces a value
+  angular executes the expression, assigns it to a property of a binding
+  target - a HTML element, a component, or a directive
+
+    [property] = "expression"
+
+
+
+template statements
+----------------------------------------
+
+  (event) = "statement"
+
+  a template statement responds to an event raised by a binding target such as
+  an element, component, or directive
+
+  has side effect
+  it's how we update application state from user input.
+  there would be no point to responding to an event otherwise.
+
+
+
+Data binding
+************
+
+  component logic interacts with component template (view)
+
+  - string interpolation
+    {{exp resolving to a string}}
+
+  - property binding
+    binding data to properties in your DOM
+    <button [disabled] = "exp resolving to required value type">  
+
+  - event binding 
+    binding DOM events back to the model
+    <button (click) = "expression handling the event">
+
+  - two-way binding
+    by default all Angular2 data binding is uni-diretional
+    for performance reasons.
+    <input [(ngModel)] = "bound model (e.g. object)">
+
+
+binding syntax
+----------------------------------------
+
+  one-way
+  from data source to view target   
+        {{expression}}
+        [target] = "expression"
+        bind-target = "expression"
+
+  one-way
+  from view target to data source
+        (target) = "statement"
+        on-target = "statement"
+
+  two-way
+        [(target)] = "expression"
+        bindon-target = "expression"
+
+
+
+property binding
+----------------------------------------
+  we write a template property binding when we want to set a property of a
+  view element to the value of a template expression. 
+  e.g. binding the 'src' property of an image to 'heroImageUrl' property:
+
+    <img [src] = "heroImageUrl">
+
+  disabling a button when the component says that it "isUnchanged"
+
+    <button [disabled] = "isUnchanged">Cancel is disabled</button>
+
+  setting a property of a directive
+
+    <div [ngClass] = "classes">[ngClass] binding to the classes property</div>
+    <div (ngSubmit) = "..."></div>   
+
+  binding to component properties
+
+    <cmp [initObj] = "...">
+    <cmp (rndEvent) = "...">    
+
+  custom bindings
+
+    Property Binding (@Input)
+
+      @Input() propertyName: string 
+
+    one-way in
+    ----------
+
+  property binding is described as "one-way data binding" because it
+  flows a value in one direction, from a component's data property into
+  a target element property.
+
+
+
+
+
+attribute, class and style bindings
+----------------------------------------
+
+
+
+
+
+event binding
+----------------------------------------
+
+  User interact with your application
+  - they click buttons
+  - pick items from lists
+  - enter text into input boxes
+
+  Such user actions may result in data flowing in the opposite direction:
+
+  data flow:
+
+    from an element to a component
+
+  The only way to know about a user action is to listent for certain events 
+  such as keystrokes, mouse movements, clicks and touches.
+
+  We declare our interest in user actions thru Angular event binding.
+
+  Event Binding syntax
+
+    (target event) = "template statement"
+
+      TARGET EVENT - appears between parenthesis.
+
+        <button (click) = "onSave()">Save</button>  
+
+      Canonical form:
+
+        some people prefer the "on-" prefix alternative, known as canonical form:
+
+        <button on-click="onSave()">On Save</button>
+
+  Matching order
+
+    - directives
+    - elements
+
+    element events may be the more common targets, but Angular looks to see 
+    if the name matches an event property of a known directive FIRST.
+
+      <!-- 'myclick' is an event on the custom 'clickDirective' -->
+      <div (myClick)="clickmessage=$event">click with myClick</div>
+
+
+    $event 
+    ........................
+
+    In an event binding, Angular sets up an event handler for the target event.
+
+    when the event is raised, the handler executes the template statement.
+    The template statement typically involves a receiver which performs an action
+    in response to the event, such as storing a value from the HTML control 
+    into a model.
+
+    the binding conveys info about the event, inclu data values, thru an
+    event object named 
+
+      $event
+
+    the shape of the event object is determined by the target event.
+    If the target event is a native DOM element event, then $event is a
+    DOM event object, with properties such a "target" and "target.value"
+
+      <input [value]="currentHero.firstname"
+             (input)="currentHero.firstname=$event.target.value">
+
+    this code:
+      - sets the input box "value" property by binding to the "firstName" 
+        property
+      - to listen for changes to the value, the code binds to the input box's
+        "input" event.  when the user makes changes, the "input" event is 
+        raised, and the binding executes the statement within a context that
+        includes the DOM event object, $event.
+      - to update the "firstName" property, the changed text is retrieved from
+          $event.target.value
+
+
+
+    EventEmitter
+    ........................                                   
+
+      Directives typically raise custom events with an Angular EventEmitter.
+
+      example
+
+        consider a HeroDetailComponent that presents hero info and responds to 
+        user actions.  Although the HeroDetailComponent has a delete button,
+        it doesn't know how to delete the hero itself..
+        The best it can do is raise an event reporting the user's delete request.
+
+        template:
+        -------------
+          <dimatchingv>
+            <img src="{{heroImageUrl}}">
+            <span>{{prefix}} {{hero?.fullName}}</span>
+            <button (click)="delete()">Delete</button>
+          </div>
+
+        hero-detail.component.ts (delete logic):
+        ----------------------------------------
+
+          // this component make a request but it can't actually delete a hero
+          deleteRequest = new EventEmitter<Hero>();
+
+          delete() {
+            this.deleteRequest.emit(this.hero);
+          }
+
+        the component defines a "deleteRequest" property that returns an 
+        EventEmitter.  When the user clicks "delete", the component invokes
+        the "delete()" method telling the EventEmitter to emit a Hero object.
+
+        Now, imagine a hosting parent component that binds to the 
+        HeroDetailComponent's "deleteRequest" event:
+
+          <hero-detail 
+            (deleteRequest)="deleteHero($event)"
+            [hero]="currentHero"></hero-detail>
+
+        when the "deleteRequest" event fires, Angular calls the parent 
+        component's "deleteHero(..)" method, passing the hero-to-delete 
+        in the $event variable.
+
+
+
+
+
+    Event Binding (@Output)  
+    .......................
+
+      @Output() eventName = new EventEmitter();  
+    or
+      <button (click)="onClicked()">Click Me</button>
+
+      onClicked() {
+        alert('it worked');
+      }
+
+    Binding to Custom events
+    ........................
+
+      <button (click)="onClicked()">Click Me!</button>
+
+      @Output() clicked = new EventEmitter<string>();
+      onClicked() {
+        this.clicked.emit('It Works!');
+      }
+
+      now, to consume this custom event:
+
+      <app-event-binding (clicked)="onClicked($event)"></app-event-binding>
+      and in this component.ts:
+
+      onClicked(value: string) {
+        alert(value);
+      }
+
+
+
+
+
+two-way binding
+----------------------------------------
+built-in directives
+----------------------------------------
+* and <template>
+----------------------------------------
+template reference variables
+----------------------------------------
+input and output properties
+----------------------------------------
+
+
+		 	
+
+==============================================================================
+
+  angular component lifecycle
+  ***************************
+https://angular.io/docs/ts/latest/guide/lifecycle-hooks.html
+
+ngOnChanges
+ngOnInit
+ngDoCheck
+
+  ngAfterContentInit
+  ngAfterContentChecked
+  ngAfterViewInit
+  ngAfterViewChecked
+
+ngOnDestroy
+
+==============================================================================
+
+  Twitter Bootstrap
+
+@see angular-cli
+
+==============================================================================
+
+  creating a new service
+  **********************
+
+  $ ng g s <service-name> --flat --spec 
+
+    --flat (default: true)
+
+
+create config service
+---------------------
+$ mkdir src/app/shared
+craiskin@xubi-one:~/ws/standard/iam/iam-demo-ng2-product-app $ ng g s shared/Config
+installing service
+  create src/app/shared/config.service.spec.ts
+  create src/app/shared/config.service.ts
+  WARNING Service is generated but not provided, it must be provided to be used
+
+create mdm product service
+$ ng g s MdmProduct
+installing service
+  create src/app/mdm-product.service.spec.ts
+  create src/app/mdm-product.service.ts
+  WARNING Service is generated but not provided, it must be provided to be used
+
+
+create ConfigService
+--------------------
+
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
+
+@Injectable()
+export class ConfigService {
+  public production: boolean = environment.production;
+  public mdmProductServer: string = environment.MDM_PRODUCT_SERVER;
+  public mdmProductApi: string = environment.MDM_PRODUCT_API;
+
+  public mdmProductApiURL(): string {
+    return this.mdmProductServer + this.mdmProductApi;
+  }
+}
+
+
+Provide ConfigService in @NgModule AppModule:
+---------------------------------------------
+
+import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
+import { ConfigService } from './shared/config.service';
+
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    AlertModule
+  ],
+  providers: [ ConfigService ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {
+
+  constructor() { }
+}
+
+use ConfigService in MdmProductService
+--------------------------------------
+
+import { Injectable } from '@angular/core';
+import { ConfigService } from './shared/config.service';
+
+@Injectable()
+export class MdmProductService {
+
+  constructor(private configService: ConfigService) { 
+    console.log(`
+      I'm MdmProductService, and I'm configured with ConfigService
+      ConfigService.mdmProductServer: ${configService.mdmProductApiURL()}
+    `);
+  }
+
+}
+
+
+
+
+
+================================================================================
+
+  RouterModule
+  ************
+
+  Angular router is an external optional Angular NgModule called RouterModule.
+
+  It's a combination of 
+   - multiple provided services (RouterModule)
+   - multiple directives (RouterOutlet, RouterLink, RouterLinkActive)
+   - configuration (Routes)
+
+Initial version:
+
+app.module.ts
+-------------
+
+import { RouterModule }   from '@angular/router';
+
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    FormsModule,
+    RouterModule.forRoot([
+      {
+        path: 'heroes',
+        component: HeroesComponent
+      }
+    ])
+  ],   
+  .
+  .
+  .
+})
+export class AppModule {
+}
+
+We use the 'forRoot' method because we're providing a configured router at the 
+ROOT of the application.  
+
+The 'forRoot' method gives us the Router service providers and directives needed
+for routing and performs the initial navigation based on the current browser URL.
+
+    RouterModule.forRoot([
+      {
+        path: 'heroes',
+        component:HeroesComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
+        path: '',
+        redirectTo: '/dashboard',
+        pathMatch: 'full'
+      }
+    ])
+
+
+
+    Router Outlet
+
+If we paste the path "/heroes" into the browser address bar, the router should 
+match it to the 'heroes' route and display the 'HeroesComponent'.
+
+    <a routerLink="/heroes">Heroes</a>
+    <router-outlet></router-outlet>
+
+
+    Parameterized Route
+
+
+We can add the object's id to the URL.
+
+  /detail/11
+
+  {
+    path: 'detail/:id',
+    component: HeroDetailComponent
+  },  
+
+The (:) in the path indicates that :id is a placeholder to be filled with a
+specific hero id when navigating to the HeroDetailComponent
+
+The corresponding [routerLink] for the above route would look like this:
+
+  [routerLink]="['/detail', hero.id]" 
+
+Here, we are binding a link parameters array:
+
+  ['/detail',hero.id]
+
+to our destination route:
+
+  path: 'detail/:id'
+
+The array has two elements:
+  path of the destination route
+  route parameter set to the value of the current hero's id
+
+routerLinkActive directive
+---------------------------
+
+Angular Router provides a routerLinkActive directive to add a class to the HTML 
+navigation element whose route matches the active route. Ex:
+
+  <nav>
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+  </nav>
+
+  nav a.active {
+    color: #039be5;
+  }  
+
+
+
+================================================================================
+
+  Angular built-in directives
+  ***************************
+
+There are three kinds of Angular directives:
+
+1. Components
+2. Attribute directives
+3. Structural directives
+
+
+Attribute Directives
+---------------------
+
+
+ngModel
+
+  when developing entry forms, we often want to both display a data property
+  and update that property when the user makes changes.
+
+  ngModel implements two-way binding and is an example of an attribute directive.
+
+    NOTE: must import FormsModule in app.module.ts
+
+    <input [(ngModel)]="currentHero.firstName">
+
+  the above can also be achieve with separate bindings to the <input> 
+  element's "value" property and "input" event:
+
+    <input [value]="currentHero.firstName"
+           (input)="currentHero.firstName=$event.target.value" >
+
+  ngModel hides the complexity behind its own "ngModel" input and 
+  "ngModelChange" output properties:
+
+    <input
+      [ngModel]="currentHero.firstName"
+      (ngModelChange)="currentHero.firstName=$event" >
+
+
+
+ngClass
+
+  source: https://coryrylan.com/blog/introduction-to-angular-2-ngclass-and-ngstyle
+
+  creating dynamic styles for your application
+  ngClass helps us handle dynamic CSS and CSS classes with the new template syntax
+
+    ex: chaning <div> color property
+
+      pure JavaScript:
+
+        let myDiv = document.getElementById('my-div');
+        myDiv.style.color = 'orange';  // update 
+
+    out of the box, angular 2 provides primitives using [property] syntax
+    to manipulate elements attributes:
+
+      <div [style.color]="'orange'">
+        style using property syntax - this text is orange
+      </div>
+
+  we can also using angular2 [property] syntax to assign CSS class to element:
+
+    .blue { color: blue; }
+
+    <div [className]="'blue'">CSS class using property syntax - this text is blue</div>
+
+
+  manipulating <div> styles with ngStyle and angular2 component properties:
+
+    app.component.css:
+    ------------------
+
+    .show-class {
+      visibility: visible;
+    }
+
+    .hide-class {
+      visibility: hidden;
+    }
+
+
+    app.component.ts:
+    -----------------
+    export class AppComponent {
+
+      ngStyleDivColor: string;
+      ngStyleDivFontSize: number;
+      spanDisplayedText: string;
+      spanDisplayedTextVisible: boolean;
+
+      constructor() {
+        this.ngStyleDivColor = 'pink';
+        this.ngStyleDivFontSize = 16;
+        this.spanDisplayedText = 'show-class';
+        this.spanDisplayedTextVisible = true;
+      }
+
+      toggle() {
+        this.spanDisplayedTextVisible = !this.spanDisplayedTextVisible;
+        this.spanDisplayedText = this.spanDisplayedTextVisible ? 
+          'show-class' :
+          'hide-class';
+          
+      }
+    }
+
+    app.component.html:
+    -------------------
+
+    <h2>ngStyle</h2>
+
+    <input [(ngModel)]="ngStyleDivColor" />
+    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize + 1">+</button>
+    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize - 1">-</button>
+
+    <div 
+        id="using-ngStyle" 
+        [ngStyle]="{'color': ngStyleDivColor, 'font-size': ngStyleDivFontSize + 'px', 'font-weight': 'bold'}">
+      div style configured with ngStyle
+    </div>
+
+    <hr>
+
+    <span id="this-span" [ngClass]="spanDisplayedText">toggled with ngClass</span>
+    <button (click)="toggle()">Toggle</button>
+
+
+
+ngStyle
+
+  allows us to set inline styles dynamically based on the state of the component.
+  binding to ngStyle lets us set many inline styles simultaneously
+
+  with this template:
+
+    <div 
+        id="using-ngStyle" 
+        [ngStyle]="{'color': ngStyleDivColor, 'font-size': ngStyleDivFontSize + 'px', 'font-weight': 'bold'}">
+      div style configured with ngStyle
+    </div>
+    <input [(ngModel)]="ngStyleDivColor" />
+    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize + 1">+</button>
+    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize - 1">-</button>
+
+  we can manipulate the <div> element styles with the component state:
+
+    export class AppComponent {
+
+      ngStyleDivColor: string;
+      ngStyleDivFontSize: number;
+      spanDisplayedText: string;
+      spanDisplayedTextVisible: boolean;
+
+      constructor() {
+        this.ngStyleDivColor = 'pink';
+        this.ngStyleDivFontSize = 16;
+        this.spanDisplayedText = 'show-class';
+        this.spanDisplayedTextVisible = true;
+      }
+        
+    }
+
+
+
+
+Structural Directives
+---------------------
+
+  structural directives like ngIf do their magic by using HTML 5 template tag.
+
+
+
+ngIf
+
+  we can add an element subtree (and element and its children) to the DOM by
+  binding an NgIf directive to a truthy expression
+
+    <div *ngIf="currentHero">Hello, {{currentHero.firstName}}</div>
+
+  NOTE: visibility (hiding) and ngIf are not the same!
+
+    we can show/hide an element subtree with a class or style binding.
+    when we hide the element subtree, it remains in the DOM.  the subtree may
+    tie up substantial memory and resources.
+
+    when ngIf is false, Angular physically removes the element subtree from the DOM.
+    it destroys components in the subtree potentially freeing up resources and
+    resulting in better performance.
+
+    on the flip side, when ngIf becomes true again, the component will be 
+    recreated along with its subtree.  This may be expensive.. 
+
+      Design thought: minimize initialization effort and consider caching state
+      in a companion service.
+
+
+ngSwitch
+
+  ~~  do NOT put an (*) in front of ngSwitch ~~  
+  use property binding instead.
+
+  ~~ do use (*) with ngSwitchCase and ngSwitchDefault.
+
+  when we want to display one element tree (and its children) from a set of 
+  possible element trees, based on some condition.
+
+  Angular puts on the selected element tree into the DOM.
+
+  <span [ngSwitch]="toeChoice">
+    <span *ngSwitchCase="'Eenie'">Eenie</span>
+    <span *ngSwitchCase="'Meanie'">Meanie</span>
+    <span *ngSwitchCase="'Miney'">Miney</span>
+    <span *ngSwitchCase="'Moe'">Moe</span>
+    <span *ngSwitchDefault>other</span>
+  </span>
+
+
+  we bind the parent NgSwitch directive to an expression returnng a switch value.
+  the value is string in this example but it could be anything.
+
+  at any particular time, at most ONE of these spans is in the DOM.
+
+  if none of the spans is a match, Angular adds the default span to the DOM.. 
+  and removes and destroys all other spans.
+
+  Three collaborating directives work together here:
+
+    ngSwitch
+    ngSwitchCase
+    ngSwitchDefault
+
+
+
+
+
+nfFor
+  
+  is a repeater directive - our goal is to represent a list of items.
+  we define a block of HTML that defines how  a single item should be 
+  displayed - and we tell angular to use that block as template for rendering 
+  each item in the list.
+
+    ngFor applied to a simple <div>:
+
+      <div *ngFor="let hero of heroes">{{hero.fullName}}</div>
+
+    ngFor applied to a component element
+
+      <hero-detail *ngFor="let hero of heroes" [hero]="hero"></hero-detail>
+
+
+
+* and <template>
+
+  the (*) is a bit of syntactic sugar that makes it easier to read and write 
+  directives that modify HTML layout with the help of templates.
+
+  NgFor, NgIf, and NgSwitch all add and remove element subtrees that are wrapped
+  in <template> tags.
+
+  This is how Angular expands *ngIf for example:
+
+    <hero-detail *ngIf="currentHero" [hero]="currentHero"></hero-detail>
+
+  1st expansion:
+
+    <hero-detail 
+        template="ngIf:currentHero" [hero]="currentHero"></hero-detail>    
+
+  2d expansion:
+
+    <template [ngIf]="currentHero">
+      <hero-detail [hero]="currentHero"></hero-detail>
+    </template>
+
+
+
+
+Custom Attribute directives 
+
+  HostListener
+  HostBinding 
+    class decorators
+    prefer using these to the 'host' property of the @Directive and @Component decorators
+
+    
+
+================================================================================
+
+  HTTP Services
+  *************
+
+The HttpModule is not a core Angular module.
+It's Angular's optional approach to web access and it exists in a separate 
+add-on module called @angular/http.
+
+app.module.ts:
+
+import { HttpModule }   from '@angular/http';
+
+@NgModule({
+  imports: [
+    HttpModule
+  ],
+})
+export class AppModule { }
+
+Angular team recommends registering application-wide services in the root 
+'AppModule' providers.
+
+
+================================================================================
+
+  Mocking HTTP Services with angular-in-memory-web-api
+  ****************************************************
+
+https://github.com/angular/in-memory-web-api
+http://www.thoughtdelimited.org/thoughts/post.cfm/adding-the-in-memory-web-api-to-an-systemjs-based-angular-cli-application
+
+in-memory web API is not part of the Angular core.
+it is an optional service in its own "angular-in-memory-web-api" library installed 
+with npm via package.json
+
+Find out the latest version of 'angular-in-memory-web-api' available:
+
+ $ npm view angular-in-memory-web-api versions
+ 
+[ '0.1.0',
+  '0.1.1',
+  '0.1.2',
+  '0.1.3',
+  '0.1.4',
+  '0.1.5',
+  '0.1.6',
+  '0.1.7',
+  '0.1.8',
+  '0.1.9',
+  '0.1.10',
+  '0.1.11',
+  '0.1.12',
+  '0.1.13',
+  '0.1.14',
+  '0.1.15',
+  '0.1.16',
+  '0.1.17' ]
+
+
+$ npm install angular-in-memory-web-api --save
+
+  "dependencies": {
+    "@angular/common": "2.2.1",
+    "@angular/compiler": "2.2.1",
+    "@angular/core": "2.2.1",
+    "@angular/forms": "2.2.1",
+    "@angular/http": "2.2.1",
+    "@angular/platform-browser": "2.2.1",
+    "@angular/platform-browser-dynamic": "2.2.1",
+    "@angular/router": "3.2.1",
+    "angular-in-memory-web-api": "^0.1.17",
+
+
+
+in-memory-data.service.ts
+-------------------------
+
+
+
+Learn more about In-Memory Web API
+----------------------------------
+https://angular.io/docs/ts/latest/guide/server-communication.html#!#in-mem-web-api
+
+If the app only needs to retrieve data, you could get heroes from a heroes.json:
+
+{
+  "data": [
+    { "id": 1, "name": "Windstorm" },
+    { "id": 2, "name": "Bombasto" },
+    { "id": 3, "name": "Magneta" },
+    { "id": 4, "name": "Tornado" }
+  ]
+}
+
+
+You wrap the heroes array in an object with a 'data' property for the same reason
+that a data server does - to mitigate the security risk posed by top-level 
+JSON arrays.
+
+You'd set the endpoint to the JSON file like this:
+
+  private heroesUrl = 'app/heroes.json'; // URL to JSON file
+
+
+The GET heroes scenario would work, but you can't save changes to a JSON file.
+
+The in-mem web API gets its data from a custom application class with a createDb() 
+method that returns a map whose keys are collection names and whose values are
+arrays of objects in those collections.
+
+
+in-mem-data.service.ts
+-----------------------
+
+  import { Injectable } from '@angular/core';
+  import { InMemoryDbService } from 'angular-in-memory-web-api';
+
+  @Injectable()
+  export class InMemoryDataService implements InMemoryDbService{
+
+    constructor() { }
+
+    createDb() {
+      let heroes = [
+        { id: 11, name: 'Mr. Nice' },
+        { id: 12, name: 'Narco' },
+        { id: 13, name: 'Bombasto' },
+        { id: 14, name: 'Celeritas' },
+        { id: 15, name: 'Magneta' },
+        { id: 16, name: 'RubberMan' },
+        { id: 17, name: 'Dynama' },
+        { id: 18, name: 'Dr IQ' },
+        { id: 19, name: 'Magma' },
+        { id: 20, name: 'Tornado' }
+      ];
+      return {heroes};  // NOTE: curly braces!
+    }
+
+  }
+
+
+Ensure that the HeroService endpoint refers to the web API
+
+hero.service.ts
+---------------
+
+  private heroesUrl = 'api/heroes';   // URI to web api
+
+
+Finally, redirect client HTTP requests to the in-memory web API by adding the
+InMemoryWebApiModule to the AppModule.imports list, and call its forRoot() 
+configuration method:
+
+    InMemoryWebApiModule.forRoot(InMemoryDataService)
+
+How This Works
+==============
+
+Angular's http service delegates the client/server communication tasks to a 
+helper service called XHRBackend.
+
+Using standard Angular provider registration techniques, the InMemoryWebApiModule
+replaces XHRBackend service with its own in-memory alternative.
+
+The forRoot() method initializes the in-mem web API with the seed data from the 
+mock hero dataset.
+
+    NOTE: 
+    
+    1. the "forRoot" method name is a strong reminder that you should 
+    only call the InMemoryWebApiModule ONCE while setting the metadata for the 
+    root AppModule
+
+    2. Import the InMemoryWebApiModule AFTER the HttpModule to ensure that
+    the XHRBackend provider of the InMemoryWebApiModule supersedes all others.
+
+      import { HttpModule }           from '@angular/http';
+      import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+
+
+Passthru to a live XHRBackend
+-----------------------------
+
+If an existing running remote server should handle requests for collections
+that not in the in-memory database, set 
+
+  Config.passThruUknownUrl: true
+
+This service will forward unrecognized requests via a base version of the 
+Angular XHRBackend.
+
+
+
+
+================================================================================
+
+  Applications Styles
+  *******************
+
+When we add styles to a component, we're keeping everything a component needs -
+HTML, the CSS, the code - together in one convenient place.
+
+We can also create styles at the application level outside of any component.
+
+angular-cli provides styles.css at the index.html level and it's already 
+integrated into the project via 
+
+angular-cli.json:
+
+      "styles": [
+        "styles.css"
+      ],
+
+styles.css - allows users to add global styles and supports CSS imports
+
+  if the project is created with the --style=sass option, this will be a
+  .sass file instead and the same applies to scss/less/style.
+
+You can add more global styles via the apps[0].styles property in
+angular-cli.json
+
+
+================================================================================
+
+  go back browser back button
+  ***************************
+
+to navigate one step in the browser's history stack using the 'Location' service
+
+  this.location.back()
+
+Going back too far could take us out of the application.
+Guard against that with
+
+  CanDeactivate guard  
+
+================================================================================    
+
+  Guard Services
+  **************
+https://angular.io/docs/ts/latest/guide/router.html#guards  
+
+
+================================================================================
+
+  Caching Service options
+  ***********************
+
+ng2-cache
+https://www.npmjs.com/package/ng2-cache
+https://github.com/Jackson88/ng2-cache
+
+
+angular2-cache
+
+
+
+
+
+================================================================================
+
+  Caching with RxJs Observables in Angular 2
+  ******************************************
+
+http://www.syntaxsuccess.com/viewarticle/caching-with-rxjs-observables-in-angular-2.0
+
+http://restlet.com/blog/2016/04/12/interacting-efficiently-with-a-restful-service-with-angular2-and-rxjs-part-2/
+
+http://stackoverflow.com/questions/36271899/what-is-the-correct-way-to-share-the-result-of-an-angular-2-http-network-call-in
+
+
+
+================================================================================
+
+
+
+
+

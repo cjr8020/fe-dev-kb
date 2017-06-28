@@ -1,0 +1,2678 @@
+
+    @@@@@@@@@@@@@@@@@@@@@
+
+        TypeScript
+
+    @@@@@@@@@@@@@@@@@@@@@
+
+Check typescript version
+
+  $ tsc -version
+
+Install latest stable:
+
+  $ sudo npm install -g typescript
+
+Install nightly build
+
+  $ sudo npm install -g typescript@next    
+  
+Compiling:
+
+  $ tsc script.ts
+
+
+
+
+Variables
+---------
+
+primary difference between var and let/const is in the scoping rules.
+
+var
+    Variables declared with 'var' are globally available in the function in which they are declared.
+    Even if a variable is nested levels deep...
+
+    Variables declared with 'var' are hoisted to the top of the function in which they are declared.
+
+
+
+let
+
+  unlike 'var' which creates a global scope variable, let creates a block
+  scope variable
+
+const    
+
+    variables declared with 'let' and 'const' are only available in the block in which they are declared
+    not 'hoisted' to the top of the block/container where they are declared.
+
+    variable can be declared by the same name again in the same function where it is already declared.
+
+
+Basic Types
+-----------
+
+Boolean
+Number
+String
+Array
+Tuple
+Enum
+Any
+Void
+Null and Undefined
+Never
+
+
+  Boolean
+  -------
+    e.g.
+      let isDone: boolean = false;
+
+
+  Number
+  ------
+    floating-point type (just like js)
+
+      function returnNumber(): number {
+        return 42;
+      }
+
+    Literal Support
+
+      let decimalNumber: number = 6; // decimal literal
+      let hexNumber: number = 0xf00d; // hex literal
+      let binaryNumber: number = 0b1010; // binary literal
+      let octalNumber: number = 0o744; // octal literal
+
+
+  String
+  ------
+    TypeScript supports either single (') or double (") quotes.
+
+      let myString: string = 'this is a string';
+      let color: string = "red";
+
+    Template strings: 
+      - can span multiple lines and have embedded expressions
+      - surrounded by backquotes (`)
+      - embedded expressions are of the form ${ expr }
+
+        let fullName: string = 'Bob Bobbington';
+        let age: number = 37;
+        let sentence: string = 
+          `Hello, my name is ${fullName}.
+          
+          I'll be ${ age + 1 } years old next month.`
+
+      This is equivalent to:
+terminal
+        let sentence: string = "Hello, my name is " + fullName + ".\n\n" +
+        "I'll be " + (age + 1) + " years old next month."
+
+
+
+  Array  
+  -----
+    can specify type of the array elements
+    Array types can be written in one of two ways:
+
+      1) array type is followed by []
+
+        let list: number[] = [1,2,3];
+
+      2) Array<elementType>
+       
+        let list: Array<number> = [1,2,3];
+
+
+  Tuple
+  -----
+
+    allow you to epxress an array where the type of a fixed number of elements
+    is known, but need not be the same.
+
+      // a pair of a 'string' and a 'number'
+      let x: [string, number];
+      // initialize x
+      x = ['hello', 10]; // OK
+      // initialize incorrectly
+      x = [10, 'hello']; // Error
+
+    When accessing an elment with a known index, the correct type is retrieved:
+
+      console.log(x[0].substr(1)); // OK
+      console.log(x[1].substr(1)); // Error, .. i.e. doesn't exist
+
+
+
+  Enum
+  ----
+
+    a helpful addition to the standard set of datatypes from JavaScript.
+    a way to give friendly names to a set of numeric values.
+
+      enum Color {Red, Green, Blue};
+      let c: Color = Color.Green;
+
+    by default numbering starts with '0' but can be changed:
+
+      enum Color { Red = 1, Green, Blue };     
+
+    or
+
+      enum Color { Red = 1,  Green = 2, Blue = 4 };       
+
+  Any
+  ----
+
+    any type - we many need to describe a type of variable that do not know
+    when we write an application.  These may come from some dynamic content,
+    or a 3rd party library.  In these cases, we want to opt out of type 
+    checking and let the values pass thru compile time checks.
+
+      let notSure: any = 4;
+      notSure = "maybe a string?";
+      notSure = false; // okay a boolean
+
+    the 'any' type is a powerful way to work with existing JS.
+    You might expect Object to play a similar role, but variables of type 
+    Object only allow you to assign any value to them - you can't call 
+    arbitrary methods on them:
+
+      let notSure: any = 4;
+      notSure.ifItExists(); // ok, ifItExists method might exist at runtime
+                            // but the compiler doesn't check
+
+      let prettySure: Object = 4; 
+      prettySure.toFixed(); // error: property 'toFixed' doesn't exist
+
+
+  Void
+  ----
+    specifies absence of a type.   Function return type.
+
+    declaring values of type 'void' is not useful  because you can only 
+    assign 'Undefined' or 'null' to them
+
+
+  null and Undefined
+  -------------------
+
+    both actually have their own types.
+    much like void - not useful on their own
+
+    When using the "--strictNullChecks" flag, null and undefined are only 
+    assignable to 'void' and their respective types.  This helps avoid many 
+    common errors...
+    In cases where you want to puass in either a string or null or undefined,
+    you can just use the union type:
+
+      string | null | undefined
+
+  Nullable types
+  --------------
+
+    // Nullable
+    let canBeNull = 12;
+    canBeNull = null; // and now its null
+
+    // undefined
+    let canAlsoBeNull; // at this point its undefined cause its uninitialized
+    canAlsoBeNull = null;
+
+
+
+  Non-Nullable types
+  ------------------    
+
+    tsconfig.json
+
+    "strictNullChecks": true
+
+      // now its Non-Nullable
+      let cannotBeNull = 12;
+      cannotBeNull = null; // and now its null    
+
+      Error: type 'null' is not assignable to type 'number'
+
+    If you still want to allow null, use UNION Type
+
+      // still Nullable
+      let stillNullable: number | null = 12;
+      stillNullable = null; // no problem ..
+
+    With this compiler setting type 'any' is NO LONGER INFERRED!
+
+      // can this be any?
+      let canThisBeAny = null; // with strictNullChecks, what type is this?
+      canThisBeAny = 12; // error: 'number' is not assignable to type 'null'
+
+
+
+  Never
+  -----
+
+    The never type represents the type of values that never occur.
+    e.g. never is a return type for a function expression or an arrow function
+    expression that always throws an exception or one that never returns.
+
+    The 'never' type is a subtype of every type.. however, 
+    nothing is a subtype of - or assignable to - never, not even 'any'
+
+    examples of functions returning 'never':
+
+      // inferred return type is never
+      function fail() {
+        return error("Something failed");
+      }
+
+      // function returning 'never' must have unreachable end point
+      function infiniteLoop(): never {
+        while (true) {
+         // 
+        }
+      }
+
+    Main use: with functions or code that will never be reached
+
+
+==============================================================================
+
+  Brackets  Braces  etc...
+***************************
+
+[] square brackets denote an array:
+
+  var a1 = [1, 2, 3];
+
+  Arrays can hold more than just values.
+
+  var a2 = [ 1, 2, ["apple", "orange"], {one: "grape", two: "banana"} ];
+
+{} braces denote an object.  Objects have key-value pairs like:
+
+  var a3 = {
+    one: 1,
+    two: 2
+  }
+
+==============================================================================
+
+  Object Literal Property Value Shorthand
+  ***************************************
+  ES6 (ECMAScript 6) 
+
+While every object property needs to be either a key-value pair or 
+getter/setter, this may change..
+Another ES6 syntactic sugar is "object literal property value shorthand"
+
+  ES5:
+
+    function createMonster(name, power) {
+      return { type: 'Monster', name: name, power: power };
+    }
+
+    function createWitch(name) {
+      return { type: 'Witch', name: name };
+    }
+
+  ES6 shorthand:
+
+    function createMonster(name, power) {
+      return { type: 'Monster', name, power };
+    }
+
+    function createWitch(name) {
+      return { type: 'Witch', name };
+    }
+
+  Because the property value has the same name as the property identifier...
+
+  so, when you see this:
+
+    let a = { mockheroes };
+
+  that's really an object with property "mockheroes" and value being the variable
+  by the name of "mockheroes" as well.
+
+
+==============================================================================
+
+
+Destructuring
+=============
+  ECMAScript 2015 feature.
+  http://exploringjs.com/es6/ch_destructuring.html
+
+  a convenient way of extracting multiple values from the data stored in
+  (possibly nested) objects and Arrays.  It can be used in locations that
+  receive data (such as the left-hand side of an assignment).
+
+  JavaScript has operations for constructing data, one property at a time.
+
+    const obj = {};
+    obj.first = 'Jane';
+    obj.last = 'Doe';
+
+  The same syntax can be used to extract data - again, one property at a time:
+
+    const f = obj.first;
+    const l = obj.last;
+
+  There is also syntax to construct multiple properties at the same time via
+  an object literal:
+
+    const obj = { first: 'Jane', last: 'Doe' };
+
+  Before ES6, there was no corresponding mechanism for extracting data.
+  That is what "destructuring" is - it lets you extract multiple properties 
+  from an object via an 'object pattern'.  
+
+  E.g. on the L-H side of an assigment:
+
+    const { first: f, last: l } = obj;  // f is 'Jane' and l is 'Doe'
+
+
+Patterns
+------------------
+
+  The following two parties are involved in destructuring:
+
+    o Destucturing source: data to be destructured
+        e.g. the R-H side of an assignment.
+
+    o Dstructuring target: the pattern used for destructuring
+        e.g. the L-H side of the assignment.
+
+  Destructuring target (L-H side) is one of three patterns:
+
+    1. assignment target  e.g. 'x'
+    2. object pattern,  e.g. { first: <pattern>, last: <pattern> }
+    3. array pattern  e.g. [ <<pattern>>, <<pattern>> ]
+
+  Pick what you need
+
+    if destructure an object, you mention only those properties that you are
+    interested in
+
+
+Object patterns corece values to objects
+----------------------------------------
+
+  The object pattern coerces destructing sources to objects before accessing 
+  properties.  e.g.:
+
+    const { length: len } = 'abc';    // len = 3
+
+  In the above example, 'abc' is coerced to String, and then its "length" 
+  property is extracted, so len gets 3.
+
+  You can use empty object pattern ( {} ) to check whether a value is 
+  coercible to an object:
+
+    ( {} = [true, false] ); // OK, Arrays are coercible to objects
+
+    ( {} = 'abc' );         // OK, strings are coercible to objects
+
+    ( {} = undefined );     // TypeError, undefined is not coercible to objects
+    ( {} = null );          // TypeError, neither is null
+
+
+
+
+Array destructuring
+-------------------
+
+  simplest form of destructuring is array destructuring assignment:
+
+    let input = [1, 2];
+    let [first, second] = input;
+    console.log(first);  // outputs 1
+    console.log(second); // outputs 2 
+
+This above creates two new variables named 'first' and 'second'.
+Destructuring assignment is equivalent to using indexing, but is more convenient:
+
+  first = input[0];
+  second = input[1];
+
+Destructuring works with already-declared variables as well:
+
+  [first, second] = [second, first];  // swap the variables
+
+  
+
+
+Object Destructuring
+--------------------
+
+  You can also destructure objects:
+
+    let o = {
+      a: "foo",
+      b: 12,
+      c: "bar"
+    }
+    let { a, b } = o;
+
+  This creates new variables, a and b, from o.a and o.b.  
+  Here, properties 'a' and 'b' got extracted and assigned.
+
+  Notice, you can skip c if you don't need it.
+
+
+Coercing
+----------  
+
+
+  It looks like you can take an entire Array and assign it as property to 
+  an object.
+
+  Suppose you have an array of objects:
+
+      let mockheroes = [
+        { id: 11, name: 'Mr. Nice' },
+        { id: 12, name: 'Narco' },
+        { id: 13, name: 'Bombasto' },
+        { id: 14, name: 'Celeritas' },
+        { id: 15, name: 'Magneta' },
+        { id: 16, name: 'RubberMan' },
+        { id: 17, name: 'Dynama' },
+        { id: 18, name: 'Dr IQ' },
+        { id: 19, name: 'Magma' },
+        { id: 20, name: 'Tornado' }
+      ];
+
+  It is an instance of Array:
+
+      if (mockheroes instanceof Array) {
+        console.log('mockheroes is an Array');  // prints .. 
+      }
+
+  If you use destructing assignment like so:
+
+
+    let a = { mockheroes };  // this is ES6 object literal property value shorthand
+
+
+  'a' is an object and it has one property 'mockheroes' whose value is the
+  original array of Heroes:
+
+
+      if (a instanceof Array) {
+        console.log("'a' is also an Array"); // nope ...
+      }
+   
+      console.log(typeof a);  // just an object - prints 'object'
+
+      console.log('a now has a property "mockheroes" with the value of the Hero array');
+
+      for (var prop in a) {
+        console.log(`property: ${prop}`);
+        if (a.hasOwnProperty(prop)) {
+          console.log("a." + prop + " = " + a[prop]);
+        }
+      }
+
+        prints:
+
+          property: mockheroes
+          a.mockheroes = [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]                  
+
+
+   And then, you can take that 'a.mockheroes' property value and type cast it
+   to Hero[] array using 'as' operator:
+
+      let heroes: Hero[] = a.mockheroes as Hero[];
+
+      for (let hero of heroes) {
+        console.log(`hero: ${hero.name}`);
+      }  
+
+        Prints:
+
+          hero: Mr. Nice
+          hero: Narco
+          hero: Bombasto
+          hero: Celeritas
+          hero: Magneta
+          hero: RubberMan
+          hero: Dynama
+          hero: Dr IQ
+          hero: Magma
+          hero: Tornado        
+
+ 
+ ================================================================================
+
+  Types
+  *****
+
+
+  Type Assertions
+  ---------------
+
+    sometimes you'll know more about a value than TypeScript does.
+    usually this will happen when you know the type of some entity could be
+    more specific than its current type.
+
+    "type assertions" 
+      - are a way to tell the compiler "trust me, I know what
+      i'm doing"
+      - is like a type cast in other languages
+      - has no runtime impact
+      - purely for the compiler
+
+    there are two forms:
+    a) angle bracket syntax:
+
+      let someValue: any = "this is a string";
+      let strLength: number = (<string>someValue).length;
+
+    b) 'as' syntax
+
+      let  someValue: any = 'this is a string';
+      let strLength: number = (someValue as string).length;
+
+
+    Type casting
+    ------------
+
+      Use (<>) or the 'as' operator for casting.
+
+        let myObject: TypeA;
+        let otherObject: any;
+        // values are assigned to them, and...
+
+        myObject = <TypeA> otherObject;  // using <>
+        myObject = otherObject as TypeA; // using 'as'
+
+      'as' preferred and is default since TS 1.6
+
+
+
+
+TypeScript Inference
+--------------------
+
+TypeScript infers the type based on the assignment.
+  let myString = 'this is a string';    
+Avoid Inference.
+
+
+Function types
+--------------
+
+Typically in JS, you can assign functions to variables. Any functions.
+Here, you can assign sayHello function to myMultiply variable.
+
+
+  // void
+  function sayHello(): void {
+    console.log("Hello");
+  }
+
+  let myMultiply;
+  myMultiply = sayHello;  // no errors..
+
+However, TypeScript allows you to specify function types by describing the
+function signature as type:
+
+  // function types
+  let myMultiply: (val1: number, val2: number) => number;
+  //myMultiply = sayHello;  // won't work .. once function type is defined
+  //myMultiply();
+
+However, i can assign 'multiply' function to myMultiply variable because 
+it matches the function type:
+
+  // multiply function with argument types
+  function multiply(value1: number, value2: number): number {
+    return value1 * value2;
+  }
+
+
+  myMultiply = multiply;
+  console.log(myMultiply(10,2));
+
+
+Object Types
+-------------
+
+  // objects
+
+  // typescript infers the object type from the declaration
+  // property names do matter in the context of objects, order is not important
+  let userData = {
+    name: "Max",
+    age: 27
+  };
+
+  // object type declaration
+  let userDataRedefined: { name: string, age: number } = {
+    name: "Max",
+    age: 27
+  };
+
+  // complex object
+  // this object has two properties - "data" and "output"
+  let complex: {data: number[], output: (all: boolean) => number[]} = {
+    data: [100, 3.99, 10],
+    output: function(all: boolean): number[] {
+      return this.data;
+    }
+  };
+
+Type alias
+------------
+
+Type alias allows us to create a Type definition.
+(another option for creating a type blueprint is oviously a Class)
+
+  // complex object
+  // this object has two properties - "data" and "output"
+  let complex: {data: number[], output: (all: boolean) => number[]} = {
+    data: [100, 3.99, 10],
+    output: function(all: boolean): number[] {
+      return this.data;
+    }
+  };
+
+  // new object - with the same declaration
+  let complex2: {data: number[], output: (all: boolean) => number[]} = {
+    data: [100, 2.33, 10],
+    output: function(all: boolean): number[] {
+      return this.data;
+    }
+  }
+
+  // how do I store the type definition? classes is one option.
+  // another option is a Type Alias
+  type Complex = {data: number[], output: (all: boolean) => number[]};
+
+
+
+Union Types
+-----------
+
+let myRealRealAge: number | string = 27;
+myRealRealAge = "27"; // also works
+
+
+Type Checks
+-----------
+
+typeof
+
+  let finalValue = "A string";
+
+  if (typeof finalValue == "number") {
+    console.log("this is a number");
+  }
+
+
+// Exercise - assign types where they are missing
+-------------------------------------------------
+
+  type BankAccount = {money: number, deposit: (value: number) => void};
+  let bankAccount: BankAccount = {
+    money: 2000,
+    deposit: function (value: number): void {
+      this.money += value;
+    }
+  };
+
+  let myself: {name: string, bankAccount: BankAccount, hobbies: string[]} = {
+    name: "Max",
+    bankAccount: bankAccount,
+    hobbies: ["Sports", "Cooking"]
+  };
+
+  myself.bankAccount.deposit(300);
+  console.log(myself);
+
+
+==============================================================================
+ 
+  typing destructured object parameters in TS
+  *************************************
+
+In TS, you can add a type annotation to each formal parameter of a function
+using a colon and the dsired type:
+
+  function greet(name: string) { .. }
+
+Lets now look at at a function declaration that makes use of a destructuring 
+assignment with an object parameter.
+
+Suppose, you have the 'toJSON' function accepts
+ - a 'value' argument of 'any' type to be stringified to JSON, and
+ - a object literal settings object that allows the caller to provide configuration
+   via properties:
+
+
+    function toJSON( value:any, {pretty} ) {
+      const indent = pretty ? 4 : 0;
+      return JSON.stringify(value, null, indent);
+    }
+
+
+the 'toJSON' function accepts the 'value' parameter of type 'any' ... 
+but what type does the 'pretty' property have?  
+it is not explicitly stated so it is implicitly typed as 'any'.
+
+
+Of course, if we want a boolean, we'd have to say so:
+
+  function toJSON(value: any, { pretty: boolean }) {...}
+
+However, this doesn't work!
+
+  (49,18): error TS2304: Cannot find name 'pretty'.
+
+This is because "boolean" is not a type annotation in this case, but the 
+"name of the local variable" that the value of "pretty" gets assigned to.
+
+  { pretty: boolean } // looks like a type annotation but it is NOT!!
+
+
+
+So here's how to do it in TS:
+-----------------------
+
+  function toJSON(value: any, { pretty }: {pretty:boolean}) {
+    const indent = pretty ? 4 : 0;
+    return JSON.stringify(value, null, indent);
+  }
+
+IMPORTANT: You're not directly typing the 'pretty' property, 
+but the settings object it belongs to which _is_ the actual parameter passed 
+to the function.
+
+
+Providing default values
+------------------------
+
+    const value = { foo: "bar" };
+
+    toJSON( value, { pretty: true } );  // #1
+    toJSON( value, { } );               // #2
+    toJSON( value );                    // #3
+
+  #1 works because all parameters are specified.
+
+  For #2 to work:
+
+    a) we have to mark the 'pretty' property as optional by 
+       appending a (?) to the property name within the type annotation.
+    b) also the 'pretty' property get the default value of 'true' if not specified:
+
+      function toJSON(value: any, {pretty = true}: { pretty?: boolean}) {
+        ...
+      }
+
+  For #3 to work, we need to provide a default value of ( {} ) for the 
+  destructuring pattern of the settings object.
+
+  If no settings object is passed at all, the empty object literal {} is being
+  destructured.  Because the default value of {} does not specify a value for
+  the "pretty" property, its fallback value "true" is returned:
+
+      function toJSON(value: any, { pretty = true }: { pretty?: boolean } = {}) {
+        const indent = pretty ? 4 : 0;
+        return JSON.stringify(value, null, indent);
+      }
+
+    Here is what the TS compiler targetting ES6 emits:
+
+      function toJSON(value, { pretty = true } = {} ) {
+        ...
+      }
+
+    - only the type information is removed.
+
+
+  Extracting a Type for the Settings parameter
+  --------------------------------------------
+
+With multiple properties, the inline type annotation gets unwieldy quickly,
+which is why it might be a good idea to create an interface for the configuration
+object:
+
+  interface SerializerSettings {
+    pretty?: boolean;
+  }  
+
+Now, you can type the settings parameter using the interface type:
+
+  function toJSON(value: any, { pretty = true }: SerializerSettings = {} ) {
+    ...
+  }
+
+much better...
+
+
+
+
+
+
+==============================================================================
+
+  interfaces
+  **********
+
+define contracts within your code as well as contracts with code outside of 
+your project.
+
+In TS, interfaces fill the role of naming types
+
+  NOTE: interfaces do not get compiled into JS at all.
+
+Optional properties
+-------------------
+
+    interface SquareConfig {
+      width: number;
+      color?: string;
+    }
+
+    function createSquare(config: SquareConfig): {width: number, color: string} {
+      let newSquare = {width: 100, color: "white" };
+
+      if (config.color){
+        newSquare.color = config.color;
+      }
+
+      return newSquare;
+    }
+
+    let mySquare = createSquare({width: 100});
+    console.log("mySquare: " + mySquare);
+
+
+
+Readonly properties
+-------------------
+
+some properties should only be modifiable when an object is first created.
+
+interface Point {
+  readonly x: number;
+  readonly y: number;
+}
+
+// construct a Point
+let p1: Point = { x: 10, y: 20 };
+// but cannot change it 
+p1.x = 5; // error
+
+NOTE: TS comes with 
+
+  ReadonlyArray<T> (with all mutators of Array<T> removed)
+
+
+Function Types
+--------------
+
+Interfaces describe a wide range of shapes taht JS objects can take.
+In addition to describing an object with properties, interfaces are also 
+capable of describing function types.
+
+To describe a function type with an interface, we give the interface a 
+call signature.
+
+  call signature: this is like a function declaration with only the
+  parameter list and return types given.
+
+    interface SearchFunction {
+      (source: string, subString: string): boolean;
+    }  
+
+Once defined, we can use this function type interface to create a function:
+
+    let mySearch: SearchFunction;
+    mySearch = function(source: string, subString: string): boolean {
+      . . .
+    }
+
+
+Indexable Types - Purpose
+-------------------------
+
+Indexable types are described in section below.
+Here is an example of the syntax:
+
+  interface StringArray {
+    [index: number]: string;
+  }
+
+but the purpose is unclear...
+
+One of the purposes apparently is to allow interfaces declare a property
+of unknown name.
+Here NamedPerson interface defines a property whose named can be 
+specified at the time of object creation:
+
+    console.log("--- indexable type to define unknown property");
+
+    interface NamedPerson {
+      firstName: string;
+      age?: number;
+      [propName: string]?: any;
+    }
+
+    function greet(person: NamedPerson): void {
+      console.log(`Hello ${person.firstName}`);
+    }
+
+    function changeName(person: NamedPerson, newName: string): void {
+      person.firstName = newName;
+    }
+
+    let max: NamedPerson = {
+      firstName: "Max",
+      hobbies: ["Cooking", "Sports"]
+    };
+
+    greet(max);
+    changeName(max, "Anna");
+    greet(max);
+
+
+
+
+
+Indexable Types and Objects
+---------------------------
+
+  [ key: string ]   =   string
+           or           number
+          number        object
+
+
+Similar to how we can use interfaces to describe function types, we can also
+describe types that we can "index into" like 
+
+    class Car {
+      public make: string;
+      public constructor(make: string) {
+        this.make = make;
+      }
+    }
+
+    interface CarMap {
+      [model: string]: Car;
+    }
+
+    let map: CarMap = {};
+    map["audi"] = new Car("T1");
+    console.log("audi: " + map["audi"].make); 
+
+Indexable types have an index signature that describes the types we can use to 
+index into the object.
+
+  interface Vehicle {
+    start(): void;
+    stop(): void;
+  }
+
+  class Car implements Vehicle {
+    // ...
+  }
+
+  interface CarMap {
+    [model: string]: Car;
+  }
+
+  let map: CarMap = {};
+  map["audi"] = new Car();
+  let audi = map["audi"];
+
+
+Note: you can also make index signatures readonly in order to prevent assignment
+to their indeces:
+
+  interface ReadonlyStringArray {
+    readonly [index: number]: string;
+  }
+
+  let myArray: ReadonlyStringArray = ["Alice", "Bob", "Candice"];
+  // myArray[3] = "Carrol";   // error
+  // myArray[2] = "Mallory";  // error
+
+
+
+methods definitions in interface
+--------------------------------
+
+    interface NamedPerson {
+      firstName: string;
+      age?: number;
+      [propName: string]: any;
+
+      greet(lastName: string): void;
+    }
+
+
+interface inheritance
+---------------------
+
+interface NamedPerson extends Person { ... }
+
+
+
+==============================================================================
+
+
+Functions
+----------
+
+  just as in JS, TS functions can be created both as a named function or as
+  an anonymous function.
+
+    // named
+    function add(x,y) {
+      return x+y;
+    }
+
+    // named with types
+    function add(x: number, y: number): number { ... }
+
+
+    // anonymous
+    let myAdd = function(x,y) { return x+y; };
+    // anonymous with type
+    let myAdd = function(x: number, y: number): number { ... }
+
+  just as in JS, functions can refer to variables outside of the function body.
+  when they do so, they're said to CAPTURE these variables. 
+
+  function types:
+
+    let myAdd = 
+       function(x, y): number { return x+y; };
+
+    let myAdd: (x: number, y: number)=>number =         
+       function(x: number, y: number): number { return x+y; };
+or
+    let myAdd: (baseValue: number, increment: number)=>number =         
+       function(x: number, y: number): number { return x+y; };
+
+
+
+Functions in TS vs JS
+
+1. TS functions allow you to specify parameter and return types
+2. Parameters: you can declare optional or default values
+  - optional params
+  - default params
+  - rest parameters
+3. Function overloading
+
+4. Support for Arrow functions
+
+In TS, every parameter is assumed to be required.  A parameter can be given a 
+null or undefined if desired.  However, the compiler will check that the user
+has provided a value for each parameter.
+
+in JS, every param is optional, and users may leave them off as they see fit.
+When they do, the value is undefined.
+In TS, we can add a (?) to the end of the parameter to make it optional.
+
+  function buildName(firstName: string, lastName?: string) {
+    if (lastName) { return firstName + " " + lastName; }
+    else return firstName;
+  }
+
+Any OPTIONAL parameters must FOLLOW required parameters.
+DEFAULT values:
+
+  function buildName(firstName: string, lastName = "Smith") { ... }
+
+  let result1 = buildName("Bob"); // result is "Bob Smith"
+  let result2 = buildName("Bob", undefined); // same ...
+  let result3 = buildName("Bob", "Adams"); // result is "Bob Adams"
+
+
+Default parameter for object parameter type:
+
+
+  function retryStrategy( {} = {} ) {
+    ...
+  }
+
+
+
+
+Spread Operator
+---------------
+  (...)
+  turns iterable values into arguments, 
+  e.g. turns an array into a list an argument list:
+
+    > Math.max(-1, 5, 11, 3)
+    or
+    > Math.max(...[-1, 5, 11, 3]); 
+
+
+Rest (of the) Parameters
+------------------------
+  without rest parameters, passing an unknown list of arguments is cumbersome:
+
+    function makeArray(arg1: number, arg2: number) {
+      return [arg1, arg2];
+    }
+    console.log(makeArray(1, 2));  
+
+
+  Rest parameters are treated as a boundless number of optional parameters.
+
+    function makeArray(...args: number[]) {
+      return args;
+    }
+    console.log(makeArray(1, 2, 6, 7));
+
+
+  The ellipses (...) is also used in the type of the function with rest params:
+
+    let buildNameCopy: (fname: string, ...rest: string[]) => string = buildName;
+
+
+
+
+Default Parameters
+------------------
+
+  const countdown = (start: number = 10): void => {
+    while (start > 0) {
+      start--;
+    };
+    console.log("Done!");
+  };
+
+  countdown(10);
+  countdown();
+
+  with default parameters, this function can now be called without any 
+  parameters.
+
+
+Destructuring Arrays and Objects
+----------------------
+
+  for-of loop 
+  -----------
+
+    The for-of loop supports destructuring:
+
+      const map = new Map().set(false, 'no').set(true, 'yes');
+      for (const [key, value] of map) {
+        console.log(key + ' is ' + value);
+      }  
+
+
+Template strings
+----------------
+
+  syntactically, these are strings that use backticks (`` ) instead of single
+  or double quotes.  The motivation is three fold:
+
+    - string interpolation
+    - multiline strings
+    - taggled templates
+
+String interpolation
+
+  const url = `${this.heroesUrl}/${id}`;
+
+Multiline strings:
+
+    template: `
+
+      <h1>{{title}}</h1>
+      <div class="header-bar"></div>
+
+      <nav>
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+      </nav>
+      <router-outlet></router-outlet>
+
+    `,
+
+Tagged templates
+
+  you can place a function (called a tag) before the template string and it
+  get the opportunity to pre process the template string literals plus the values
+  of all the placeholder expressions and return a result.
+
+  Example:
+
+    var say = "a bird in hand > two in the bush";
+
+    var html = htmlEscape `<div> I would just like to say: ${say}</div>`;
+
+    function htmlEscape(literals, ...placeholders) {
+
+      let result = "";
+
+      // interleave the literals with the placeholders
+      for (let i = 0; i < placeholders.length; i++) {
+          result += literals[i];
+          result += placeholders[i]
+              .replace(/&/g, '&amp;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+      }
+
+      // add the last literal
+      result += literals[literals.length - 1];
+      return result;      
+    }
+
+
+
+
+
+this
+---------------------------------
+
+  understanding JS function invokation and 'this'
+  http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/
+  (see section at the bottom of this page).
+
+In JS, 'this' is a variable that gets set when a function is called.
+This is a powerful and flexible feature, but it comes at a cost of always
+having to know about the context in which the function is executing.
+
+Example:
+
+    let deck = {
+        suits: ["hearts", "spades", "clubs", "diamonds"],
+        cards: Array(52),
+        createCardPicker: function() {
+            return function() {
+              // . . .
+              return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+            }
+        }
+    }
+
+    let cardPicker = deck.createCardPicker();
+    let pickedCard = cardPicker();  
+
+    alert("card: " + pickedCard.card + " of " + pickedCard.suit);
+
+If we run this example - we get an error.
+This is because the 'this' being used in the function created by 
+createCardPicker() method will be set to WINDOW instead of the "deck" object.
+
+That's because we call cardPicker() "on its own" - a top-level non-class-method 
+syntax call will use "window" for "this".  (or undefined in strict mode).
+
+We can FIX this problem by making sure the function is bound to the correct 'this'
+before we return it to be used later.
+
+  ES6 Arrow functions capture the 'this' where the function is created
+  ***************************************
+
+TO DO THIS - we use ES6 arrow syntax --> arrow functions capture the 'this' 
+where the function is created rather than where it is invoked:
+
+
+        createCardPicker: function() {
+            return () => {
+              // . . .
+              return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+            }
+        }
+
+--noImplicitThis flag
+-------------------------
+
+TypeScript will warn you when you make this mistake if you pass 
+the "--noImplicitThis" flag to the compiler.
+
+However, as it stands, you will still get an error because 
+"this.suits[pickedSuit]" is of type "any".
+That's because "this" comes from the function expression inside the object
+literal: 
+  suits: ["hearts", "spades", "clubs", "diamonds"],
+
+To fix this, provide an explicit "this" parameter...
+
+
+'this' Parameter
+-----------------------
+Purpose: ensure that a function is always called on the expected object.
+
+  --noImplicitThis is not going to throw errors.
+
+'this' parameter is a fake parameter that comes first in the parameter list 
+of a function:
+
+    function f(this: void) {
+      // make sure that 'this' is unusable in this standalone function
+    }
+
+To fix the example above, add a couple of interfaces to make types clearer:
+
+    interface Card {
+      suit: string;
+      card: number;
+    }
+
+    interface Deck {
+      suits: string[];
+      cards: number[];
+      createCardPicker(this: Deck): () => Card; 
+    }
+
+    let deck: Deck = {
+
+      suits: ["hearts", "spades", "clubs", "diamonds"],
+      cards: Array(52);
+      // NOTE: the arrow function now explicitly specifies that 
+      // its callee must be of type Deck
+      createCardPicker: function(this: Deck) {
+        return () => {
+          // ...
+          return {suit: this.suits[pickedSuit], card: pickedCard % 13};
+        }
+      }
+    }
+
+
+
+
+
+Arrow Functions
+----------------
+
+Basic Syntax:
+
+  (param1, param2, ..., paramN) => { statements }
+
+  (param1, param2, ..., paramN) => expression
+  (param1, param2, ..., paramN) => { return expression; }
+
+// with one param, parens are optional:
+
+  (singleParam)  => { statements }
+   singleParam   => { statements }
+
+// no params, requires parens
+  () => { statements }
+  () => { return expression; }
+
+
+
+
+  fat arrow .. aka lambda function
+
+    const gree = () => {
+      console.log("Hello");
+    };
+
+  Motivation: 
+    - keyword 'function' is not required
+    - lexically captures the meaning of 'this'
+    - lexically captures the meaning of 'arguments'
+
+syntax
+------
+
+  to specify parameters:
+
+    () => { ... }; // no parameters
+     x => { ... }; // one parameter, an identifier
+(x, y) => { ... }; // several parameters
+
+  to specify a body:
+
+    x => { return x * x };  // block
+    x => x * x;             // expression, equivalent to line above.
+
+
+
+Arrow functions essentially bind(this)      
+
+    let incrFunction = (x) => x + 1;
+    console.log('increment 2: ' + incrFunction(2));
+
+  Arrow functions capture the meaning of 'this' from the surrounding context.
+
+    let incrFunction = (x) => x + 1;
+    console.log('increment 2: ' + incrFunction(2));
+
+    function Person(age) {
+      console.log("'this' typeof: " + typeof this);
+      this.age = age;
+      this.growOld = function() {
+        this.age++;
+      }
+    }
+
+
+    let person: any  = new Person(1);
+    setTimeout(person.growOld, 1000);
+
+    setTimeout(
+      function() {
+        console.log(person.age); // 1, but should have been 2
+      },
+      2000
+    ); 
+           
+  In above example, person.age is not incremented because 'this' in 
+  this.age refers to "Window" object because it is "Window" is what is executing
+  the growOld() function.
+
+  We can fix this with using an arrwo function:
+
+      ...
+      this.growOld = () => {
+         this.age++;
+      } 
+      ...
+
+  The reason this works is because the reference to 'this' is captured by the
+  arrow function from outside the function body  ... 
+
+Learn about ES6 arrow functions
+---------------------------
+MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+https://www.sitepoint.com/es6-arrow-functions-new-fat-concise-syntax-javascript/
+http://exploringjs.com/es6/ch_arrow-functions.html
+
+
+
+  syntax
+  ------
+  Here, we're calling "forEach" function on an array.
+  "forEach" takes a function as parameter that will execute once for each element of the array.
+  If my arraw function does not accept any parameters, I must supply empty 
+  parenthesis.
+
+    myBooks.forEach( () => console.log('Done reading!') );
+
+  Here, same as above, except 'title' is a parameter passed to the lambda expression:
+
+    myBooks.forEach( (title) => console.log(title) );
+
+  Note: parenthesis are NOT required for ONE parameter, but are required for multiple:
+
+    myBooks.forEach( (title, idx, arr) => console.log(idx + ' - ' + title) );
+
+  Place multiple lines of function body inside curly braces:
+
+    myBooks.forEach( (title, idx, arr) => {
+
+      console.log(..);
+      // more 
+      // more
+
+    });
+
+
+Capturing 'this' in JavaScript
+-----------------------------
+
+Problem with 'this' - it often represents two different execution contexts in 
+the same block of code.. 
+
+Given this example:
+
+function book() {
+  self.publishDate = 2016;
+  setInterval( function() {
+    console.log(this.publishDate); // can NOT: 'this' refers to something else inside a callback
+  }, 1000);
+}
+
+
+
+
+==============================================================================
+
+  classes
+  *******
+
+http://www.typescriptlang.org/docs/handbook/classes.html
+
+Traditional JS focuses on functions and prototype-based inheritance as basic 
+means of building up reusable components.
+
+ES6 adds OO class-based approach.
+
+
+    class Greeter {
+      greeting: string;
+      
+      constructor(message: string) {
+        this.greeting = message;
+      }
+
+      greet() {
+        return `Hello, ${this.greeting}`;
+      }
+
+    }
+
+    let greeter = new Greeter("world");
+    console.log(greeter.greet());
+
+Referring to "this.greeting" denotes that "member access".
+
+using "new" calls into the constructor to initialize.
+
+  inheritance
+  -----------
+
+extends
+super()  
+
+    class Animal {
+      name: string;
+
+      constructor(aName: string) { this.name = aName; }
+      move(distanceInMeters: number = 0) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+      }
+    }
+
+    class Snake extends Animal {
+      constructor(name: string) { super(name); }
+      move(distanceInMeters = 5) {
+        console.log("Slithering ... ");
+        super.move(distanceInMeters);
+      }
+    }
+
+    class Horse extends Animal {
+      constructor(name: string) {
+        super(name);
+      }
+
+      move(distanceInMeters = 45) {
+        console.log("Galloping ... ");
+        super.move(distanceInMeters);
+      }
+    }
+
+    let sam = new Snake("Sammy the Python");
+    let tom: Animal = new Horse("Tommy the Palomeno");
+
+    sam.move();
+    tom.move(34);   
+
+!!! NOTE: even though tom is "Animal", when tom.move(..) is called,
+the overriding Horse.move(..) method is called... 
+In Java, it wouldve been Animal.move() method ...
+
+
+  static
+  --------
+
+static members are visible on the class itself rather than on instances.
+
+
+    static origin = {x: 0, y: 0};  
+
+
+
+
+  public private and protected
+  ----------------------------
+
+public by default
+
+  you could still (and maybe should) use "public" explicitly
+
+    public name: string;
+
+private
+
+protected
+
+
+NOTE: any notion of 'private' will be gone from the compiled JS.
+https://yakovfain.com/2015/06/30/the-private-in-typescript-is-kinda-private/
+
+This
+
+    class Person {
+      public firstName: string;
+      public lastName: string;
+      public age: number;
+      private ssn: string;
+
+      constructor(
+          firstName: string,
+          lastName: string,
+          age: number,
+          ssn: string) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.age = age;
+            this.ssn = ssn;
+          }
+    }
+
+    let p = new Person("John", "Smith", 29, "123-45-6789");
+    console.log(`Last name: ${p.lastName},
+    SSN: ${p.ssn};
+    `)
+
+will be compiled to this:
+
+    var Person = (function () {
+        function Person(firstName, lastName, age, ssn) {
+            this.firstName = firstName;
+            this.lastName;
+            this.age = age;
+            this.ssn = ssn;
+        }
+        return Person;
+    })();
+ 
+There must be some reason why creators of the TypeScript compiler didn’t 
+turn the class Person into the JavaScript closure that would actually 
+make ssn private, for example:
+
+    var Person = (function () {
+        var _ssn;  
+        
+        function Person(firstName, lastName, age, ssn) {
+          
+            this.firstName = firstName;
+            this.lastName;
+            this.age = age;
+            _ssn = ssn;  // uses closure and does not provide direct access to _ssn
+        }
+        return Person;
+    })();
+
+
+
+    readonly modifier
+    -----------------
+
+You can make properties readonly by using 'readonly' keyword.
+readonly properties must be initialized at their declaration or in the 
+constructor.
+
+  readonly name: string;
+  readonly numberOfLegs: number = 8;
+
+  constructor (aName: string) {
+    this.name = aName;
+  }    
+
+  Parameter properties
+  --------------------
+
+allow you to create and initialize a member in one place:
+
+  constructor(readonly name: string) {
+    ...
+  }
+
+This consolidates declaration and assignment in one place.
+Parameter properties are declared by prefixing a constructor parameter with
+an accessibility modifier or readonly, or both.
+
+  accessors (getters and setters)
+  -------------------------------
+
+class Employee {
+
+  private _fullName: string;
+
+  get fullName(): string {
+    return this._fullName;
+  }
+
+  set fullName(newName: string) {
+    if (...) {
+      this._fullName = newName;
+    }
+  }
+}  
+
+
+
+  absract classes
+  ---------------
+
+abstract classes may not be instantiated directly.
+Unlike an interface, abstact class may contain implementation details for 
+its members.
+
+  abstract class Animal {
+
+    abstract makeSound(): void;
+    move(): void {
+      // implementation
+    }
+
+  }  
+
+
+private constructors and singletons
+-----------------------------------
+
+    class Logger {
+
+      private static _instance: Logger;
+
+      private constructor() {}
+
+      public static getInstance(): Logger {
+        if (!Logger._instance) {
+          Logger._instance = new Logger();
+        }
+        return Logger._instance;
+      }
+
+      public trace(message: string) {
+        console.log('[Trace] ' + message);
+      }
+
+      //  .. more methods
+    }
+
+    // let illegalLogger = new Logger(); // ERROR
+
+    let logger = Logger.getInstance();
+
+    logger.trace("Hello World!");
+
+
+==============================================================================
+
+  Generics
+  ********
+
+Major part of sw engineering is building components that not only have a well
+defined and consistent APIs, but are also reusable.
+
+Generics help create components that can work on a variety of types.
+
+    // simple echo function
+    function echo(arg: any): any {
+      return arg;
+    }
+
+Instead of using 'any', we need to capture the type of the argument in such
+a way that we can also use it to denote what is being returned.
+
+  type variable: special kind of variable that works on types, rather then values.
+
+    // simple echo function
+    function echo<T>(arg: T): T {
+      return arg;
+    }
+
+    console.log(echo("Max"));
+    console.log(echo(27));    
+
+
+what if we tried to get the length of the argument?
+Then we also need to indicate that the argument is a type that has "length"
+attribute:
+
+  function echo<T>(arg: T[]): T[] {
+
+    console.log(arg.length); // 
+
+    return arg;
+  }
+
+  console.log(echo(["Max", "Jane"]));
+  console.log(echo([27,30,11]));
+
+We can read the type of this generic "echo" function as:
+
+  "the generic function echo takes a type parameter T, and an argument
+  'arg' which an array of T's, and returns an array of T's".
+
+
+Generic Types
+-------------
+
+
+    Generic Function Types
+
+The type of generic functions is just like those of non-generic functions,
+with the type parameters listed first:
+
+  function echo<T>(arg: T): T {
+    return arg;
+  }
+
+// creating a new constant, defining generic type with return,
+// and finally assigning 'echo' function to the new constant variable.  
+
+  let myEcho: <T>(arg: T) => T = echo;
+
+If we expected array types of T, we could write this:
+
+    function echo<T>(arg: T[]): T[] {
+
+      console.log(arg.length); // 
+
+      return arg;
+    }
+
+    console.log(echo(["Max", "Jane"]));
+    console.log(echo([27,30,11]));
+
+
+We can also write the generic type as a call signature of an object literal:
+
+  let myEcho: {<T>(arg: T):T}  = echo;  
+
+Let's define a generic interface for a generic echo function:
+
+  interface GenericEchoFunction {
+    <T>(arg:T): T;
+  }
+
+  function echo<T>(arg: T): T {
+    return arg;
+  }
+
+  let myEcho: GenericEchoFunction = echo;
+
+
+  Generic Class
+----------------
+A generic class has a similar shape to a generic interface.
+Generic classes have a generic  type parameter list in (<>) brackets
+following the name of the class:
+
+    class GenericNumber<T> {
+      zeroValue: T;
+      add: (x: T, y: T) => T;
+    }
+
+    let myGenericNumber = new GenericNumber<number>();
+    myGenericNumber.zeroValue = 0;
+    myGenericNumber.add = function(x,y) { return x + y; };
+    console.log(myGenericNumber.add(2, 5));
+
+Constraints:
+
+class SimpleMath<T extends number> { .. }
+class SimpleMath<T extends number | string> { .. }
+
+class SimpleMath<T, U extends number | string> { .. }
+class SimpleMath<T extends number, U extends number | string> { .. }
+
+
+
+
+
+NOTE: casting variable to a number:
+
+  return +this.baseValue * +this.multiplyValue;  // '+' casts to number
+
+
+Built-in Generics
+------------------
+
+  built-in Array type is generic:
+
+    const testResults: Array<number> = [1.94, 2.33];
+
+
+==============================================================================
+
+  Generics Exercise
+  *****************
+
+Looked at Basarat's TS collections for example of Dictionary
+https://github.com/basarat/typescript-collections/blob/release/src/lib/Dictionary.ts
+
+Looked at this post for an example:
+http://stackoverflow.com/questions/23096260/is-there-a-typescript-list-and-or-map-class-library
+
+Looked for ideas on how to manipulate indexed types:
+http://stackoverflow.com/questions/35370414/how-to-iterate-over-string-indexed-array-in-typescript
+
+  console.log("------ Generic Map Exercise -------");
+
+
+  class GenericMap<T> {
+    private items: { [key: string]: T};
+    
+    constructor() {
+      this.items = {};
+    }
+
+    setItem(key: string, item: T): void {
+      this.items[key] = item;
+    }
+
+    hasKey(key: string): boolean {
+      return key in this.items;
+    }
+
+    getItem(key: string): T {
+      return this.items[key];
+    }
+
+    clear(): void {
+      this.items = {};
+    }
+
+    private valuesToArray<T>( obj: { [key: string]: T; } | { [key: number]: T; } ): T[] {
+      return Object.keys(obj).map(key => obj[key]);
+    }
+
+    printMap(): void {
+
+      // get the keys of 'this.items': "apples, bananas"
+      let keys: string[] = Object.keys(this.items);
+      console.log(`
+        keys: ${keys}
+      `);
+
+      // call map on keys array, where callback fn generates values array
+      let mappedValues: T[] = keys.map(key => this.items[key]);
+      console.log(`
+        mappedValues: ${mappedValues}
+      `);
+
+      // use valuesToArray(..) private method
+      console.log(`
+        valuesToArray: ${this.valuesToArray(this.items)}
+      `);
+
+      for(let key of keys){
+        console.log(`key[${key}<=>value[${this.items[key]}]]`);    
+      }
+
+    }
+
+      
+  }
+
+  const numberMap = new GenericMap<number>();
+  numberMap.setItem('apples', 5);
+  numberMap.setItem('bananas', 10);
+  numberMap.printMap();
+  console.log("hasKey('bananas'): " + numberMap.hasKey('bananas'));
+  console.log("getItem('bananas): " + numberMap.getItem('bananas'));
+
+  const stringMap = new GenericMap<string>();
+  stringMap.setItem('name', 'Max');
+  stringMap.setItem('age', '27');
+  stringMap.printMap();
+  console.log("hasKey('bananas'): " + stringMap.hasKey('bananas'));
+  console.log("hasKey('name'): " + stringMap.hasKey('name'));
+  console.log("getItem('name'): " + stringMap.getItem('name'));
+
+
+NOTE: 
+
+two for loop flavors:
+
+  for (let key in keys) {
+
+  }
+
+or  
+
+  for (let kes in this.map) {
+    console.log(key, this.map[key]);
+  }
+
+
+
+
+==============================================================================
+
+  Modules and Namespaces
+  **********************
+
+Namespaces are simply named JS objects in the global namespace.  
+They can span multiple files, and can be concatenated using --outFile.
+Namespaces could be a good way to structure your code in a webapp, with all the 
+dependencies included as <script> tags in your HTML code.
+
+Modules: just like namespaces, can contain both code and declarations.
+Main difference - modules declare their dependencies.
+
+Modules provide for better code reuse, stronger isolation and better tooling
+support for bundling.
+
+  namespaces                    vs                modules
+  --------------------------------------------------------
+  organize your app with              organize with real modules
+  JS objects
+
+  can be split over multiple          can be split 
+  files
+
+  no module loader needed             loader required
+
+  dependencies get difficult          explicit dependency declaration
+  to manage
+
+
+  Loading modules
+  ---------------
+
+Modules have dependency on a module loader (e.g. CommonJS/Require.js).
+For a small JS application, this might be overkill, but for larger apps, the cost
+comes with long-term modularity and maintainability benefits.
+
+  $ npm install systemjs --save
+
+  In the html file:
+
+<script src="node_modules/systemjs/dist/system.js"></script>
+<script>
+  // set our baseURL reference path
+  SystemJS.config({
+    baseURL: '/',
+    defaultJSExtentions: true
+  });
+
+  // loads app.js
+  SystemJS.import('app.js');
+</script>  
+
+  NOTE: <script src="app.js"></script> is no longer there.
+
+
+Export
+------
+
+  In TypeScript, as well as ES2015, any file containing a top-level 'import' or
+  'export' is considered a module.
+
+  Any declaration:
+    variable
+    function
+    class
+    type alias
+    interface
+  can be exported     
+
+
+export interface StringValidator { ... }
+export class ZipCodeValidator implements StringValidator { ... }
+
+class ZipCodeValidator implements ..
+
+export { ZipCodeValidator };
+export { ZipCodeValidator as MainValidator };
+
+import
+------
+
+Import from absolute or relative path.
+
+Import a single export from a module
+
+  import { ZipCodeValidator } from "./ZipCodeValidator";
+  let myValidator = new ZipCodeValidator();
+
+or 
+
+  import { ZipCodeValidator as ZCV } from "./ZipCodeValidator";
+  let myValidator = new ZCV;
+
+Import the entire module in a single variable, and use it to access
+individual module exports
+
+  import * as validator from "./ZipCodeValidator";
+  let  myValidator = new validator.ZipCodeValidator();
+
+import alias
+
+  import CircleMath = MyMath.Circle;
+
+
+Namespaces
+----------
+
+  Provide organization (previously "internal modules")
+
+    namespace Validation {
+      export interface StringValidator { ... }
+      export class ZipCodeValidator implements StringValidator { ... }
+    }
+
+    // using validators
+    let validators: { [s: string]: Validation.StringValidator; } = {};
+    validators["ZIP code"] = new Validation.ZipCodeValidator();
+    validators["Letters only"] = new Validation.LettersOnlyValidator();
+
+  With that all validators are declared in their own namespace, not in 
+  global namespace.
+
+  Namespaces can be extended across multiple files:
+
+    namespace declaration will be repeated in all files - namespaces will be
+    automatically combined.
+
+    you can of course import all using <script></script> tag
+  or
+    $ tsc --outFile app.js circleMath.ts rectangleMath.ts app.ts
+
+  or 
+    you can import all namespaces:
+
+    /// <reference path="circleMath.ts"/>
+    /// <reference path="rectangleMath.ts"/>
+
+    and with this, you don't need '--outFile' trick..
+
+
+
+==============================================================================
+
+  Decorators
+  **********
+
+Decorators provide a way to add both annotations and meta-programming syntax for
+class declarations and members.
+
+Decorators are a stage 1 proposal for JS and an experimental feature of TS.
+
+$ tsc --experimentalDecorators
+
+tsconfig.json:
+
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "experimentalDecorators": true
+    }
+}
+
+Decorators use the form "@expression" where "expression" must evaluate to a 
+function that will be called at runtime with information about the decorated
+declaration.
+
+
+  Class Decorators
+  ****************
+
+A class decorator is declared just before a class declaration.
+It is applied to the constructor of the class and can be used to observe,
+modify or replace a class definition.
+
+    console.log("------ Class Decorators -------");
+
+    function observable(constructor: Function){
+      console.log(`Class ${constructor.name} is being created... `);
+    }
+
+    @observable
+    class Greeter {
+      greeting: string;
+      constructor(message: string) {
+        this.greeting = message;
+      }
+      greet() {
+        return "Hello, " + this.greeting;
+      }
+    }
+
+  Decorator Factories
+  *******************
+
+If we want to customize how a decorator is applied to a declaration, we can write
+a decorator factory.
+
+Decorator Factory = a function that returns the expression that will be called
+by the decorator at runtime.
+
+In other words, a decorator factory that takes a parameter to return a
+decorator function
+
+  function color(value: string) {   // this is the decorator factory
+    return function(target) {       // this is the decorator
+      // do soemthing with target and value
+    }
+  }
+
+Another example:
+
+    function printable(constructorFn: Function) {
+      constructorFn.prototype.print = function () {
+        console.log(this);
+      }
+    }
+
+    @printable
+    class Plant {
+      name: string = "Green Plant";
+    }
+
+    const plant: Plant = new Plant();
+    plant.print();
+
+
+
+
+
+  Method Decorators
+  *****************
+
+declared just before a method declaration.
+the expression for the method decorator will be called as a function at 
+runtime, with the following three args:
+
+  1. either the constructor function of the class for a static member, or
+  the prototype of the class for an instance member
+
+  2. the name of the member
+
+  3. the Property Descriptor for the member
+
+    Property Descriptor will be undefined if <ES5  
+
+
+
+==============================================================================
+
+  TypeScript compiler
+  *******************
+
+tsconfig.js - TS compiler options
+
+  noEmitOnError (default: false)  - do not compile with errors
+  sourceMap (default: false)      - compile TS source map from which JS is generated
+                                    one advantage is you can place debug points
+                                    in the source map using Chrome Dev Tools 
+
+  noImplicitAny                   - enables checks on explicitely setting type
+
+  noImplicitThis
+
+  strictNullChecks
+
+  noUnusedParameters              - all function parameters should be used
+
+
+
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "noImplicitThis": false,
+        "sourceMap": false,
+        "noEmitOnError": true,
+        "strictNullChecks": true,
+        "noUnusedParameters": true
+    },
+    "exclude": [
+      "node_modules"
+    ]
+}  
+
+
+
+
+==============================================================================
+
+  JS function invocation and 'this'
+  *********************************
+http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/
+
+The core primitive - a Function's call() method
+------------------
+  here is what it does:
+
+  1. make an argList out of params 1 thru end
+  2. the first param is 'thisValue'
+  3. invoke the function with 'this' set to 'thisValue' and 'argList'
+
+    function hello(thing) {
+      console.log(this + " says hello " + thing);
+    }
+    hello.call("Yehuda", "world"); // outputs "Yehuda says hello world"
+
+Obviously, invoking functions with call() all the time would be pretty annoying.
+JS allows us to invoke functions directly using the parens syntax:
+
+  function hello(thing) {
+    console.log("Hello " + thing);
+  }
+  hello("World");
+  // which is really:
+  hello.call(window, "World");
+
+This behaviour changed in ECMAScript 5 ONLY when using STRICT mode:
+
+  // with ES5 "use strict"
+  hello.call(undefined, "world");  
+
+In other words:
+
+  fn(...args)  <==>  fn.call(window [ES5-strict: undefined], ...args)
+
+                     function being called should change its 'thisValue'
+                     to the global object when not in strict mode.
+
+
+Member Functions
+----------------
+
+  var person = {
+    name: "Brendan Eich",
+    hello: function(thing) {
+      console.log(this + " says hello " + thing);
+    }
+  }
+  person.hello("world");
+
+// same as
+
+  person.hello.call(person, "world"); 
+
+// And if we attach 'hello' method dynamically .. 
+
+  function hello(thing) {
+    console.log(this + " say hello " + thing);
+  }
+  person = { name: "Brendan Eich" }
+  person.hello = hello;
+  person.hello("world"); // still same as person.hello.call(person, "world")
+
+  // but calling the standalone function (in non-strict mode)
+  
+  hello("world"); // "[object DOMWindow]world"
+
+NOTE: the function doesn't have a PERSISTENT notion of its 'this'  -- it is 
+always set at call time based upon the way it was invoked by the caller.
+
+
+Using Function.prototype.bind
+------------------------------
+
+sometimes it can be convenient to have a reference to a function with a
+PERSISTENT 'this' value -- so people have used a simple closure trick to convert
+a function into one with an unchanging 'this':
+
+  var person = {
+    name: "Brendan Eich",
+    hello: function(thing) {
+      console.log(this.name + " says hello " + thing);
+    }
+  }
+
+  var boundHello = function(thing) { 
+    return person.hello.call(person, thing);
+  }
+    
+General purpose trick - ES5 introduced new method: bind() on all Function objects
+
+  var person = {
+    name: "Brendan Eich",
+    hello: function(thing) {
+      console.log(this.name + " says hello " + thing);
+    }
+  }
+
+  var boundHello = person.hello.bind(person);
+  boundHello("world");
+
+
+==============================================================================
+
+  RxJs
+  ****
+
+$ npm install --save RxJs
+
+
+import Rx = require("rxjs/Rx");
+
+  error: cannot find Promise
+
+$ npm install --save-dev @types/core-js
+
+  error: cannot find type definition for 'chai'
+
+$ npm install --save-dev @types/chai
+
+$ npm start # start the lite-server
+$ npm run build # to run tsc and watch for changes
+
+
+
+
+
+==============================================================================
+
+  Using JS libraries with TypeScript
+  **********************************
+
+Using jQuery as example
+
+Install jQuery
+--------------
+
+$ npm install --save jquery
+
+Import the library using SystemJS
+----------------------------------
+
+$ npm install --save systemjs
+
+index.html
+----------
+<head>
+    <script src="node_modules/systemjs/dist/system.js"></script>
+
+<body>
+<script>
+  // set out baseURL reference path
+  SystemJS.config({
+    map: {
+      "jQuery": "node_modules/jquery/dist/jquery.min.js"
+    },
+    baseURL: '/',
+    defaultJSExtensions: true
+  });
+  SystemJS.import('app.js');
+</script>
+
+create a tag to test
+--------------------
+
+<div id="app">Change with jQuery</div>
+
+
+import jquery TS definitions from DefinitelyTyped
+-------------------------------------------------
+
+jquery.d.ts
+
+$ npm install --save-dev @types/jquery
+
+  this adds line to package.json and an entry in 
+
+    node_modules/@types/jquery/...
+
+In your code:
+
+app.ts:
+
+  import "jQuery";
+  $("#app").css({"background-color": "green"});
+
+
+==============================================================================
+
+  using Webpack
+****************
+
+$ npm install --save-dev webpack ts-loader
+
+in tsconfig
+------------
+
+{
+    "compilerOptions": {
+        "target": "es5",
+        "noImplicitAny": false,
+        "noImplicitThis": false
+    }
+}
+
+create webpack.config.js
+-------------------------
+
+module.exports = {
+  entry: "./app.ts",
+  output: {
+    filename: "./js/bundle.js"
+  },
+  module: {
+    loaders: [
+      { test: /\.ts$/, loader: "ts-loader" }
+    ]
+  }
+};
+
+package.json
+------------
+add a couple of scripts:
+
+    "build": "webpack -d --watch",
+    "build:prod": "webpack -p"
+
+NOTE: ts-loader is looking for local typescript:
+
+  $ npm run build
+
+  > ts-in-depth@1.0.0 build /home/craiskin/ws/8020/ts/ts-in-depth
+  > webpack -d --watch
+
+  Hash: 396f0bfb9d565b6f60f0
+  Version: webpack 1.13.3
+  Time: 90ms
+      + 1 hidden modules
+
+  ERROR in Cannot find module 'typescript'
+
+so, install typescript as local dependency
+
+$ npm install --save-dev typescript
+
+change the import statment:
+---------------------------
+
+import $ = require("jquery");
+
+move the bundle.js import script below its usage:
+-------------------------
+
+<body>
+
+  <div id="app">Change it with jQuery</div>
+
+  <script src="./js/bundle.js"></script>
+
+
+
+==============================================================================
+
+Q: How do I manipulate indexed types?
+
+    I have defined a static property as such:
+
+    private static colorsByName: { [index: string]: MyColorClass}
+    but when I attempt to use for... of from the answer listed here: TypeScript for-in statement
+
+    for(let value of MyClass.colorsByName) {
+        ...
+    }
+    I get an error:
+
+    Type { [index: string]: MyColorClass; } is not an array type or a string type.
+
+
+
+A:
+http://stackoverflow.com/questions/35370414/how-to-iterate-over-string-indexed-array-in-typescript
+
+  It's not an array. 
+  It's an object with string keys and properties of type MyColorClass.
+
+  What you can do, is turn it into an array. 
+  You can do this by getting an array of the object's keys then map the keys 
+  to the properties of the object:
+
+  Object.keys(MyClass.colorsByName).map(prop => MyClass.colorsByName[prop]).forEach(color =>{
+      // use color here
+  });
+
+    This is who I got keys:
+
+      // get the keys of 'this.items': "apples, bananas"
+      let keys: string[] = Object.keys(this.items);
+      console.log(`
+        keys: ${keys}
+      `);      
+
+    Here is how i got values:
+
+      // call map on keys array, where callback fn generates values array
+      let mappedValues: T[] = keys.map(key => this.items[key]);
+      console.log(`
+        mappedValues: ${mappedValues}
+      `);    
+
+      for(let key of keys){
+        console.log(`key[${key}<=>value[${this.items[key]}]]`);    
+      }      
+
+  Since you might do this a lot, you could create a reusable function to turn the properties into an array:
+
+  function propsToArray<T>(obj: { [index: string]: T; } | { [index: number]: T; }) {
+      return Object.keys(obj).map(prop => obj[prop]);
+  }
+
+    Here is mine:
+
+      private valuesToArray<T>( obj: { [key: string]: T; } | { [key: number]: T; } ): T[] {
+        return Object.keys(obj).map(key => obj[key]);
+      }    
+
+
+
+  Then you could use it with for...of:
+
+    for (let color of propsToArray(MyClass.colorsByName)) {
+        // use color here
+    }
+
+  Or with forEach:
+
+    propsToArray(MyClass.colorsByName).forEach(color => {
+        // use color here
+    });
+
+
+
+==============================================================================
+
+
+
+
+
+

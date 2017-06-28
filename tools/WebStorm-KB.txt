@@ -1,0 +1,116 @@
+
+	@@@@@@@@@@@@@@@
+
+		WebStorm
+
+	@@@@@@@@@@@@@@@
+
+
+
+Navigation
+
+	ctrl-[		navigate to code block start
+
+	ctrl-]		navigate to code block end
+
+
+Searching
+
+	F3 	next occurance
+
+
+
+================================================================================
+
+	new project setup
+	*****************
+
+using yeoman, grunt..
+
+1. Alt-F12 or open Terminal
+
+2. 'yo webapp'
+
+
+================================================================================
+
+Windows 7 sometimes breaks FTP connections on Java 7 if firewall is enabled. Command 
+
+> netsh advfirewall set global StatefulFTP disable 
+  Ok.
+
+usually fixes the problem. See more in the issue.			
+
+
+================================================================================
+
+	Cannot resolve directory
+	************************
+http://stackoverflow.com/questions/21987225/webstorm-cannot-resolve-directory
+
+Q:
+	app/index.html
+
+	webstorm says - cannot resolve directory.
+
+    	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+
+	That's correct, my project structure is:
+
+		/app/index.html
+
+		/bower_components
+
+	How can I tell WebStorm where to find "bower_components"?
+
+A:
+	To make file refrences work in your project, mark the / directory as "Resource" folder:
+
+		Settings | Directories
+
+		Select the folder where your "bower_components" live and mark it as "Resource Root".
+
+
+================================================================================
+
+
+	import not found into sass/scss file  WebStorm error
+	*************************************
+
+_settings.scss
+
+@import 'foundation/functions';
+
+The problem here is because this file is in 'app' folder
+
+	app/scss/
+
+and foundation SCSS functions are  in:
+
+	app/bower_components/foundation/scss/foundation
+		- _functions.scss
+
+so the solution is to cd into your app/scss directory using cmd with Admin privileges 
+
+> cd <your-web-app>\app\scss
+
+and create the link:
+
+>mklink /d foundation ..\..\app\bower_components\foundation\scss\foundation
+
+	symbolic link created for foundation <<===>> ..\..\app\bower_components\foundation\scss\foundation
+
+
+================================================================================	
+
+	Activate and Configure ESLint
+	*****************************
+
+Expand
+	Language & Frameworks | JavaScript | Code Quality Tools | ESLint
+
+	select the "Enable" checkbox
+	look for .eslintrc as config file	
+
+
+================================================================================
