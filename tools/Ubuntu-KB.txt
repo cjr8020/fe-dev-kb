@@ -377,18 +377,14 @@ To resize, use Alt-rclick and drag.
   **********
   
   [user]
-          name = Chris Raiskin
-          email = chris.raiskin@standard.com
+          name = Your Name
+          email = yourname@yourdomain.com
   [core]
           editor = vim
           safecrlf = false
           autocrlf = input
           ignorecase = false
   [http]
-          sslVerify = true
-  [http "https://pdxlghubd001.standard.com"]
-          sslVerify = false
-  [http "https://pdxlghubp001.standard.com"]
           sslVerify = false
   [status]
           submoduleSummary = true
