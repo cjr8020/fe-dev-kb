@@ -35,7 +35,33 @@ sublime-settings -User:
 
 ========================================================================
 
-Regular Expressions replacments
+  Install Sublime on Ubuntu
+  *************************
+
+Install Sublime Text 3 via the official apt repository:
+
+1. Open terminal via Ctrl+Alt+T or by searching for “Terminal” from desktop app launcher. When it opens, run command to install the key:
+
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+
+
+2. Then add the apt repository via command:
+
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+
+3. Finally check updates and install sublime-text via your system package manager:
+
+  sudo apt-get update
+
+  sudo apt-get install sublime-text
+
+4. launch with 
+
+  $ subl
+
+============================================================
+
+Regular Expressions replacements
 *******************************
 
 CTRL-H
@@ -67,8 +93,8 @@ Show output panel:   F12
 
 	{ "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} }
 
+========================================================================
 
-===================================================================================
 
 	mouse stopped working
 	*********************
@@ -108,7 +134,7 @@ Restart Sublime Text
 	installing plugins with Package Control
 	***************************************
 
-1. Open Package Control: Install Package
+1. Open Package Control: Install Package   ctrl-shift-p
 2. Type in the name of the package to find.	
 3. install
 4. restart
