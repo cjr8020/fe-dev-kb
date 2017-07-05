@@ -1,5 +1,19 @@
 
 
+Install nodejs on Ubuntu 16.04
+*************************
+
+Use Current Release: At te last update of this tutorial, Node.js 8.0 is the current Node.js release available.
+
+  $ sudo apt-get install python-software-properties
+  $ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  $ sudo apt-get install nodejs
+  $ node -v 
+    v8.0.0
+  $ npm -v 
+    5.0.0
+
+
 	@@@@@@@@@@@
 
 		npm
