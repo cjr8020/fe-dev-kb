@@ -6,7 +6,7 @@ Keyboard Shortcuts
 
 ========================================================================
 
-Regular Expressions replacments
+Regular Expressions replacements
 *******************************
 
 CTRL-H
@@ -38,8 +38,8 @@ Show output panel:   F12
 
 	{ "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} }
 
+========================================================================
 
-===================================================================================
 
 	mouse stopped working
 	*********************
@@ -79,7 +79,7 @@ Restart Sublime Text
 	installing plugins with Package Control
 	***************************************
 
-1. Open Package Control: Install Package
+1. Open Package Control: Install Package   ctrl-shift-p
 2. Type in the name of the package to find.	
 3. install
 4. restart
