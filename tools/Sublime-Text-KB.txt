@@ -3,6 +3,16 @@
 Keyboard Shortcuts
 *******************
 
+Sublime Customizations
+**********************
+
+sublime-keymap User:
+
+[
+    { "keys": ["ctrl+shift+;"], "command": "move", "args": {"by": "characters", "forward": true} },
+    { "keys": ["f12"], "command": "show_panel", "args": {"panel": "output.exec"} }
+]
+
 
 ========================================================================
 
