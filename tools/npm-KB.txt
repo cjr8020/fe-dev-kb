@@ -108,6 +108,31 @@ strict-ssl=false
 	switching between npm/node versions with n
 	******************************************
 
+Install n
+
+  $ sudo npm install -g n
+
+Install/Activate Versions
+
+  $ sudo n 7.6.0
+  $ sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
+
+List installed versions
+
+  $ n 
+
+Install latest
+
+  $ n latest
+  $ sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
+
+Install latest stable
+
+  $ n stable
+  $ sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
+
+
+
 
 
 ==============================================================================
