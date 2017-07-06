@@ -451,6 +451,29 @@ echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sou
 
 ============================================================
 
+	install Meld Merge
+	******************
+
+Meld is a visual diff and merge tool.
+Allows you to compare files, diretories and version controlled projects.
+
+	$ sudo apt-get install meld
+
+If it installs an old version, you can install manually from git repo:
+
+	$ sudo apt-get install intltool itstool gir1.2-gtksource-3.0 libxml2-utils
+
+	$ git clone https://git.gnome.org/browse/meld
+
+	$ cd meld
+
+run the following command to install latest meld version:
+
+	$ sudo python setup.py install
+
+
+============================================================
+
 WARNING: i think installing Opera messed by other two browsers video playback.
 
 	Installing Opera
