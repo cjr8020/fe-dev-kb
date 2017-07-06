@@ -6,6 +6,25 @@
 	@@@@@@@@@@@@@@@
 
 
+================================================================================
+
+	Customizations
+	**************
+
+Keymap
+
+	1. Create copy of Default
+
+	Settings > Keymap
+
+		Tabout
+		------
+		Move Caret to Line End: Ctrl+Shift+Semicolon
+
+
+
+
+================================================================================
 
 Navigation
 
