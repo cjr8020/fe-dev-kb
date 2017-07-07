@@ -1892,6 +1892,25 @@ http://stackoverflow.com/questions/36271899/what-is-the-correct-way-to-share-the
 
 ================================================================================
 
+  Forms
+  *****
+
+Debugging forms with `spy` template reference variable
+---------------------------
+
+https://angular.io/guide/forms
+
+Temporarily add a template reference variable named spy to the Name <input> tag and use it to display the input's CSS classes.
+
+  <input type="text" class="form-control" id="name"
+    required
+    [(ngModel)]="model.name" name="name"
+    #spy>
+  <br>TODO: remove this: {{spy.className}}
+
+
+================================================================================
+
 
 
 
