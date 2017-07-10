@@ -22,7 +22,11 @@ Keymap
 		Move Caret to Line End: Ctrl+Shift+Semicolon
 
 
+	2. use single quotes
 
+		Settings | Editor | Code Style | JavaScript | Punctuation
+
+		Use <quote style> quotes in <new code/always>
 
 ================================================================================
 
