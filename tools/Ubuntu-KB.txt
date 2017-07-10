@@ -9,6 +9,9 @@
 Most useful
 ***********
 
+1. launch terminal  Ctrl+Alt+T
+
+
 install deb package
 -------------------
 
