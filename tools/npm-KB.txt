@@ -48,6 +48,11 @@ loglevel=info
 registry=https://nexus-dev.standard.com:8443/nexus/content/groups/npm-all/
 strict-ssl=false
 
+To list config:
+
+	$ npm config list -l
+
+
 
 	Windows
 	-------
@@ -280,7 +285,7 @@ adds something like this into package.json:
 
 add dependency with exact version:
 
-	$ npm install --save --save-exact somepackage@1.1.1
+	$ npm install --save --save-exact somepackage@1.1.1:!
 
 
 ==============================================================================
