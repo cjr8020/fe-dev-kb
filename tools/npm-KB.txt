@@ -45,7 +45,7 @@ $ sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
 ------
 
 loglevel=info
-registry=https://nexus-dev.standard.com:8443/nexus/content/groups/npm-all/
+registry=https://nexus-dev.domain.com:8443/nexus/content/groups/npm-all/
 strict-ssl=false
 
 To list config:
@@ -151,7 +151,7 @@ If anonymous access is disabled or write access is required for publishing a pac
   Once the realm is activated, a user can establish the auth to repository with the
   npm login command:
 
-    $ npm login --registry=https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/
+    $ npm login --registry=https://nexus-dev.domain.com:8443/nexus/repository/npm-thirdparty/
 
   Provide your repository manager username and password as well as your email address when prompted. 
 
@@ -163,29 +163,28 @@ If anonymous access is disabled or write access is required for publishing a pac
 
 Example:
 
-craiskin@xubi-one:~/ws/standard/orchis/cloudentityjs $ npm login --registry=https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/
+$ npm login --registry=https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/
 
 	npm info it worked if it ends with ok
 	npm info using npm@4.1.2
 	npm info using node@v7.6.0
 	Username: (craiskin) 
 	Password: (or leave unchanged) 
-	Email: (this IS public) chris.raiskin@standard.com
+	Email: (this IS public) user@domain.com
 	npm info attempt registry request try #1 at 11:26:51 AM
-	npm http request PUT https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/-/user/org.couchdb.user:craiskin
-	npm http 201 https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/-/user/org.couchdb.user:craiskin
+	npm http request PUT https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/-/user/org.couchdb.user:craiskin
+	npm http 201 https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/-/user/org.couchdb.user:craiskin
 	npm info adduser Authorized user craiskin
-	Logged in as craiskin on https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/.
+	Logged in as craiskin on https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/.
 	npm info ok 
 
 
-craiskin@xubi-one:~/ws/standard/orchis/cloudentityjs $ cat ~/.npmrc 
+$ cat ~/.npmrc 
 
 	loglevel=info
 	strict-ssl=false
-	registry=https://nexus-dev.standard.com:8443/nexus/repository/npm-all/
-	_auth="Y3JhaXNraW46SWRrYklidDQ="
-	//nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/:_authToken=5ee42ad0-435d-3c69-8fcb-f814058dba9a
+	registry=https://nexus.domain.com:8443/nexus/repository/npm-all/
+	//nexus.domain.com:8443/nexus/repository/npm-thirdparty/:_authToken=5ee42ad0-435d-3c69-8fcb-f814058dba9a
 
 
 
@@ -220,12 +219,12 @@ Since .npmrc typically contains the group containing multiple npm registries...
 
 a simple way to override this value is to provide a registry to the publish command:
 
-  $ npm publish --registry https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/
+  $ npm publish --registry https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/
 
 Alternately, you can edit your package.json file and add a publishConfig section:
 
   "publishConfig" : {
-    "registry" : "https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/"
+    "registry" : "https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/"
   },
 
 Detailed info about package creation at:
@@ -235,7 +234,7 @@ Detailed info about package creation at:
 
 Example:
 
-craiskin@xubi-one:~/ws/standard/orchis/cloudentityjs $ npm publish
+ $ npm publish
 
 npm info it worked if it ends with ok
 npm info using npm@4.1.2
@@ -244,8 +243,8 @@ npm info lifecycle cloudentityjs@1.1.1~prepublish: cloudentityjs@1.1.1
 npm info lifecycle cloudentityjs@1.1.1~prepare: cloudentityjs@1.1.1
 npm info lifecycle cloudentityjs@1.1.1~prepublishOnly: cloudentityjs@1.1.1
 npm info attempt registry request try #1 at 11:27:54 AM
-npm http request PUT https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/cloudentityjs
-npm http 200 https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/cloudentityjs
+npm http request PUT https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/cloudentityjs
+npm http 200 https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/cloudentityjs
 + cloudentityjs@1.1.1
 npm info lifecycle cloudentityjs@1.1.1~publish: cloudentityjs@1.1.1
 npm info lifecycle cloudentityjs@1.1.1~postpublish: cloudentityjs@1.1.1
@@ -260,11 +259,11 @@ Once your packages have been pushed to an npm hosted repository, you can mark th
 
 The npm deprecate command uses a registry configuration value to inform where the package lives. To deprecate an existing package, use a command like the following:
 
-  $ npm deprecate --registry https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/ testproject1@0.0.1 "This package is deprecated"
+  $ npm deprecate --registry https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/ testproject1@0.0.1 "This package is deprecated"
 
 If you change your mind, you can reverse this action using the same command. To undeprecate a package, pass an empty string to the deprecate command:
 
-  $ npm deprecate --registry https://nexus-dev.standard.com:8443/nexus/repository/npm-thirdparty/ testproject1@0.0.1 ""
+  $ npm deprecate --registry https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/ testproject1@0.0.1 ""
 
 
 ==============================================================================
