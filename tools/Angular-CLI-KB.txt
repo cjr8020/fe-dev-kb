@@ -804,7 +804,7 @@ You can add more global styles via the apps[0].styles property in
 angular-cli.json
 
 
-================================================================================
+=========================================================================
 
 
   No binary for Chrome browser on your platform
@@ -820,8 +820,54 @@ Visit http://ember-cli.com/user-guide/#watchman for more info.
   Please, set "CHROME_BIN" env variable.
 
 
+==============================================================
 
-  How to run tests without browser?
+
+  Running tests with headless browser
+  ***********************************
+
+
+  Headless Chrome
+  ***************
+
+Chrome now has the ability to run in headless mode since version 59, so you can use it to run tests without needing to install any additional packages and with a more standard environment.
+
+To use Chrome in headless mode, you need to add the following section to your karma.conf.js
+
+customLaunchers: {
+  ChromeHeadless: {
+    base: 'Chrome',
+    flags: [
+      '--headless',
+      '--disable-gpu',
+      // Without a remote debugging port, Google Chrome exits immediately.
+      '--remote-debugging-port=9222',
+    ],
+  }
+}
+
+Now you need to replace the existing browser or add 'ChromeHeadless' option:
+
+    browsers: ['Chrome','ChromeHeadless'],
+
+in the same file.
+
+Now, if you added a 2nd browser, you can say:
+
+  $ ng test --browser ChromeHeadless
+
+or just 
+
+  $ ng test
+
+if you only have one browser option.    
+
+
+
+---------------------------------------------------------------
+
+
+  Headless PhantomJS
   *********************************
 
 It is now PhantomJS2:
@@ -882,6 +928,7 @@ the plugins array as well.
 execute tests:
 
 $ ng test --build --browsers PhantomJS --watch false --log-level debug
+
 
 
 ==============================================================
