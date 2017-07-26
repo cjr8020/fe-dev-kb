@@ -834,17 +834,19 @@ Chrome now has the ability to run in headless mode since version 59, so you can 
 
 To use Chrome in headless mode, you need to add the following section to your karma.conf.js
 
-customLaunchers: {
-  ChromeHeadless: {
-    base: 'Chrome',
-    flags: [
-      '--headless',
-      '--disable-gpu',
-      // Without a remote debugging port, Google Chrome exits immediately.
-      '--remote-debugging-port=9222',
-    ],
-  }
-}
+    browsers: ['Chrome','ChromeHeadless'],
+    singleRun: true,
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          // without a remote dubugging port, Google Chrome exits immediately
+          '--remote-debugging-port=9222',
+        ],
+      }
+    }
 
 Now you need to replace the existing browser or add 'ChromeHeadless' option:
 
