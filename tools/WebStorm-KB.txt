@@ -137,3 +137,14 @@ Expand
 
 
 ================================================================================
+
+	Remap Ubuntu keyboard shortcuts
+	*******************************
+
+Intellij IDEA/WebStorm conflicts with ubuntu window manager shortcuts.
+Here is how to remap them
+
+	Settings > Window Manager > Keyboard tab
+
+
+================================================================================
