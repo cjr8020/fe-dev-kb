@@ -2027,6 +2027,141 @@ When you exclude tests, these tests will be noted as “skipped”.
 ================================================================================
 
 
+  Angular Testing
+  ***************
+
+https://angular.io/guide/testing
+
+
+Jasmine
+  test framework
+  ships with an HTML test runner that executes tests in browser
+
+Angular testing utilities
+  create a test environment for the angular application code under test
+  use them to condition and control parts of the application as they 
+  interact within the Angular environment
+
+Karma
+  test runner ideal for writing and running unit tests while developing
+  the application.
+
+Protractor
+  use it to write and run e2e tests.
+  in e2e testing, one process runs the real application, and a second process
+  runs protractor tests that simulate user behavior and assert that the
+  application responds in the browser as expected.
+
+
+================================================================================
+
+  Angular Unit Testing
+  ********************
+
+spec file
+
+  tests written in Jasmine are called specs
+  the file extension must be .spec.ts - convention expected in karma.conf.js
+  which looks for spec file in src/app folder
+
+
+TestBed
+
+  TestBed is the first and most important of Angular testing utilities.
+  it creates an Angular testing module - an @NgModule class - that you 
+  configure with the 'configureTestingModule' method to produce the 
+  module environment for the class you want to test.
+
+  in effect, you detach the tested component from its own application 
+  module and re-attach it to a dynamically-constructed Angular test module
+  tailored specifically for this battery of tests.
+
+
+TestBed.compileComponents()
+
+  Q: when am I supposed to call compileComponents()?
+
+    angular docs doesn't explain
+     - in what circumstances it is "necessary" to call this function
+     - what are the consequences of not doing so
+
+  A: if you're using webpack, the build will compile the templateUrls 
+  into inline templates and styleUrls to styles.
+  so there is no need to 'compileComponents' because it is jsut like 
+  you're using template and styles .. 
+
+  if you're using SystemJS, this doens't happen.  Angular will need to 
+  make XHR requests to retrieve the external templates and styles, and 
+  then compile.  Here you will need to 'compileComponents'.
+
+
+beforeEach(async(..))
+beforeEach( ... )
+
+  https://stackoverflow.com/questions/40126729/angular-2-testing-async-function-call-when-to-use
+
+  'async' will allow the next test not to start until the 'async' 
+  finishes all it's tasks.
+
+  What 'async' does is wrap the callback in a Zone, where all async tasks
+  (e.g. setTimeout) are tracked.  Once all the async tasks are complete,
+  then the 'async' completes.
+
+  If you've ever worked with Jasmine outside of Angular, you may have seen
+  'done' being passed to the callback:
+
+  it('..', function(done) {
+    someAsyncAction().then( () => {
+      expect(something).toBe(something);
+      done();
+    });
+  });
+
+  With Angular (in a Jasmine environment), Angular will actually call
+  'done' behind the scenes, when we use 'async'.  It will keep track of 
+  all the async tasks in the Zone, and when they are all finished, 'done' will be called behind the scenes.
+
+  With TestBed configuration, you would use this generally when you want
+  to 'compileComponents'.
+
+  When testing a component that uses templateUrl (if you're not using webpack)
+  then Angular needs to make an XHR request to get the template, so the 
+  communication is asynchronous.
+
+
+================================================================================
+
+Test Debugging
+
+  Debug specs in browser in the same way that you debug an application
+
+  1. click DEBUG button in the browser
+    it opens a new tab and re-runs the test(s)
+
+  2. open Developer Tools (ctr-shift-i)
+
+  3. pick the "sources" section
+
+    important: for the next step to work, you need to FIRST
+      right-click anywhere in the Sources view
+      and "Add folder to workspace" and select src/app
+
+
+  4. open your ".spec.ts" test file (ctrl-P, then start typing name of file)
+
+  5. set a breakpoint in the test
+
+  6. refresh the browser and it stops at the breakpoint.
+
+
+
+
+
+
+
+================================================================================
+
+
 
 
 
