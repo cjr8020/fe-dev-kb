@@ -2120,6 +2120,23 @@ TestBed
     provides access to the component itself and to the DebugElement which is 
     a handle to the component's DOM element.
 
+    let fixture: ComponentFixture<BannerInlineComponent>;
+    let component: BannerInlineComponent;
+    let de: DebugElement;
+    let el: HTMLElement;
+    ...
+
+    beforeEach( () => {
+      ...
+
+      fixture = TestBed.createComponent(BannerInlineComponent);
+      component = fixture.componentInstance;
+      de = fixture.debugElement.query(By.css('h1'));
+      el = de.nativeElement;
+
+    })
+
+
     fixture returned from TestBed.createComponent is your component under test
     with several additional properties and methods:
 
@@ -2129,8 +2146,14 @@ TestBed
       componentInstance
         actual component under test - you can call methods on the component
 
+      DebugElement
+
+        angular class that contains all kinds of references and methods 
+        that help you introspect the element
+
       nativeElement
         the DOM element of the template your component owns.
+
 
 
 TestBed.compileComponents()
@@ -2197,6 +2220,47 @@ beforeEach( ... )
 
 ================================================================================
 
+  default test template created by angular-cli
+  ********************************************
+
+  angular-cli creates a new describe Suite for the new component
+  it just created.
+
+  It comes with (2) beforeEach:
+
+    beforeEach(async) - compileComponents
+    beforeEach()      - creates fixture/component/etc instances
+                        and runs detectChanges on the fixture.
+
+
+  describe('GreeterComponent', () => {
+    let component: GreeterComponent;
+    let fixture: ComponentFixture<GreeterComponent>;
+
+    beforeEach(async(() => {
+      console.log('beforeEach(async)');
+      TestBed.configureTestingModule({
+        declarations: [ GreeterComponent ]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      console.log('beforeEach()');
+      fixture = TestBed.createComponent(GreeterComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+  });
+
+
+
+================================================================================
+
   Example: test LanguageService component
   ----------------------------------------
 
@@ -2233,7 +2297,7 @@ beforeEach( ... )
     it('should return available languages', () => {
       expect(service.get()).toContain('en');
     });
-
+ 
   })
 
 
