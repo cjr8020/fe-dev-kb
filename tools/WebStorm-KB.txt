@@ -6,6 +6,11 @@
 	@@@@@@@@@@@@@@@
 
 
+Keyboard shorcuts
+
+ctrl-F4				close current file/tab	
+
+
 ================================================================================
 
 	Customizations
@@ -24,9 +29,14 @@ Keymap
 
 	2. use single quotes
 
-		Settings | Editor | Code Style | JavaScript | Punctuation
+		Settings | Editor | Code Style | TypeScript | Punctuation
 
 		Use <quote style> quotes in <new code/always>
+
+
+		Settings | Editor | Code Style | JavaScript | Punctuation
+
+		Use <quote style> quotes in <new code/always>		
 
 ================================================================================
 

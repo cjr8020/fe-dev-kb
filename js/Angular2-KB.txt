@@ -2055,6 +2055,42 @@ Protractor
 
 ================================================================================
 
+  Introduction to Jasmine
+  ***********************
+
+testing framework from Pivotal Labs using behavior driven notation.
+
+Suites
+  describe(string, function)  
+    take a title and a function
+    containing one or more specs
+
+Specs
+  it(string, function) functions
+    take a title and a function containing one or more expectations
+
+Expectations
+  are assertions that evaluate to true or false:
+    expect(actual).toBe(expected)
+
+Matchers
+  are predefined helpers for common assertions:
+    toBe(expected)      - reference equality
+    toEqual(expected)   - deep comparison
+
+    complete list: https://github.com/JamieMason/Jasmine-Matchers
+
+Setup / Teardown
+
+  beforeEach
+  afterEach
+
+  beforeAll
+  afterAll
+
+
+================================================================================
+
   Angular Unit Testing
   ********************
 
@@ -2067,7 +2103,9 @@ spec file
 
 TestBed
 
-  TestBed is the first and most important of Angular testing utilities.
+  TestBed is the first and most important of Angular testing utilities - used
+  to set up the dependencies for our tests.
+
   it creates an Angular testing module - an @NgModule class - that you 
   configure with the 'configureTestingModule' method to produce the 
   module environment for the class you want to test.
@@ -2075,6 +2113,24 @@ TestBed
   in effect, you detach the tested component from its own application 
   module and re-attach it to a dynamically-constructed Angular test module
   tailored specifically for this battery of tests.
+
+  ComponentFixture 
+
+    a handle on the test environment surrounding the created component.
+    provides access to the component itself and to the DebugElement which is 
+    a handle to the component's DOM element.
+
+    fixture returned from TestBed.createComponent is your component under test
+    with several additional properties and methods:
+
+      detectChanges()
+        force a walk of the data graph and update the view with relevant content
+
+      componentInstance
+        actual component under test - you can call methods on the component
+
+      nativeElement
+        the DOM element of the template your component owns.
 
 
 TestBed.compileComponents()
@@ -2093,6 +2149,15 @@ TestBed.compileComponents()
   if you're using SystemJS, this doens't happen.  Angular will need to 
   make XHR requests to retrieve the external templates and styles, and 
   then compile.  Here you will need to 'compileComponents'.
+
+inject
+
+  allows us to get dependencies at the TestBed level
+
+  it('should return ... ', inject([MyService], service => {
+    service.foo();
+  }));
+
 
 
 beforeEach(async(..))
@@ -2119,7 +2184,8 @@ beforeEach( ... )
 
   With Angular (in a Jasmine environment), Angular will actually call
   'done' behind the scenes, when we use 'async'.  It will keep track of 
-  all the async tasks in the Zone, and when they are all finished, 'done' will be called behind the scenes.
+  all the async tasks in the Zone, and when they are all finished, 'done' will be 
+  called behind the scenes.
 
   With TestBed configuration, you would use this generally when you want
   to 'compileComponents'.
@@ -2127,6 +2193,91 @@ beforeEach( ... )
   When testing a component that uses templateUrl (if you're not using webpack)
   then Angular needs to make an XHR request to get the template, so the 
   communication is asynchronous.
+
+
+================================================================================
+
+  Example: test LanguageService component
+  ----------------------------------------
+
+1. load the dependencies requireq for the test with TestBed.configureTestingModule
+2. use 'inject' to automatically instantiate each dependency
+
+  describe('Service: LanguageService', () => {
+
+    beforeEach( () => TestBed.configureTestingModule({
+      providers: [ LanguageService ]
+    }));
+
+    it('should return available languages', inject([LanguageService], service => {
+      expect(service.get()).toContain('en');
+    }));
+
+  })
+
+3. refactor the 'inject' so it is not repeated for each spec:
+
+
+  describe('Service: LanguageService', () => {
+
+    let service;
+
+    beforeEach( () => TestBed.configureTestingModule({
+      providers: [ LanguageService ]
+    }));
+
+    beforeEach(inject([LanguageService], s => {
+      service = s;
+    }));
+
+    it('should return available languages', () => {
+      expect(service.get()).toContain('en');
+    });
+
+  })
+
+
+  Example: instantiating a Component
+  ----------------------------------
+
+    // Synchronous:
+
+    beforeEach( () => {
+      fixture = TestBed.createComponent(MyComponentUnderTest);
+    });
+
+    // Async
+
+    beforeEach( async( () => {
+      TestBed.configureTestingModule({
+        declarations: [ MyComponentUnderTest ],
+      }).compileComponents();  // compile external templates and css
+    }));
+
+  we can use async() when dependencies involve async handling. 
+  this will internally create a zone and deal with async processing.
+  
+
+  Example: testing a component
+  ----------------------------
+
+  // Component
+  // usage: <greeter name="Joe"></greeter>
+  // renders: <h1>Hello Joe!</h1>
+
+  @Component({
+    selector: 'greeter',
+    template: `<h1>Hello {{name}}!</h1>`
+  })
+
+  export class Greeter {
+    @Input() name;
+  }
+
+
+
+
+
 
 
 ================================================================================

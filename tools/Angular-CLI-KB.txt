@@ -864,6 +864,22 @@ or just
 
 if you only have one browser option.    
 
+You can also create 'npm run' aliases in your package.json
+
+e.g.:
+
+  "scripts": {
+    ... 
+    "test": "ng test --browser ChromeHeadless --watch false",
+    "test-debug": "ng test --browser Chrome",
+  },
+
+and then run as:
+
+  $ npm run test 
+and
+  $ npm run test-debug
+
 
 
 ---------------------------------------------------------------
