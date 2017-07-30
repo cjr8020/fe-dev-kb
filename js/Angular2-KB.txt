@@ -2463,6 +2463,83 @@ The component injector is a property of the fixture's DebugElement:
 
 ================================================================================
 
+  Test componet with an async service
+  ***********************************
+
+Many services return values async'ly. Most data services make an HTTP request
+to a remote server and the response is necessarily asynchronous.
+
+In general, tests should not make calls to remote servers.  They should emulate
+such calls.  The setup in src/apps/shared/twain.component.spec.ts shows one way.
+
+  The twain.component.ts handles the display of Twain quotes returned by the
+  TwainService.  Both are in src/app/shared.
+
+  $ ng g c shared/twain --flat -it -is
+  installing component
+    create src/app/shared/twain.component.spec.ts
+    create src/app/shared/twain.component.ts
+    update src/app/app.module.ts
+
+  $ ng g s shared/twain --module=app.module
+  installing service
+    create src/app/shared/twain.service.spec.ts
+    create src/app/shared/twain.service.ts
+    update src/app/app.module.ts
+
+note: this automatically provides the service in app.module.ts
+
+Tests still pass at this point.. 
+
+
+
+  Spying on the real service
+  --------------------------
+
+This setup is similar to the welcome.component.spec.setup
+but instead of stubbing the servide, it injects the REAL service 
+and replaces the critical 'getQuote' method with a Jasmine spy.
+
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ TwainComponent ],
+      providers: [ TwainService ]  // provide TwainService
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TwainComponent);
+    component = fixture.componentInstance;
+
+    twainService = fixture.debugElement.injector.get(TwainService);
+    spy = spyOn(twainService, 'getQuote')
+      .and.returnValue(Promise.resolve(testQuote));  // spy on it
+
+    de = fixture.debugElement.query(By.css('.twain'));
+    el = de.nativeElement;
+
+  });
+
+The spy is designed in such a way that any call to 'getQuote' receives an 
+immediately resolved promise with a test quote.
+They spy bypasses the actual 'getQuote' method and therefore does not contact
+the server.
+
+  Faking a service instance and spying on a real object are BOTH great
+  options.  Pick one that seems easiest for the current test suite.
+
+    Spying on the real service isn't always easy, especially when the real 
+    servide has injected dependencies.
+
+    You can even STUB and SPY at the same time!
+
+
+
+
+================================================================================
+
   default test template created by angular-cli
   ********************************************
 
