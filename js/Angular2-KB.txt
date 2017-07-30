@@ -368,9 +368,157 @@ Angular modules and JavaScript modules
 
 4. Metadata
 ----------------------------------------
+
+
+
 5. Data binding
 ----------------------------------------
+
+  you display data by binding controls in an HTML template to properties
+  of an Angular component.
+
+
+    Template binding works with DOM PROPERTIES, not HTML attributes.
+
+
+
+  one-way from data source to view target
+  ---------------------------------------
+
+      1. property style
+
+       {{expression}} expression interpolation
+
+          <ul>
+            <li *ngFor="let hero of heroes"> {{hero}} </li>
+          </ul>
+
+      2. attribute style
+
+        [target]="expression"
+
+          e.g. bind 'isUnchanged' property to button disabled state
+
+            <button [disabled]="isUnchanged">Save</button>
+
+              you're binding the button's 'disabled' attribute and setting
+              it to the current value of the component's 'isUnchanged' property.. 
+              right?  WRONG
+
+              These are not HTML attributes - these are properties fo DOM
+              elements, components and directives.
+
+
+      3. class style
+
+        bind-target="expression"
+
+
+
+  one-way from view target to data source
+  ---------------------------------------
+
+      Event 
+
+        (view-target)="statement"
+        
+        on-target="statement"
+
+
+  two-way 
+  --------
+
+
+      [(target)]="expression"
+
+      bindon-target="expression"
+
+
+      /**********************************
+       *                                *
+       * HTML attribute vs DOM property *
+       *                                *
+       **********************************/
+
+
+  Attributes are defined by HTML.
+  Properties are defined by the DOM.
+
+  * a few HTML attributes have 1:1 mapping to properties.
+    'id' is one example
+
+  * some HTML attributes have no corresponding properties - e.g. colspan
+
+  * some DOM props don't have corresponding attributes - textContent, e.g.
+
+  * many HTML attrs seem to map to properties, but not the way you think!
+
+  Attributes initialize DOM properties and then they are DONE.
+  Property values can change; attributes do not.
+
+  e.g. when the browser renders 
+
+    <input type="text" value="Bob">
+
+  it creates a corresponding DOM node with a 'value' property initialed to "Bob".
+  when the user enters "Sally" into the input box, the DOM element 'value' 
+  property becomes "Sally".  But the HTML 'value' attribute REMAINS 
+  unchanged as you can confirm by asking:
+
+    input.getAttribute('value');  // returns "Bob"
+
+  the HTML attribute value specifies the INITIAL value; the DOM value property
+  is the CURRENT value.
+
+  The 'disabled' attribute is another peculiar example.
+  A button's 'disable' PROPERTY is "false" by default so it is enabled.
+  when you add the 'disabled' attribute, its presence alone initializes the 
+  button's 'disabled' property to "true" to the button is disabled.
+
+  Setting the button's 'disabled' property disables|enables the button - 
+  the value of the PROPERTY matters (attribute does not).
+
+
+Type
+
+  Property
+
+    element:  <img [src]="heroImageUrl">
+
+    component:  <hero-detail [hero]="currentHero"</hero-detail>
+
+    directive:  <div [ngClass]="{'special': isSpecial}">
+
+                </div>
+
+  Event
+
+    element:   <button (click)="onSave()">Save</botton>
+
+    component: <hero-detail (deleteRequest)="deletedHero()"></hero-detail>
      
+    directive:  <div (myClick)="clicked=$event" clickable>click me</div>
+
+
+  Attribute
+
+    attribute:  <button [attr.aria-label]="help">help</button>
+
+  Class
+
+    property:   <div [class.special]="isSpecial">Special</div>
+
+
+  Style
+
+    property:   <button [style.color]="isSpecial ? 'red' : 'green'">
+
+
+
+  Two-way
+
+    event and property:   <input [(ngModel)]="name">
+
 
 6. Directives
 ----------------------------------------
