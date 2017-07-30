@@ -312,6 +312,21 @@ Angular modules and JavaScript modules
 
               <button (click) = "onSave()">Save</button>
 
+
+              <button (click)="show = !show"> {{show ? 'hide' : 'show'}} </button>
+
+              presuming the component owning this template has something like:
+
+                show: boolean = false;
+
+              the button is bound to DOM event (click) which will trigger 
+              the action indicated by the text in quotes.  Here, variable
+              `show` will assigned the opposite value of self.
+              The button text is bound to that variable `show`, so clicking
+              the button will toggle the button text.
+
+
+
           component event
 
               <hero-detail (deleteRequest)="deleteHero()"></hero-detail>
@@ -642,7 +657,7 @@ Purpose:
 
         <div *ngSwitchCase="100">Find Actual Data</div>
         <div *ngSwitchDefault>Showing Default Data</div>
-        
+
       </div>
 
 
@@ -1548,10 +1563,53 @@ Structural Directives
 
 ngIf
 
-  we can add an element subtree (and element and its children) to the DOM by
-  binding an NgIf directive to a truthy expression
+  conditionally includes a template based on the value of an expression.
 
-    <div *ngIf="currentHero">Hello, {{currentHero.firstName}}</div>
+  element subtree is physically removed or added to the DOM.
+
+    <div *ngIf="condition">...</div>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.
+    The <div> containing "Text to show" is removed or added to the DOM based
+    on the value of var 'show'.
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show">Text to Show</div>
+
+
+
+with else
+
+    <div *ngIf="condition; else elseBlock">...</div>
+    <ng-template #elseBlock>...</ng-template>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.  
+    The <div> containing "Text to show" will either display "primary" text if 
+    variable 'show' is true, or alternate - if false.
+
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show; else elseBlock">Text to Show</div>
+      <ng-template #elseBlock>Alternate text while primary is hidden</ng-template>
+
+with async
+
+    <button (click)="nextUser()">Next User</button>
+    <br>
+    <div *ngIf="userObserbable | async as user; else loading">
+      Hello {{user.first}} {{user.last}}!
+    </div>
+    <ng-template #loading let-user>Waiting ... (user is {{user|json}})
+    </ng-template>
+
+
+  
 
   NOTE: visibility (hiding) and ngIf are not the same!
 
