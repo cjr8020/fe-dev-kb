@@ -2326,6 +2326,22 @@ You can call changeChanges in
   * strictly necessary                                                *    
   *********************************************************************
 
+  NOTE:   
+          if I have 'fixture.detectChanges' in the 2nd beforeEach, and then
+          in tests, change detection did not work.
+
+          I noticed that in the angular test guide, they do NOT have 
+          fixture.detectChanges in beforeEach, but then use it in every 
+          test when needed:
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/welcome.component.spec.ts
+
+          2. the default tests created by angular-cli put 
+          fixture.detectChanges into the 2nd beforeEach(..)
+          however, the generated test specs do not have any in the tests ..
+
+
+
 
 ================================================================================
 
@@ -2370,7 +2386,7 @@ you might as well just stub it out:
   ***********************************
 
 https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/welcome.component.spec.ts
-  
+
 
 $ mkdir src/app/model
 $ ng g s model/user --flat true --spec false
@@ -2476,7 +2492,7 @@ The component injector is a property of the fixture's DebugElement:
       console.log('beforeEach()');
       fixture = TestBed.createComponent(GreeterComponent);
       component = fixture.componentInstance;
-      fixture.detectChanges();
+      fixture.detectChanges();  // I'VE SEEN THIS CREATE PROBLEM IF TEST ALSO do this!!!
     });
 
     it('should create', () => {
