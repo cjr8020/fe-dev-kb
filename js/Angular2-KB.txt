@@ -2143,6 +2143,15 @@ TestBed
       detectChanges()
         force a walk of the data graph and update the view with relevant content
 
+        In the actual application, change detection kicks in automatically when
+        Angular creates a component or the user enters a keystroke or an AJAX
+        activity completes.
+        TestBed.createComponent() does not trigger change detection.
+        This behavior (or lack of it) is intentional - it gives the tester
+        an opportunity to inspect or change the state of the component 
+        before Angular initiates data binding or calls lifecycle hooks.
+
+
       componentInstance
         actual component under test - you can call methods on the component
 
@@ -2157,6 +2166,10 @@ TestBed
 
 
 TestBed.compileComponents()
+
+  WebPack developers need not call 'compileComponents' because it inlines
+  templates and css as part of the automated build process that precedes
+  running the test.
 
   Q: when am I supposed to call compileComponents()?
 
@@ -2173,6 +2186,13 @@ TestBed.compileComponents()
   make XHR requests to retrieve the external templates and styles, and 
   then compile.  Here you will need to 'compileComponents'.
 
+
+  DO NOT configure the TestBed AFTER calling 'compileComponents' - it closes 
+  the current TestBed instance to further configuration.  
+  Make it the last step before calling TestBed.createComponent() to instantiate
+  the component-under-test.
+
+
 inject
 
   allows us to get dependencies at the TestBed level
@@ -2183,8 +2203,12 @@ inject
 
 
 
+
 beforeEach(async(..))
-beforeEach( ... )
+
+  async is necessary to all the asynchronous TestBed.compileComponents method.
+  Internally, async arranges for the body of the 'beforeEach' to run in a 
+  special async test zone.
 
   https://stackoverflow.com/questions/40126729/angular-2-testing-async-function-call-when-to-use
 
@@ -2216,6 +2240,209 @@ beforeEach( ... )
   When testing a component that uses templateUrl (if you're not using webpack)
   then Angular needs to make an XHR request to get the template, so the 
   communication is asynchronous.
+
+
+beforeEach( ... )
+
+  the second 'beforeEach' containing the remaining setup follows the async
+  beforeEach.
+
+  Typically, here you create the instance of the component-under-test and
+  query the elements to inspect:
+
+    component = fixture.createComponentInstance;
+    de = fixture.debugElement.query(By.css('h1'));
+    el = de.nativeElement;
+
+  The test runner will wait for the first async 'beforeEach' to finish
+  before calling the 2nd one.
+
+    compileComponents returns a promise so you can perform add'l tasks 
+    immediately after it finishes.. e.g.:
+
+      compileComponents()
+        .then(...)
+
+    but most find this hard to read.
+
+    The two beforeEach calls are widely preferred.
+
+
+
+    Change Detection
+    ----------------
+
+  detectChanges()
+
+        In the actual application, change detection kicks in automatically when
+        Angular creates a component or the user enters a keystroke or an AJAX
+        activity completes.
+        TestBed.createComponent() does not trigger change detection.
+        This behavior (or lack of it) is intentional - it gives the tester
+        an opportunity to inspect or change the state of the component 
+        before Angular initiates data binding or calls lifecycle hooks.    
+
+You can call changeChanges in 
+
+  beforeEach
+
+    fixture = TestBed.createComponent(Comp);
+    fixture.detectChanges();
+
+  in each test 
+
+    it('should do something', () => {
+      fixture.detectChanges();
+      ...
+    });
+
+  automatically
+
+    some testers prefer that the Angular test environment run change detection
+    automatically with the ComponentFixtureAutoDetect provider:
+
+      import { ComponentFixtureAutoDetect } from '@angular/core/testing';
+
+    then add it to the providers array of the testing module configuration:
+
+      TestBed.configureTestingModule({
+        declarations: [ Banner Component ],
+        providers: [
+          { provide: ComponentFixtureAutoDetect, useValue: true }
+        ]
+      })
+
+    IMPORTANT: ComponentFixtureAutoDetect service responds to ASYNC activities
+    such as promise resolution, timers, DOM events.
+    But a direct, synchronous update of the component is invisible.
+    The test call fixture.detectChanges() manually to trigger another cycle
+    of change detection.
+
+
+  *********************************************************************
+  * Rather than wonder when the text fixture will or will not perform *
+  * change detection, just always call detectChanges() explicitly.    *
+  * There is NO harm in calling detectChanges() more often then is    *
+  * strictly necessary                                                *    
+  *********************************************************************
+
+
+================================================================================
+
+  Stubbing Component's Dependency just to satisfy the dependency
+  ********************************
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/app.component.spec.ts  
+
+If you're testing a component, and it has a dependency on another 
+component (which in turn has dependencies on other services, for instance).. 
+and you're not asserting anything on this dependency component.. 
+
+you might as well just stub it out:
+
+  // stub WelcomeComponent
+  @Component({selector: 'app-welcome', template: ''})
+  class WelcomeStubComponent {}
+
+
+  describe('AppComponent', () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          AppComponent,
+          BannerInlineComponent, 
+          WelcomeStubComponent    // declare the stubbed out component
+        ],
+      }).compileComponents();
+    }));
+
+    .
+    .
+    .
+
+  });
+
+
+
+================================================================================
+
+  Testing Component with a Dependency
+  ***********************************
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/welcome.component.spec.ts
+  
+
+$ mkdir src/app/model
+$ ng g s model/user --flat true --spec false
+installing service
+  create src/app/model/user.service.ts
+  WARNING Service is generated but not provided, it must be provided to be used
+
+$ ng g c welcome
+
+The 'WelcomeComponent' displays a welcome mesage to the logged in user.
+It knows the user based on the property of the injected 'UserService'.
+
+in welcome.component.spec.ts
+
+  do not provide the real service - use a test double instead:
+
+    let userServiceStub: {
+      isLoggedIn: boolean;
+      user: {name: string};
+    };
+
+    beforeEach(async( () => {
+      userServiceStub = {
+        isLoggedIn: true,
+        user: { name: 'Test User'}
+      };
+  
+      TestBed.configureTestingModule({
+        declarations: [ WelcomeComponent ],
+        providers: [
+          { provide: UserService, useValue: userServiceStub}
+        ]
+      }).compileComponents();
+
+    }));
+
+
+The tests need access to the (stubbed) UserService injected into the 
+WelcomeComponent.
+
+  Angular has a hierarchical injection system.  There can be injectors at 
+  multiple levels, from the root injector created by the TestBed down through
+  the component tree.
+
+The safest way to get the injected service (always works!) is to get it from
+the injector of the component-under-test.
+
+  Component Injector
+  ------------------
+
+The component injector is a property of the fixture's DebugElement:
+
+  // UserService injected into the component
+  userService = fixture.debugElement.injector.get(UserService);
+
+    TestBed.get(..)
+
+      you may be able to get the service from the root injector via 
+      TestBed.get - it is easier to remember and less verbose.
+      But it only works when Angular injects the component with the service
+      instance in the test's root injector.
+      In this test suite, the ONLY provider of UserService is the root testing
+      module, so it would be safe to call TestBed.get like so:
+
+        userService = TestBed.get(UserService);
+
+  NEVER reference the 'userServiceStub' object that's provided to the testing
+  module in the body of your test - THIS WOULDN'T WORK - the userService 
+  instance injected into the component is a DIFFERENT objeect - a clone of the
+  provided userServiceStub.
+
+
 
 
 ================================================================================

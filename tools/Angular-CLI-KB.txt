@@ -249,7 +249,7 @@ To generate a new component with flat structure, inline styles and template
   create service
   **************
 
-note: make sure NOT to include "servide" into <service-name> - it will be added.
+note: make sure NOT to include "service" into <service-name> - it will be added.
 
   $ ng g s <service-name> --flat --spec 
 
