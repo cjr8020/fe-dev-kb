@@ -590,6 +590,63 @@ display data.
 Angular ships with several pipes and we can write out own.
 
 
+  Async Pipe
+  ----------
+
+Usage:
+
+  <div>{{ observableTime | async }}</div>
+
+Purpose:
+
+  unwrap a value from an asynchronous primitive.
+  if we have an Observable or Promise instance, then we can use it directly
+  with AsyncPipe using diretives like 'ngFor', 'ngIf' and 'NgSwitch'.
+
+  subscribes to Observable or Promise and returns latest data.
+
+  marks the component to check for data changes.
+
+    NgFor Example
+    .............
+
+      @Injectable() service to fetch book data
+
+      component to display that data
+
+        <ul>
+          <li *ngFor="let book of observableBooks | async" >
+
+            Id: {{book.id}}, Name: {{book.name}}
+
+          </li>
+        </ul>
+
+      in component:
+
+        ngOnInit(): void {
+          this.observableBooks = this.bookService.getBooks();
+        }
+
+    NgIf and NgSwitch Example
+    .........................
+
+      <div *ngIf="promiseBook | async as book; else loading">
+        Id: {{book.id}}, Name: {{book.name}}
+      </div>
+      <ng-template #loading>Loading Data .. </ng-template>
+
+      <h3>AsyncPipe with NgSwitch</h3>
+
+      <div [ngSwitch]="(promiseBook | async)?.id">
+
+        <div *ngSwitchCase="100">Find Actual Data</div>
+        <div *ngSwitchDefault>Showing Default Data</div>
+        
+      </div>
+
+
+
 ==============================================================================
 
   template syntax
