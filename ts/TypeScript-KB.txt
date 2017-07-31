@@ -1062,6 +1062,68 @@ interface inheritance
 interface NamedPerson extends Person { ... }
 
 
+interface can extend a class
+-----------------------------
+
+
+
+
+classes implement other classes
+--------------------------------
+
+  TypeScript allows classes implement other Classes.
+
+  An interface has no implementation:
+
+    interface Point {
+      x: number;
+      y: number;
+      distance(other: Point): number;
+    }
+
+  Classes are implementations:
+
+    class PointImplementation implements Point {
+
+      x: number;
+      y: number;
+
+      constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+      }
+
+      public distance(other: Point): number {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+      }
+    }
+
+  When you implement a class - you treat the base class as an 'interface':
+
+    class Person {
+      name: string;
+      age: number;
+    }
+
+    class Child extends Person {}  // person is used as a class
+
+    class Man implements Person {} // person is used as an interface
+
+    You will get a compilation error:
+
+      Class 'Man' incorrectly implements interface Person.
+
+    b/c interfaces lack implementation. So if you implement a class, then you only
+    take its "contract" without the implementation - so you'll need to do this:
+
+      class NoErrorMan implements Person {
+        name: string;
+        age: number;
+      }
+
+    Bottom line: in most cases you'll want to extend another class, not implement it.
+
+
 
 ==============================================================================
 
