@@ -1211,7 +1211,7 @@ two-way binding
       [ngModel]="currentHero.firstName"
       (ngModelChange)="currentHero.firstName=$event" >
 
-      
+
           Error: Can't bind to 'ngModel' since it isn't a known property of 'input'
 
     in order to use two-way binding for form inputs, you need to import 
@@ -1233,6 +1233,17 @@ two-way binding
             ]
           })  
           export class HeroModule {}    
+
+    and in unit tests, you need to include FormsModule in imports:
+
+      beforeEach(async(() => {
+        TestBed.configureTestingModule({
+          declarations: [ HeroDetailComponent ],
+          imports: [ FormsModule ]
+        })
+        .compileComponents();
+      }));    
+
 
 
 
@@ -3257,6 +3268,145 @@ hero provided by the 'DashboardComponent'.
             ]
           })  
           export class HeroModule {}    
+
+
+
+
+
+================================================================================
+
+  Testing Component with ActivatedRoute
+  *************************************
+
+When component accesses route: ActivatedRoute to extract path params or queryParams,
+you will need to provide both Router and ActivatedRoute in your tests.
+
+Since you probably will use those facilities in many tests specs, it is best to
+create a 'testing' module at the same level as 'app':
+
+src/
+  app/
+  testing/
+    router-stubs.ts
+
+with router-stubs.ts containing the RouterStub and ActivatedRouteStub:
+
+router-stubs.ts
+---------------
+
+// export for convenience.
+export { ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+
+import {Injectable} from '@angular/core';
+
+
+/**
+ * stub out the router
+ */
+@Injectable()
+export class RouterStub {
+  navigateByUrl(url: string) {
+    return url;
+  }
+}
+
+// Only implements params and part of snapshot.paramMap
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { convertToParamMap, ParamMap } from '@angular/router';
+
+@Injectable()
+export class ActivatedRouteStub {
+
+  // ActivatedRoute.paramMap is Observable
+  private subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
+  paramMap = this.subject.asObservable();
+
+  // Test parameters
+  private _testParamMap: ParamMap;
+  get testParamMap() { return this._testParamMap; }
+  set testParamMap(params: {}) {
+    this._testParamMap = convertToParamMap(params);
+    this.subject.next(this._testParamMap);
+  }
+
+  // ActivatedRoute.snapshot.paramMap
+  get snapshot() {
+    return { paramMap: this.testParamMap };
+  }
+}
+
+
+Then use those in your test specs:
+
+See source: app/hero/hero-detail.component.spec.ts
+
+https://angular.io/generated/live-examples/testing/app-specs.eplnkr.html
+
+
+hero-detail.component.spec.ts
+-----------------------------
+
+
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HeroDetailComponent } from './hero-detail.component';
+import {FormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HeroService} from '../../model/hero.service';
+
+import {
+  ActivatedRouteStub,
+  RouterStub
+} from '../../../testing/router-stubs';
+
+
+/////////// Testing Variables ////////////
+
+let activatedRoute: ActivatedRouteStub;
+
+
+describe('HeroDetailComponent', () => {
+  let component: HeroDetailComponent;
+  let fixture: ComponentFixture<HeroDetailComponent>;
+
+  beforeEach(async(() => {
+
+    activatedRoute = new ActivatedRouteStub();
+
+    TestBed.configureTestingModule({
+      declarations: [ HeroDetailComponent ],
+      imports: [ FormsModule ],
+      providers: [
+        { provide: HeroService, useClass: HeroService },
+        { provide: Router, useClass: RouterStub },
+        { provide: ActivatedRoute, useValue: activatedRoute }
+      ]
+
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HeroDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  describe('when hero id is 12', () => {
+
+    beforeEach( () => {
+      activatedRoute.testParamMap = { id: 12 }
+    });
+
+    it('should be created', () => {
+      expect(component).toBeTruthy();
+    });
+
+
+  })
+
+
+});
 
 
 

@@ -144,5 +144,12 @@ Here is how to remap them
 
 	Settings > Window Manager > Keyboard tab
 
+Also, Ctrl-Alt-L - reformat code conflicts with "lock screen"
+
+	Settings > Keyboard > Applications Shortcuts
+
+	remove Ctrl-Alt-L
+
+
 
 ================================================================================
