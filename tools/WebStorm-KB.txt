@@ -26,8 +26,9 @@ Keymap
 		------
 		Move Caret to Line End: Ctrl+Shift+Semicolon
 
+Editor
 
-	2. use single quotes
+	1. use single quotes
 
 		Settings | Editor | Code Style | TypeScript | Punctuation
 
@@ -37,6 +38,12 @@ Keymap
 		Settings | Editor | Code Style | JavaScript | Punctuation
 
 		Use <quote style> quotes in <new code/always>		
+
+	2. HTML - Tabs and Indents
+
+		Tab size: 2
+		Indent:   2
+		Cont.ind: 4
 
 ================================================================================
 

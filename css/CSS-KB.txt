@@ -43,27 +43,75 @@ consists of two parts:
 	CSS Selector
 	************
 
-CSS [attribute] selector
-------------------------
 
-The [attribute] selector is used to select elements with a specified attribute.
+CSS selector without (.) target all HTML elements by this tag, e.g.
+
+  p {
+    color: green;
+  }
+  
+CSS selector with (.)   specifies a class, e.g. 
+
+  .green {
+    color: green;
+  }  
+
+  <p class="green">i'm going green</p>
+  <p>i'm just plain paragraph</p>
+  <p class="green">i'm going green too!</p>
+
+CSS selector with (#)   specifies an ID, e.g. 
+
+  #myElement {
+    ...
+  }
+
+You can have ONLY one element with a particular ID.
+But you can have many elements in a particular class.
+So, if you want to target once specific element, you can give that element an ID,
+and target it with a hash ('#') in your CSS statement.
+
+
+More specific CSS Selectors
+---------------------------
+
+find all TAGs that have particular class
+e.g. 
+
+  .warning {
+    background-color: red;
+    color: white;
+  }
+
+  // this finds all <p> paragraphs with the class of "warning"
+  p.warning {
+    border: 5px solid orange;
+  }
+
+find all X tags inside an element that has a particular class
+e.g.
+
+  .warning {
+    background-color: red;
+    color: white;
+  }
+  // this finds all <p> tags inside an element that has a class of "warning"
+  .warning p {
+
+  } 
 
 
 
-
-In addition to defining a type of HTML tag to apply a style to, we can limit the tule to those within a specific context:
-
-	- by HTML tag type
-	- by a declared class type,
-	- by an element's unique ID
 	
 - Tag-type selectors
+
 
 	To upply a rule only to <h1> tags that are contained within a <div> tag:
 	
 		div h1 { color: red; }
 		
 	These are also referred to as element-based selectors, because they decide whether or not a DOM element is styled based on its element type.
+
 	
 - class-based selectors
 
@@ -79,6 +127,7 @@ In addition to defining a type of HTML tag to apply a style to, we can limit the
 	Elements can be assigned more than one class. 
 	
 		<div class='callout loud'>And I'll appear as a mixture of both</div>
+
 		
 - element-based selectors
 
@@ -94,6 +143,7 @@ In addition to defining a type of HTML tag to apply a style to, we can limit the
 		
 	This will be applied only to <span> tags of class 'highlight' that are nested within <div> tags of class 'prose'.
 	
+
 	
 - id-based selector
 
@@ -102,6 +152,7 @@ In addition to defining a type of HTML tag to apply a style to, we can limit the
 		#close { color: red }
 	
 	This is applied to a button with id="close".
+	
 	
 - pseudo-selectors
 

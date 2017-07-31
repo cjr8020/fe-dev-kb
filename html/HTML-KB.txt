@@ -13,7 +13,127 @@ To prevent loading of favicon.. as in test environment..
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">  
 
 
+================================================================================
 
+article
+-------
+
+  HTML <article> element represents a self-contained composition in a document,
+  page, application or site.
+
+    e.g. forum post, magazine or news article, blog entry
+
+      identified
+
+    each article should be identified by typically a heading as a CHILD
+    of the <article> element
+
+      nested
+
+    when article element is nested, the inner element represents an article
+    related to the outer element.  E.g. the comments of a blog post could be
+    <article> elements nested in the <article> representing the blog post.
+
+header
+------
+
+  HTML <header> element represents a group of introductory or navigational
+  aids.  It may contain some heading elements but also elements like a logo,
+  a search form, etc.. 
+
+    <header>
+      <h1> Main Page Title</h1>
+      <img src="mdn-logo-sm.png" alt="MDN logo">
+    </header>
+
+
+aside
+-----
+
+  HTML <aside> element represents a section of a document with content connected
+  tangentially to the main content of the document (often presented as sidebar)
+
+
+
+section
+-------
+
+  the HTML <section> element represents a standalone section of functionality 
+  contained within an HTML document, typically with a heading.
+
+    Heading
+
+  each <section> should be identified typically with a heading as a child 
+  of the <section> element:
+
+    <section>
+      <h1>Heading</h1>
+      <img src="bird.jpg" alt="bird">
+    </section>
+
+    <div> vs <section>
+
+  do not use <section> as a generic container; this is what <div> is for,
+  espetially, when sectioning is only for styling purposes.
+
+  A rule of thumb is that a section should logically appear in the outline 
+  of a document.
+
+
+footer
+------
+
+  HTML <footer> element represents a footer for its nearest sectioning 
+  content or root element.  Typically contains information about the author
+  of the section, copyright or links to related docs
+
+    Author
+
+  enclose information about the author in an <address> element that can be 
+  included into the <footer>
+
+------------------------------ Example --------------------------
+
+<article class="film_review">
+  <header>
+    <h2>Jurassic Park</h2>
+  </header>
+  <section class="main_review">
+    <p>Dinos were great!</p>
+  </section>
+  <section class="user_reviews">
+    <article class="user_review">
+      <p>Way too scary for me.</p>
+      <footer>
+        <p>
+          Posted on
+          <time datetime="2015-05-16 19:00">May 16</time>
+          by Lisa.
+        </p>
+      </footer>
+    </article>
+    <article class="user_review">
+      <p>I agree, dinos are my favorite.</p>
+      <footer>
+        <p>
+          Posted on
+          <time datetime="2015-05-17 19:00">May 17</time>
+          by Tom.
+        </p>
+      </footer>
+    </article>
+  </section>
+  <footer>
+    <p>
+      Posted on
+      <time datetime="2015-05-15 19:00">May 15</time>
+      by Staff.
+    </p>
+  </footer>
+</article>
+
+
+================================================================================
 
 span tag
 --------

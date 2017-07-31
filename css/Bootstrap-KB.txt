@@ -8,7 +8,11 @@ Bootstrap
 currently v3.3.4
 
 Twitter's Bootstrap library is the most popular responsive design framework.
+
 Based on mobile-first design strategy.
+
+    MOBILE FIRST
+
 
 jQuery required
 ---------------
@@ -148,7 +152,12 @@ Row
 
   elements that help spread visual DOM elements across the 12 columns.
 
+
+
 Visual break points
+-------------------
+
+    same principle: MOBILE FIRST
 
   There are four visual break points:
 
@@ -160,25 +169,50 @@ Visual break points
   These break points will be activated when the viewport reaches the width 
   indicated in pixels.
 
+
   E.g., "sm" will be activated when the viewport is between 768 and 992 px.
 
   example: .col-sm-8
+
+          xs    - on xs devices the element will take the whole width
+        +----+
+        | sm |  - on sm|md|lg, the element will take 8 columns
+        | md |
+        | lg |
+        +----+
+
   If we assign .col-sm-8 to a visual DOM element, it is going to take 8 grid
   columns on small devices and everything larger.  But for extra-small devices, 
   this class does not take effect, and the DOM element will take the whole 
   width.
 
-  example: .col-xs-4   
+  example: .col-xs-4
+
+        +----+
+        | xs |  - because the class is assigned to the smallest size
+        | sm |  - the element will take 8 columns on ALL devices
+        | md |
+        | lg |
+        +----+
+
   because it is the smallest size, the DOM element will take up 
   4 columns on ALL device sizes.
 
   example: .col-sm-4 and .col-lg-2
+
+
+          xs    - on xs devices the element will take the whole width
+        +----+
+        | sm |  - on sm|md, the element will take 4 columns
+        | md |
+        +----+
+        | lg |  - on lg, the element will take 2 columns
+        +----+
+
     a DOM element is assigned both of these classes:
     at XS size, the element will take up full width of the screen.
     at SM and MD size, the element will be allocated 4 columns
     but when you get to large, the elements will get only 2 columns
-
-    
 
 
 
@@ -205,7 +239,7 @@ The CSS classes, .containers and .container-fluid, are used to set up the base l
 </body>
 
 .container-fluid
-================	
+================  
 
 <head>
 <link rel="stylesheet" href="../asset/css/bootstrap.min.css">
@@ -319,181 +353,35 @@ For bootstrap 3, navbar-static-top instead of fixed prevents this issue, unless 
   *********************
 
 pull and pash classes are for reordering content.
-at the most basic level, here is an example:
-
-<div class="row">
-    <div class="col-md-9 col-md-push-3">This is content that comes <strong>first in the markup</strong>, but looks like it comes second in the view.</div>
-    <div class="col-md-3 col-md-pull-9">This is the sidebar, that comes <strong>second in the markup</strong>, but looks like it comes first in the view.</div>
-</div>
-
-In the above example, the first element is listed first in the markup code, but 
-will appear second (pushed into 2nd position) in the view.
-while the second element will be pulled into the 1st position.
+they are always relative to the left side of the browser.
 
 Main use:
 
-The main use of these classes is for reordering columns so that they stack 
+The main use of these classes is for reordering columns so that they stack
 properly (i.e. in the right order) on smaller devices.
 
-Tips for Reordering columns
----------------------------
+
+        Same principle: MOBILE FIRST
 
 1. take bootstrap "mobile first" approach and create your content mobile first.
+2. it is easier to pull/push columns on larger devices that it is on smaller.
 
-2. it is easier to pull/push columns on larger devices taht it is on smaller.
 
+Suppose you want your application
 
+1. on mobile, stack in the following order
+2. starting with "sm" (ipad and up), you want <section> in the middle, and first <aside> on the LEFT.
+
+so, to make that happen, you would:
+
+a) list your elements in the order you want them to appear stacked on the "xs" (mobile)
+b) no "xs" classes means - the elements will take the whole width
+c) provide column classes for "sm" and up
+d) reorder columns starting with "sm" and up using push/pull classes:
+
+<section class="col-sm-8    col-sm-push-2">
+<aside   class="col-sm-2    col-sm-pull-8">
+<aside   class="col-sm-2>
 
 
 ==========================================================================================
-
-  HTML 5 
-  **************
-
-<section>
-
-  the HTML <section> element represents a generic section of a document, i.e. 
-  a thematic grouping of content, typically with a heading (<h1> - <h6>) as a child
-  of the <section> element.
-
-<aside>
-
-  1. The aside element can be used within or outside the article element
-
-  2. When used inside the content of the aside element must be relevant to the 
-  article content
-  
-  3. If you can remove the content of the <aside> element and the article content, 
-  to which it is relevant, becomes incomplete then you should not be using 
-  the <aside> element
-  
-  4. When used outside the article element the content of the aside element 
-  must be relevant o your entire web page
-  
-  5. The aside element is a block level element
-  
-  6. You can use both block level elements (such as headings, <h1> - <h6>) and inline elements (such as emphasize, <em>) inside of the <aside> element
-
-  
-  
-  can be used in two different contexts.  This depends on whether or not it is 
-  inside or outside the article element.
-
-  In magazines, you often see info-boxes pulled away from the actual content of
-  the article, highlighting something with relevance to the article 
-
-
-  <aside> inside the <article>
-  -----------------------------
-
-  <article>
-        <header>
-                <h1>All About Flour<h1>
-                <p class="byline">by Jane Doe</p> 
-        </header>
-        <section>
-                <h2>The Two Types of Wheat</h2>
-                <p>There … to rise.</p>
-                <p>Where … with less protein.</p>
-        </section>
-        <aside>
-                If you use organic flour you very often get better bread
-        </aside>
-  </article>
-
-  <aside> outside the <article>
-  -----------------------------
-
-  used to mark up content which is relevant to your page as a whole - blogrolls,
-  additional navigation, even adds - and wheh this is the scope of your aside, 
-  it has to be placed outside of the <article> element.
-
-  <aside>
-          <h3>Foodblogs I like</h3>
-          <a href="http://www.bakerella.com">Bakerella</a>
-          <a href="http://sourdough.com/"> Sourdough.com</a>
-          <a href="http://www.bakingobsession.com">BakingObsession</a>
-  </aside>
-  <article>
-          <header>
-                  <h1>All About Flour<h1>
-                  <p class="byline">by Jane Doe</p> 
-          </header>
-          <section>
-                  <h2>The Two Types of Wheat</h2>
-                  <p>There … to rise.</p>
-                  <p>Where … with less protein.</p>
-          </section>
-  </article>  
-
-
-
-
-
-================================================================================
-
-  CSS
-  ***
-
-CSS Selectors
---------------  
-
-CSS selector without (.) target all HTML elements by this tag, e.g.
-
-  p {
-    color: green;
-  }
-  
-CSS selector with (.)   specifies a class, e.g. 
-
-  .green {
-    color: green;
-  }  
-
-  <p class="green">i'm going green</p>
-  <p>i'm just plain paragraph</p>
-  <p class="green">i'm going green too!</p>
-
-CSS selector with (#)   specifies an ID, e.g. 
-
-  #myElement {
-    ...
-  }
-
-You can have ONLY one element with a particular ID.
-But you can have many elements in a particular class.
-So, if you want to target once specific element, you can give that element an ID,
-and target it with a hash ('#') in your CSS statement.
-
-
-More specific CSS Selectors
----------------------------
-
-find all TAGs that have particular class
-e.g. 
-
-  .warning {
-    background-color: red;
-    color: white;
-  }
-
-  // this finds all <p> paragraphs with the class of "warning"
-  p.warning {
-    border: 5px solid orange;
-  }
-
-find all X tags inside an element that has a particular class
-e.g.
-
-  .warning {
-    background-color: red;
-    color: white;
-  }
-  // this finds all <p> tags inside an element that has a class of "warning"
-  .warning p {
-
-  } 
-
-
-
-================================================================================
