@@ -1188,6 +1188,55 @@ event binding
 
 two-way binding
 ----------------------------------------
+
+  when developing entry forms, we often want to both display a data property
+  and update that property when the user makes changes.
+
+  ngModel implements two-way binding and is an example of an attribute directive.
+
+    NOTE: must import FormsModule in app.module.ts
+
+    <input [(ngModel)]="currentHero.firstName">
+
+  the above can also be achieve with separate bindings to the <input> 
+  element's "value" property and "input" event:
+
+    <input [value]="currentHero.firstName"
+           (input)="currentHero.firstName=$event.target.value" >
+
+  ngModel hides the complexity behind its own "ngModel" input and 
+  "ngModelChange" output properties:
+
+    <input
+      [ngModel]="currentHero.firstName"
+      (ngModelChange)="currentHero.firstName=$event" >
+
+      
+          Error: Can't bind to 'ngModel' since it isn't a known property of 'input'
+
+    in order to use two-way binding for form inputs, you need to import 
+    the 'FormsModule' in your Angular module.
+
+      also, if you are working in its module, like 'hero.module.ts', you 
+      need to import 'FormsModule' in that module regardless of whether 
+      it is already imported in app.module.ts:
+
+          @NgModule({
+            imports: [
+              CommonModule,
+              HeroRoutingModule,
+              FormsModule
+            ],
+            declarations: [
+              HeroListComponent,
+              HeroDetailComponent
+            ]
+          })  
+          export class HeroModule {}    
+
+
+
+
 built-in directives
 ----------------------------------------
 * and <template>
@@ -3182,6 +3231,32 @@ hero provided by the 'DashboardComponent'.
       create src/app/hero/hero-detail/hero-detail.component.ts
       update src/app/hero/hero.module.ts
 
+
+    note: hero-detail view has two-way binding:
+
+      <input id="name" [(ngModel)]="hero.name" placeholder="name" />
+
+      Error: Can't bind to 'ngModel' since it isn't a known property of 'input'
+
+    in order to use two-way binding for form inputs, you need to import 
+    the 'FormsModule' in your Angular module.
+
+      also, if you are working in its module, like 'hero.module.ts', you 
+      need to import 'FormsModule' in that module regardless of whether 
+      it is already imported in app.module.ts:
+
+          @NgModule({
+            imports: [
+              CommonModule,
+              HeroRoutingModule,
+              FormsModule
+            ],
+            declarations: [
+              HeroListComponent,
+              HeroDetailComponent
+            ]
+          })  
+          export class HeroModule {}    
 
 
 
