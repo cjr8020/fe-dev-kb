@@ -2865,6 +2865,27 @@ The component injector is a property of the fixture's DebugElement:
 
 ================================================================================
 
+  managing shared test resources
+  ------------------------------
+
+Over time, you will probably have test stubs for common dependencies like
+
+  Router
+  ActivatedRoute
+  some services
+
+You can manage the in a testing module outside of 'app' 
+
+  src/
+    app/
+    testing/
+      - router-stubs.ts
+      model/
+        - fake-hero.service.ts
+
+
+================================================================================
+
   Stub out service
   ****************
 
@@ -2889,9 +2910,61 @@ describe('Story', () => {
 
   beforeEach(
   );
-
-
 }
+
+
+Here is an example of FakeHeroService:
+
+src/testing/model/fake-hero.service.ts
+---------------------------------------
+
+  // re-export for tester convenience
+
+  export {Hero} from 'app/model/hero';
+
+  // import
+  import {Hero} from 'app/model/hero';
+  import {HeroService} from '../../app/model/hero.service';
+
+
+  export const HEROES: Hero[] = [
+    new Hero(41, 'Bob'),
+    new Hero(42, 'Carol'),
+    new Hero(43, 'Ted'),
+    new Hero(44, 'Alice'),
+    new Hero(45, 'Speedy'),
+    new Hero(46, 'Stealthy'),
+    new Hero(47, 'Tes'),
+    new Hero(48, 'Grumpy')
+  ];
+
+  export class FakeHeroService implements HeroService {
+
+    heroes = HEROES.map(h => h.clone());
+    lastPromise: Promise<any>;  // remember so we can spy on promise calls
+
+    getHero(id: number | string): Promise<Hero> {
+      if (typeof id === 'string') {
+        id = parseInt(id as string, 10);
+      }
+      const hero = this.heroes.find(h => h.id === id);
+      return this.lastPromise = Promise.resolve(hero);
+    }
+
+    getHeroes() {
+      return this.lastPromise = Promise.resolve<Hero[]>(this.heroes);
+    }
+
+    updateHero(hero: Hero): Promise<Hero> {
+      return this.lastPromise = this.getHero(hero.id).then(h => {
+        return h ?
+          Object.assign(h, hero) :
+          Promise.reject(`Hero ${hero.id} not found`) as any as Promise<Hero>;
+      });
+    }
+  }
+
+
 
 
 
@@ -3031,7 +3104,8 @@ fakeAsync
   fakeAsync is used instead of async.
   It enables a linear coding style by running the test body in a special fakeAsync test zone.
 
-  main advantage of fakeAsync over async is that the test appears to be synchronous.  There is no then(...) to disrupt the visible flow of control.
+  main advantage of fakeAsync over async is that the test appears to be synchronous.  
+  There is no then(...) to disrupt the visible flow of control.
   the promise-returning 'fixture.whenStable' is gone replaced by tick()
 
     The limitation - you cannot make XHR calls from within a fakeAsync
@@ -3408,6 +3482,16 @@ describe('HeroDetailComponent', () => {
 
 });
 
+
+  Error: Uncaught NetworkError: Failed to execute 'send' on 'XMLHttpRequest'
+  ---------------------------------------------------------------------------
+
+    Uncaught NetworkError: Failed to execute 'send' on 'XMLHttpRequest': 
+    Failed to load 'ng:///DynamicTestModule/HeroDetailComponent_Host.ngfactory.js
+
+    Most likely, the @Input() property in your Component is not initialized.
+
+    Tests will crash if inputs are not set with this unintuitive error.
 
 
 ================================================================================
