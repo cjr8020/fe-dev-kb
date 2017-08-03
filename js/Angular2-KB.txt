@@ -2535,7 +2535,53 @@ the server.
 
     You can even STUB and SPY at the same time!
 
+Tests need to become asynchronous in order to pick up the quote returned 
+from the service which gets initialized in ngOnInit()
 
+service.getQuote is called in the component's ngOnInit() method, 
+and ngOnInit() is called during the first change detection cycle.
+but the tests need to wait at least one more full turn of the JS engine
+before the value becomes available.
+
+
+async() 
+
+  the async function is one of the Angular testing activities.
+  it simplifies coding of asynch tests by arranging for the tester's
+  code to run in a special 'async test zone'.
+
+  async hides most of the asynchronous boilerplate, but some functions
+  called within a test (such as fixture.whenStable) continue to reveal
+  their async behavior
+
+whenStable
+
+  the test must wait for the getQuote() promise to resolve in the next 
+  turn of the JS engine.
+
+  getQuote() is called within the TwainComponent.ngOnInit() method and
+  therefore inaccessible to a test that probes only the component API.
+
+  fortunately, the getQuote promise is accessible to the 'async test zone', 
+  which intercepts all promises issued with the async method call 
+  NO MATTER WHERE THEY OCCUR
+
+  The ComponentFixture.whenStable returns its own promise which resolves
+  when the getQuote promise finishes.  In fact, the 'whenStable' promise
+  resolves when all pending async activities within this test complete -
+  the definition of "stable".
+
+    it('should show quote after getQuote promise (async)', async(() => {
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => { // wait for async getQuote
+        fixture.detectChanges();        // update view with quote
+        expect(el.textContent).toBe(testQuote);
+      });
+    }));
+
+  then, the test resumes and kicks off another round of change detection
+  which tells Angular to update the DOM with the quote.
 
 
 ================================================================================

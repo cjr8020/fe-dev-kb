@@ -789,3 +789,66 @@ pitfall 1 - nothing happens
 
 
 ================================================================================
+
+  Promises
+  ********
+
+Instantly resolve or reject promises
+-------------------------------------
+
+Using methods
+
+  Promise.resolve(data)
+  Promise.reject(error)
+
+let firstPromise = Promise.resolve(10);
+let secondPromise = Promise.reject(Error('Ooops!'));
+
+firstPromise
+  .then(console.log)
+  .catch(console.log)
+
+
+secondPromise
+  .then(console.log)
+  .catch(console.log);
+
+Executing all promises
+------------------------
+
+Using the syntax Promise.all(iterable), you can execute an array of Promises.
+This method resolves when all promises have resolved and fails if any of those
+promises fail.
+
+  let firstPromise = Promise.resolve(10);
+  let secondPromise = Promise.resolve(5);
+  let thirdPromise = Promise.resovle(20);
+
+  Promise
+    .all([firstPromise, secondPromise, thirdPromise])
+    .then(values => {
+      console.log(values);
+    });
+
+Promise Race Function
+---------------------
+
+You can use the Promise.race(iterable) function when you want the value
+of the first promise that resolves or rejects
+
+  let p1 = new Promise((resolve,reject) => {
+    setTimeout(resolve, 2000, 'promise 1 resolved');
+  });
+
+  let p2 = new Promise((resolve,reject) => {
+    setTimeout(reject, 3000, 'promise 2 rejected');
+  });
+
+  Promise
+    .race([promise1, promise2])
+    .then(console.log)
+    .catch(console.log);
+
+the .then will be invoked because p1 would resolve before p2.    
+
+================================================================================
