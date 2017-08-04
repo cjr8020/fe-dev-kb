@@ -2459,6 +2459,37 @@ The component injector is a property of the fixture's DebugElement:
   provided userServiceStub.
 
 
+================================================================================
+
+  Stub out service
+  ****************
+
+import ...
+
+var mockStory = {
+  id: 1,
+  title: 'Blah',
+  ...
+}
+
+class MockStoryService {
+  public getStory(id): Observable<StoryModel> {
+    return Observable.of(mockStory);
+  }
+}
+
+describe('Story', () => {
+  var storyFixture,
+      story,
+      storyE1;
+
+  beforeEach(
+  );
+
+
+}
+
+
 
 
 ================================================================================
@@ -2584,6 +2615,58 @@ whenStable
   which tells Angular to update the DOM with the quote.
 
 
+fakeAsync
+
+  it('should do something.. ', fakeAsync( () => {
+    fixture.detectChanges();
+    tick();                   // wait for async getQuote
+    fixture.detectChanges();  // update view with quote
+    expect(el.textContent).toBe(testQuote);
+  }));
+
+  fakeAsync is used instead of async.
+  It enables a linear coding style by running the test body in a special fakeAsync test zone.
+
+  main advantage of fakeAsync over async is that the test appears to be synchronous.  There is no then(...) to disrupt the visible flow of control.
+  the promise-returning 'fixture.whenStable' is gone replaced by tick()
+
+    The limitation - you cannot make XHR calls from within a fakeAsync
+
+
+tick()
+
+  is a companion to fakeAsync and you can only call it within faceAsync body.
+
+  simulates the passage of time until all pending async activities flush
+  it returns nothing
+  there's no promise to wait for - proceed with the same test code that 
+  appeared in the whenStable.then() callback.
+
+
+jasmine.done
+
+  while the 'async' and 'fakeAsync' simplify Angular async testing, you can
+  still use the traditional Jasmine async testing technique:
+
+    it('should show quote after getQuote promise is done', (done: any) => {
+      fixture.detectChanges();
+
+      // get the spy promise and wait for it to resolve
+      spy.calls.mostRecent().returnValue.then( () => {
+        ...
+        fixture.detectChanges();
+        expect(..);
+        done();
+      });
+    });
+
+  Although there is no direct access to the getQuote promise inside
+  TwainComponent, the spy has direct access which makes it possible to 
+  wait for 'getQuote' to finish.    
+
+
+
+
 ================================================================================
 
   default test template created by angular-cli
@@ -2705,8 +2788,21 @@ whenStable
   }
 
 
+================================================================================
 
+  Access elements
+  ***************
 
+let de: DebugElement;
+let el: HTMLElement;
+
+de = fixture.debugElement.query(By.css('#some-id'));
+el = de.nativeElement;
+
+expect(nativeElement.querySelector('#some-id') === null).toBe(false);
+
+// trigger the button
+nativeElement.querySelector('#some-id').click();
 
 
 
@@ -2750,7 +2846,7 @@ Catching global errors
 
   https://stackoverflow.com/questions/44108285/angular-4-custom-errorhandler-doesnt-recognize-custom-error
   https://dpopescu.me/2016/10/21/catching-global-errors-in-angular-2/
-  
+
 
 ================================================================================
 
