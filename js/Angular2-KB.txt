@@ -2738,7 +2738,19 @@ Test Debugging
 
 
 
+================================================================================
 
+  Error Handling
+  **************
+
+https://angular.io/api/core/ErrorHandler  
+
+Catching global errors
+----------------------
+
+  https://stackoverflow.com/questions/44108285/angular-4-custom-errorhandler-doesnt-recognize-custom-error
+  https://dpopescu.me/2016/10/21/catching-global-errors-in-angular-2/
+  
 
 ================================================================================
 

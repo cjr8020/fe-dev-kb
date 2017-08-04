@@ -851,4 +851,80 @@ of the first promise that resolves or rejects
 
 the .then will be invoked because p1 would resolve before p2.    
 
+
+Convert Promises to Observables
+-------------------------------
+
+RxJS provides Rx.Obserable.fromPromise method which calls the then method 
+of the promise to handle both success and error cases.
+
+// create a promise which resolves to 42
+let promise1 = new RSVP.Promise(function (resolve, reject) {
+  resolve(42);
+});
+
+// create a observable
+let source1 = Rx.Observable.fromPromise(promise1);
+
+let subscription1 = source1.subscribe(
+  x => {
+    console.log('onNext: %s', x);
+  },
+  e => {
+    console.log('onError: %s', e)
+  },
+  () => console.log('onCompleted')
+);
+
+// output:
+// onNext: 42
+// onCompleted
+
+let promise2 = new RSVP.Promise(function (resolve, reject) {
+  reject(new Error('reason'));
+});
+
+let source2 = Rx.Observable.fromPromise(promise2);
+
+let subscription2 = source2.subscribe(
+  x => {
+    console.log('onNext: %s', x);
+  },
+  e => {
+    console.log('onError: %s', e)
+  },
+  () => console.log('onCompleted')
+)
+
+// output:
+// onError: reject
+
+
+================================================================================
+
+  experimenting with Observables
+  ******************************
+
+was able to simulate observable with
+------------------------------------
+
+import 'rxjs/add/observable/of';
+
+@Injectable()
+export class SomeService{
+  
+  public blahWithObservables() {
+    return Observable.of({
+      data: 'blah',
+      status: 400
+    });
+  }
+}
+
+consumed
+--------
+
+
+
+
 ================================================================================
