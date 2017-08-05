@@ -167,10 +167,43 @@ bootstrap
   When Angular launches the app, it places the HTML rendering of AppComponent
   in the DOM, inside the <my-app> element tags of the index.html.  
 
-app/app.component.ts
-----------------------
+
+Example
+-------
+
+  Root Module
+
+    app.module.ts
+
+  Dashboard Module
+
+    dashboard/
+      dashboard-hero.component.ts
+      dashboard.component.ts
+      dashboard.module.ts
+      dashboard-routing.module.ts
 
 
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts  
 
   
 
@@ -1267,6 +1300,18 @@ for routing and performs the initial navigation based on the current browser URL
         pathMatch: 'full'
       }
     ])
+
+  forRoot vs forChild
+  -------------------
+
+forRoot()
+  call only in the root application module, AppModule.
+  calling it in any other module, particularly in a lazy loaded module,
+  is contrary to the intent and is likely to produce runtime error.
+
+forChild
+
+  always call RouterModule.forChild in a feature-routing module
 
 
 
@@ -2663,6 +2708,38 @@ jasmine.done
   Although there is no direct access to the getQuote promise inside
   TwainComponent, the spy has direct access which makes it possible to 
   wait for 'getQuote' to finish.    
+
+  Test a component with inputs and outputs 
+  ----------------------------------------
+
+such component typically appears inside the view template of the host component. the host uses a property binding to set the input property and an event binding to listen to events raised by the output property.
+
+the testing goal is to verify that such bindings work as expected.
+the tests should set input values and listen for output events.
+
+the 'DashboardHeroComponent' is a tiny component that displays an individual
+hero provided by the 'DashboardComponent'.
+
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts
 
 
 

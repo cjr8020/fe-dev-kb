@@ -132,6 +132,13 @@ To create all component with a particular prefix
   $ ng new <project-name> --prefix <prefix-name>
 
 
+To create a routing module 
+
+  $ ng new <project-name> --routing
+
+  will create 'app-routing.module.ts' when you create project
+
+
 module
 
   $ ng g m <module-name>
@@ -151,12 +158,38 @@ Other ioptions:
   --spec   specifies if a spec file is generated
   --routing (boolean) if a routing module file should be generated
 
-
-
-
-
-
 Components have selectors, and prefixes would help with the selectors.
+
+
+  $ ng g module my-module --routing
+
+    create a separate file 'my-module-routing.module.ts' to 
+    store module's routes.
+
+    the file includes an empty 'Routes' object that you can fill
+    with routes to different components and/or modules.
+
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts
+
 
 
 Create angular2 project in existing directory
