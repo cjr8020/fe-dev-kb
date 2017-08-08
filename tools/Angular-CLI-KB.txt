@@ -141,32 +141,58 @@ To create a routing module
 
 module
 
-  $ ng g m <module-name>
-
-creates the following structure relative to working dir:
-
-  installing module
-    create src/app/module-name/module-name.module.ts
-  installing component
-    create src/app/module-name/module-name.component.css
-    create src/app/module-name/module-name.component.html
-    create src/app/module-name/module-name.component.spec.ts
-    create src/app/module-name/module-name.component.ts
+  $ ng g m <module-name> --module=app [--routing]
 
 Other ioptions:
 
   --spec   specifies if a spec file is generated
   --routing (boolean) if a routing module file should be generated
 
-Components have selectors, and prefixes would help with the selectors.
+  Example:
+
+    $ ng g m hero --module=app --routing
+    installing module
+      create src/app/hero/hero-routing.module.ts
+      create src/app/hero/hero.module.ts
+      update src/app/app.module.ts
+
+NOTE: --module  options is to indicate where the module should be imported.
+
+  with --routing option, angular/cli imports the feature routing module into
+  root module, but the feature module itself needs to be imported.
+
+  1. if you
+      specify '--module=app' and
+      don't specify '--routing', 
+      then your HeroModule will be imported in app.module.ts in "imports:"
+
+  2. if you
+      specify '--module=app' and 
+      specify '--routing'
+      then your HeroRoutingModule will be imported into your app.module.ts:
+
+      imports: [
+        BrowserModule,
+        FormsModule,
+        HttpModule,
+        AppRoutingModule,
+        DashboardModule,
+        HeroRoutingModule
+      ],
+
+    but .. angular-cli does not import HeroModule into app.module .. and
+    importing the hero routing module alone is not enough.
+
+      imports: [
+        ...,
+        HeroModule,
+        HeroRoutingModule  // in fact, if you import HeroModule, this isn't needed.. 
+
+      ]
 
 
-  $ ng g module my-module --routing
 
-    create a separate file 'my-module-routing.module.ts' to 
-    store module's routes.
-
-    the file includes an empty 'Routes' object that you can fill
+    the routing file includes an empty 'Routes' object that you can fill
     with routes to different components and/or modules.
 
     NOTE:  MAKE SURE TO ADD YOUR MODULE files:
@@ -174,7 +200,7 @@ Components have selectors, and prefixes would help with the selectors.
       if 
         you add dashboard/dashboard.module.ts
       then
-        you need to import it in your app.module.ts:
+1.        you need to import it in your app.module.ts:
 
           @NgModule({
             imports: [
@@ -187,7 +213,7 @@ Components have selectors, and prefixes would help with the selectors.
           })
           export class AppModule { }
 
-      and in your dashboard.module.ts
+2.      and in your dashboard.module.ts
         - import your dashboard-routing.module.ts
 
 

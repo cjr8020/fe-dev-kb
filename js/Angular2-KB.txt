@@ -7,241 +7,14 @@
 
 
 
-root module bootstrap
----------------------
-change from RC4 to RC5+, instead of having bootstrap in main.ts, now the root component is bootstraped in
-
-app.module.ts
-
-1. import the root component:
-
-  import { AppComponent } from './app.component';
-
-2. declare in declarations:
-
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-
-3. and announce that this component should be bootstraped:
-
-  bootstrap: [AppComponent]
-
-in main.ts
-----------
-
-we now import 
-
-  import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-and execute .bootstrapModule(AppModule) method on it.  
-
-adding other components
-------------------------
-
-Now instead of adding other components as directives on the root component as directives
-add other components to app.module.ts:
-
-  import { OtherComponent } from './other/other.component';
-
-  @NgModule({
-    declarations: [
-      AppComponent,
-      OtherComponent
-    ],
-
-angular-cli will do this when you run '$ ng g c other'
-
-Advantage: when you declare other modules in app.module.ts, they are all available to 
-other components.
-
-
-
-======================================================================
-
-  components
-  ----------
-
-Components are the main way we build and specify elements and logic on the page.
-
-In angular 1, this was done with directives/controllers/scope.  In angular2, 
-all those concepts are combined into components.
-
-Here is a simple component:
-
-import { Component } from '@angular/core';
-
-  @Component({
-    selector: 'my-component',
-    // templateUrl: './my.component.html',
-    // styleUrls: ['./my.component.css']
-    template: '<div>Hello my name is {{name}}. <button (click)="sayMyName()">Say my name</button></div>'
-  })
-  export class MyComponent {
-    console.log('My name is', this.name);
-  }
-
-selector
---------
-
-  selectors work like a CSS selector.  so if we were to have 
-
-    <my-component>
-
-  element in our HTML document, angular would know what to load here.. 
-
-  You can also use "hashtag" syntax:
-
-    selector: '#app-root'
-
-  Now, you can reference that selector via div id:
-
-    <div id="app-root"> 
-
-
-
-
-======================================================================
-
-  Angular Modules 
-  ***************
-
-Angular Modules help organize an application into cohesive blocks of 
-functionality.
-
-Modules are a great way to organize the application and extend it with capabilities
-from external libraries.  Many libraries are modules (e.g. FormsModule, HttpModule,
-RouterModule).  Many 3rd party libs are available as Angular modules (e.g. Material
-Design, Ionic, AngularFire2).
-
-Modules consolidate components, directives and pipes into cohesive blocks of 
-functionality, each focused on a feature area, application business domain, etc..
-
-Modules can be loaded eagerly when the app starts, or lazy loaded asynch by the 
-router.
-
-Every Angular app has at least once module class - the root module.
-We bootstrap that module to launch the application.
-
-The root module is all we need in a simple application with a few components.
-As the app grows, we refactor the root module into feature modules, and we
-import these modules into root module.
-
-An Angular Module is a class adorned with the @NgModule decorator function.
-
-root module
------------
-
-By convention, root module is a class called 'AppModule' in a file named
-app.module.ts
-
-  import { NgModule }      from '@angular/core';
-  import { BrowserModule } from '@angular/platform-browser';
-
-  import
-        { AppComponent }  from './app.component';
-
-  @NgModule({
-    imports: [ BrowserModule ],
-    declarations: [ AppComponent ],
-    bootstrap:    [ AppComponent ]
-  })
-  export class AppModule { }
-
-NgModule
-  this decorator defines the metadata for the module.
-  this metadata imports a single helper module - BrowserModule - which 
-  every browser app must import.
-
-BrowserModule
-  registers critical app service providers and 
-  includes common directives like NgIf and NgFor
-
-declarations
-  this list identifies the application's only component, the root component
-  "AppComponent"
-
-bootstrap
-  this property identies this AppComponent as the bootstrap component.
-  When Angular launches the app, it places the HTML rendering of AppComponent
-  in the DOM, inside the <my-app> element tags of the index.html.  
-
-
-Example
--------
-
-  Root Module
-
-    app.module.ts
-
-  Dashboard Module
-
-    dashboard/
-      dashboard-hero.component.ts
-      dashboard.component.ts
-      dashboard.module.ts
-      dashboard-routing.module.ts
-
-
-    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
-    e.g.:
-      if 
-        you add dashboard/dashboard.module.ts
-      then
-        you need to import it in your app.module.ts:
-
-          @NgModule({
-            imports: [
-              DashboardModule,
-              AppRoutingModule
-            ],
-            providers: [ <services> ],
-            declarations: [ <components-not-part-of-dashboard-module> ],
-            bootstrap: [ AppComponent ]
-          })
-          export class AppModule { }
-
-      and in your dashboard.module.ts
-        - import your dashboard-routing.module.ts  
-
-  
-
-======================================================================
-
-  View Encapsulation
-  ------------------
-
-angular 2 emulates the concept of shadow DOM:
-
-  an HTML element has its 'shadow' DOM
-
-<div>
-  <component _nghost-pax-1>
-    <h1 _ngcontent-pax-1>... </h1>
-  </component>
-  <h1>won't be styled the same</h1>
-</div>
-
-  This is based on CSS Attribute Selectors.
-
-  a[target] {
-    background-color: yellow;
-  }
-
-========================================================================
-
-	Architecture
-	*************
-
-https://angular.io/docs/ts/latest/guide/architecture.html
-
+  Architecture
+  *************
 
 Angular applications are composed of:
-	1. HTML templates with angularized markup,
-	2. component classes to manage those templates
-	3. services with application logic
-	4. modules combing components and services
+  1. HTML templates with angularized markup,
+  2. component classes to manage those templates
+  3. services with application logic
+  4. modules combing components and services
 
 You launch the app by bootstrapping the root module
 
@@ -256,9 +29,6 @@ You launch the app by bootstrapping the root module
 6. Directives
 7. Services
 8. DI
-
-Angular 2 rendering architecture
-https://docs.google.com/document/d/1M9FmT05Q6qpsjgvH1XvCm840yn2eWEg0PMskSQz7k4E/edit
 
 
 Routing
@@ -408,98 +178,95 @@ called ActivatedRoute:
 
 1. Modules
 -----------
-	
-	NOTE: JavaScript also has modules which are different from Angular modules.
-
-	http://exploringjs.com/es6/ch_modules.html
-
-	Prior to ES6, JS modules were implemented via libraries, not built into language.
-	ES6 introduces JavaScript built-in modules.
-
-	Angular ships as a collection of JS modules. think of them as library modules.
-	Each Angular library name begins with the '@angular' prefix.
-	YOu install them with npm, and import parts of them with JavaScript
-	'import' statement:
-		import { Component } from '@angular/core';
-
-
+  
 every app has at least one module - root - named "AppModule"
+
 other modules are "feature" modules
+
 each module is a cohesive block of code dedicated to an app domain, a workflow, 
 or a closely related set of capabilities.
 
 any module, root or feature, is a class with @NgModule decorator
 
-	NgModule is a decorator function that takes a single metadata object whose
-	properties describe a module.
 
-		- declarations
-			= view classes that belong to this module. 3 types of view classes:
-				1. components
-				2. directives
-				3. pipes
-		- exports
-			= subset of the declarations that should be visible and usable 
-			in the component templates of OTHER modules
-		- imports
-			= other modules whose exported classes are needed by component
-			templates declared in this module
-		- providers
-			= creators of services that this module contributes 
-			to the global collection of services
-			they become accessible in all parts of the app
-		- bootstrap [ROOT only]
-			= the main application view, called 'root component'
-			only ROOT module should set this "bootstrap" property
+NgModule
+--------
+
+  NgModule is a decorator function that takes a single metadata object whose
+  properties describe a module.
+
+    - declarations
+
+      = view classes that belong to this module. 3 types of view classes:
+        1. components
+        2. directives
+        3. pipes
+    
+    - exports
+      = subset of the declarations that should be visible and usable 
+      in the component templates of OTHER modules
+    
+    - imports
+      = other modules whose exported classes are needed by component
+      templates declared in this module
+    
+    - providers
+      = creators of services that this module contributes 
+      to the global collection of services
+      they become accessible in all parts of the app
+    
+    - bootstrap [ROOT only]
+      = the main application view, called 'root component'
+      only ROOT module should set this "bootstrap" property
 
 example of root module
 
-	import { NgModule }      from '@angular/core';
-	import { BrowserModule } from '@angular/platform-browser';
+  import { NgModule }      from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
 
-	@NgModule({
-	  imports:      [ BrowserModule ],
-	  providers:    [ Logger ],
-	  declarations: [ AppComponent ],
-	  exports:      [ AppComponent ], // just for demo - no one needs root module
-	  bootstrap:    [ AppComponent ]
-	})
-	export class AppModule { }
+  @NgModule({
+    imports:      [ BrowserModule ],
+    providers:    [ Logger ],
+    declarations: [ AppComponent ],
+    exports:      [ AppComponent ], // just for demo - no one needs root module
+    bootstrap:    [ AppComponent ]
+  })
+  export class AppModule { }
 
 bootstrap root in main.ts
 
 app/main.ts:
 
-	import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-	import { AppModule } from './app.module';
+  import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+  import { AppModule } from './app.module';
 
-	platformBrowserDynamic().bootstrapModule(AppModule);
+  platformBrowserDynamic().bootstrapModule(AppModule);
 
 Angular modules and JavaScript modules
 
-	be aware that you're using the two systems side by side:
+  be aware that you're using the two systems side by side:
 
-		import { Component } from '@angular/core';
-		.
-		.
-		.
-		@NgModule({
-			imports:	[ BrowserModule ],
-			...
-		})
+    import { Component } from '@angular/core';
+    .
+    .
+    .
+    @NgModule({
+      imports:  [ BrowserModule ],
+      ...
+    })
 
 2. Components
 ----------------------------------------
 
-	 a component controls a patch of screen called a 'view'
-	 e.g., the following views are controlled by components:
-	 	- app root with navigation links
-	 	- list of heros
-	 	- hero editor
+   a component controls a patch of screen called a 'view'
+   e.g., the following views are controlled by components:
+    - app root with navigation links
+    - list of heros
+    - hero editor
 
-	you define a component's logic - what it does to support the view - inside
-	a class.  The class interacts with the view thru an API of properties and
-	methods.
+  you define a component's logic - what it does to support the view - inside
+  a class.  The class interacts with the view thru an API of properties and
+  methods.
 
     e.g. this HeroListcomponent has a 'heroes' property that returns an array
     of heroes that is acquires from a service.
@@ -633,6 +400,21 @@ Angular modules and JavaScript modules
 
               <button (click) = "onSave()">Save</button>
 
+
+              <button (click)="show = !show"> {{show ? 'hide' : 'show'}} </button>
+
+              presuming the component owning this template has something like:
+
+                show: boolean = false;
+
+              the button is bound to DOM event (click) which will trigger 
+              the action indicated by the text in quotes.  Here, variable
+              `show` will assigned the opposite value of self.
+              The button text is bound to that variable `show`, so clicking
+              the button will toggle the button text.
+
+
+
           component event
 
               <hero-detail (deleteRequest)="deleteHero()"></hero-detail>
@@ -674,9 +456,157 @@ Angular modules and JavaScript modules
 
 4. Metadata
 ----------------------------------------
+
+
+
 5. Data binding
 ----------------------------------------
+
+  you display data by binding controls in an HTML template to properties
+  of an Angular component.
+
+
+    Template binding works with DOM PROPERTIES, not HTML attributes.
+
+
+
+  one-way from data source to view target
+  ---------------------------------------
+
+      1. property style
+
+       {{expression}} expression interpolation
+
+          <ul>
+            <li *ngFor="let hero of heroes"> {{hero}} </li>
+          </ul>
+
+      2. attribute style
+
+        [target]="expression"
+
+          e.g. bind 'isUnchanged' property to button disabled state
+
+            <button [disabled]="isUnchanged">Save</button>
+
+              you're binding the button's 'disabled' attribute and setting
+              it to the current value of the component's 'isUnchanged' property.. 
+              right?  WRONG
+
+              These are not HTML attributes - these are properties fo DOM
+              elements, components and directives.
+
+
+      3. class style
+
+        bind-target="expression"
+
+
+
+  one-way from view target to data source
+  ---------------------------------------
+
+      Event 
+
+        (view-target)="statement"
+        
+        on-target="statement"
+
+
+  two-way 
+  --------
+
+
+      [(target)]="expression"
+
+      bindon-target="expression"
+
+
+      /**********************************
+       *                                *
+       * HTML attribute vs DOM property *
+       *                                *
+       **********************************/
+
+
+  Attributes are defined by HTML.
+  Properties are defined by the DOM.
+
+  * a few HTML attributes have 1:1 mapping to properties.
+    'id' is one example
+
+  * some HTML attributes have no corresponding properties - e.g. colspan
+
+  * some DOM props don't have corresponding attributes - textContent, e.g.
+
+  * many HTML attrs seem to map to properties, but not the way you think!
+
+  Attributes initialize DOM properties and then they are DONE.
+  Property values can change; attributes do not.
+
+  e.g. when the browser renders 
+
+    <input type="text" value="Bob">
+
+  it creates a corresponding DOM node with a 'value' property initialed to "Bob".
+  when the user enters "Sally" into the input box, the DOM element 'value' 
+  property becomes "Sally".  But the HTML 'value' attribute REMAINS 
+  unchanged as you can confirm by asking:
+
+    input.getAttribute('value');  // returns "Bob"
+
+  the HTML attribute value specifies the INITIAL value; the DOM value property
+  is the CURRENT value.
+
+  The 'disabled' attribute is another peculiar example.
+  A button's 'disable' PROPERTY is "false" by default so it is enabled.
+  when you add the 'disabled' attribute, its presence alone initializes the 
+  button's 'disabled' property to "true" to the button is disabled.
+
+  Setting the button's 'disabled' property disables|enables the button - 
+  the value of the PROPERTY matters (attribute does not).
+
+
+Type
+
+  Property
+
+    element:  <img [src]="heroImageUrl">
+
+    component:  <hero-detail [hero]="currentHero"</hero-detail>
+
+    directive:  <div [ngClass]="{'special': isSpecial}">
+
+                </div>
+
+  Event
+
+    element:   <button (click)="onSave()">Save</botton>
+
+    component: <hero-detail (deleteRequest)="deletedHero()"></hero-detail>
      
+    directive:  <div (myClick)="clicked=$event" clickable>click me</div>
+
+
+  Attribute
+
+    attribute:  <button [attr.aria-label]="help">help</button>
+
+  Class
+
+    property:   <div [class.special]="isSpecial">Special</div>
+
+
+  Style
+
+    property:   <button [style.color]="isSpecial ? 'red' : 'green'">
+
+
+
+  Two-way
+
+    event and property:   <input [(ngModel)]="name">
+
 
 6. Directives
 ----------------------------------------
@@ -845,7 +775,7 @@ Main points:
   you register providers with injector
   
       
-		 	
+      
   Services and DI
   ---------------
 
@@ -909,6 +839,63 @@ Pipes are a good way to format strings, currency amounts, dates and other
 display data.
 
 Angular ships with several pipes and we can write out own.
+
+
+  Async Pipe
+  ----------
+
+Usage:
+
+  <div>{{ observableTime | async }}</div>
+
+Purpose:
+
+  unwrap a value from an asynchronous primitive.
+  if we have an Observable or Promise instance, then we can use it directly
+  with AsyncPipe using diretives like 'ngFor', 'ngIf' and 'NgSwitch'.
+
+  subscribes to Observable or Promise and returns latest data.
+
+  marks the component to check for data changes.
+
+    NgFor Example
+    .............
+
+      @Injectable() service to fetch book data
+
+      component to display that data
+
+        <ul>
+          <li *ngFor="let book of observableBooks | async" >
+
+            Id: {{book.id}}, Name: {{book.name}}
+
+          </li>
+        </ul>
+
+      in component:
+
+        ngOnInit(): void {
+          this.observableBooks = this.bookService.getBooks();
+        }
+
+    NgIf and NgSwitch Example
+    .........................
+
+      <div *ngIf="promiseBook | async as book; else loading">
+        Id: {{book.id}}, Name: {{book.name}}
+      </div>
+      <ng-template #loading>Loading Data .. </ng-template>
+
+      <h3>AsyncPipe with NgSwitch</h3>
+
+      <div [ngSwitch]="(promiseBook | async)?.id">
+
+        <div *ngSwitchCase="100">Find Actual Data</div>
+        <div *ngSwitchDefault>Showing Default Data</div>
+
+      </div>
+
 
 
 ==============================================================================
@@ -1211,7 +1198,182 @@ input and output properties
 ----------------------------------------
 
 
-		 	
+     
+
+
+======================================================================
+
+  components
+  ----------
+
+Components are the main way we build and specify elements and logic on the page.
+
+In angular 1, this was done with directives/controllers/scope.  In angular2, 
+all those concepts are combined into components.
+
+Here is a simple component:
+
+import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-component',
+    // templateUrl: './my.component.html',
+    // styleUrls: ['./my.component.css']
+    template: '<div>Hello my name is {{name}}. <button (click)="sayMyName()">Say my name</button></div>'
+  })
+  export class MyComponent {
+    console.log('My name is', this.name);
+  }
+
+selector
+--------
+
+  selectors work like a CSS selector.  so if we were to have 
+
+    <my-component>
+
+  element in our HTML document, angular would know what to load here.. 
+
+  You can also use "hashtag" syntax:
+
+    selector: '#app-root'
+
+  Now, you can reference that selector via div id:
+
+    <div id="app-root"> 
+
+
+
+
+======================================================================
+
+  Angular Modules 
+  ***************
+
+Angular Modules help organize an application into cohesive blocks of 
+functionality.
+
+Modules are a great way to organize the application and extend it with capabilities
+from external libraries.  Many libraries are modules (e.g. FormsModule, HttpModule,
+RouterModule).  Many 3rd party libs are available as Angular modules (e.g. Material
+Design, Ionic, AngularFire2).
+
+Modules consolidate components, directives and pipes into cohesive blocks of 
+functionality, each focused on a feature area, application business domain, etc..
+
+Modules can be loaded eagerly when the app starts, or lazy loaded asynch by the 
+router.
+
+Every Angular app has at least once module class - the root module.
+We bootstrap that module to launch the application.
+
+The root module is all we need in a simple application with a few components.
+As the app grows, we refactor the root module into feature modules, and we
+import these modules into root module.
+
+An Angular Module is a class adorned with the @NgModule decorator function.
+
+root module
+-----------
+
+By convention, root module is a class called 'AppModule' in a file named
+app.module.ts
+
+  import { NgModule }      from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
+
+  import
+        { AppComponent }  from './app.component';
+
+  @NgModule({
+    imports: [ BrowserModule ],
+    declarations: [ AppComponent ],
+    bootstrap:    [ AppComponent ]
+  })
+  export class AppModule { }
+
+NgModule
+  this decorator defines the metadata for the module.
+  this metadata imports a single helper module - BrowserModule - which 
+  every browser app must import.
+
+BrowserModule
+  registers critical app service providers and 
+  includes common directives like NgIf and NgFor
+
+declarations
+  this list identifies the application's only component, the root component
+  "AppComponent"
+
+bootstrap
+  this property identies this AppComponent as the bootstrap component.
+  When Angular launches the app, it places the HTML rendering of AppComponent
+  in the DOM, inside the <my-app> element tags of the index.html.  
+
+
+Example
+-------
+
+  Root Module
+
+    app.module.ts
+
+  Dashboard Module
+
+    dashboard/
+      dashboard-hero.component.ts
+      dashboard.component.ts
+      dashboard.module.ts
+      dashboard-routing.module.ts
+
+
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts  
+
+  
+
+======================================================================
+
+  View Encapsulation
+  ------------------
+
+angular 2 emulates the concept of shadow DOM:
+
+  an HTML element has its 'shadow' DOM
+
+<div>
+  <component _nghost-pax-1>
+    <h1 _ngcontent-pax-1>... </h1>
+  </component>
+  <h1>won't be styled the same</h1>
+</div>
+
+  This is based on CSS Attribute Selectors.
+
+  a[target] {
+    background-color: yellow;
+  }
+
+========================================================================
+	
 
 ==============================================================================
 
@@ -1637,10 +1799,53 @@ Structural Directives
 
 ngIf
 
-  we can add an element subtree (and element and its children) to the DOM by
-  binding an NgIf directive to a truthy expression
+  conditionally includes a template based on the value of an expression.
 
-    <div *ngIf="currentHero">Hello, {{currentHero.firstName}}</div>
+  element subtree is physically removed or added to the DOM.
+
+    <div *ngIf="condition">...</div>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.
+    The <div> containing "Text to show" is removed or added to the DOM based
+    on the value of var 'show'.
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show">Text to Show</div>
+
+
+
+with else
+
+    <div *ngIf="condition; else elseBlock">...</div>
+    <ng-template #elseBlock>...</ng-template>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.  
+    The <div> containing "Text to show" will either display "primary" text if 
+    variable 'show' is true, or alternate - if false.
+
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show; else elseBlock">Text to Show</div>
+      <ng-template #elseBlock>Alternate text while primary is hidden</ng-template>
+
+with async
+
+    <button (click)="nextUser()">Next User</button>
+    <br>
+    <div *ngIf="userObserbable | async as user; else loading">
+      Hello {{user.first}} {{user.last}}!
+    </div>
+    <ng-template #loading let-user>Waiting ... (user is {{user|json}})
+    </ng-template>
+
+
+  
 
   NOTE: visibility (hiding) and ngIf are not the same!
 
@@ -2227,6 +2432,12 @@ Setup / Teardown
   Angular Unit Testing
   ********************
 
+@see 
+    https://github.com/angular/angular.io
+    https://github.com/angular/angular.io/tree/master/public/docs/_examples/testing/ts/src
+
+
+
 spec file
 
   tests written in Jasmine are called specs
@@ -2797,8 +3008,12 @@ jasmine.done
   TwainComponent, the spy has direct access which makes it possible to 
   wait for 'getQuote' to finish.    
 
+
+
+
   Test a component with inputs and outputs 
   ----------------------------------------
+
 
 such component typically appears inside the view template of the host component. the host uses a property binding to set the input property and an event binding to listen to events raised by the output property.
 
@@ -2828,6 +3043,73 @@ hero provided by the 'DashboardComponent'.
 
       and in your dashboard.module.ts
         - import your dashboard-routing.module.ts
+
+    NOTE:  ONCE YOU ADD routing YOUR app.component.spec.ts will fail -
+           as it doesn't know what <router-outlet> is
+
+          NO_ERRORS_SCHEMA
+
+            adding NO_ERRORS_SCHEMA to the testing module's 'schema' metadata
+            will tell the compiler to ignore unrecognized elements and attributes.
+
+              beforeEach( async( () => {
+
+                TestBed.configureTestingModule({
+                  declarations: [
+                    AppComponent,
+                    RouterLinkStubDirective
+                  ],
+                  schemas: [ NO_ERRORS_SCHEMA ]
+                })
+                .compileComponents()
+                .then( () => {
+                  fixture = TestBed.createComponent(AppComponent);
+                  comp = fixture.componentInstance;
+                });
+              });
+
+
+            these tests are SHALLOW b/c they only "go deep" into the components
+            you want to test
+
+  create dashboard-hero component:
+
+    $ ng g c dashboard/dashboard-hero --flat -is -it -m dashboard/dashboard.module.ts
+
+
+  note: when you have properties declared with @Input(),
+  you need to initialize those in your test:
+
+
+  create 'hero' module
+
+    $ ng g m hero --module=app --routing
+    installing module
+      create src/app/hero/hero-routing.module.ts
+      create src/app/hero/hero.module.ts
+      update src/app/app.module.ts
+
+
+  create 'hero-list' component within 'hero' module
+
+    $ ng g c hero/hero-list --module hero
+    installing component
+      create src/app/hero/hero-list/hero-list.component.css
+      create src/app/hero/hero-list/hero-list.component.html
+      create src/app/hero/hero-list/hero-list.component.spec.ts
+      create src/app/hero/hero-list/hero-list.component.ts
+      update src/app/hero/hero.module.ts
+
+
+  create 'hero-detail' component within 'hero' module
+
+    $ ng g c hero/hero-detail --module hero
+    installing component
+      create src/app/hero/hero-detail/hero-detail.component.css
+      create src/app/hero/hero-detail/hero-detail.component.html
+      create src/app/hero/hero-detail/hero-detail.component.spec.ts
+      create src/app/hero/hero-detail/hero-detail.component.ts
+      update src/app/hero/hero.module.ts
 
 
 
