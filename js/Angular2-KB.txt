@@ -3009,6 +3009,77 @@ jasmine.done
   wait for 'getQuote' to finish.    
 
 
+  Test a component with routing
+  -----------------------------
+
+Particularly, when your component has ActivatedRoute.
+
+Use a mock component and a mock router, the implement RouterTestingModule.withRoutes
+In your tests, validate that expected routes 
+
+
+in your some-component.component.spec.ts:
+
+  @Component({
+    template: `
+      <router-outlet></router-outlet>
+    `
+  })
+  class MockRoutingComponent {}
+
+  /**
+   * this mock component is a mock routing destination
+   */
+  @Component({
+    template: ``
+  })
+  class MockComponent {}
+
+  describe('... ', () => {
+    
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          MockRoutingComponent,
+          MockComponent
+        ],
+        imports: [
+          FormsModule,
+          RouterTestingModule.withRoutes([
+            { path: '', component: MockComponent },
+            { path: 'password-changed', component: MockComponent }
+          ])
+        ],
+        providers: [
+          AuthenticationService
+        ]
+      })
+      .compileComponents();
+    }));
+
+  })
+
+Validating examples:
+
+
+
+  it('navigate to "" redirects you to /home', fakeAsync( () => {
+    router.navigate(['']);
+    tick();
+    expect(location.path()).toBe('/home');
+  }));
+
+
+  if('navigate to "search" takes you to /search', fakeAsync(() => {
+    router.navigate(['search']);
+    tick().
+    expect(location.path()).toBe('/search');
+  }));
+
+
+Another approach is to use a routerStub as a provider as shown here:
+https://stackoverflow.com/questions/39623722/angular-2-final-release-router-unit-test
+
 
 
   Test a component with inputs and outputs 
