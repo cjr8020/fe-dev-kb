@@ -2965,6 +2965,24 @@ src/testing/model/fake-hero.service.ts
   }
 
 
+mock a method
+-------------
+
+  public doSomething(blah: string, bluh: string): Observable<Response> {
+
+    /** simulates success or error */
+
+    return Observable.fromPromise(new Promise((resolve, reject) => {
+      resolve({
+        status: 204
+      })
+      // reject({
+      //   status: 400
+      // })
+    }));
+
+  }
+
 
 
 
