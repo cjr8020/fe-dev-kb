@@ -132,31 +132,90 @@ To create all component with a particular prefix
   $ ng new <project-name> --prefix <prefix-name>
 
 
+To create a routing module 
+
+  $ ng new <project-name> --routing
+
+  will create 'app-routing.module.ts' when you create project
+
+
 module
 
-  $ ng g m <module-name>
-
-creates the following structure relative to working dir:
-
-  installing module
-    create src/app/module-name/module-name.module.ts
-  installing component
-    create src/app/module-name/module-name.component.css
-    create src/app/module-name/module-name.component.html
-    create src/app/module-name/module-name.component.spec.ts
-    create src/app/module-name/module-name.component.ts
+  $ ng g m <module-name> --module=app [--routing]
 
 Other ioptions:
 
   --spec   specifies if a spec file is generated
   --routing (boolean) if a routing module file should be generated
 
+  Example:
+
+    $ ng g m hero --module=app --routing
+    installing module
+      create src/app/hero/hero-routing.module.ts
+      create src/app/hero/hero.module.ts
+      update src/app/app.module.ts
+
+NOTE: --module  options is to indicate where the module should be imported.
+
+  with --routing option, angular/cli imports the feature routing module into
+  root module, but the feature module itself needs to be imported.
+
+  1. if you
+      specify '--module=app' and
+      don't specify '--routing', 
+      then your HeroModule will be imported in app.module.ts in "imports:"
+
+  2. if you
+      specify '--module=app' and 
+      specify '--routing'
+      then your HeroRoutingModule will be imported into your app.module.ts:
+
+      imports: [
+        BrowserModule,
+        FormsModule,
+        HttpModule,
+        AppRoutingModule,
+        DashboardModule,
+        HeroRoutingModule
+      ],
+
+    but .. angular-cli does not import HeroModule into app.module .. and
+    importing the hero routing module alone is not enough.
+
+      imports: [
+        ...,
+        HeroModule,
+        HeroRoutingModule  // in fact, if you import HeroModule, this isn't needed.. 
+
+      ]
 
 
 
+    the routing file includes an empty 'Routes' object that you can fill
+    with routes to different components and/or modules.
 
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+1.        you need to import it in your app.module.ts:
 
-Components have selectors, and prefixes would help with the selectors.
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+2.      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts
+
 
 
 Create angular2 project in existing directory
@@ -249,7 +308,7 @@ To generate a new component with flat structure, inline styles and template
   create service
   **************
 
-note: make sure NOT to include "servide" into <service-name> - it will be added.
+note: make sure NOT to include "service" into <service-name> - it will be added.
 
   $ ng g s <service-name> --flat --spec 
 
@@ -804,7 +863,7 @@ You can add more global styles via the apps[0].styles property in
 angular-cli.json
 
 
-================================================================================
+=========================================================================
 
 
   No binary for Chrome browser on your platform
@@ -820,8 +879,72 @@ Visit http://ember-cli.com/user-guide/#watchman for more info.
   Please, set "CHROME_BIN" env variable.
 
 
+==============================================================
 
-  How to run tests without browser?
+
+  Running tests with headless browser
+  ***********************************
+
+
+  Headless Chrome
+  ***************
+
+Chrome now has the ability to run in headless mode since version 59, so you can use it to run tests without needing to install any additional packages and with a more standard environment.
+
+To use Chrome in headless mode, you need to add the following section to your karma.conf.js
+
+    browsers: ['Chrome','ChromeHeadless'],
+    singleRun: true,
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          // without a remote dubugging port, Google Chrome exits immediately
+          '--remote-debugging-port=9222',
+        ],
+      }
+    }
+
+Now you need to replace the existing browser or add 'ChromeHeadless' option:
+
+    browsers: ['Chrome','ChromeHeadless'],
+
+in the same file.
+
+Now, if you added a 2nd browser, you can say:
+
+  $ ng test --browser ChromeHeadless
+
+or just 
+
+  $ ng test
+
+if you only have one browser option.    
+
+You can also create 'npm run' aliases in your package.json
+
+e.g.:
+
+  "scripts": {
+    ... 
+    "test": "ng test --browser ChromeHeadless --watch false",
+    "test-debug": "ng test --browser Chrome",
+  },
+
+and then run as:
+
+  $ npm run test 
+and
+  $ npm run test-debug
+
+
+
+---------------------------------------------------------------
+
+
+  Headless PhantomJS
   *********************************
 
 It is now PhantomJS2:
@@ -882,6 +1005,7 @@ the plugins array as well.
 execute tests:
 
 $ ng test --build --browsers PhantomJS --watch false --log-level debug
+
 
 
 ==============================================================

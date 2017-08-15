@@ -6,6 +6,11 @@
 	@@@@@@@@@@@@@@@
 
 
+Keyboard shorcuts
+
+ctrl-F4				close current file/tab	
+
+
 ================================================================================
 
 	Customizations
@@ -24,9 +29,14 @@ Keymap
 
 	2. use single quotes
 
-		Settings | Editor | Code Style | JavaScript | Punctuation
+		Settings | Editor | Code Style | TypeScript | Punctuation
 
 		Use <quote style> quotes in <new code/always>
+
+
+		Settings | Editor | Code Style | JavaScript | Punctuation
+
+		Use <quote style> quotes in <new code/always>		
 
 ================================================================================
 
@@ -41,18 +51,6 @@ Searching
 
 	F3 	next occurance
 
-
-
-================================================================================
-
-	new project setup
-	*****************
-
-using yeoman, grunt..
-
-1. Alt-F12 or open Terminal
-
-2. 'yo webapp'
 
 
 ================================================================================
@@ -134,6 +132,24 @@ Expand
 
 	select the "Enable" checkbox
 	look for .eslintrc as config file	
+
+
+================================================================================
+
+	Remap Ubuntu keyboard shortcuts
+	*******************************
+
+Intellij IDEA/WebStorm conflicts with ubuntu window manager shortcuts.
+Here is how to remap them
+
+	Settings > Window Manager > Keyboard tab
+
+Also, Ctrl-Alt-L - reformat code conflicts with "lock screen"
+
+	Settings > Keyboard > Applications Shortcuts
+
+	remove Ctrl-Alt-L
+
 
 
 ================================================================================

@@ -7,208 +7,14 @@
 
 
 
-root module bootstrap
----------------------
-change from RC4 to RC5+, instead of having bootstrap in main.ts, now the root component is bootstraped in
-
-app.module.ts
-
-1. import the root component:
-
-  import { AppComponent } from './app.component';
-
-2. declare in declarations:
-
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-
-3. and announce that this component should be bootstraped:
-
-  bootstrap: [AppComponent]
-
-in main.ts
-----------
-
-we now import 
-
-  import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-and execute .bootstrapModule(AppModule) method on it.  
-
-adding other components
-------------------------
-
-Now instead of adding other components as directives on the root component as directives
-add other components to app.module.ts:
-
-  import { OtherComponent } from './other/other.component';
-
-  @NgModule({
-    declarations: [
-      AppComponent,
-      OtherComponent
-    ],
-
-angular-cli will do this when you run '$ ng g c other'
-
-Advantage: when you declare other modules in app.module.ts, they are all available to 
-other components.
-
-
-
-======================================================================
-
-  components
-  ----------
-
-Components are the main way we build and specify elements and logic on the page.
-
-In angular 1, this was done with directives/controllers/scope.  In angular2, 
-all those concepts are combined into components.
-
-Here is a simple component:
-
-import { Component } from '@angular/core';
-
-  @Component({
-    selector: 'my-component',
-    // templateUrl: './my.component.html',
-    // styleUrls: ['./my.component.css']
-    template: '<div>Hello my name is {{name}}. <button (click)="sayMyName()">Say my name</button></div>'
-  })
-  export class MyComponent {
-    console.log('My name is', this.name);
-  }
-
-selector
---------
-
-  selectors work like a CSS selector.  so if we were to have 
-
-    <my-component>
-
-  element in our HTML document, angular would know what to load here.. 
-
-  You can also use "hashtag" syntax:
-
-    selector: '#app-root'
-
-  Now, you can reference that selector via div id:
-
-    <div id="app-root"> 
-
-
-
-
-======================================================================
-
-  Angular Modules 
-  ***************
-
-Angular Modules help organize an application into cohesive blocks of 
-functionality.
-
-Modules are a great way to organize the application and extend it with capabilities
-from external libraries.  Many libraries are modules (e.g. FormsModule, HttpModule,
-RouterModule).  Many 3rd party libs are available as Angular modules (e.g. Material
-Design, Ionic, AngularFire2).
-
-Modules consolidate components, directives and pipes into cohesive blocks of 
-functionality, each focused on a feature area, application business domain, etc..
-
-Modules can be loaded eagerly when the app starts, or lazy loaded asynch by the 
-router.
-
-Every Angular app has at least once module class - the root module.
-We bootstrap that module to launch the application.
-
-The root module is all we need in a simple application with a few components.
-As the app grows, we refactor the root module into feature modules, and we
-import these modules into root module.
-
-An Angular Module is a class adorned with the @NgModule decorator function.
-
-root module
------------
-
-By convention, root module is a class called 'AppModule' in a file named
-app.module.ts
-
-  import { NgModule }      from '@angular/core';
-  import { BrowserModule } from '@angular/platform-browser';
-
-  import
-        { AppComponent }  from './app.component';
-
-  @NgModule({
-    imports: [ BrowserModule ],
-    declarations: [ AppComponent ],
-    bootstrap:    [ AppComponent ]
-  })
-  export class AppModule { }
-
-NgModule
-  this decorator defines the metadata for the module.
-  this metadata imports a single helper module - BrowserModule - which 
-  every browser app must import.
-
-BrowserModule
-  registers critical app service providers and 
-  includes common directives like NgIf and NgFor
-
-declarations
-  this list identifies the application's only component, the root component
-  "AppComponent"
-
-bootstrap
-  this property identies this AppComponent as the bootstrap component.
-  When Angular launches the app, it places the HTML rendering of AppComponent
-  in the DOM, inside the <my-app> element tags of the index.html.  
-
-app/app.component.ts
-----------------------
-
-
-
-  
-
-======================================================================
-
-  View Encapsulation
-  ------------------
-
-angular 2 emulates the concept of shadow DOM:
-
-  an HTML element has its 'shadow' DOM
-
-<div>
-  <component _nghost-pax-1>
-    <h1 _ngcontent-pax-1>... </h1>
-  </component>
-  <h1>won't be styled the same</h1>
-</div>
-
-  This is based on CSS Attribute Selectors.
-
-  a[target] {
-    background-color: yellow;
-  }
-
-========================================================================
-
-	Architecture
-	*************
-
-https://angular.io/docs/ts/latest/guide/architecture.html
-
+  Architecture
+  *************
 
 Angular applications are composed of:
-	1. HTML templates with angularized markup,
-	2. component classes to manage those templates
-	3. services with application logic
-	4. modules combing components and services
+  1. HTML templates with angularized markup,
+  2. component classes to manage those templates
+  3. services with application logic
+  4. modules combing components and services
 
 You launch the app by bootstrapping the root module
 
@@ -223,9 +29,6 @@ You launch the app by bootstrapping the root module
 6. Directives
 7. Services
 8. DI
-
-Angular 2 rendering architecture
-https://docs.google.com/document/d/1M9FmT05Q6qpsjgvH1XvCm840yn2eWEg0PMskSQz7k4E/edit
 
 
 Routing
@@ -285,100 +88,185 @@ Routing
     The browser also needs the base <href> value to prefix relative URLs.
 
 
+
+    ActivatedRoute
+    **************
+
+ActivatedRoute is a service provided to each route component that contains 
+route specific information such as:
+
+  - route parameters
+  - static data
+  - resolve data
+  - global query params
+  - the global fragment
+
+The route path and parameters are available through an injected router service
+called ActivatedRoute:
+
+  url
+    an Observable of the route path(s) represented as an array of strings 
+    for each part of the route path
+
+  data
+
+  paramMap
+    an Observable that contains a map of the required and optional parameters
+
+  queryMapParam
+    an Observable that contains a amp of the query parameters available to 
+    all routes.
+
+  fragement
+  outlet
+  routeConfig
+  parent
+  firstChild
+  children
+
+
+  Reading path parameters
+  -----------------------
+
+
+  use ngOnInit() {.. }
+
+
+  /heroes/hero-detail;code=ADADA
+
+  paramMap
+
+    constructor(private route: ActivatedRoute) {
+      console.log('HeroDetailComponent: call me "/heroes/hero-detail"');
+      this.route.paramMap.subscribe(
+        params => {
+          console.log('constructor code=', params.get('code'));
+        }
+      );
+    }
+
+
+  Query parameters
+  ----------------
+
+  /heroes/hero-detail?code=ADADA
+
+
+  Use ngOnInit() - angular guide shows that
+
+  constructor(private route: ActivatedRoute) {
+    console.log('HeroDetailComponent: call me "/heroes/hero-detail"');
+    this.route.queryParamMap.subscribe(
+      params => {
+        console.log('constructor code=', params.get('code'));
+      }
+    );
+  }
+
+
+  ngOnInit() {
+    this.route.queryParamMap
+      .subscribe( (queryParams: ParamMap) => {
+        console.log('ngOnInit: code=', queryParams.get('code'));
+    });
+  }
+
+
+================================================================================
+
+
+
 1. Modules
 -----------
-	
-	NOTE: JavaScript also has modules which are different from Angular modules.
-
-	http://exploringjs.com/es6/ch_modules.html
-
-	Prior to ES6, JS modules were implemented via libraries, not built into language.
-	ES6 introduces JavaScript built-in modules.
-
-	Angular ships as a collection of JS modules. think of them as library modules.
-	Each Angular library name begins with the '@angular' prefix.
-	YOu install them with npm, and import parts of them with JavaScript
-	'import' statement:
-		import { Component } from '@angular/core';
-
-
+  
 every app has at least one module - root - named "AppModule"
+
 other modules are "feature" modules
+
 each module is a cohesive block of code dedicated to an app domain, a workflow, 
 or a closely related set of capabilities.
 
 any module, root or feature, is a class with @NgModule decorator
 
-	NgModule is a decorator function that takes a single metadata object whose
-	properties describe a module.
 
-		- declarations
-			= view classes that belong to this module. 3 types of view classes:
-				1. components
-				2. directives
-				3. pipes
-		- exports
-			= subset of the declarations that should be visible and usable 
-			in the component templates of OTHER modules
-		- imports
-			= other modules whose exported classes are needed by component
-			templates declared in this module
-		- providers
-			= creators of services that this module contributes 
-			to the global collection of services
-			they become accessible in all parts of the app
-		- bootstrap [ROOT only]
-			= the main application view, called 'root component'
-			only ROOT module should set this "bootstrap" property
+NgModule
+--------
+
+  NgModule is a decorator function that takes a single metadata object whose
+  properties describe a module.
+
+    - declarations
+
+      = view classes that belong to this module. 3 types of view classes:
+        1. components
+        2. directives
+        3. pipes
+    
+    - exports
+      = subset of the declarations that should be visible and usable 
+      in the component templates of OTHER modules
+    
+    - imports
+      = other modules whose exported classes are needed by component
+      templates declared in this module
+    
+    - providers
+      = creators of services that this module contributes 
+      to the global collection of services
+      they become accessible in all parts of the app
+    
+    - bootstrap [ROOT only]
+      = the main application view, called 'root component'
+      only ROOT module should set this "bootstrap" property
 
 example of root module
 
-	import { NgModule }      from '@angular/core';
-	import { BrowserModule } from '@angular/platform-browser';
+  import { NgModule }      from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
 
-	@NgModule({
-	  imports:      [ BrowserModule ],
-	  providers:    [ Logger ],
-	  declarations: [ AppComponent ],
-	  exports:      [ AppComponent ], // just for demo - no one needs root module
-	  bootstrap:    [ AppComponent ]
-	})
-	export class AppModule { }
+  @NgModule({
+    imports:      [ BrowserModule ],
+    providers:    [ Logger ],
+    declarations: [ AppComponent ],
+    exports:      [ AppComponent ], // just for demo - no one needs root module
+    bootstrap:    [ AppComponent ]
+  })
+  export class AppModule { }
 
 bootstrap root in main.ts
 
 app/main.ts:
 
-	import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-	import { AppModule } from './app.module';
+  import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+  import { AppModule } from './app.module';
 
-	platformBrowserDynamic().bootstrapModule(AppModule);
+  platformBrowserDynamic().bootstrapModule(AppModule);
 
 Angular modules and JavaScript modules
 
-	be aware that you're using the two systems side by side:
+  be aware that you're using the two systems side by side:
 
-		import { Component } from '@angular/core';
-		.
-		.
-		.
-		@NgModule({
-			imports:	[ BrowserModule ],
-			...
-		})
+    import { Component } from '@angular/core';
+    .
+    .
+    .
+    @NgModule({
+      imports:  [ BrowserModule ],
+      ...
+    })
 
 2. Components
 ----------------------------------------
 
-	 a component controls a patch of screen called a 'view'
-	 e.g., the following views are controlled by components:
-	 	- app root with navigation links
-	 	- list of heros
-	 	- hero editor
+   a component controls a patch of screen called a 'view'
+   e.g., the following views are controlled by components:
+    - app root with navigation links
+    - list of heros
+    - hero editor
 
-	you define a component's logic - what it does to support the view - inside
-	a class.  The class interacts with the view thru an API of properties and
-	methods.
+  you define a component's logic - what it does to support the view - inside
+  a class.  The class interacts with the view thru an API of properties and
+  methods.
 
     e.g. this HeroListcomponent has a 'heroes' property that returns an array
     of heroes that is acquires from a service.
@@ -512,6 +400,21 @@ Angular modules and JavaScript modules
 
               <button (click) = "onSave()">Save</button>
 
+
+              <button (click)="show = !show"> {{show ? 'hide' : 'show'}} </button>
+
+              presuming the component owning this template has something like:
+
+                show: boolean = false;
+
+              the button is bound to DOM event (click) which will trigger 
+              the action indicated by the text in quotes.  Here, variable
+              `show` will assigned the opposite value of self.
+              The button text is bound to that variable `show`, so clicking
+              the button will toggle the button text.
+
+
+
           component event
 
               <hero-detail (deleteRequest)="deleteHero()"></hero-detail>
@@ -553,9 +456,157 @@ Angular modules and JavaScript modules
 
 4. Metadata
 ----------------------------------------
+
+
+
 5. Data binding
 ----------------------------------------
+
+  you display data by binding controls in an HTML template to properties
+  of an Angular component.
+
+
+    Template binding works with DOM PROPERTIES, not HTML attributes.
+
+
+
+  one-way from data source to view target
+  ---------------------------------------
+
+      1. property style
+
+       {{expression}} expression interpolation
+
+          <ul>
+            <li *ngFor="let hero of heroes"> {{hero}} </li>
+          </ul>
+
+      2. attribute style
+
+        [target]="expression"
+
+          e.g. bind 'isUnchanged' property to button disabled state
+
+            <button [disabled]="isUnchanged">Save</button>
+
+              you're binding the button's 'disabled' attribute and setting
+              it to the current value of the component's 'isUnchanged' property.. 
+              right?  WRONG
+
+              These are not HTML attributes - these are properties fo DOM
+              elements, components and directives.
+
+
+      3. class style
+
+        bind-target="expression"
+
+
+
+  one-way from view target to data source
+  ---------------------------------------
+
+      Event 
+
+        (view-target)="statement"
+        
+        on-target="statement"
+
+
+  two-way 
+  --------
+
+
+      [(target)]="expression"
+
+      bindon-target="expression"
+
+
+      /**********************************
+       *                                *
+       * HTML attribute vs DOM property *
+       *                                *
+       **********************************/
+
+
+  Attributes are defined by HTML.
+  Properties are defined by the DOM.
+
+  * a few HTML attributes have 1:1 mapping to properties.
+    'id' is one example
+
+  * some HTML attributes have no corresponding properties - e.g. colspan
+
+  * some DOM props don't have corresponding attributes - textContent, e.g.
+
+  * many HTML attrs seem to map to properties, but not the way you think!
+
+  Attributes initialize DOM properties and then they are DONE.
+  Property values can change; attributes do not.
+
+  e.g. when the browser renders 
+
+    <input type="text" value="Bob">
+
+  it creates a corresponding DOM node with a 'value' property initialed to "Bob".
+  when the user enters "Sally" into the input box, the DOM element 'value' 
+  property becomes "Sally".  But the HTML 'value' attribute REMAINS 
+  unchanged as you can confirm by asking:
+
+    input.getAttribute('value');  // returns "Bob"
+
+  the HTML attribute value specifies the INITIAL value; the DOM value property
+  is the CURRENT value.
+
+  The 'disabled' attribute is another peculiar example.
+  A button's 'disable' PROPERTY is "false" by default so it is enabled.
+  when you add the 'disabled' attribute, its presence alone initializes the 
+  button's 'disabled' property to "true" to the button is disabled.
+
+  Setting the button's 'disabled' property disables|enables the button - 
+  the value of the PROPERTY matters (attribute does not).
+
+
+Type
+
+  Property
+
+    element:  <img [src]="heroImageUrl">
+
+    component:  <hero-detail [hero]="currentHero"</hero-detail>
+
+    directive:  <div [ngClass]="{'special': isSpecial}">
+
+                </div>
+
+  Event
+
+    element:   <button (click)="onSave()">Save</botton>
+
+    component: <hero-detail (deleteRequest)="deletedHero()"></hero-detail>
      
+    directive:  <div (myClick)="clicked=$event" clickable>click me</div>
+
+
+  Attribute
+
+    attribute:  <button [attr.aria-label]="help">help</button>
+
+  Class
+
+    property:   <div [class.special]="isSpecial">Special</div>
+
+
+  Style
+
+    property:   <button [style.color]="isSpecial ? 'red' : 'green'">
+
+
+
+  Two-way
+
+    event and property:   <input [(ngModel)]="name">
+
 
 6. Directives
 ----------------------------------------
@@ -724,7 +775,7 @@ Main points:
   you register providers with injector
   
       
-		 	
+      
   Services and DI
   ---------------
 
@@ -788,6 +839,63 @@ Pipes are a good way to format strings, currency amounts, dates and other
 display data.
 
 Angular ships with several pipes and we can write out own.
+
+
+  Async Pipe
+  ----------
+
+Usage:
+
+  <div>{{ observableTime | async }}</div>
+
+Purpose:
+
+  unwrap a value from an asynchronous primitive.
+  if we have an Observable or Promise instance, then we can use it directly
+  with AsyncPipe using diretives like 'ngFor', 'ngIf' and 'NgSwitch'.
+
+  subscribes to Observable or Promise and returns latest data.
+
+  marks the component to check for data changes.
+
+    NgFor Example
+    .............
+
+      @Injectable() service to fetch book data
+
+      component to display that data
+
+        <ul>
+          <li *ngFor="let book of observableBooks | async" >
+
+            Id: {{book.id}}, Name: {{book.name}}
+
+          </li>
+        </ul>
+
+      in component:
+
+        ngOnInit(): void {
+          this.observableBooks = this.bookService.getBooks();
+        }
+
+    NgIf and NgSwitch Example
+    .........................
+
+      <div *ngIf="promiseBook | async as book; else loading">
+        Id: {{book.id}}, Name: {{book.name}}
+      </div>
+      <ng-template #loading>Loading Data .. </ng-template>
+
+      <h3>AsyncPipe with NgSwitch</h3>
+
+      <div [ngSwitch]="(promiseBook | async)?.id">
+
+        <div *ngSwitchCase="100">Find Actual Data</div>
+        <div *ngSwitchDefault>Showing Default Data</div>
+
+      </div>
+
 
 
 ==============================================================================
@@ -1080,6 +1188,66 @@ event binding
 
 two-way binding
 ----------------------------------------
+
+  when developing entry forms, we often want to both display a data property
+  and update that property when the user makes changes.
+
+  ngModel implements two-way binding and is an example of an attribute directive.
+
+    NOTE: must import FormsModule in app.module.ts
+
+    <input [(ngModel)]="currentHero.firstName">
+
+  the above can also be achieve with separate bindings to the <input> 
+  element's "value" property and "input" event:
+
+    <input [value]="currentHero.firstName"
+           (input)="currentHero.firstName=$event.target.value" >
+
+  ngModel hides the complexity behind its own "ngModel" input and 
+  "ngModelChange" output properties:
+
+    <input
+      [ngModel]="currentHero.firstName"
+      (ngModelChange)="currentHero.firstName=$event" >
+
+
+          Error: Can't bind to 'ngModel' since it isn't a known property of 'input'
+
+    in order to use two-way binding for form inputs, you need to import 
+    the 'FormsModule' in your Angular module.
+
+      also, if you are working in its module, like 'hero.module.ts', you 
+      need to import 'FormsModule' in that module regardless of whether 
+      it is already imported in app.module.ts:
+
+          @NgModule({
+            imports: [
+              CommonModule,
+              HeroRoutingModule,
+              FormsModule
+            ],
+            declarations: [
+              HeroListComponent,
+              HeroDetailComponent
+            ]
+          })  
+          export class HeroModule {}    
+
+    and in unit tests, you need to include FormsModule in imports:
+
+      beforeEach(async(() => {
+        TestBed.configureTestingModule({
+          declarations: [ HeroDetailComponent ],
+          imports: [ FormsModule ]
+        })
+        .compileComponents();
+      }));    
+
+
+
+
+
 built-in directives
 ----------------------------------------
 * and <template>
@@ -1090,7 +1258,182 @@ input and output properties
 ----------------------------------------
 
 
-		 	
+     
+
+
+======================================================================
+
+  components
+  ----------
+
+Components are the main way we build and specify elements and logic on the page.
+
+In angular 1, this was done with directives/controllers/scope.  In angular2, 
+all those concepts are combined into components.
+
+Here is a simple component:
+
+import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-component',
+    // templateUrl: './my.component.html',
+    // styleUrls: ['./my.component.css']
+    template: '<div>Hello my name is {{name}}. <button (click)="sayMyName()">Say my name</button></div>'
+  })
+  export class MyComponent {
+    console.log('My name is', this.name);
+  }
+
+selector
+--------
+
+  selectors work like a CSS selector.  so if we were to have 
+
+    <my-component>
+
+  element in our HTML document, angular would know what to load here.. 
+
+  You can also use "hashtag" syntax:
+
+    selector: '#app-root'
+
+  Now, you can reference that selector via div id:
+
+    <div id="app-root"> 
+
+
+
+
+======================================================================
+
+  Angular Modules 
+  ***************
+
+Angular Modules help organize an application into cohesive blocks of 
+functionality.
+
+Modules are a great way to organize the application and extend it with capabilities
+from external libraries.  Many libraries are modules (e.g. FormsModule, HttpModule,
+RouterModule).  Many 3rd party libs are available as Angular modules (e.g. Material
+Design, Ionic, AngularFire2).
+
+Modules consolidate components, directives and pipes into cohesive blocks of 
+functionality, each focused on a feature area, application business domain, etc..
+
+Modules can be loaded eagerly when the app starts, or lazy loaded asynch by the 
+router.
+
+Every Angular app has at least once module class - the root module.
+We bootstrap that module to launch the application.
+
+The root module is all we need in a simple application with a few components.
+As the app grows, we refactor the root module into feature modules, and we
+import these modules into root module.
+
+An Angular Module is a class adorned with the @NgModule decorator function.
+
+root module
+-----------
+
+By convention, root module is a class called 'AppModule' in a file named
+app.module.ts
+
+  import { NgModule }      from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
+
+  import
+        { AppComponent }  from './app.component';
+
+  @NgModule({
+    imports: [ BrowserModule ],
+    declarations: [ AppComponent ],
+    bootstrap:    [ AppComponent ]
+  })
+  export class AppModule { }
+
+NgModule
+  this decorator defines the metadata for the module.
+  this metadata imports a single helper module - BrowserModule - which 
+  every browser app must import.
+
+BrowserModule
+  registers critical app service providers and 
+  includes common directives like NgIf and NgFor
+
+declarations
+  this list identifies the application's only component, the root component
+  "AppComponent"
+
+bootstrap
+  this property identies this AppComponent as the bootstrap component.
+  When Angular launches the app, it places the HTML rendering of AppComponent
+  in the DOM, inside the <my-app> element tags of the index.html.  
+
+
+Example
+-------
+
+  Root Module
+
+    app.module.ts
+
+  Dashboard Module
+
+    dashboard/
+      dashboard-hero.component.ts
+      dashboard.component.ts
+      dashboard.module.ts
+      dashboard-routing.module.ts
+
+
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts  
+
+  
+
+======================================================================
+
+  View Encapsulation
+  ------------------
+
+angular 2 emulates the concept of shadow DOM:
+
+  an HTML element has its 'shadow' DOM
+
+<div>
+  <component _nghost-pax-1>
+    <h1 _ngcontent-pax-1>... </h1>
+  </component>
+  <h1>won't be styled the same</h1>
+</div>
+
+  This is based on CSS Attribute Selectors.
+
+  a[target] {
+    background-color: yellow;
+  }
+
+========================================================================
+	
 
 ==============================================================================
 
@@ -1267,6 +1610,18 @@ for routing and performs the initial navigation based on the current browser URL
         pathMatch: 'full'
       }
     ])
+
+  forRoot vs forChild
+  -------------------
+
+forRoot()
+  call only in the root application module, AppModule.
+  calling it in any other module, particularly in a lazy loaded module,
+  is contrary to the intent and is likely to produce runtime error.
+
+forChild
+
+  always call RouterModule.forChild in a feature-routing module
 
 
 
@@ -1504,10 +1859,53 @@ Structural Directives
 
 ngIf
 
-  we can add an element subtree (and element and its children) to the DOM by
-  binding an NgIf directive to a truthy expression
+  conditionally includes a template based on the value of an expression.
 
-    <div *ngIf="currentHero">Hello, {{currentHero.firstName}}</div>
+  element subtree is physically removed or added to the DOM.
+
+    <div *ngIf="condition">...</div>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.
+    The <div> containing "Text to show" is removed or added to the DOM based
+    on the value of var 'show'.
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show">Text to Show</div>
+
+
+
+with else
+
+    <div *ngIf="condition; else elseBlock">...</div>
+    <ng-template #elseBlock>...</ng-template>
+
+    example: 'ngIf' evaluates expression "show" which the value of variable
+    'show' toggled by the button.  
+    The <div> containing "Text to show" will either display "primary" text if 
+    variable 'show' is true, or alternate - if false.
+
+
+      <button (click)="show = !show">{{show ? 'hide' : 'show'}}</button>
+      show = {{show}}
+      <br>
+      <div *ngIf="show; else elseBlock">Text to Show</div>
+      <ng-template #elseBlock>Alternate text while primary is hidden</ng-template>
+
+with async
+
+    <button (click)="nextUser()">Next User</button>
+    <br>
+    <div *ngIf="userObserbable | async as user; else loading">
+      Hello {{user.first}} {{user.last}}!
+    </div>
+    <ng-template #loading let-user>Waiting ... (user is {{user|json}})
+    </ng-template>
+
+
+  
 
   NOTE: visibility (hiding) and ngIf are not the same!
 
@@ -1907,6 +2305,1392 @@ Temporarily add a template reference variable named spy to the Name <input> tag 
     [(ngModel)]="model.name" name="name"
     #spy>
   <br>TODO: remove this: {{spy.className}}
+
+
+================================================================================
+
+  Testing
+  *******
+
+================================================================================
+
+  Controlling which tests run in Jasmine
+  **************************************
+
+http://thejsguy.com/2016/01/03/controlling-which-tests-run-in-jasmine.html
+
+
+Only Running Specific Tests / Specs
+------------------------------------
+
+If you want to run a specific test, use fit() instead of it(). The f stands for focused.
+
+  describe("description", function() {
+    fit("test 1", function() {
+
+    });
+
+    it("test 2", function() {
+
+    });
+  });
+
+In the example above, only test 1 will execute. You can use as many fit() calls as you would like and only those tests will execute. Similar to when you exclude tests, if you are using Jasmine with Karma, the output on the terminal will note how many tests executed and how many were skipped.
+
+What if you want to only run a specific describe() block? As you might guess, use fdescribe() instead of describe().
+
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+
+    it("test 2", function() {
+
+    });
+
+    it("test 3", function() {
+
+    });
+  });
+
+It is also worth noting that you can have focused and unfocused tests/specs inside nested fdescribe() blocks. When you do this, only the focused tests will run. For example:
+
+fdescribe("description", function() {
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+
+    fit("test 2", function() {
+
+    });
+  });
+
+  fit("test 3", function() {
+
+  });
+
+  it("test 4", function() {
+
+  });
+});
+
+In the example above, only test 2 and test 3 will run.
+
+If your fdescribe() block only has a single test/spec, you can just use it() and that test will execute.
+
+fdescribe("description", function() {
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+  });
+
+  fit("test 2", function() {
+
+  });
+
+  it("test 3", function() {
+
+  });
+});
+In the example above, only test 1 and test 2 will execute.    
+
+
+Excluding Tests / Specs
+-----------------------
+
+If you want to exclude a specific test, simply use xit() instead of it(). The x means exclude.
+
+  describe("description", function() {
+    xit("description", function() {
+
+    });
+  });
+
+If you want to exclude an entire describe block, use xdescribe() instead of describe().
+
+  xdescribe("description", function() {
+    it("description", function() {
+
+    });
+
+    it("description", function() {
+
+    });
+  });
+
+When you exclude tests, these tests will be noted as “skipped”.
+
+================================================================================
+
+
+  Angular Testing
+  ***************
+
+https://angular.io/guide/testing
+
+
+Jasmine
+  test framework
+  ships with an HTML test runner that executes tests in browser
+
+Angular testing utilities
+  create a test environment for the angular application code under test
+  use them to condition and control parts of the application as they 
+  interact within the Angular environment
+
+Karma
+  test runner ideal for writing and running unit tests while developing
+  the application.
+
+Protractor
+  use it to write and run e2e tests.
+  in e2e testing, one process runs the real application, and a second process
+  runs protractor tests that simulate user behavior and assert that the
+  application responds in the browser as expected.
+
+
+================================================================================
+
+  Introduction to Jasmine
+  ***********************
+
+testing framework from Pivotal Labs using behavior driven notation.
+
+Suites
+  describe(string, function)  
+    take a title and a function
+    containing one or more specs
+
+Specs
+  it(string, function) functions
+    take a title and a function containing one or more expectations
+
+Expectations
+  are assertions that evaluate to true or false:
+    expect(actual).toBe(expected)
+
+Matchers
+  are predefined helpers for common assertions:
+    toBe(expected)      - reference equality
+    toEqual(expected)   - deep comparison
+
+    complete list: https://github.com/JamieMason/Jasmine-Matchers
+
+Setup / Teardown
+
+  beforeEach
+  afterEach
+
+  beforeAll
+  afterAll
+
+
+================================================================================
+
+  Angular Unit Testing
+  ********************
+
+@see 
+    https://github.com/angular/angular.io
+    https://github.com/angular/angular.io/tree/master/public/docs/_examples/testing/ts/src
+
+
+
+spec file
+
+  tests written in Jasmine are called specs
+  the file extension must be .spec.ts - convention expected in karma.conf.js
+  which looks for spec file in src/app folder
+
+
+TestBed
+
+  TestBed is the first and most important of Angular testing utilities - used
+  to set up the dependencies for our tests.
+
+  it creates an Angular testing module - an @NgModule class - that you 
+  configure with the 'configureTestingModule' method to produce the 
+  module environment for the class you want to test.
+
+  in effect, you detach the tested component from its own application 
+  module and re-attach it to a dynamically-constructed Angular test module
+  tailored specifically for this battery of tests.
+
+  ComponentFixture 
+
+    a handle on the test environment surrounding the created component.
+    provides access to the component itself and to the DebugElement which is 
+    a handle to the component's DOM element.
+
+    let fixture: ComponentFixture<BannerInlineComponent>;
+    let component: BannerInlineComponent;
+    let de: DebugElement;
+    let el: HTMLElement;
+    ...
+
+    beforeEach( () => {
+      ...
+
+      fixture = TestBed.createComponent(BannerInlineComponent);
+      component = fixture.componentInstance;
+      de = fixture.debugElement.query(By.css('h1'));
+      el = de.nativeElement;
+
+    })
+
+
+    fixture returned from TestBed.createComponent is your component under test
+    with several additional properties and methods:
+
+      detectChanges()
+        force a walk of the data graph and update the view with relevant content
+
+        In the actual application, change detection kicks in automatically when
+        Angular creates a component or the user enters a keystroke or an AJAX
+        activity completes.
+        TestBed.createComponent() does not trigger change detection.
+        This behavior (or lack of it) is intentional - it gives the tester
+        an opportunity to inspect or change the state of the component 
+        before Angular initiates data binding or calls lifecycle hooks.
+
+
+      componentInstance
+        actual component under test - you can call methods on the component
+
+      DebugElement
+
+        angular class that contains all kinds of references and methods 
+        that help you introspect the element
+
+      nativeElement
+        the DOM element of the template your component owns.
+
+
+
+TestBed.compileComponents()
+
+  WebPack developers need not call 'compileComponents' because it inlines
+  templates and css as part of the automated build process that precedes
+  running the test.
+
+  Q: when am I supposed to call compileComponents()?
+
+    angular docs doesn't explain
+     - in what circumstances it is "necessary" to call this function
+     - what are the consequences of not doing so
+
+  A: if you're using webpack, the build will compile the templateUrls 
+  into inline templates and styleUrls to styles.
+  so there is no need to 'compileComponents' because it is jsut like 
+  you're using template and styles .. 
+
+  if you're using SystemJS, this doens't happen.  Angular will need to 
+  make XHR requests to retrieve the external templates and styles, and 
+  then compile.  Here you will need to 'compileComponents'.
+
+
+  DO NOT configure the TestBed AFTER calling 'compileComponents' - it closes 
+  the current TestBed instance to further configuration.  
+  Make it the last step before calling TestBed.createComponent() to instantiate
+  the component-under-test.
+
+
+inject
+
+  allows us to get dependencies at the TestBed level
+
+  it('should return ... ', inject([MyService], service => {
+    service.foo();
+  }));
+
+
+
+
+beforeEach(async(..))
+
+  async is necessary to all the asynchronous TestBed.compileComponents method.
+  Internally, async arranges for the body of the 'beforeEach' to run in a 
+  special async test zone.
+
+  https://stackoverflow.com/questions/40126729/angular-2-testing-async-function-call-when-to-use
+
+  'async' will allow the next test not to start until the 'async' 
+  finishes all it's tasks.
+
+  What 'async' does is wrap the callback in a Zone, where all async tasks
+  (e.g. setTimeout) are tracked.  Once all the async tasks are complete,
+  then the 'async' completes.
+
+  If you've ever worked with Jasmine outside of Angular, you may have seen
+  'done' being passed to the callback:
+
+  it('..', function(done) {
+    someAsyncAction().then( () => {
+      expect(something).toBe(something);
+      done();
+    });
+  });
+
+  With Angular (in a Jasmine environment), Angular will actually call
+  'done' behind the scenes, when we use 'async'.  It will keep track of 
+  all the async tasks in the Zone, and when they are all finished, 'done' will be 
+  called behind the scenes.
+
+  With TestBed configuration, you would use this generally when you want
+  to 'compileComponents'.
+
+  When testing a component that uses templateUrl (if you're not using webpack)
+  then Angular needs to make an XHR request to get the template, so the 
+  communication is asynchronous.
+
+
+beforeEach( ... )
+
+  the second 'beforeEach' containing the remaining setup follows the async
+  beforeEach.
+
+  Typically, here you create the instance of the component-under-test and
+  query the elements to inspect:
+
+    component = fixture.createComponentInstance;
+    de = fixture.debugElement.query(By.css('h1'));
+    el = de.nativeElement;
+
+  The test runner will wait for the first async 'beforeEach' to finish
+  before calling the 2nd one.
+
+    compileComponents returns a promise so you can perform add'l tasks 
+    immediately after it finishes.. e.g.:
+
+      compileComponents()
+        .then(...)
+
+    but most find this hard to read.
+
+    The two beforeEach calls are widely preferred.
+
+
+
+    Change Detection
+    ----------------
+
+  detectChanges()
+
+        In the actual application, change detection kicks in automatically when
+        Angular creates a component or the user enters a keystroke or an AJAX
+        activity completes.
+        TestBed.createComponent() does not trigger change detection.
+        This behavior (or lack of it) is intentional - it gives the tester
+        an opportunity to inspect or change the state of the component 
+        before Angular initiates data binding or calls lifecycle hooks.    
+
+You can call changeChanges in 
+
+  beforeEach
+
+    fixture = TestBed.createComponent(Comp);
+    fixture.detectChanges();
+
+  in each test 
+
+    it('should do something', () => {
+      fixture.detectChanges();
+      ...
+    });
+
+  automatically
+
+    some testers prefer that the Angular test environment run change detection
+    automatically with the ComponentFixtureAutoDetect provider:
+
+      import { ComponentFixtureAutoDetect } from '@angular/core/testing';
+
+    then add it to the providers array of the testing module configuration:
+
+      TestBed.configureTestingModule({
+        declarations: [ Banner Component ],
+        providers: [
+          { provide: ComponentFixtureAutoDetect, useValue: true }
+        ]
+      })
+
+    IMPORTANT: ComponentFixtureAutoDetect service responds to ASYNC activities
+    such as promise resolution, timers, DOM events.
+    But a direct, synchronous update of the component is invisible.
+    The test call fixture.detectChanges() manually to trigger another cycle
+    of change detection.
+
+
+  *********************************************************************
+  * Rather than wonder when the text fixture will or will not perform *
+  * change detection, just always call detectChanges() explicitly.    *
+  * There is NO harm in calling detectChanges() more often then is    *
+  * strictly necessary                                                *    
+  *********************************************************************
+
+  NOTE:   
+          if I have 'fixture.detectChanges' in the 2nd beforeEach, and then
+          in tests, change detection did not work.
+
+          I noticed that in the angular test guide, they do NOT have 
+          fixture.detectChanges in beforeEach, but then use it in every 
+          test when needed:
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/welcome.component.spec.ts
+
+          2. the default tests created by angular-cli put 
+          fixture.detectChanges into the 2nd beforeEach(..)
+          however, the generated test specs do not have any in the tests ..
+
+
+
+
+================================================================================
+
+  Stubbing Component's Dependency just to satisfy the dependency
+  ********************************
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/app.component.spec.ts  
+
+If you're testing a component, and it has a dependency on another 
+component (which in turn has dependencies on other services, for instance).. 
+and you're not asserting anything on this dependency component.. 
+
+you might as well just stub it out:
+
+  // stub WelcomeComponent
+  @Component({selector: 'app-welcome', template: ''})
+  class WelcomeStubComponent {}
+
+
+  describe('AppComponent', () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          AppComponent,
+          BannerInlineComponent, 
+          WelcomeStubComponent    // declare the stubbed out component
+        ],
+      }).compileComponents();
+    }));
+
+    .
+    .
+    .
+
+  });
+
+
+
+================================================================================
+
+  Testing Component with a Dependency
+  ***********************************
+
+https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/ts/app/welcome.component.spec.ts
+
+
+$ mkdir src/app/model
+$ ng g s model/user --flat true --spec false
+installing service
+  create src/app/model/user.service.ts
+  WARNING Service is generated but not provided, it must be provided to be used
+
+$ ng g c welcome
+
+The 'WelcomeComponent' displays a welcome mesage to the logged in user.
+It knows the user based on the property of the injected 'UserService'.
+
+in welcome.component.spec.ts
+
+  do not provide the real service - use a test double instead:
+
+    let userServiceStub: {
+      isLoggedIn: boolean;
+      user: {name: string};
+    };
+
+    beforeEach(async( () => {
+      userServiceStub = {
+        isLoggedIn: true,
+        user: { name: 'Test User'}
+      };
+  
+      TestBed.configureTestingModule({
+        declarations: [ WelcomeComponent ],
+        providers: [
+          { provide: UserService, useValue: userServiceStub}
+        ]
+      }).compileComponents();
+
+    }));
+
+
+The tests need access to the (stubbed) UserService injected into the 
+WelcomeComponent.
+
+  Angular has a hierarchical injection system.  There can be injectors at 
+  multiple levels, from the root injector created by the TestBed down through
+  the component tree.
+
+The safest way to get the injected service (always works!) is to get it from
+the injector of the component-under-test.
+
+  Component Injector
+  ------------------
+
+The component injector is a property of the fixture's DebugElement:
+
+  // UserService injected into the component
+  userService = fixture.debugElement.injector.get(UserService);
+
+    TestBed.get(..)
+
+      you may be able to get the service from the root injector via 
+      TestBed.get - it is easier to remember and less verbose.
+      But it only works when Angular injects the component with the service
+      instance in the test's root injector.
+      In this test suite, the ONLY provider of UserService is the root testing
+      module, so it would be safe to call TestBed.get like so:
+
+        userService = TestBed.get(UserService);
+
+  NEVER reference the 'userServiceStub' object that's provided to the testing
+  module in the body of your test - THIS WOULDN'T WORK - the userService 
+  instance injected into the component is a DIFFERENT objeect - a clone of the
+  provided userServiceStub.
+
+
+================================================================================
+
+  managing shared test resources
+  ------------------------------
+
+Over time, you will probably have test stubs for common dependencies like
+
+  Router
+  ActivatedRoute
+  some services
+
+You can manage the in a testing module outside of 'app' 
+
+  src/
+    app/
+    testing/
+      - router-stubs.ts
+      model/
+        - fake-hero.service.ts
+
+
+================================================================================
+
+  Stub out service
+  ****************
+
+import ...
+
+var mockStory = {
+  id: 1,
+  title: 'Blah',
+  ...
+}
+
+class MockStoryService {
+  public getStory(id): Observable<StoryModel> {
+    return Observable.of(mockStory);
+  }
+}
+
+describe('Story', () => {
+  var storyFixture,
+      story,
+      storyE1;
+
+  beforeEach(
+  );
+}
+
+
+Here is an example of FakeHeroService:
+
+src/testing/model/fake-hero.service.ts
+---------------------------------------
+
+  // re-export for tester convenience
+
+  export {Hero} from 'app/model/hero';
+
+  // import
+  import {Hero} from 'app/model/hero';
+  import {HeroService} from '../../app/model/hero.service';
+
+
+  export const HEROES: Hero[] = [
+    new Hero(41, 'Bob'),
+    new Hero(42, 'Carol'),
+    new Hero(43, 'Ted'),
+    new Hero(44, 'Alice'),
+    new Hero(45, 'Speedy'),
+    new Hero(46, 'Stealthy'),
+    new Hero(47, 'Tes'),
+    new Hero(48, 'Grumpy')
+  ];
+
+  export class FakeHeroService implements HeroService {
+
+    heroes = HEROES.map(h => h.clone());
+    lastPromise: Promise<any>;  // remember so we can spy on promise calls
+
+    getHero(id: number | string): Promise<Hero> {
+      if (typeof id === 'string') {
+        id = parseInt(id as string, 10);
+      }
+      const hero = this.heroes.find(h => h.id === id);
+      return this.lastPromise = Promise.resolve(hero);
+    }
+
+    getHeroes() {
+      return this.lastPromise = Promise.resolve<Hero[]>(this.heroes);
+    }
+
+    updateHero(hero: Hero): Promise<Hero> {
+      return this.lastPromise = this.getHero(hero.id).then(h => {
+        return h ?
+          Object.assign(h, hero) :
+          Promise.reject(`Hero ${hero.id} not found`) as any as Promise<Hero>;
+      });
+    }
+  }
+
+
+mock a method
+-------------
+
+  public doSomething(blah: string, bluh: string): Observable<Response> {
+
+    /** simulates success or error */
+
+    return Observable.fromPromise(new Promise((resolve, reject) => {
+      resolve({
+        status: 204
+      })
+      // reject({
+      //   status: 400
+      // })
+    }));
+
+  }
+
+
+
+
+
+================================================================================
+
+  Test componet with an async service
+  ***********************************
+
+Many services return values async'ly. Most data services make an HTTP request
+to a remote server and the response is necessarily asynchronous.
+
+In general, tests should not make calls to remote servers.  They should emulate
+such calls.  The setup in src/apps/shared/twain.component.spec.ts shows one way.
+
+  The twain.component.ts handles the display of Twain quotes returned by the
+  TwainService.  Both are in src/app/shared.
+
+  $ ng g c shared/twain --flat -it -is
+  installing component
+    create src/app/shared/twain.component.spec.ts
+    create src/app/shared/twain.component.ts
+    update src/app/app.module.ts
+
+  $ ng g s shared/twain --module=app.module
+  installing service
+    create src/app/shared/twain.service.spec.ts
+    create src/app/shared/twain.service.ts
+    update src/app/app.module.ts
+
+note: this automatically provides the service in app.module.ts
+
+Tests still pass at this point.. 
+
+
+
+  Spying on the real service
+  --------------------------
+
+This setup is similar to the welcome.component.spec.setup
+but instead of stubbing the servide, it injects the REAL service 
+and replaces the critical 'getQuote' method with a Jasmine spy.
+
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ TwainComponent ],
+      providers: [ TwainService ]  // provide TwainService
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TwainComponent);
+    component = fixture.componentInstance;
+
+    twainService = fixture.debugElement.injector.get(TwainService);
+    spy = spyOn(twainService, 'getQuote')
+      .and.returnValue(Promise.resolve(testQuote));  // spy on it
+
+    de = fixture.debugElement.query(By.css('.twain'));
+    el = de.nativeElement;
+
+  });
+
+The spy is designed in such a way that any call to 'getQuote' receives an 
+immediately resolved promise with a test quote.
+They spy bypasses the actual 'getQuote' method and therefore does not contact
+the server.
+
+  Faking a service instance and spying on a real object are BOTH great
+  options.  Pick one that seems easiest for the current test suite.
+
+    Spying on the real service isn't always easy, especially when the real 
+    servide has injected dependencies.
+
+    You can even STUB and SPY at the same time!
+
+Tests need to become asynchronous in order to pick up the quote returned 
+from the service which gets initialized in ngOnInit()
+
+service.getQuote is called in the component's ngOnInit() method, 
+and ngOnInit() is called during the first change detection cycle.
+but the tests need to wait at least one more full turn of the JS engine
+before the value becomes available.
+
+
+async() 
+
+  the async function is one of the Angular testing activities.
+  it simplifies coding of asynch tests by arranging for the tester's
+  code to run in a special 'async test zone'.
+
+  async hides most of the asynchronous boilerplate, but some functions
+  called within a test (such as fixture.whenStable) continue to reveal
+  their async behavior
+
+whenStable
+
+  the test must wait for the getQuote() promise to resolve in the next 
+  turn of the JS engine.
+
+  getQuote() is called within the TwainComponent.ngOnInit() method and
+  therefore inaccessible to a test that probes only the component API.
+
+  fortunately, the getQuote promise is accessible to the 'async test zone', 
+  which intercepts all promises issued with the async method call 
+  NO MATTER WHERE THEY OCCUR
+
+  The ComponentFixture.whenStable returns its own promise which resolves
+  when the getQuote promise finishes.  In fact, the 'whenStable' promise
+  resolves when all pending async activities within this test complete -
+  the definition of "stable".
+
+    it('should show quote after getQuote promise (async)', async(() => {
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => { // wait for async getQuote
+        fixture.detectChanges();        // update view with quote
+        expect(el.textContent).toBe(testQuote);
+      });
+    }));
+
+  then, the test resumes and kicks off another round of change detection
+  which tells Angular to update the DOM with the quote.
+
+
+fakeAsync
+
+  it('should do something.. ', fakeAsync( () => {
+    fixture.detectChanges();
+    tick();                   // wait for async getQuote
+    fixture.detectChanges();  // update view with quote
+    expect(el.textContent).toBe(testQuote);
+  }));
+
+  fakeAsync is used instead of async.
+  It enables a linear coding style by running the test body in a special fakeAsync test zone.
+
+  main advantage of fakeAsync over async is that the test appears to be synchronous.  
+  There is no then(...) to disrupt the visible flow of control.
+  the promise-returning 'fixture.whenStable' is gone replaced by tick()
+
+    The limitation - you cannot make XHR calls from within a fakeAsync
+
+
+tick()
+
+  is a companion to fakeAsync and you can only call it within faceAsync body.
+
+  simulates the passage of time until all pending async activities flush
+  it returns nothing
+  there's no promise to wait for - proceed with the same test code that 
+  appeared in the whenStable.then() callback.
+
+
+jasmine.done
+
+  while the 'async' and 'fakeAsync' simplify Angular async testing, you can
+  still use the traditional Jasmine async testing technique:
+
+    it('should show quote after getQuote promise is done', (done: any) => {
+      fixture.detectChanges();
+
+      // get the spy promise and wait for it to resolve
+      spy.calls.mostRecent().returnValue.then( () => {
+        ...
+        fixture.detectChanges();
+        expect(..);
+        done();
+      });
+    });
+
+  Although there is no direct access to the getQuote promise inside
+  TwainComponent, the spy has direct access which makes it possible to 
+  wait for 'getQuote' to finish.    
+
+
+  Test a component with routing
+  -----------------------------
+
+Particularly, when your component has ActivatedRoute.
+
+Use a mock component and a mock router, the implement RouterTestingModule.withRoutes
+In your tests, validate that expected routes 
+
+
+in your some-component.component.spec.ts:
+
+  @Component({
+    template: `
+      <router-outlet></router-outlet>
+    `
+  })
+  class MockRoutingComponent {}
+
+  /**
+   * this mock component is a mock routing destination
+   */
+  @Component({
+    template: ``
+  })
+  class MockComponent {}
+
+  describe('... ', () => {
+    
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          MockRoutingComponent,
+          MockComponent
+        ],
+        imports: [
+          FormsModule,
+          RouterTestingModule.withRoutes([
+            { path: '', component: MockComponent },
+            { path: 'password-changed', component: MockComponent }
+          ])
+        ],
+        providers: [
+          AuthenticationService
+        ]
+      })
+      .compileComponents();
+    }));
+
+  })
+
+Validating examples:
+
+
+
+  it('navigate to "" redirects you to /home', fakeAsync( () => {
+    router.navigate(['']);
+    tick();
+    expect(location.path()).toBe('/home');
+  }));
+
+
+  if('navigate to "search" takes you to /search', fakeAsync(() => {
+    router.navigate(['search']);
+    tick().
+    expect(location.path()).toBe('/search');
+  }));
+
+
+Another approach is to use a routerStub as a provider as shown here:
+https://stackoverflow.com/questions/39623722/angular-2-final-release-router-unit-test
+
+
+
+  Test a component with inputs and outputs 
+  ----------------------------------------
+
+
+such component typically appears inside the view template of the host component. the host uses a property binding to set the input property and an event binding to listen to events raised by the output property.
+
+the testing goal is to verify that such bindings work as expected.
+the tests should set input values and listen for output events.
+
+the 'DashboardHeroComponent' is a tiny component that displays an individual
+hero provided by the 'DashboardComponent'.
+
+    NOTE:  MAKE SURE TO ADD YOUR MODULE files:
+    e.g.:
+      if 
+        you add dashboard/dashboard.module.ts
+      then
+        you need to import it in your app.module.ts:
+
+          @NgModule({
+            imports: [
+              DashboardModule,
+              AppRoutingModule
+            ],
+            providers: [ <services> ],
+            declarations: [ <components-not-part-of-dashboard-module> ],
+            bootstrap: [ AppComponent ]
+          })
+          export class AppModule { }
+
+      and in your dashboard.module.ts
+        - import your dashboard-routing.module.ts
+
+    NOTE:  ONCE YOU ADD routing YOUR app.component.spec.ts will fail -
+           as it doesn't know what <router-outlet> is
+
+          NO_ERRORS_SCHEMA
+
+            adding NO_ERRORS_SCHEMA to the testing module's 'schema' metadata
+            will tell the compiler to ignore unrecognized elements and attributes.
+
+              beforeEach( async( () => {
+
+                TestBed.configureTestingModule({
+                  declarations: [
+                    AppComponent,
+                    RouterLinkStubDirective
+                  ],
+                  schemas: [ NO_ERRORS_SCHEMA ]
+                })
+                .compileComponents()
+                .then( () => {
+                  fixture = TestBed.createComponent(AppComponent);
+                  comp = fixture.componentInstance;
+                });
+              });
+
+
+            these tests are SHALLOW b/c they only "go deep" into the components
+            you want to test
+
+  create dashboard-hero component:
+
+    $ ng g c dashboard/dashboard-hero --flat -is -it -m dashboard/dashboard.module.ts
+
+
+  note: when you have properties declared with @Input(),
+  you need to initialize those in your test:
+
+
+  create 'hero' module
+
+    $ ng g m hero --module=app --routing
+    installing module
+      create src/app/hero/hero-routing.module.ts
+      create src/app/hero/hero.module.ts
+      update src/app/app.module.ts
+
+
+  create 'hero-list' component within 'hero' module
+
+    $ ng g c hero/hero-list --module hero
+    installing component
+      create src/app/hero/hero-list/hero-list.component.css
+      create src/app/hero/hero-list/hero-list.component.html
+      create src/app/hero/hero-list/hero-list.component.spec.ts
+      create src/app/hero/hero-list/hero-list.component.ts
+      update src/app/hero/hero.module.ts
+
+
+  create 'hero-detail' component within 'hero' module
+
+    $ ng g c hero/hero-detail --module hero
+    installing component
+      create src/app/hero/hero-detail/hero-detail.component.css
+      create src/app/hero/hero-detail/hero-detail.component.html
+      create src/app/hero/hero-detail/hero-detail.component.spec.ts
+      create src/app/hero/hero-detail/hero-detail.component.ts
+      update src/app/hero/hero.module.ts
+
+
+    note: hero-detail view has two-way binding:
+
+      <input id="name" [(ngModel)]="hero.name" placeholder="name" />
+
+      Error: Can't bind to 'ngModel' since it isn't a known property of 'input'
+
+    in order to use two-way binding for form inputs, you need to import 
+    the 'FormsModule' in your Angular module.
+
+      also, if you are working in its module, like 'hero.module.ts', you 
+      need to import 'FormsModule' in that module regardless of whether 
+      it is already imported in app.module.ts:
+
+          @NgModule({
+            imports: [
+              CommonModule,
+              HeroRoutingModule,
+              FormsModule
+            ],
+            declarations: [
+              HeroListComponent,
+              HeroDetailComponent
+            ]
+          })  
+          export class HeroModule {}    
+
+
+
+
+
+================================================================================
+
+  Testing Component with ActivatedRoute
+  *************************************
+
+When component accesses route: ActivatedRoute to extract path params or queryParams,
+you will need to provide both Router and ActivatedRoute in your tests.
+
+Since you probably will use those facilities in many tests specs, it is best to
+create a 'testing' module at the same level as 'app':
+
+src/
+  app/
+  testing/
+    router-stubs.ts
+
+with router-stubs.ts containing the RouterStub and ActivatedRouteStub:
+
+router-stubs.ts
+---------------
+
+// export for convenience.
+export { ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+
+import {Injectable} from '@angular/core';
+
+
+/**
+ * stub out the router
+ */
+@Injectable()
+export class RouterStub {
+  navigateByUrl(url: string) {
+    return url;
+  }
+}
+
+// Only implements params and part of snapshot.paramMap
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { convertToParamMap, ParamMap } from '@angular/router';
+
+@Injectable()
+export class ActivatedRouteStub {
+
+  // ActivatedRoute.paramMap is Observable
+  private subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
+  paramMap = this.subject.asObservable();
+
+  // Test parameters
+  private _testParamMap: ParamMap;
+  get testParamMap() { return this._testParamMap; }
+  set testParamMap(params: {}) {
+    this._testParamMap = convertToParamMap(params);
+    this.subject.next(this._testParamMap);
+  }
+
+  // ActivatedRoute.snapshot.paramMap
+  get snapshot() {
+    return { paramMap: this.testParamMap };
+  }
+}
+
+
+Then use those in your test specs:
+
+See source: app/hero/hero-detail.component.spec.ts
+
+https://angular.io/generated/live-examples/testing/app-specs.eplnkr.html
+
+
+hero-detail.component.spec.ts
+-----------------------------
+
+
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HeroDetailComponent } from './hero-detail.component';
+import {FormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HeroService} from '../../model/hero.service';
+
+import {
+  ActivatedRouteStub,
+  RouterStub
+} from '../../../testing/router-stubs';
+
+
+/////////// Testing Variables ////////////
+
+let activatedRoute: ActivatedRouteStub;
+
+
+describe('HeroDetailComponent', () => {
+  let component: HeroDetailComponent;
+  let fixture: ComponentFixture<HeroDetailComponent>;
+
+  beforeEach(async(() => {
+
+    activatedRoute = new ActivatedRouteStub();
+
+    TestBed.configureTestingModule({
+      declarations: [ HeroDetailComponent ],
+      imports: [ FormsModule ],
+      providers: [
+        { provide: HeroService, useClass: HeroService },
+        { provide: Router, useClass: RouterStub },
+        { provide: ActivatedRoute, useValue: activatedRoute }
+      ]
+
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HeroDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  describe('when hero id is 12', () => {
+
+    beforeEach( () => {
+      activatedRoute.testParamMap = { id: 12 }
+    });
+
+    it('should be created', () => {
+      expect(component).toBeTruthy();
+    });
+
+
+  })
+
+
+});
+
+
+  Error: Uncaught NetworkError: Failed to execute 'send' on 'XMLHttpRequest'
+  ---------------------------------------------------------------------------
+
+    Uncaught NetworkError: Failed to execute 'send' on 'XMLHttpRequest': 
+    Failed to load 'ng:///DynamicTestModule/HeroDetailComponent_Host.ngfactory.js
+
+    Most likely, the @Input() property in your Component is not initialized.
+
+    Tests will crash if inputs are not set with this unintuitive error.
+
+
+================================================================================
+
+  default test template created by angular-cli
+  ********************************************
+
+  angular-cli creates a new describe Suite for the new component
+  it just created.
+
+  It comes with (2) beforeEach:
+
+    beforeEach(async) - compileComponents
+    beforeEach()      - creates fixture/component/etc instances
+                        and runs detectChanges on the fixture.
+
+
+  describe('GreeterComponent', () => {
+    let component: GreeterComponent;
+    let fixture: ComponentFixture<GreeterComponent>;
+
+    beforeEach(async(() => {
+      console.log('beforeEach(async)');
+      TestBed.configureTestingModule({
+        declarations: [ GreeterComponent ]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      console.log('beforeEach()');
+      fixture = TestBed.createComponent(GreeterComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();  // I'VE SEEN THIS CREATE PROBLEM IF TEST ALSO do this!!!
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+  });
+
+
+
+================================================================================
+
+  Example: test LanguageService component
+  ----------------------------------------
+
+1. load the dependencies requireq for the test with TestBed.configureTestingModule
+2. use 'inject' to automatically instantiate each dependency
+
+  describe('Service: LanguageService', () => {
+
+    beforeEach( () => TestBed.configureTestingModule({
+      providers: [ LanguageService ]
+    }));
+
+    it('should return available languages', inject([LanguageService], service => {
+      expect(service.get()).toContain('en');
+    }));
+
+  })
+
+3. refactor the 'inject' so it is not repeated for each spec:
+
+
+  describe('Service: LanguageService', () => {
+
+    let service;
+
+    beforeEach( () => TestBed.configureTestingModule({
+      providers: [ LanguageService ]
+    }));
+
+    beforeEach(inject([LanguageService], s => {
+      service = s;
+    }));
+
+    it('should return available languages', () => {
+      expect(service.get()).toContain('en');
+    });
+ 
+  })
+
+
+  Example: instantiating a Component
+  ----------------------------------
+
+    // Synchronous:
+
+    beforeEach( () => {
+      fixture = TestBed.createComponent(MyComponentUnderTest);
+    });
+
+    // Async
+
+    beforeEach( async( () => {
+      TestBed.configureTestingModule({
+        declarations: [ MyComponentUnderTest ],
+      }).compileComponents();  // compile external templates and css
+    }));
+
+  we can use async() when dependencies involve async handling. 
+  this will internally create a zone and deal with async processing.
+  
+
+  Example: testing a component
+  ----------------------------
+
+  // Component
+  // usage: <greeter name="Joe"></greeter>
+  // renders: <h1>Hello Joe!</h1>
+
+  @Component({
+    selector: 'greeter',
+    template: `<h1>Hello {{name}}!</h1>`
+  })
+
+  export class Greeter {
+    @Input() name;
+  }
+
+
+================================================================================
+
+  Access elements
+  ***************
+
+let de: DebugElement;
+let el: HTMLElement;
+
+de = fixture.debugElement.query(By.css('#some-id'));
+el = de.nativeElement;
+
+expect(nativeElement.querySelector('#some-id') === null).toBe(false);
+
+// trigger the button
+nativeElement.querySelector('#some-id').click();
+
+
+
+================================================================================
+
+Test Debugging
+
+  Debug specs in browser in the same way that you debug an application
+
+  1. click DEBUG button in the browser
+    it opens a new tab and re-runs the test(s)
+
+  2. open Developer Tools (ctr-shift-i)
+
+  3. pick the "sources" section
+
+    important: for the next step to work, you need to FIRST
+      right-click anywhere in the Sources view
+      and "Add folder to workspace" and select src/app
+
+
+  4. open your ".spec.ts" test file (ctrl-P, then start typing name of file)
+
+  5. set a breakpoint in the test
+
+  6. refresh the browser and it stops at the breakpoint.
+
+
+
+
+
+================================================================================
+
+  Error Handling
+  **************
+
+https://angular.io/api/core/ErrorHandler  
+
+Catching global errors
+----------------------
+
+  https://stackoverflow.com/questions/44108285/angular-4-custom-errorhandler-doesnt-recognize-custom-error
+  https://dpopescu.me/2016/10/21/catching-global-errors-in-angular-2/
 
 
 ================================================================================

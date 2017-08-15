@@ -328,6 +328,9 @@ Transforming Observables
               windows and emit these windows rather than emitting the items 
               one at a time
 
+  switchMap - map to observable, complete previous inner observable, emit values
+                - this operator can cancel in-flight network requests!
+
 Filtering Observables
 
 Combining Observables
@@ -399,6 +402,70 @@ the emissions from those into a single Observable.
   flatMap then merges the emissions of these resulting Observables, emitting these
   merged results as its own sequence.
 
+
+SwitchMap
+--------------------------------------------------------------------------
+
+  1. why the term 'switch', what exaclty is being switched to and from?
+
+    the result observable can be switched from emitting the values 
+    of the first inner observable to emitting the values of the newly
+    created inner observable
+
+  2. why the term 'map', what is being mapped?
+
+    what is being mapped is the emitted source value, that is getting
+    mapped to an observable using the mapping function passed to switchMap.
+
+
+
+  RxJS provides several flattening operators like switch, concat, merge that
+  allow to merge multiple streams of observables into one stream.
+
+    simple case with map operator
+
+      Rx.Observable.of(1)
+        .map(x => x * 2)
+
+    a switchMap use case:
+
+      Rx.Observable.of('some_url')
+        .switchMap(url => this.http.get(url))
+
+    rule:
+
+      simple value => use 'map'
+      Observable   => use 'switchMap'
+
+
+  The switchMap operator will create a derived observable (called inner observab le) from a source observable and emit those values.
+
+  When the source emits a new value, it will create a new inner observable and 
+  switch to those values instead.
+
+why use switchMap?
+https://stackoverflow.com/questions/42655134/angular-2-why-use-switchmap-when-retrieving-route-params
+
+Q: why do they need swtichMap?
+
+ngOnInit() {
+  this.route.params
+    .switchMap((params: Params) => this.service.getHero(+params['id']))
+    .subscribe((hero: Hero) => this.hero = hero);
+}
+
+A:
+
+  the difference from flatMap or concatMap is that as soon as the next trigger emits, the current async operation is canceled and retriggered.
+
+  which means, as soon as the route-params change, your hero-service is
+  automatically called again with the changed params and the previous call is
+  canceled so you won't receive outdated data.
+
+  this is especially helpful for search queries that might take longer 
+  than 200-300ms and are triggered while a user is typing 
+  see:
+  https://stackoverflow.com/documentation/rxjs/8247/common-recipes/26559/discarding-slow-outdated-rest-calls
 
 
 Retry(number: number)
@@ -718,6 +785,145 @@ http://blog.angular-university.io/angular-2-rxjs-common-pitfalls/
 
 pitfall 1 - nothing happens
 ---------------------------
+
+
+
+================================================================================
+
+  Promises
+  ********
+
+Instantly resolve or reject promises
+-------------------------------------
+
+Using methods
+
+  Promise.resolve(data)
+  Promise.reject(error)
+
+let firstPromise = Promise.resolve(10);
+let secondPromise = Promise.reject(Error('Ooops!'));
+
+firstPromise
+  .then(console.log)
+  .catch(console.log)
+
+
+secondPromise
+  .then(console.log)
+  .catch(console.log);
+
+Executing all promises
+------------------------
+
+Using the syntax Promise.all(iterable), you can execute an array of Promises.
+This method resolves when all promises have resolved and fails if any of those
+promises fail.
+
+  let firstPromise = Promise.resolve(10);
+  let secondPromise = Promise.resolve(5);
+  let thirdPromise = Promise.resovle(20);
+
+  Promise
+    .all([firstPromise, secondPromise, thirdPromise])
+    .then(values => {
+      console.log(values);
+    });
+
+Promise Race Function
+---------------------
+
+You can use the Promise.race(iterable) function when you want the value
+of the first promise that resolves or rejects
+
+  let p1 = new Promise((resolve,reject) => {
+    setTimeout(resolve, 2000, 'promise 1 resolved');
+  });
+
+  let p2 = new Promise((resolve,reject) => {
+    setTimeout(reject, 3000, 'promise 2 rejected');
+  });
+
+  Promise
+    .race([promise1, promise2])
+    .then(console.log)
+    .catch(console.log);
+
+the .then will be invoked because p1 would resolve before p2.    
+
+
+Convert Promises to Observables
+-------------------------------
+
+RxJS provides Rx.Obserable.fromPromise method which calls the then method 
+of the promise to handle both success and error cases.
+
+// create a promise which resolves to 42
+let promise1 = new RSVP.Promise(function (resolve, reject) {
+  resolve(42);
+});
+
+// create a observable
+let source1 = Rx.Observable.fromPromise(promise1);
+
+let subscription1 = source1.subscribe(
+  x => {
+    console.log('onNext: %s', x);
+  },
+  e => {
+    console.log('onError: %s', e)
+  },
+  () => console.log('onCompleted')
+);
+
+// output:
+// onNext: 42
+// onCompleted
+
+let promise2 = new RSVP.Promise(function (resolve, reject) {
+  reject(new Error('reason'));
+});
+
+let source2 = Rx.Observable.fromPromise(promise2);
+
+let subscription2 = source2.subscribe(
+  x => {
+    console.log('onNext: %s', x);
+  },
+  e => {
+    console.log('onError: %s', e)
+  },
+  () => console.log('onCompleted')
+)
+
+// output:
+// onError: reject
+
+
+================================================================================
+
+  experimenting with Observables
+  ******************************
+
+was able to simulate observable with
+------------------------------------
+
+import 'rxjs/add/observable/of';
+
+@Injectable()
+export class SomeService{
+  
+  public blahWithObservables() {
+    return Observable.of({
+      data: 'blah',
+      status: 400
+    });
+  }
+}
+
+consumed
+--------
+
 
 
 
