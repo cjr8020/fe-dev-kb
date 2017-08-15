@@ -1,0 +1,369 @@
+@@@@@@@@@@@@@@@@@@@
+
+	CSS Syntax
+
+@@@@@@@@@@@@@@@@@@@
+
+
+Applied to a tag. E.g.:
+
+	div { color: red; }
+	
+Class:
+
+	.callout { ... }
+
+Subclass
+
+	.classA {...}	
+	.classA .subclassAA {...}
+
+	<div class="classA">
+		<table><tr><td class="subclassAA" ..
+	
+	
+Combined tag/class:
+
+	span.highlight { ... }
+	
+Id
+
+	#close { ... }
+
+
+Style Rule
+----------
+
+consists of two parts:
+	- selector
+	- style declaration
+	
+================================================================================
+
+	CSS Selector
+	************
+
+CSS [attribute] selector
+------------------------
+
+The [attribute] selector is used to select elements with a specified attribute.
+
+
+
+
+In addition to defining a type of HTML tag to apply a style to, we can limit the tule to those within a specific context:
+
+	- by HTML tag type
+	- by a declared class type,
+	- by an element's unique ID
+	
+- Tag-type selectors
+
+	To upply a rule only to <h1> tags that are contained within a <div> tag:
+	
+		div h1 { color: red; }
+		
+	These are also referred to as element-based selectors, because they decide whether or not a DOM element is styled based on its element type.
+	
+- class-based selectors
+
+	E.g, if we define a style class called 'callout', which is to appear in a colored box, we could write:
+	
+		.callout { border: solid blue 1px; background-golor: cyan }
+		
+	To assign a style class to an element, we simply declare a class attribute in the html tag:
+	
+		<div>I'll appear as a normal bit of text</div>
+		<div class="callout">And I'll appear as a callout!</div>
+		
+	Elements can be assigned more than one class. 
+	
+		<div class='callout loud'>And I'll appear as a mixture of both</div>
+		
+- element-based selectors
+
+	we can combine classes with element-based rules, to define a class that operates only on a particular tag types:
+	
+		span.highlight { background-color: yellow }
+		
+	this will be applied to <span> tags with a declared class attribute of "highlight".  Other <span> tags, or other types of tag with class='highlight', will be unaffected.
+	
+	We can also use these in conjunction with the parent-child selectors to create very specific rules:
+	
+		div.prose span.highlight { backgroun-color: yellow }
+		
+	This will be applied only to <span> tags of class 'highlight' that are nested within <div> tags of class 'prose'.
+	
+	
+- id-based selector
+
+	No more than one element should have a given ID assigned to it, so these selectors are typically used to select a single element on a page.
+	
+		#close { color: red }
+	
+	This is applied to a button with id="close".
+	
+- pseudo-selectors
+
+	A web browser defines a limited number of pseudo-selectors.
+
+		*:first-letter {
+			font-size: 500%;
+			color: red;
+			float: left;
+		}
+		
+	will draw the first letter of any element in a large bold red font.  We can tighten up this rule:
+	
+		p.illuminated:first-letter {
+			...
+		}
+	
+	The red border effect will now apply only to <p> elements with a declared class of 'illuminated'.  Other pseudo-selector include:
+	
+		first-line
+		hover
+	
+
+
+================================================================================
+
+CSS style properties
+====================
+
+	Elements can be hidden from view by setting 'visibility:hidden' or 'display:none'
+	
+	
+	
+Using CSS for layout
+--------------------
+
+	To position elements, the outermost element, representing the window is assigned an absolute position:
+	
+		div.window {
+			position: absolute;
+			overflow: auto;
+			margin: 8px;
+			padding: 0px;
+			width: 420px;
+			height: 280px;
+		}
+		
+	Within the content area,  the icons are styled using the 'float' property so as to flow within the confines of their parent element, wrapping around to a new line:
+	
+		div.item {
+			position: relative;
+			height: 64px;
+			width: 56px;
+			float: left;
+			padding: 0px;
+			margin: 8px;
+		}
+			
+	The itemName element, which is nested inside the 'item' element, has the text positioned below the icon by setting the upper margin as large as the icon graphic:
+	
+		div.item div.itemName {
+			margin-top: 48px;
+			font: 10px verdana, arial, helvetica;
+			text-align: center;
+		}
+			
+Using CSS for styling
+---------------------
+
+	The graphics used by the items in the folder are assigned by class name:
+	
+	div.folder {
+		background: 
+			transparent url(images/folder.png)
+			top left no-repeat;
+	}
+	
+	div.file {
+		background:
+			transparent url(images/file.png)
+			top left no-repeat;
+	}
+	
+	div.special {
+		background:
+			transparent url(images/filder_important.png)
+			top left no-repeat;
+	}
+	
+	
+	
+	
+=================================================================
+
+
+	CSS Positioning
+	***************
+	
+The CSS positioning properties allow you to position an element. It can also place an element behind another, and specify what should happen when an element's content is too big.
+
+Elements can be positioned using the top, bottom, left, and right properties. However, these properties will NOT work unless the position property is set first. 
+
+
+Four different positioning methods:
+
+1. Static
+---------
+
+	(default) A static positioned element is always positioned according to the normal flow of the page.  
+	
+	Static positioned elements are not affected by the top, bottom, left, and right properties.
+
+2. Fixed
+--------
+
+	An element with fixed position is positioned relative to the browser window.  It will not move even if the window is scrolled.
+	
+	p.pos_fixed
+	{
+		position:fixed;
+		top:30px;
+		right:5px;
+	}
+	
+	Fixed positioned elements are removed from the normal flow. The document and other elements behave like the fixed positioned element does not exist.
+	
+	Fixed positioned elements can overlap other elements.
+
+3. Relative
+-----------
+
+	A relative positioned element is positioned relative to its normal position.
+	
+	The content of a relatively positioned elements can be moved and overlap other elements, but the reserved space for the element is still preserved in the normal flow.
+	
+	Relatively positioned element are often used as container blocks for absolutely positioned elements.
+
+4. Absolute
+-----------
+
+	An absolute position element is positioned relative to the first parent element that has a position other than static. If no such element is found, the containing block is <html>
+	
+	Absolutely positioned elements are removed from the normal flow. The document and other elements behave like the absolutely positioned element does not exist.
+	
+	Absolutely positioned elements can overlap other elements.
+	
+	
+Overlapping Elements
+====================
+
+	When elements are positioned outside the normal flow, they can overlap other elements.
+	
+	The z-index property specifies the stack order of an element (which element should be placed in front of, or behind, the others).
+	
+	An element can have a positive or negative stack order.
+	
+	An element with greater stack order is always in front of an element with a lower stack order.
+	
+	img
+	{
+		position:absolute;
+		left:0px;
+		top:0px;
+		z-index:-1
+	}
+	
+	
+=================================================================
+
+	background
+	**********
+	
+background 'repeat' property sets if/how a background image will be repeated.
+
+By default, a background-image is repeated both vertically and horizontally.
+
+Property values:
+
+	repeat  	
+		The background image will be repeated both vertically and horizontally. This is default
+	
+	repeat-x 	
+		The background image will be repeated only horizontally
+	
+	repeat-y 	
+		The background image will be repeated only vertically
+	
+	no-repeat 	
+		The background-image will not be repeated
+	
+	inherit 	
+		Specifies that the setting of the background-repeat property should be inherited from the parent element
+
+	
+=================================================================	
+		
+	animation
+	*********
+
+achieved using two mechanisms:
+
+1. CSS transitions
+
+	https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions
+
+2. 	CSS Animations
+
+	https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations
+
+
+transition 
+
+	CSS start state
+	CSS end state
+	transition effect
+
+	the effect is defined using the style property 'transition'
+	Here, the background color is changed from black to blue on hover with a transition effect defined by the 'transition' property.
+
+		.my-class {
+			-webkit-transition:0.5s linear all;
+			transition:0.5s linear all;
+			background:black;
+		}	
+		.my-class:hover {
+			background:blue;
+		}
+
+	you're not limited to pseudo selector like hover..
+
+		.my-class.animate {
+			background:blue;
+		}
+
+	when you add 'animate' class to an HTML element which already has 'my-class', the background will change with the transition effect defined.
+
+animation
+
+	CSS start state	
+	keyframe configuration that defines the time duration of the animation 
+
+		.my-class {
+			background:black;
+		}
+		.my-class:hover {
+			background :blue;
+			animation:color 1s linear;
+			-webkit-animation: color 1s linear;
+		}
+		@keyframes color {
+			from {
+				background: black;
+			}
+			to {
+				background: blue;
+			}
+		}
+
+The basic difference between transition and animation is that we do not need two CSS states defined in the case of animation.		
+
+In the first example, transition happens when the CSS on the element changes from .my-class to .my-class:hover
+
+whereas in the 2nd example, animation starts when the CSS state is .my-class:hover, so there is no end CSS concept with animation.
+
+==============================================================

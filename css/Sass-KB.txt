@@ -1,0 +1,135 @@
+
+	@@@@@@@@@@@@@
+	
+		SASS
+
+	@@@@@@@@@@@@@
+
+
+stylesheets are getting larger, more complex and harder to maintain.
+This is where a preprocessor can help...
+
+Sass lets you use features that don't exist in CSS yet like variables, nesting, mixins, inheritance, etc..
+
+Sass has two syntaxes:
+
+	1. SCSS
+
+		the new main syntax known as SCSS (for "Sassy CSS"), and is a superset (or extension) of CSS3's syntax.
+		This means that every valid CCS3 stylesheet is a valid SCSS file with the same meaning.
+
+	2. Sass 
+
+		older syntax known as the indented syntax.		
+
+
+http://sass-lang.com/guide
+
+	Variables
+	*********
+
+	Nesting
+	*******
+
+	Partials
+	*********
+
+if you have a SCSS or Sass file that you want to import, but don't want to compile to a CSS file, you can add an underscore to the beginning of the filename.
+This will tell Sass not to compile it to a normal CSS file.   You can then import these files without using the underscore.
+
+For example, you might have _colors.scss. Then no _colors.css file would be created, and you can do
+
+@import "colors";
+and _colors.scss would be imported.
+
+
+
+	Import
+	*******
+
+	Mixins
+	******
+
+	Extend/Inheritance
+	******************
+
+	Operators
+	*********
+
+================================================================================
+
+	Using
+	******
+
+
+
+
+
+================================================================================
+
+	libSass
+	*******			
+
+Sass was originally written in Ruby. libSass is a C/C++ port of the Sass engine. The point is to be simple, faster, and easy to integrate.
+
+================================================================================
+
+	import not found into sass/scss file  WebStorm error
+	*************************************
+
+http://stackoverflow.com/questions/13213631/how-to-add-compass-syntax-support-to-jetbrains-phpstorm	
+
+_settings.scss
+
+@import 'foundation/functions';
+
+The problem here is because this file is in 'app' folder
+
+	app/scss/
+
+and foundation SCSS functions are  in:
+
+	app/bower_components/foundation/scss/foundation
+		- _functions.scss
+
+so the solution is to cd into your app/scss directory using cmd with Admin privileges 
+
+> cd <your-web-app>\app\scss
+
+and create the link:
+
+>mklink /d foundation ..\..\app\bower_components\foundation\scss\foundation
+
+	symbolic link created for foundation <<===>> ..\..\app\bower_components\foundation\scss\foundation
+
+
+================================================================================	
+
+	Error: `libsass` bindings not found
+	***********************************
+
+
+C:\ws\0git\cjr8020\iskill-angular>grunt serve
+Loading "sass.js" tasks...ERROR
+>> Error: `libsass` bindings not found. Try reinstalling `node-sass`?
+Warning: Task "sass" not found. Use --force to continue.
+
+Aborted due to warnings.
+
+https://github.com/yeoman/generator-webapp/issues/538
+
+A:
+	
+	You probably updated the Node version since you last installed your deps, so libsass was built with the old version. Try rm -r node_modules and npm install.
+R:
+	Here is the steps:
+		1. Used the code rm -r node_modules and npm install and run "grunt serve". It still has error: Local Npm module "grunt-sass" not found. Is it installed 
+		2. So I tried npm install grunt-sass and it works.
+
+
+> npm install grunt-sass 
+
+	worked for me as well..
+
+
+================================================================================

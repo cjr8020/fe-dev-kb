@@ -1,0 +1,213 @@
+
+
+
+favicon.ico
+-----------
+  Failed to load resource: the server repsonded with a status of 404 (Not Found)
+  http://127.0.0.1:32423/favicon.ico
+
+To prevent loading of favicon.. as in test environment..
+
+  If you need your document to validate against HTML5 use this instead:
+
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">  
+
+
+
+
+span tag
+--------
+
+	The <span> tag provides no visual change by itself.
+	
+	The <span> tag provides a way to add a hook to a part of a text or a part of a document.  When the text is hooked in a span element you can add styles to the content, or manipulate the content with for example JavaScript.
+	
+    Sample usage: a text with a span element that can be styled with CSS:
+    
+    	<p>My mother has <span class="blue">light blue</span>  eyes.</p>
+    	
+	Standard attributes:
+	
+		class
+		
+		dir 
+			= Specifies the text direction for the content in an element
+		
+		id
+		
+		lang
+			= Specifies a language code for the content in an element
+		
+		style
+			= Specifies an inline style for an element
+		
+		title
+			= extra info about an element
+		
+		xml:lang
+    		= Specifies a language code for the content in an element, in XHTML documents
+    	
+
+
+
+What does the &nbsp; mean?
+--------------------------
+
+- no-break space
+
+- it's a character entity
+
+1) keep elements together
+    if you want to put a space between two elements, but the browser
+    should not break up these two parts in separate lines, then replace
+    the ordinary space with a no-break space
+
+    (e.g. in a table)
+
+2) Create multiple spaces
+
+    normal multiple spaces are collapsed to one by the browser:
+
+    These     spaces    will collapse,
+    But these&nbsp;&nbsp;&nbspare&nbsp;&nbsp;&nbsp;shown...
+
+
+
+
+
+BASE HREF
+---------
+
+
+
+12.4 Path information: the BASE element
+---------------------------------------
+
+<!ELEMENT BASE - O EMPTY -- document base URI -->
+<!ATTLIST BASE href %URI; #REQUIRED -- URI that acts as base URI --
+  >
+
+
+When present, the BASE element must appear in the HEAD section of an HTML document, before any element that refers to an external source. The path information specified by the BASE element only affects URIs in the document where the element appears.
+
+For example, given the following BASE declaration and A declaration:
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+ <HEAD>
+   <TITLE>Our Products</TITLE>
+   <BASE href="http://www.aviary.com/products/intro.html">
+ </HEAD>
+
+ <BODY>
+   <P>Have you seen our <A href="../cages/birds.gif">Bird Cages</A>?
+ </BODY>
+</HTML>
+
+the relative URI "../cages/birds.gif" would resolve to:
+
+http://www.aviary.com/cages/birds.gif
+
+
+
+
+    Page Redirect 
+    =============
+
+Use suspenders and a belt -- both the Refresh pragma and a JavaScript redirect in the <head> of the page, like this:
+
+1.
+
+<meta http-equiv="Refresh" content="0; url=http://site.com/page.html">
+
+2. 
+<script>
+  window.location="http://www.mysite.com/mypage.html";
+</script>
+
+Make sure to set both url's the same, and be careful of the punctuation in the Refresh pragma.
+
+3. 
+
+The other way to do this is server-side via the .htaccess file in your web root.  Do this with caution, and always check your server documentation or with your server administrator to be certain it's allowed on your host -- though the technique is very much standard on UNIX/LINUX boxes.
+
+Add a Redirect request to your .htaccess file in the following general form:
+
+Redirect whatpage.html http://www.mysite.com/otherpage.html
+
+In this example, whatpage.html is redirected to http://www.mysite.com/otherpage.html.
+
+
+    Lists
+    =====
+    
+Ordered Lists
+-------------
+    
+<ol>
+<li> ... </li>
+<li> ... </li>
+...
+</ol>    
+
+Unordered Lists
+---------------
+
+<ul>
+<li> ... </li>
+<li> ... </li>
+...
+</ul>
+
+Unordered Lists, have been extended to allow the type of bullet to be specified.
+
+    <ul type=disc|circle|square>
+
+Note that on many browsers disc and circle appear the same.
+
+You can also specify the bullet type with the <li> tag itself!
+
+    <li type=disc|circle|square>
+
+
+=================================================================
+
+  How to get youtube video thumbnail from YouTube API
+  ***************************************************    
+
+http://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
+
+"i3.ytimg.com"  works in place of "img.youtube.com"
+
+
+
+Each YouTube video has 4 generated images. They are predictably formatted as follows:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/0.jpg
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/1.jpg
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/2.jpg
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/3.jpg
+The first one in the list is a full size image and others are thumbnail images. The default thumbnail image (ie. one of 1.jpg, 2.jpg, 3.jpg) is:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/default.jpg
+For the high quality version of the thumbnail use a url similar to this:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/hqdefault.jpg
+There is also a medium quality version of the thumbnail, using a url similar to the HQ:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/mqdefault.jpg
+For the standard definition version of the thumbnail, use a url similar to this:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/sddefault.jpg
+For the maximum resolution version of the thumbnail use a url similar to this:
+
+http://img.youtube.com/vi/<insert-youtube-video-id-here>/maxresdefault.jpg
+All of the above urls are available over https too. Just change http to https in any of the above urls. 
+
+Additionally, the slightly shorter hostname i3.ytimg.com works in place of img.youtube.com in the example urls above.
+
+Alternatively, you can use the YouTube Data API (v3) to get thumbnail images.
+
+
+=================================================================  
