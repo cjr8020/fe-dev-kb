@@ -30,6 +30,7 @@ You launch the app by bootstrapping the root module
 7. Services
 8. DI
 
+================================================================================
 
 Routing
 -------
@@ -170,6 +171,35 @@ called ActivatedRoute:
         console.log('ngOnInit: code=', queryParams.get('code'));
     });
   }
+
+
+  Passing Static Data
+  --------------------
+
+    const appRoutes: Routes = [
+      { path: 'crisis-center', component: CrisisListComponent },
+      { path: 'hero/:id',      component: HeroDetailComponent },
+      {
+        path: 'heroes',        component: HeroListComponent,
+                               data: { title: 'Heroes List' }
+      },
+      { path: '',              redirectTo: '/heroes', pathMatch: 'full' },
+      { path: '**',           component: PageNotFoundComponent }
+    ];  
+
+
+    The 'data' property in the third route is a place to store arbitrary
+    data associated with this specific route.  
+    This property is accessible with each activated route.
+    You can use 'data' property to store such items as 
+      page titles
+      breadcrumb text
+      and other STATIC data
+
+  Passing Dynamica Data
+  ----------------------
+
+
 
 
 ================================================================================
@@ -2491,6 +2521,17 @@ Setup / Teardown
 
   Angular Unit Testing
   ********************
+
+$ ng test --browser ChromeHeadless --watch false [--sourcemaps false]
+
+  using '--sourcemaps false' option may help uncover the real cause behind
+  an obscure error message like:
+
+      Uncaught NetworkError: Failed to execute 'send' on 'XMLHttpRequest': Failed to load 'ng:///DynamicTestModule/SomeComponent.ngfactory.js'.
+  with --sourcemaps false:
+
+      TypeError: Cannot read property 'route' of undefined
+
 
 @see 
     https://github.com/angular/angular.io
