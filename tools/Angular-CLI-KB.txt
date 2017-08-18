@@ -230,59 +230,33 @@ Create angular2 project in existing directory
   create and wire new component
   ----------------------------
 
-Create new component 'books'
 
-  $ ng g c books
+Create `crisis-center` component in the `crisis-center` module and 
+declare in `crisis-center.module.ts`
 
-This will create a new folder 'app/books' with the following content:
+  $ ng g c crisis-center/crisis-center --flat -is -it -m crisis-center
+  installing component
+    create src/app/crisis-center/crisis-center.component.spec.ts
+    create src/app/crisis-center/crisis-center.component.ts
+    update src/app/crisis-center/crisis-center.module.ts
 
-  index.ts
-  books.component.ts
-  books.component.html
-  books.component.css
-  books.component.spec.ts
+creates a declaration in crisis-center module:
 
-app.module.ts
--------------
-Add bootstrapping for the new module:
-
-import { BooksComponent } from './books/books.component';
-
-@NgModule({
-  declarations: [
-    AppComponent,
-    BooksComponent
-  ],
-
-app.component.ts
-----------------
-
-NOTE: here do NO LONGER need to import and declare BooksComponent as directives - this is because
-when BooksComponent is declared above in app.module.ts (done by angular-cli)
-it is automatically available to all components.
-Just go straight to app.component.html and use it: <app-books></app-books>
-
-
-  import { BooksComponent } from './books'; // NO NEED
-
-  @Component({
-    ...
-    directives: [BooksComponent] // NO NEED
+  @NgModule({
+    imports: [
+      CommonModule,
+      CrisisCenterRoutingModule
+    ],
+    declarations: [CrisisCenterComponent]
+  })
+  export class CrisisCenterModule { }
 
 
 
 
-app.component.html
-------------------
-To include the content of 'books.component.html' we need to look up the selector
-tag in 'book.component.ts' - it is 'app-books'
-
-so we can include this in 'app.component.html':
-
-<app-books></app-books>
 
 Destroy Component
-=================
+-----------------
 
   $ ng destroy component books
 
