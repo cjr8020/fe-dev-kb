@@ -15,6 +15,20 @@ To prevent loading of favicon.. as in test environment..
 
 ================================================================================
 
+<nav>
+
+  HTML5 element represents a section of a page whose purpose is to provide
+  navigation links either within current document or other documents.
+  to define a set of navigation links.
+
+    - not all links must be in a <nav> element which is intended only for 
+      major block of navigation links;  typically the <footer> element 
+      often has a list of links that don't need to be in a <nav> element.
+
+    - a document may have several <nav> elements, e.g., one for site navigation
+      and one for intra-page navigation.
+
+
 article
 -------
 

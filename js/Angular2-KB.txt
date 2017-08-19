@@ -89,6 +89,65 @@ Routing
     The browser also needs the base <href> value to prefix relative URLs.
 
 
+RouterOutlet
+------------
+
+<router-outlet></router-outlet>
+
+  directive from the router library that marks the spot in the template where
+  the router should display the views for that outlet.
+
+    The router adds the <router-outlet> element to the DOM and subsequently
+    inserts the navigated view element immediately after the <router-outlet>
+
+RouterLink binding
+------------------
+
+  <nav>
+    <a routerLink="/crisis-center" routerLinkActive="active">Crisis Center</a>
+    <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+  </nav>
+
+  routerLink=" path to a preconfigured route "
+
+
+RouterLinkActive binding
+------------------------
+
+  on each <a> anchor tag, there is RouterLinkActive directive.
+
+  toggles CSS classes for active RouterLinks based on the current RouterState.
+  e.g.:
+
+    nav a.active {
+      color: #03d465;
+    }
+
+  will apply this style to <a> anchor tag defined inside <nav> element:
+
+    <nav>
+      <a routerLink="/crisis-center" routerLinkActive="active">Crisis Center</a>
+      <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+    </nav>  
+
+
+  the template expression on the right of the (=) contains a space-delimited
+  string of CSS classes that the Router will add when this link is active 
+  (and remove when inactive).
+
+  cascades down through each level of the route tree, so parent and child router
+  links can be active at the same time.
+
+  Can also set the directive to a string of classes:
+
+    [routerLinkActive]="'active fluffy'"
+
+  or bind it to a component property that returns such a string.
+
+
+
+
+
 
     ActivatedRoute
     **************

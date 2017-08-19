@@ -43,33 +43,60 @@ consists of two parts:
 	CSS Selector
 	************
 
+CSS element selector
+--------------------
 
-CSS selector without (.) target all HTML elements by this tag, e.g.
 
-  p {
-    color: green;
-  }
+	CSS selector without (.) target all HTML elements by this tag, e.g.
+
+	  p {
+	    color: green;
+	  }
+
+
+CSS class selector
+------------------
+
+	matches elements based on the contents of their 'class' attribute.
+	although a selected element may have mutliple classes, one of them must 
+	match exactly the class name given in the selector.
+
+	E.g.
+
+		CSS
+
+			div.classy { .. }  
+
+		HTML
+
+			<div class="classy">
   
-CSS selector with (.)   specifies a class, e.g. 
+	CSS selector with (.)   specifies a class, e.g. 
 
-  .green {
-    color: green;
-  }  
+	  .green {
+	    color: green;
+	  }  
 
-  <p class="green">i'm going green</p>
-  <p>i'm just plain paragraph</p>
-  <p class="green">i'm going green too!</p>
+	  <p class="green">i'm going green</p>
+	  <p>i'm just plain paragraph</p>
+	  <p class="green">i'm going green too!</p>
 
-CSS selector with (#)   specifies an ID, e.g. 
 
-  #myElement {
-    ...
-  }
 
-You can have ONLY one element with a particular ID.
-But you can have many elements in a particular class.
-So, if you want to target once specific element, you can give that element an ID,
-and target it with a hash ('#') in your CSS statement.
+ CSS id selector
+ ---------------
+
+	CSS selector with (#)   specifies an ID, e.g. 
+
+	  #myElement {
+	    ...
+	  }
+
+	You can have ONLY one element with a particular ID.
+	But you can have many elements in a particular class.
+	So, if you want to target once specific element, you can give that element an ID,
+	and target it with a hash ('#') in your CSS statement.
+
 
 
 More specific CSS Selectors
@@ -99,6 +126,15 @@ e.g.
   .warning p {
 
   } 
+
+
+
+applies style to <a.active> elements inside <nav> elements
+
+    nav a.active {
+      color: #03d465;
+    }
+
 
 
 
@@ -152,7 +188,7 @@ e.g.
 		#close { color: red }
 	
 	This is applied to a button with id="close".
-	
+
 	
 - pseudo-selectors
 
