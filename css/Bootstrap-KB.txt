@@ -370,7 +370,8 @@ properly (i.e. in the right order) on smaller devices.
 Suppose you want your application
 
 1. on mobile, stack in the following order
-2. starting with "sm" (ipad and up), you want <section> in the middle, and first <aside> on the LEFT.
+2. starting with "sm" (ipad and up), you want <section> in the middle, and 
+first <aside> on the LEFT.
 
 so, to make that happen, you would:
 

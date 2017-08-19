@@ -453,4 +453,27 @@ In the first example, transition happens when the CSS on the element changes fro
 
 whereas in the 2nd example, animation starts when the CSS state is .my-class:hover, so there is no end CSS concept with animation.
 
-==============================================================
+================================================================================
+
+	Media Queries
+	*************
+
+CSS3 media queries consist of
+ 
+- optional, media type
+- zero or more expressions that limit the style sheet's scope by using
+  media features like width, height and color
+
+The result of the query is true if the media type specified in the media query
+matches the type of device the document is being displayed on.
+
+<style>
+	@media (max-width: 600px) {
+		.facet-sidebar {
+			display: none;
+		}
+	}
+</style>
+
+
+================================================================================
