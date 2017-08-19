@@ -271,9 +271,17 @@ will have to be manually removed
 
 
 
-To generate a new component with flat structure, inline styles and template
+Generate a new component with flat structure, inline styles and template
 
   $ ng g c <component-name> --flat -it -is
+
+
+Generate new component in main 'app' module without a spec:
+
+  $ ng g c page-not-found --flat -is -it -m app --spec false
+  installing component
+    create src/app/page-not-found.component.ts
+    update src/app/app.module.ts
 
 
 

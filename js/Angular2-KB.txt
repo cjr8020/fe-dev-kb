@@ -89,6 +89,96 @@ Routing
     The browser also needs the base <href> value to prefix relative URLs.
 
 
+
+Define Routes
+-------------
+
+  a router must be configured with a list of route definitions.
+
+
+
+FIRST MATCH WINS
+
+    The router selects the route with a 'first match wins' strtegy.
+    Wildcard routes are the least specific routes in the route configuration.
+    Be sure it is the last route in the configuration.
+
+
+wildcard route
+
+  add a wildcard route to intercept invalid URLs and handle them gracefully.
+  a "wildcard" route has a path consisting of "**" - it matches every URL.
+
+    { path: "**", component: PageNotFoundComponent }
+
+DEFAULT route
+redirect route
+
+  when the application launches, the initial URL in the browser bar is something
+  like 
+
+    localhost:3000
+
+  that doesn't match any of the concrete configured routes, which would mean 
+  the router falls all the way through to the wildcard route and displays the
+  PageNotFoundComponent.  
+
+  The application needs a DEFAULT route to a valid page.
+  The solution is to use a 'redirect' route that translates the initial
+  relative URL ('') to the desired default path, /heroes for example.
+
+
+      const appRoutes: Routes = [
+        { path: 'crisis-center', component: CrisisListComponent },
+        { path: 'heroes',        component: HeroListComponent },
+        { path: '',   redirectTo: '/heroes', pathMatch: 'full' },
+        { path: '**', component: PageNotFoundComponent }
+      ];
+
+  a redirect route requires 'pathMatch' property to tell the router how to 
+  match a URL 
+
+    pathMatch: 'full' 
+
+  the other possible pathMatch value is 'prefix'
+
+  Root routing module
+  ...................
+
+    const routes: Routes = [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'heroes', loadChildren: 'app/hero/hero.module#HeroModule' },
+      { path: 'crisis-center', loadChildren: 'app/crisis-center/crisis-center.module#CrisisCenterModule' }
+    ];
+
+    @NgModule({
+      imports: [
+        RouterModule.forRoot(
+          routes,
+          // { enableTracing: true }
+        )
+      ],
+      exports: [RouterModule]
+    })
+    export class AppRoutingModule { }  
+
+
+
+  Module/Child routing module
+  ............................
+
+    const crisisCenterRoutes: Routes = [
+      { path: '', component: CrisisCenterComponent }
+    ];
+
+    @NgModule({
+      imports: [RouterModule.forChild(crisisCenterRoutes)],
+      exports: [RouterModule]
+    })
+    export class CrisisCenterRoutingModule { }
+
+
+
 RouterOutlet
 ------------
 
