@@ -162,6 +162,24 @@ Blacklisting got rid of the message..
 
 ===============================================================
 
+	ntp time service
+	****************
+
+$ sudo apt-get install ntp
+$ sudo service ntp start
+$ timedatectl
+
+      Local time: Fri 2017-08-18 19:24:22 PDT
+  Universal time: Sat 2017-08-19 02:24:22 UTC
+        RTC time: Mon 2017-07-31 13:42:21
+       Time zone: America/Los_Angeles (PDT, -0700)
+ Network time on: yes
+NTP synchronized: yes
+
+note: ntpdate is deprecated in favor of timedatectl
+
+===============================================================
+
 	enable workspaces or virtual desks
 	**********************************
 
@@ -270,7 +288,12 @@ Alt-N goes to the tab # (where N is the tab ordinal number)
 
 http://unix.stackexchange.com/questions/75902/how-to-run-xfce-terminal-with-different-commands-per-tab-and-keep-using-the-tabs
 
-If you want to start a command as a job of an interactive shell in the xfce4-terminal terminal emulator and keep the shell running and use it interactively after the application has exited, with bash, you can make use of the $PROMPT_COMMAND environment variable, to have xfce-terminal start an interactive shell that starts the given command just before the first prompt.
+If you want to start a command as a job of an interactive shell 
+in the xfce4-terminal terminal emulator and keep the shell running and 
+use it interactively after the application has exited, with bash, 
+you can make use of the $PROMPT_COMMAND environment variable, 
+to have xfce-terminal start an interactive shell that starts the given command 
+just before the first prompt.
 
 xfce4-terminal \
   -T eclipse \
@@ -285,11 +308,15 @@ xfce4-terminal \
   --working-directory=/home/stefan/oximity \
   ...
 
-That way, the commands are jobs of that shell which means you can suspend them with Ctrl-Z and resume them later with fg/bg as if you had entered them at the prompt of that interactive shell.
+That way, the commands are jobs of that shell which means you can suspend them 
+with Ctrl-Z and resume them later with fg/bg as if you had entered them at the 
+prompt of that interactive shell.
 
-That assumes though that you don't set the $PROMPT_COMMAND in your ~/.bashrc. Also note that the exit status of the command will not be available in $?.
+That assumes though that you don't set the $PROMPT_COMMAND in your ~/.bashrc. 
+Also note that the exit status of the command will not be available in $?.
 
-To make it even more like the command was entered at the shell prompt, you can even add it to the history list:
+To make it even more like the command was entered at the shell prompt, 
+you can even add it to the history list:
 
 xfce4-terminal -T /etc/motd -e 'env PROMPT_COMMAND="
   unset PROMPT_COMMAND
