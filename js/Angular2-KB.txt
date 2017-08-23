@@ -41,7 +41,81 @@ Routing
   or pastes a URL into the browsers' address bar.
 
 
+  Module Import Order Matters
+
+    When you start using modules with their own routing modules, 
+    and the routes are no longer defined in one file - import order
+    becomes important.
+
+    Each routing module augments the route configuration IN THE ORDER OF
+    IMPORT.  
+
+    If you list AppRoutingModule first, the WILDCARD route
+    will be registered BEFORE the hero routes.
+
+    app.module.ts
+    -------------
+
+      @NgModule({
+        imports: [
+          BrowserModule,
+          FormsModule,
+          HttpModule,
+          AppRoutingModule,  <-- uh-oh
+          DashboardModule,
+          HeroModule,        <-- wildcard kicks in before hero module routes
+          CrisisCenterModule     
+
+      export class AppModule {
+        // diagnostic only
+        constructor(router: Router) {
+          console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+        }
+      }      
+
+
+      The wildcard route - which matches every URL -- will intercept
+      the attempt to navigate to a hero route.
+
+
+        Routes:  [
+          {
+            "path": "heroes",
+            "loadChildren": "app/hero/hero.module#HeroModule"
+          },
+          {
+            "path": "crisis-center",
+            "loadChildren": "app/crisis-center/crisis-center.module#CrisisCenterModule"
+          },
+          {
+            "path": "dashboard",
+            "loadChildren": "app/dashboard/dashboard.module#DashboardModule"
+          },
+          {
+            "path": "",
+            "redirectTo": "/dashboard",
+            "pathMatch": "full"
+          },
+          {
+            "path": "**"
+          },
+          {
+            "path": ""
+          },
+          {
+            "path": ""
+          },
+          {
+            "path": ":id"
+          },
+          {
+            "path": ""
+          }
+        ]
+
+
   Router 
+  ----------------
 
   Angular router is an external optional Angular NgModule called RouterModule.
 
@@ -176,6 +250,62 @@ redirect route
       exports: [RouterModule]
     })
     export class CrisisCenterRoutingModule { }
+
+
+
+Inspect Router's Configuration
+------------------------------
+
+  You can inspect the router's current cconfiguration by examining its
+  'config' property.
+
+      app.module.ts
+      -------------
+
+      export class AppModule {
+        // diagnostic only
+        constructor(router: Router) {
+          console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+        }
+      }
+
+  Are routes listed in the order you expect them to?
+
+
+    Routes:  [
+      {
+        "path": "heroes",
+        "loadChildren": "app/hero/hero.module#HeroModule"
+      },
+      {
+        "path": "crisis-center",
+        "loadChildren": "app/crisis-center/crisis-center.module#CrisisCenterModule"
+      },
+      {
+        "path": "dashboard",
+        "loadChildren": "app/dashboard/dashboard.module#DashboardModule"
+      },
+      {
+        "path": "",
+        "redirectTo": "/dashboard",
+        "pathMatch": "full"
+      },
+      {
+        "path": "**"    <--- uh-oh 
+      },
+      {
+        "path": ""
+      },
+      {
+        "path": ""
+      },
+      {
+        "path": ":id"    <--- will this one ever match?!
+      },
+      {
+        "path": ""
+      }
+    ]  
 
 
 
@@ -1611,7 +1741,6 @@ angular 2 emulates the concept of shadow DOM:
     background-color: yellow;
   }
 
-========================================================================
 	
 
 ==============================================================================
@@ -1630,6 +1759,49 @@ ngDoCheck
   ngAfterViewChecked
 
 ngOnDestroy
+
+
+
+  constructor versus ngOnInit
+  ---------------------------
+
+  use constructor for DI
+  use ngOnInit as signal that all bindings are setup.
+
+constructor 
+
+  on an ES6 class is a feature of a class itself, rather than an Angular 
+  feature.   It is out of Angular's control when the constructor is 
+  invoked, which means that it's not a suitable hook to let you know when
+  Angular has finished initializing the component.
+
+
+  suitable scenario for using the constructor
+
+    - when we want to utilize dependency injection - essentially for 
+      wiring up dependencies into the component.
+
+
+ngOnInit
+
+  by adding this lifecycle hook, Angular can fire a method once it has 
+  finished setting the component up.
+
+    - ngOnInit is purely there to give us a signal that Angular has
+      finished initilizing the component.
+
+    - the first pass at Change Detection against the properties that 
+      we may bind to the component itself - e.g. when using @Input()
+
+      due to this, the @Input() properties are available inside ngOnInit
+      however, are undefined inside the constructor.
+
+  the ngOnInit lifecycle hook is a guarantee that your bindings are readily
+  available.
+
+
+
+
 
 ==============================================================================
 
