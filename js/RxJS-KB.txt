@@ -40,6 +40,16 @@ Observables
   We can interact with these data streams via Observables as we would with an array.
 
 
+  let source = Rx.Observable.from(...);
+
+  let subscription = source.subscribe(
+    value => console.log('next value: %s', value),
+    error => console.log('error: %s', error),
+    () => console.log('Completed.')
+  );
+
+
+
 
 ================================================================================
 
@@ -904,6 +914,65 @@ let subscription2 = source2.subscribe(
 
   experimenting with Observables
   ******************************
+
+from one or multiple values
+---------------------------
+
+  Observable.of('foo', 'bar');
+
+from array of values
+--------------------
+
+  ////////////  Observable from array of values ////////////
+
+  let numbersArray: number[] = [1,2,3];
+
+  let source: Observable<number> = Observable.from(numbersArray);
+  source.subscribe(
+      n => console.log('Next number: %s', n),
+      error => console.log('error: %s', error),
+      () => console.log('Completed')
+  );
+
+  example
+
+        export class Crisis {
+            constructor(
+                public id: number,
+                public name: string
+            ) {}
+        }
+        const CRISES = [
+            new Crisis(1, 'Dragon Burning Cities'),
+            new Crisis(2, 'Sky Rains Great White Sharks'),
+            new Crisis(3, 'Giant Asteroid Heading for Earth'),
+            new Crisis(4, 'Procrastinators Meeting Delayed Again')
+        ];
+          
+
+        function getCrisis(id: number|string) {
+            return Observable.from(CRISES)
+                .find( crisis => crisis.id === id);
+        }
+
+        let c: Crisis;
+        getCrisis(4).subscribe( s => c = s);
+        console.log('c: %s', c.name);
+
+
+
+from an event
+-------------
+
+  Observable.fromEvent(document.querySelector('button'), 'click');
+
+
+from a Promise
+--------------
+
+  Observable.fromPromise(fetch('/users'));
+
+
 
 was able to simulate observable with
 ------------------------------------
