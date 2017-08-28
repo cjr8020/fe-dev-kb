@@ -221,6 +221,15 @@ https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/f
     // => Finally
 
 
+finally() vs completed()
+------------------------
+
+  Finally always happens whenever an observable terminates (includuing errors).
+  Completed only happens when it terminates without errors.
+
+    OnCompleted
+      called after onNext() is called for the last time.
+
 
 ================================================================================
 
