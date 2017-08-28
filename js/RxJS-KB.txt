@@ -193,6 +193,32 @@ Observer object that is going to be passed it at subscribe time.
 
     );
 
+Observable.finally()
+--------------------
+
+https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/finally.md
+
+  Invokes a specified action after the source observable sequence terminates
+  gracefully or exceptionally.   
+
+
+    /* Terminated by error still fires function */
+    var source = Rx.Observable.throw(new Error())
+      .finally(function () { console.log('Finally'); });
+
+    var subscription = source.subscribe(
+      function (x) {
+        console.log('Next: %s', x);
+      },
+      function (err) {
+        console.log('Error: %s', err);
+      },
+      function () {
+        console.log('Completed');
+      });
+
+    // => Error: Error
+    // => Finally
 
 
 
