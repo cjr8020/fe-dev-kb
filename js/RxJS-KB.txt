@@ -912,6 +912,37 @@ let subscription2 = source2.subscribe(
 
 ================================================================================
 
+  forkJoin
+  ********
+Runs all observable sequences in parallel and collects their last elements.
+
+https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/forkjoin.md
+
+
+  Handling Observables that depend on each other
+  ----------------------------------------------
+
+https://stackoverflow.com/questions/42188732/handling-observables-when-one-is-dependent-on-data-from-another  
+
+
+const request1$ = Rx.Observable.of('response1').delay(2000);
+const request2$ = Rx.Observable.of('response2').delay(100);
+
+Rx.Observable.forkJoin(request1$, request2$)
+  .subscribe(res => console.log(`forkJoin: ${res}`));
+
+
+// Or if your 2nd request depends on 1st response - use switchMap
+
+request1$.switchMap(res1 => {
+  console.log(`switchMap: ${res1}`);
+  return request2$;
+}).subscribe(res2 => console.log(`switchMap: ${res2}`));
+
+
+
+================================================================================
+
   experimenting with Observables
   ******************************
 
@@ -948,7 +979,7 @@ from array of values
             new Crisis(3, 'Giant Asteroid Heading for Earth'),
             new Crisis(4, 'Procrastinators Meeting Delayed Again')
         ];
-          
+
 
         function getCrisis(id: number|string) {
             return Observable.from(CRISES)
