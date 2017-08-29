@@ -712,6 +712,7 @@ onErrorResumeNext()
   an error or if the source Observable terminates normally.
 
 catch() operator
+-------------------
 
   will catch the error, and return its own Observable
 
@@ -728,6 +729,19 @@ catch() operator
       console.log(`caught: ${e}`);
       return Observable.of(10);
     })
+
+
+    Type 'void' is not assignable to type 'ObservableInput<{}>'
+
+      When using catch(), you have to return an observable:
+
+        Observable.of({})
+          .map( (res: Response) => res.json() )
+          .catch( (error: any) => {
+            // do something
+            return Observable.of({});  // or
+            return Observable.throw(error.statusTest);
+          })
 
 
 
