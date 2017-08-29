@@ -605,6 +605,53 @@ defer
 
 
 
+Concat Operators
+****************
+
+  If you want to be sure that the order of emissions is the same as the order
+  in which you specified the source Observables.
+
+  concat* operators subscribe to an Observable only after the previous 
+  Observable completes.
+
+
+concat
+--------------------------------------------------------------------------
+
+  use concat if you just need to order the emissions
+
+
+      var source1 = Observable.of(1,2,3,4,5);
+      var source2 = Observable.of(6,7,8,9,10);
+
+      var source = Observable.concat(source1, source2);
+
+      var subscription = source.subscribe(
+          (next) => {
+              console.log('Next: %s', next);
+          },
+      (error) => {
+              console.log('Error: %s', error);
+          },
+          () => {
+              console.log('Complete');
+          }
+      );
+
+
+
+concatMap
+--------------------------------------------------------------------------
+
+  use concatMap if the request for one depends on the response of the previous
+  one.
+
+
+  Observable.of('Hello', 'Goodbye')
+      .concatMap( val => Observable.of(`${val} World!`))
+      .subscribe( val =>  console.log('Example One: ', val));
+
+
 ================================================================================
 
 Importing RxJS components
@@ -973,6 +1020,69 @@ request1$.switchMap(res1 => {
   console.log(`switchMap: ${res1}`);
   return request2$;
 }).subscribe(res2 => console.log(`switchMap: ${res2}`));
+
+
+
+
+    /**
+     * 1. get outage notice
+     * 2. check if user is authenticated
+     *    2.1. enforce FORCED DATA COLLECTION policy
+     */
+    Observable.forkJoin(
+
+      // 1. get outage notice
+      this.getDrupalOutageInfoObservable()
+        .map( (outageContent: Outage) => {
+          this.outageContent = outageContent;
+          console.log('Outage content.notificationType: %s', outageContent.notificationType);
+          if (outageContent.notificationType === 'total-outage') {
+            this.isTotalOutage = true;
+          }
+        }),
+
+      // 2. check if authenticated
+      this.authenticationService.checkIfAuthenticated()
+        .map( () => {
+          console.log('User is authenticated');
+          this.isAuthenticated = true;
+
+          // 2.1 enforce FORCED_DATA_COLLECTION_AUTHZ_POLICY
+          this.authenticationService.validateAuthzPolicy(this.FORCED_DATA_COLLECTION_AUTHZ_POLICY)
+            .subscribe(
+              () => {
+                console.log('Forced Data Collection policy met');
+                this.isForcedDataCollectionPolicyMet = true;
+              },
+              ( (error: IResponse) => {
+                console.log('User failed FORCED_DATA_COLLECTION_AUTHZ_POLICY validation. Error.status: %s', error.status);
+                this.router.navigate(['/data-collection']);
+              })
+            );
+
+        })
+        .catch( (error: IResponse) => {
+          console.log('User not authenticated. Error.status: %s', error.status);
+          return Observable.of({});
+        }),
+    )
+      .subscribe(
+        () => {
+
+          console.log('forkJoin completed successfully');
+          console.log('this.isAuthenticated: %s', this.isAuthenticated);
+          console.log('this.isForcedDataCollectionPolicyMet: %s', this.isForcedDataCollectionPolicyMet);
+          if (this.isAuthenticated && this.isForcedDataCollectionPolicyMet) {
+            console.log('isAuthenticated && ForcedDataCollection OK => redirect to dest');
+            this.isRedirect = true;
+            this.redirectToDestination();
+          }
+
+          this.isInitDataAvailable = true;
+        });
+
+
+  } // complete ngOnInit()
 
 
 
