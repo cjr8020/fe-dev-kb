@@ -221,3 +221,12 @@ I tried to enable PAE/NX in VirtualBox settings.. but no luck.
 	$ sudo apt-get update
 
 =======================================================================
+
+	num lock scroll lock notifications
+	**********************************
+https://www.tenforums.com/general-support/43994-turning-off-scroll-lock-num-lock-flashing.html
+
+if you are annoyed with num/scroll lock notifications when you move 
+between host and guest os, uninstall your setpoint software.
+
+=======================================================================
