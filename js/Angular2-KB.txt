@@ -949,40 +949,54 @@ Type
 
     <ng-container>
 
-      is a grouping element that doesn't interfere with styles or layout
-      because Angular doesn't put it in the DOM.
+      grouping element
+      ----------------
 
-      E.g.:
+        is a grouping element that doesn't interfere with styles or layout
+        because Angular doesn't put it in the DOM.
 
-        <p>
-          I turned the corner
-          <ng-container *ngIf="hero">
-            and I saw {{hero.name}}. I waved
-          </ng-container>
-          and continued on my way.
-        </p>
+        In order to avoid having to create an extra dif, we can instead use 
+        <ng-container> directive.
+        
+        E.g.:
 
-
-      <ng-container> is a syntax recognized by the Angular parser.
-      It is not a directive, component, class or interface.
-      It's more like the curly braces in a JavaScript 'if' block
-
-
-        if (somecondition) {
-          ..
-          ..
-          ..
-        }
+          <p>
+            I turned the corner
+            <ng-container *ngIf="hero">
+              and I saw {{hero.name}}. I waved
+            </ng-container>
+            and continued on my way.
+          </p>
 
 
-      Without those braces, JS would only execute the first statement
-      when you intend to conditionally execute all of them as a single 
-      block.
-
-      <ng-container> satisfies a similar need.
+        <ng-container> is a syntax recognized by the Angular parser.
+        It's more like the curly braces in a JavaScript 'if' block
 
 
+          if (somecondition) {
+            ..
+            ..
+            ..
+          }
 
+
+        Without those braces, JS would only execute the first statement
+        when you intend to conditionally execute all of them as a single 
+        block.
+
+        <ng-container> satisfies a similar need.
+
+
+      placeholder for injecting a template dynamically into the page
+      ------------------------------------------------
+
+      We can take the template itself and instantiate it anywhere on the page,
+      using the 'ngTemplateOutlet' directive:
+
+        <ng-container *ngTempalteOutlet="loading"></ng-container>
+
+      we are using <ng-container> instantiate on the page the 'loading'
+      template.
 
 
 
