@@ -351,7 +351,7 @@ Creating new Obervables
   create    - create from scratch by calling observer methods
   defer     - do not create an O until subscriber subscribe
               and create a new fresh one for each observer
-  emtpy/never/throw
+  empty/never/throw
             - create Os that have very precise and limited behavior
   interval  - create an O that emits a sequence spaced by an interval
   just      - covert an object or set of objects into an O that emits that
@@ -604,6 +604,57 @@ defer
     }
 
 
+defaultIfEmpty
+---------------------------------------------------------------------------
+    emits the values emitted by the source Observable or a specified
+    default value if the soure Observable is empty:
+
+      const empty = Rx.Observable.of(); // empty!
+
+      // emit default value when source is empty
+      const defaultExample = empty.defaultIfEmpty('Empty!');
+
+      const subscribe = defaultExample
+                          .subscribe( val => console.log(val));
+
+
+      NOTE: protect your forkJoin with defaultIfEmpty:
+
+
+        Observable.forkJoin(
+
+          Observable.of(1),
+          Observable.of(2),
+
+          Observable.of(),  // uh-oh!
+
+          Observable.empty() // uh-oh!
+
+        )
+        .defaultIfEmpty('EMPTY_HAS_NO_EFFECT') // no problem with empty!
+        .subscribe();
+
+
+
+empty
+---------------------------------------------------------------------------
+
+returns empty Observable
+
+  import 'rxjs/add/operator/empty';
+
+  Observable.empty();
+
+  note: 
+
+    same as     Observable.of();
+
+    ForkJoin will short-circuit if any of the sub-observables return 
+    empty observable, i.e.
+      Observable.empty()
+      Observable.of() 
+
+
 
 Concat Operators
 ****************
@@ -639,6 +690,38 @@ concat
       );
 
 
+concat example
+
+      import 'rxjs/add/observable/concat';
+
+
+      // 2. check isAuthenticated and validate policy
+      Observable.concat(
+
+        // 2.1  check if authenticated
+        this.authenticationService.isAuthd()
+          .map( () => {
+            console.log('User is authenticated');
+          })
+          .catch( (error: IResponse) => {
+            console.log('User not authenticated');
+            return Observable.of({});
+          }),
+
+        // 2.2. enforce forced data collection
+        this.authenticationService.validate(this.POLICY)
+          .map( () => {
+            console.log('policy met');
+          })
+          .catch( (error: IResponse) => {
+            console.log('failed validation. Error.status: %s', error.status);
+            return Observable.of({});
+          })
+
+      )  // end concat
+
+
+
 
 concatMap
 --------------------------------------------------------------------------
@@ -646,10 +729,77 @@ concatMap
   use concatMap if the request for one depends on the response of the previous
   one.
 
+    import 'rxjs/add/operator/concatMap';
 
-  Observable.of('Hello', 'Goodbye')
-      .concatMap( val => Observable.of(`${val} World!`))
-      .subscribe( val =>  console.log('Example One: ', val));
+    Observable.from([1, 2, 3])
+      .concatMap( val => Observable.of(val));
+
+
+    Observable.of('Hello', 'Goodbye')
+        .concatMap( val => Observable.of(`${val} World!`))
+        .subscribe( val =>  console.log('Example One: ', val));
+
+
+  example:
+  --------
+
+    angular module for caching images. a provider service returns 
+    Observables of loaded resources, either sync if they are already 
+    cached, of async if not yet ..
+
+    public preloadImages(imgUrls: string[]) {
+      return Observable.from(imgUrls)
+        .concatMap( url => Observable.of(this.getImage(url)));
+    }
+
+  example
+  -------
+
+    this.authService.isAuthd()
+      .concatMap( resp => {
+        console.log('used is authd');
+        consold.log('resp.status: %s', resp.status);
+
+      })
+      .catch( error => {
+        console.log('user not authd');
+        return Observable.empty();
+      })
+
+
+  note:
+  -----
+
+  If any of the observables return Observable.empty() like 
+  the catch below, ForkJoin will short-circuit 
+
+
+  Observable.forkJoin(
+
+      Observable.from([...])
+        .concatMap( val => {
+          .
+          .
+          return Observable.of( .. )
+            .map( .. )
+            .catch( error => {              // <== this catch
+              return Observable.empty();    // return empty()!!!! 
+            })
+        }),
+
+        Observable.of(...)
+
+  )
+  .subscribe( () => {
+
+    // WILL NOT BE EXECUTED !!! 
+
+  });
+
+  unless you use 
+
+    .defaultIfEmpty('NO_EFFECT')
+
 
 
 ================================================================================
@@ -1012,6 +1162,35 @@ let subscription2 = source2.subscribe(
   ********
 Runs all observable sequences in parallel and collects their last elements.
 
+
+  NOTE: 
+    has intended behavior of collecting results ONLY if ALL provided
+    sources emit their values.
+
+    so if any of the sub-obsevables return Observable.empty(), 
+    the ForkJoin will return Observable.empty()
+
+
+  forkJoin will short-circuit if one of the streams completes without
+  emitting a value - since conceptually you probably don't want to join 
+  values that don't exist.
+
+    this would be the case if you return 
+      Observable.of() // empty  
+    or
+      Observable.empty() // empty
+    somewhere inside your forkJoin...
+
+  if you don't want that, you could use defaultIfEmpty('NO_EFFECT'):
+
+  or use
+
+      Observable.of({}) 
+      Observable.of(null)
+
+
+
+
 https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/forkjoin.md
 
 
@@ -1038,65 +1217,75 @@ request1$.switchMap(res1 => {
 
 
 
-    /**
-     * 1. get outage notice
-     * 2. check if user is authenticated
-     *    2.1. enforce FORCED DATA COLLECTION policy
-     */
     Observable.forkJoin(
 
       // 1. get outage notice
-      this.getDrupalOutageInfoObservable()
-        .map( (outageContent: Outage) => {
-          this.outageContent = outageContent;
-          console.log('Outage content.notificationType: %s', outageContent.notificationType);
-          if (outageContent.notificationType === 'total-outage') {
+      this.getDrupalOutageInfo()
+        .map( (data) => {
+          this.outageContent = data[0];
+          console.log('Outage content.notificationType: %s', this.outageContent.notificationType);
+          if (this.outageContent.notificationType === 'total-outage') {
             this.isTotalOutage = true;
           }
+        })
+        .catch( (error: any) => {
+          console.log('Unable to retrieve outage info');
+          return Observable.of({});
         }),
 
-      // 2. check if authenticated
+      // 2. check isAuthenticated and validate policy
+
       this.authenticationService.checkIfAuthenticated()
-        .map( () => {
-          console.log('User is authenticated');
+        .concatMap( (response: IResponse) => {
+          console.log('TEST User is authenticated');
+          console.log('TEST response.status: %s', response.status);
           this.isAuthenticated = true;
 
-          // 2.1 enforce FORCED_DATA_COLLECTION_AUTHZ_POLICY
-          this.authenticationService.validateAuthzPolicy(this.FORCED_DATA_COLLECTION_AUTHZ_POLICY)
-            .subscribe(
-              () => {
-                console.log('Forced Data Collection policy met');
-                this.isForcedDataCollectionPolicyMet = true;
-              },
-              ( (error: IResponse) => {
-                console.log('User failed FORCED_DATA_COLLECTION_AUTHZ_POLICY validation. Error.status: %s', error.status);
-                this.router.navigate(['/data-collection']);
-              })
-            );
+          console.log('in concatMap - response: %s', response);
+
+          return this.authenticationService.validateAuthzPolicy()
+            .map( () => {
+              console.log('policy validated');
+            })
+            .catch( (error: IResponse) => {
+               console.log('validation failed. Error.status: %s', error.status);
+               return Observable.of({});
+            })
 
         })
         .catch( (error: IResponse) => {
-          console.log('User not authenticated. Error.status: %s', error.status);
-          return Observable.of({});
+          console.log('User not authenticated');
+          return Observable.of({})
         }),
+
     )
+      .defaultIfEmpty('NO_EFFECT')
       .subscribe(
         () => {
 
-          console.log('forkJoin completed successfully');
+          console.log(' *** summary ***');
           console.log('this.isAuthenticated: %s', this.isAuthenticated);
           console.log('this.isForcedDataCollectionPolicyMet: %s', this.isForcedDataCollectionPolicyMet);
-          if (this.isAuthenticated && this.isForcedDataCollectionPolicyMet) {
+          console.log('this.isTotalOutage: %s', this.isTotalOutage);
+
+          /**
+           *  use cases:
+           *  1. total outage - display total outage modal, no login form or redirect to my-home
+           *  2. user not athenticated - display login form
+           *  3. user is authenticated && policy met -> redirect to my-home
+           *  4. user is authenticated && policy not met -> forced data collection
+           */
+          if (this.isTotalOutage) {
+            console.log('==> Total outage <==');
+          } else if (this.isAuthenticated && this.isForcedDataCollectionPolicyMet) {
             console.log('isAuthenticated && ForcedDataCollection OK => redirect to dest');
             this.isRedirect = true;
             this.redirectToDestination();
+          } else if (this.isAuthenticated && !this.isForcedDataCollectionPolicyMet) {
+            this.router.navigate(['/data-collection']);
           }
 
-          this.isInitDataAvailable = true;
         });
-
-
-  } // complete ngOnInit()
 
 
 
