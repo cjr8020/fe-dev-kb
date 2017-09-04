@@ -519,3 +519,141 @@ html
 
 
 ================================================================================
+
+	CSS tooltip
+	***********
+
+https://www.w3schools.com/css/css_tooltip.asp	
+
+often used to specify extra information about something when the user moves
+the mouse pointer over an element.
+
+Example
+-------
+
+	<style>
+	/* Tooltip container */
+	.tooltip {
+	    position: relative;
+	    display: inline-block;
+	    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+	}
+
+	/* Tooltip text */
+	.tooltip .tooltiptext {
+	    visibility: hidden;
+	    width: 120px;
+	    background-color: black;
+	    color: #fff;
+	    text-align: center;
+	    padding: 5px 0 0 0;
+	    border-radius: 6px;
+	 
+	    /* Position the tooltip text - see examples below! */
+	    position: absolute;
+	    z-index: 1;
+	    top: 20%;
+      	left: 50%;
+      	margin-left: -100px;
+	}
+
+	/* Show the tooltip text when you mouse over the tooltip container */
+	.tooltip:hover .tooltiptext {
+	    visibility: visible;
+	}
+	</style>
+
+	<div class="tooltip">Hover over me
+	  <span class="tooltiptext">Tooltip text</span>
+	</div>
+
+in html
+-------
+
+	use a container element like <div> and add the "tooltip" class.
+	when the mouse hover over this div, it will show the tooltip text.
+
+in class
+
+	the tooltip class uses 'position: relative' which is needed to position
+	the tooltip text (position: absolute).
+
+	the 'tooltiptext' class holds the actual tooltip text.
+	It is hidden by default, will be visible on hover.
+	A few basic styles have been added to it:
+		120px width
+		black backgroun color
+		white text color
+		centered text
+		5px top and bottom padding
+
+		border-radius to add rounded corners to the tooltip text
+
+	:hover selector is used to show the tooltip text when the user moves
+	the mouse over the <div> with 'class="tooltip"'.
+
+
+positioning
+-----------
+	
+	use 'left' and 'right' to place the tooltip relative to the "hoverable" 
+	text (<div>)
+
+	right tooltip
+	-------------
+
+		.tooltip tooltiptext {
+			top: -5px;
+			left: 105%;
+		}
+
+	left tooltip
+	------------	
+
+		.tooltip .tooltiptext {
+			top: -5px;
+			right: 105%;
+		}
+
+	'top: -5px' is used to place the tooltip in the middle of its container
+	element.  "5" is used because the tooltip text has top and bottom padding
+	of "5px".
+
+
+	
+
+
+	top tooltip
+	------------
+
+		.tooltip .tooltiptext {
+		    width: 120px;
+		    bottom: 100%;
+		    left: 50%; 
+		    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+		}
+
+	bottom tooltip
+	--------------
+
+		.tooltip .tooltiptext {
+		    width: 120px;
+		    top: 100%;
+		    left: 50%; 
+		    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+		}	
+
+
+tooltip arrows
+--------------
+
+
+fade-in tooltip (animation)
+---------------------------
+
+
+
+Example of CSS 
+
+
+================================================================================
