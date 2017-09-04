@@ -2862,6 +2862,128 @@ export const build = {
 
 ================================================================================
 
+  Add build version to your application
+  *************************************
+
+.deploy/build-info.ts
+----------------------
+
+import {BuildInfo} from '../src/app/shared/models/build-info.model';
+
+declare const require: any;
+
+export const buildInfo: BuildInfo = {
+  timestamp: new Date().toLocaleString(),
+  version: require('../package.json').version
+};
+
+
+environments/environment.ts
+---------------------------
+
+import { buildInfo } from '../../.deploy/build-info';
+
+export const environment = {
+  production: false,
+  buildInfo: buildInfo
+};
+
+
+environments/environment.prod.ts
+---------------------------
+
+export const environment = {
+  production: true,
+  buildInfo: undefined
+};
+
+shared/models/build-info.model.ts
+----------------------------------
+
+export interface BuildInfo {
+  timestamp: string;
+  version: string;
+}
+
+
+
+footer.component.ts
+-------------------
+
+import { environment } from '../../environments/environment';
+import {BuildInfo} from '../shared/models/build-info.model';
+
+@Component({
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css']
+})
+export class FooterComponent implements OnInit {
+
+  buildInfo: BuildInfo;
+
+  constructor() { }
+
+  ngOnInit() {
+    this.buildInfo = environment.buildInfo;
+  }
+}
+
+
+footer.component.css
+--------------------
+
+/** build-info */
+.build-info-container {
+  position: relative;
+  display: inline-block;
+}
+.build-info-container .build-info-text {
+  visibility: hidden;
+  width: 200px;
+  line-height: 10px;
+  font-size: 10px;
+  background-color: #f2f2f2;
+  color: #373737;
+  text-align: left;
+  border: 1px solid #121212;
+  border-radius: 6px;
+  padding: 2px 5px 2px 5px;
+  /* position */
+  position: absolute;
+  z-index: 1;
+  top: 60%;
+  left: 50%;
+  margin-left: -100px;
+}
+.build-info-container:hover .build-info-text,
+.build-info-container:active .build-info-text {
+  visibility: visible;
+}
+/** end build-info */
+
+
+
+footer.component.html
+----------------------
+
+<div class="container">
+  <div class="app-footer-container">
+    <div class="copyright pull-left build-info-container">
+      <p>&copy; 2017</p>
+      <div *ngIf="buildInfo" class="build-info-text">
+        <span>build.timestamp: {{buildInfo.timestamp}}</span><br>
+        <span>build.version: {{buildInfo.version}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+================================================================================
+
 
 
 
