@@ -477,3 +477,45 @@ matches the type of device the document is being displayed on.
 
 
 ================================================================================
+
+	reveal element on hover
+	************************
+
+https://codepen.io/chrisupjohn/pen/HBgiI	
+
+css
+---------
+
+body {
+  padding: 0 10px;
+}
+
+#some-element {
+  border: 1px solid #ccc;
+  display: none;
+  font-size: 10px;
+  margin-top: 10px;
+  padding: 5px;
+  text-transform: uppercase;
+}
+
+#some-div:hover #some-element {
+  display: block;
+}
+
+html
+-----------
+
+<div id="some-div">
+  <p>
+    some text some text some text some text some text some text.
+  </p>
+  
+  <span id="some-element">
+    some element to reveal on hover over some text
+  </span>
+</div>
+
+
+
+================================================================================

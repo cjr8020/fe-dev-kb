@@ -2845,6 +2845,23 @@ Catching global errors
 
 ================================================================================
 
+  require
+  *******
+
+Typescript ERROR in build-info.ts (3,12): Cannot find name 'require'.
+
+
+declare const require: any;  // add this line
+
+export const build = {
+  timestamp: new Date().toLocaleString(),
+  version: require('../../package.json').version
+};
+
+
+
+================================================================================
+
 
 
 
