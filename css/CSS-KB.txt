@@ -648,12 +648,54 @@ tooltip arrows
 --------------
 
 
-fade-in tooltip (animation)
----------------------------
 
 
 
-Example of CSS 
+fade-in and fade-out
+--------------------
+
+	use CSS3 transition property together with the 'opacity' property
+	and go from being completely invisible to 100% visible in a number
+	of specified seconds:
+
+
+    .build-info-container .build-info-text {
+      visibility: hidden;
+      width: 200px;
+      font-size: 10px;
+      background-color: #f2f2f2;
+      color: #373737;
+      text-align: left;
+      border: 1px solid #121212;
+      border-radius: 6px;
+      padding: 2px 5px 2px 5px;
+      
+      /* fade-out */
+      opacity: 0.0;
+
+      -webkit-transition: all .55s ease-out;
+      -moz-transition: all .55s ease-out;
+      -o-transition: all .55s ease-out;
+      -ms-transition: all .55s ease-out;
+      transition: all .55s ease-out;
+      
+      /* position */
+      position: absolute;
+      z-index: 1;
+      
+      top: 20%;
+      left: 50%;
+      margin-left: -100px;
+    }
+
+    .build-info-container:hover .build-info-text,
+    .build-info-container:active .build-info-text {
+      visibility: visible;
+      /* fade-in */
+      opacity: 1.0;
+      -webkit-transition: all .55s ease-in;      
+    }
+
 
 
 ================================================================================
