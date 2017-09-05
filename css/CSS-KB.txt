@@ -520,6 +520,27 @@ html
 
 ================================================================================
 
+	changing :hover to touch/click for mobile devices
+	*************************************************
+
+Use ":active" selector in combination with :hover
+
+	.info-slide:hover, .info-slide:active {
+		height: 300px;
+	}
+
+another example:
+
+	.button:hover span,
+	.button:active span {
+	    opacity: 0;
+	    .
+	    .
+	}
+
+
+================================================================================
+
 	CSS tooltip
 	***********
 
@@ -620,9 +641,6 @@ positioning
 	of "5px".
 
 
-	
-
-
 	top tooltip
 	------------
 
@@ -644,10 +662,11 @@ positioning
 		}	
 
 
+
 tooltip arrows
 --------------
 
-
+	// TODO
 
 
 
@@ -676,7 +695,6 @@ fade-in and fade-out
       -webkit-transition: all .55s ease-out;
       -moz-transition: all .55s ease-out;
       -o-transition: all .55s ease-out;
-      -ms-transition: all .55s ease-out;
       transition: all .55s ease-out;
       
       /* position */
