@@ -1,0 +1,84 @@
+
+	@@@@@@@@@@@@@@@@@@@@
+
+		windows shell
+
+	@@@@@@@@@@@@@@@@@@@@
+
+
+Redirecting output:
+
+To redirect the error message to NUL, use the following command:
+
+   dir file.xxx 2> nul
+
+Or, you can redirect the output to one place, and the errors to another.
+
+   dir file.xxx > output.msg 2> output.err
+
+You can print the errors and standard output to a single file by using the "&1" command to redirect the output for STDERR to STDOUT and then sending the output from STDOUT to a file:
+
+   dir file.xxx 1> output.msg 2>&1			
+
+
+==========================================================================
+
+	list AD group
+	*************
+
+> net group /domain github_users
+
+
+==========================================================================
+
+	process control 
+	***************
+
+list processes 
+
+	> tasklist | findstr /i <PID>
+
+Kill process
+
+	> taskkill /IM <some.exe> /F	
+
+e.g.
+
+	>taskkill /IM cntlm.exe /F
+
+	service stop/start
+	-------------------
+	> net stop <service-name> ; net start <service-name>
+e.g.
+	> net start cntlm
+
+kill process by PID
+
+	> taskkill /PID 704 /F
+
+============================================================================
+
+	open ports
+	**********
+
+GUI for Windows
+
+	Start > All Programs > Accessories > System Tools > Resource Monitor
+or
+	run > resmon.exe
+or 
+	TaskManager Perf Tab
+
+C:\> netstat -a -b 
+
+	-a all connections
+	-b displays executable involved
+	-n displays addresses and ports in numerical form
+	-o displsys the owning process ID associated with each connection
+
+open ports with process id
+
+	> netstat -aon | findstr /i 3128
+
+
+============================================================================
