@@ -2984,6 +2984,95 @@ footer.component.html
 
 ================================================================================
 
+  Centralized Store Pattern
+  *************************
+  Angular Ngrx Store 
+
+http://blog.angular-university.io/angular-ngrx-store-and-effects-crash-course/  
+
+
+origins: facebook counter bug
+
+  unread messages counter was displaying incorrect results.
+
+Every UI app has either implicitly or explicitly two types of data:
+
+  - a Model, or Doman Model
+  - a View Model
+
+Model vs View Model
+
+  what we see on the screen is not the Model, it is the View Model.
+  sometimes, the View Model has a direct correspondence with the model,
+  but most often they are two different models.
+
+  there is also an extra bit of state is purely UI-only - e.g. which 
+  element is currently selected.  
+
+
+Centralized Store design Pattern
+--------------------------------
+
+  instead of transforming the Model into the View Model on the server
+  as it is usually done, let's instead copy the Model to the client-side,
+  keep it in in-memory client database and derive View Models last second
+  on the client side instead of doing so upfront on the server.
+
+  1. create a client-side in-memory database for the application data
+  2. bring the real domain data, the Model, to the f/e
+  3. keep that Model data which is a user-specific slice of the DB
+     in that in-memory DB
+  4. put the client-side in-mem DB inside a centralized service (Store)
+  5. ensure the centralized service owns the data by either ensuring
+     its encapsulation or exposing it as immutable
+  6. this centralized service will have reactive properties, so we can
+     subscribe to it to get notified when the Model data changes.
+
+
+  View Models are produced 
+
+    - each component that needs to produce a View Model of the data will
+      subscribe to get new versions of the in-mem DB data
+
+    - each component will upon reception of the Model data produce 
+      its own View Model, last second at the component level.
+
+    - ensure that all View Models are always in sync with the centralized
+      Data Model
+
+    - transformation from Model to View Model is done last second on the 
+      View Root itself, not on the server
+
+    - transformation from view to view Model is done via a function called
+      a Selector - the input of a Selector is the Model, and the output
+      is the View Model
+
+  How the Model data in the Store is modified
+
+    - the data can only be modified inside the centralized service by 
+      the Store itself
+
+    - if a component wants to trigger modifications of the data, it sends
+      a message to the centralized service using an Action object
+
+    - the emitter of the action doesn't know which parts of the application
+      will be affected by the action
+
+    - new version of the application Model state is produced by taking
+      the previous state and the action and applying Reducer function
+
+    - Reducer function can be split into multiple smaller functions
+      each modifying a part of the state
+
+    - when the new state Model is avilable, it get broadcast to all 
+      interested components, which will then transform it into their 
+      View model
+
+    - the new state model is frozen before getting broadcast so that
+      the subscribers cannot modify it
+
+================================================================================
+
 
 
 
