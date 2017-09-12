@@ -1480,7 +1480,7 @@ event binding
 
         template:
         -------------
-          <dimatchingv>
+          <div>
             <img src="{{heroImageUrl}}">
             <span>{{prefix}} {{hero?.fullName}}</span>
             <button (click)="delete()">Delete</button>
