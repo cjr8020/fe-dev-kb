@@ -1154,3 +1154,20 @@ matches our target server configuration:
 </html>
 ```
 ================================================================================
+
+  exclude folder from code coverage
+  *********************************
+
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    },
+    "codeCoverage": {
+      "exclude": [
+        "src/test/**/*"
+      ]
+    }
+  },  
+
+
+================================================================================
