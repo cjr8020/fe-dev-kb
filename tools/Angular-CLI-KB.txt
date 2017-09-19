@@ -847,6 +847,16 @@ angular-cli.json
 
 =========================================================================
 
+  run local webpack server with SSL
+  *********************************
+
+$ sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout self-signed.key -out self-signed.crt  
+
+"serve-ssl": "ng serve --ssl true --ssl-key './self-signed.key' --ssl-cert './self-signed.crt' --disableHostCheck --proxy-config proxy.conf.json",
+
+
+=========================================================================
+
 
   No binary for Chrome browser on your platform
   *********************************************
