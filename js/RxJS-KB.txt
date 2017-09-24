@@ -1388,6 +1388,8 @@ Subject
 
  Browsers do not expose a public method to notify ALL observers.
 
+Observer
+ + notify()
 
 
 Browser Events
