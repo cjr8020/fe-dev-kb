@@ -1771,7 +1771,44 @@ Example
       and in your dashboard.module.ts
         - import your dashboard-routing.module.ts  
 
-  
+
+  Lazy loading feature modules
+  ----------------------------
+
+Another advantage of using modules to group related pieces of functionality of our application is the ability to load those pieces on demand. Lazy loading modules helps us decrease the startup time. With lazy loading our application does not need to load everything at once, it only needs to load what the user expects to see when the app first loads. Modules that are lazily loaded will only be loaded when the user navigates to their routes.
+
+
+https://angular-2-training-book.rangle.io/handout/modules/lazy-loading-module.html
+
+Example
+
+
+  application has only two paths: eager and lazy
+
+    <nav>
+      <a routerLink="eager">Eager</a>
+      <a routerLink="lazy">Lazy</a>
+    </nav>
+    <router-outlet></router-outlet>
+
+  routes:
+
+    const routes: Routes = [
+      { path: '', redirectTo: 'eager', pathMatch: 'full' },
+      { path: 'eager', component: EagerComponent },
+      { path: 'lazy', loadChildren: 'lazy/lazy.module#LazyModule' }
+    ];  
+
+NOTE:
+
+  1. we use the property 'loadChildren' instead of 'component'
+  2. we pass a string instead of symbol to avoid loading the module eagerly
+  3. we define not only the path to the module, but the name of the class
+     as well
+
+There is nothing special about LazyModule other than it has its routing
+and a component called LazyComponent
+
 
 ======================================================================
 
