@@ -1807,7 +1807,7 @@ NOTE:
      as well
 
 There is nothing special about LazyModule other than it has its routing
-and a component called LazyComponent
+and a component called LazyComponent.
 
 
   why does lazy loading create a child injector?
@@ -1839,6 +1839,66 @@ Time passes and application logic triggers lazy loading of a module.
 Angular must add the lazy-loaded module's providers to an injector
 somewhere.  It can't add them to the root injector, so it creates a 
 new child injector for the lazy loaded module context.
+
+
+
+  sharing services from lazy-loaded modules
+  ------------------------------------------
+
+https://angular-2-training-book.rangle.io/handout/modules/feature-modules.html
+
+
+While components, pipes and directives are scoped to its modules
+unless explicitly exported, services are globally avialable
+unless the module is lazy loaded.
+
+when a module is lazy loaded, angular will create a child injector
+(which is a child of the root injector from the root module) and will
+create an instance of our service there.
+
+Imagine we have a CreditCardModule that is configured to be lazy loaded.
+
+If you provide CreditCardService as follows:
+
+  @NgModule({
+    imports: [],
+    providers: [CreditCardService],
+    exports: [CreditCardComponent]
+  })
+  export class CreditCardModule {}
+
+
+When the app is bootstrapped and the root module is loaded into memory,
+an instance of the CreditCardService (a singleton) is going to be added
+to the root injector.  But when the CreditCardModule is LAZY loaded sometime
+in the future, a child injector will be created for that module WITH A
+NEW INSTANCE of the CreditCardService.  At this point, we have a
+hierarchical injector with TWO instances of the same service, which is not
+what we want.
+
+So in order to have our feature's module's service ONLY added to the root
+injector, we need to use a different approach:
+
+  @NgModule({
+    imports: [CommonModule],
+    declarations: [
+      CreditCardMaskPipe,
+      CreditCardComponent
+    ],
+    exports: [CreditCardComponent]
+  })
+  export class CreditCardModule {
+    static forRoot(): ModuleWithProviders {
+      return {
+        ngModule: CreditCardModule,
+        providers: [CreditCardService]
+      }
+    }
+  }
+
+This time, we are defining a static method called 'forRoot' where
+we define the module and the service we want to export.
+
 
 
 
@@ -1875,6 +1935,70 @@ E.g. BrowserModule implements such a guard.
  When the app starts, Angular eagerly loads the AppModule and potentially other early-loaded modules that use the SharedModule. No problem so far..
 
  But when a lazy-loaded module using SharedModule is loaded, it creates a child injector and registers all the providers available which would include any providers in the SharedModule if we had any.
+
+
+  providers with SharedModules
+  ---------------------------
+
+when you write a shared module for your application, you typically want
+all the services in that module shared only once.
+
+if you just put the services in the 'providers' array of the SharedModule
+NgModule() decorators, you might get weird cases, especially when 
+lazy loading, when it feels like there's more than one instance of the 
+service.
+
+There is a better way to share providers in your SharedModules.
+
+You also see 'SomeLibraryModule' being imported, and then exported with
+'forRoot()'.
+
+    export const providers = [
+        // ... your shared services here
+    ];
+
+    @NgModule({
+        declarations: [...],
+        imports: [
+            CommonModule, 
+            SomeLibraryModule,
+            ...],
+        exports: [
+            SomeLibraryModule.forRoot()
+            ...
+        ]
+    })
+    export class SharedModule {
+        static forRoot() : ModuleWithProviders {
+            return {
+                ngModule: SharedModule,
+                providers: [...providers]
+            };
+        }
+    }
+
+The 'forRoot()' pattern/convention is very common in libraries, and
+you'll see it in things like ng-bootstrap.   The name isn't special to
+the compiler, but it's a common pattern.
+
+Shared services are listed in the 'static forRoot(): ModuleWithProviders {}' method of the SharedModule.
+
+Then in your AppModule, there will be the only place where you add 
+'SharedModule.forRoot()':
+
+    @NgModule({
+      declarations: [... ],
+      imports: [
+        BrowserModule,
+        SharedModule.forRoot()
+      ]
+    })
+    export class AppModule {}
+
+In other application modules, you can add SharedModule to their
+NgModule's 'imports'.
+
+
 
 
 ======================================================================
