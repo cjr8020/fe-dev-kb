@@ -263,7 +263,7 @@ Inspect Router's Configuration
       -------------
 
       export class AppModule {
-        // diagnostic only
+        // diagnostic only: inspect router configuration
         constructor(router: Router) {
           console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
         }
@@ -1808,6 +1808,73 @@ NOTE:
 
 There is nothing special about LazyModule other than it has its routing
 and a component called LazyComponent
+
+
+  why does lazy loading create a child injector?
+  -----------------------------------------------
+
+angular adds @NgModule.providers to the application root injector,
+unless the module is lazy loaded.
+
+for a lazy-loaded module, angular creates a child injector and adds
+the modules's providers to the child injector.
+
+this means that a module behaves differently depending on whether
+it's loaded during application start, or lazy loaded later.
+
+why doesn't angular add lazy-loaded providers to the app root injector
+as it does for eagerly loaded modules?
+
+the answer is in a fundamental characteristic of the Angular DI
+system.  An injector can add providers until it's first used.
+Once an injector starts creating and delivering services, its provider
+list is frozen; no new providers are allowed.
+
+When an app starts, angular first configures the root injector with the
+providers of all eagerly loaded modules BEFORE creating its first 
+component and injecting any of the provided services.  Once the app
+begins, the app root injector is closed to new providers.
+
+Time passes and application logic triggers lazy loading of a module.
+Angular must add the lazy-loaded module's providers to an injector
+somewhere.  It can't add them to the root injector, so it creates a 
+new child injector for the lazy loaded module context.
+
+
+
+  how can i tell if a module or service was previously loaded
+  -----------------------------------------------------------
+https://angular.io/guide/ngmodule-faq#how-can-i-tell-if-a-module-or-service-was-previously-loaded
+
+some modules and their services should only be loaded once by the root
+AppModule.  Importing the module a second time by lazy loading a module
+could produce errant behavior that may be difficult to detect and diagnose.
+
+To prevent, write a constructor that attempts to inject the module or service
+from the root app injector.  If the injection succeeds, the class has been
+loaded a second time. You can now throw an error or take other remedial 
+action.
+
+E.g. BrowserModule implements such a guard.
+
+
+  constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
+    if (parentModule) {
+      throw new Error(
+        'CoreModule is already loaded. Import it in the AppModule only');
+    }
+  }
+
+  do NOT specify app-wide singleton providers in SharedModule
+  -----------------------------------------------------------
+
+  https://angular.io/guide/ngmodule-faq#why-is-it-bad-if-sharedmodule-provides-a-service-to-a-lazy-loaded-module
+
+ it is important to keep providers out of the SharedModule.
+
+ When the app starts, Angular eagerly loads the AppModule and potentially other early-loaded modules that use the SharedModule. No problem so far..
+
+ But when a lazy-loaded module using SharedModule is loaded, it creates a child injector and registers all the providers available which would include any providers in the SharedModule if we had any.
 
 
 ======================================================================
