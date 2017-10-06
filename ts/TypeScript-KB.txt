@@ -2732,6 +2732,41 @@ http://stackoverflow.com/questions/35370414/how-to-iterate-over-string-indexed-a
 
 
 ==============================================================================
+  cast doesn't work
+  *****************
+
+casting to type doesn't seem to work
+the workaround is Object.assign:
+
+
+        // <debug> TODO: remove debug here and in updateUser
+          const debugUser: User = new User(response.data.uid);
+          Object.assign(debugUser, response.data);
+          console.log('AccountService getUser=%s', debugUser.toString());
+        // </debug>  
+
+
+
+==============================================================================
+  toString method implementation
+  ******************************
+
+Option:
+
+  public toString(): String {
+    return `UserInfoViewModel (
+      uid: ${this.uid},
+      email: ${this.email},
+      isEmailVerified: ${this.isEmailVerified},
+      phone: ${this.phone},
+      isMobile: ${this.isMobile},
+      isPhoneVerified: ${this.isPhoneVerified},
+      isSfgEmployee: ${this.isSfgEmployee}
+    )`;
+  }  
+
+
+==============================================================================
 
 
 
