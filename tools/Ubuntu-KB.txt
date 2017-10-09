@@ -26,6 +26,12 @@ $ dpkg -l | grep <package-name> | awk '{print $2, $3}'
 $ dpkg --get-selections | grep chromium
 
 
+list installed packages
+-----------------------
+
+	$ apt --installed list | grep <string>
+
+
 uninstall package
 ------------------
 
@@ -733,6 +739,91 @@ Intellij IDEA/WebStorm conflicts with ubuntu window manager shortcuts.
 Here is how to remap them
 
 	Settings > Window Manager > Keyboard tab
+
+
+================================================================================
+
+	Python PIP
+	**********
+
+install python pip
+
+	$ sudo apt-get install python-pip
+	$ pip -V
+
+using pip
+---------
+
+	$ pip search package_name
+
+install
+-------
+
+	$ pip install package_name
+
+uninstall 
+
+	$ pip uninstall package_name
+
+	$ pip --help
+
+
+
+
+================================================================================
+
+	powerline shell
+	***************
+
+Download and install powerline-shell
+------------------------------------
+
+cd ~
+git clone https://github.com/banga/powerline-shell.git
+cd cd powerline-shell/
+cp config.py.dist config.py
+./install.py 
+
+Installing powerline-shell script to ~/.local/bin
+
+
+
+Font installation
+------------------
+https://github.com/powerline/fonts
+
+	# clone
+	git clone https://github.com/powerline/fonts.git --depth=1
+	# install
+	cd fonts
+	./install.sh
+	Copying fonts...
+	Resetting font cache, this may take a moment...
+	Powerline fonts installed to ~/.local/share/fonts
+
+
+	# clean-up a bit
+	cd ..
+	rm -rf fonts	
+
+Generate config
+---------------
+
+$ .config/bin/powerline-shell --generate-config > ~/.powerline-shell.json
+
+{
+  "segments": [
+    "virtual_env",
+    "username",
+    "hostname",
+    "ssh",
+    "cwd",
+    "git",
+    "hg",
+    "jobs",
+    "root"
+  ]
+}
 
 
 ================================================================================
