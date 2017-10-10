@@ -849,6 +849,22 @@ another option
 
 ================================================================================
 
+powerline finish_args() takes at least 3 arguments (2 given)
+---------------------------------------------------
+
+It looks like you also have two powerline installations, one of which has very old bug. 
+
+If you are installing powerline using pip make sure it is not installed via system package manager, or for other Python version, or with pip, but for root and not your user.
+
+followup:
+I removed them and reinstalled powerline by root. It works great!
+Thanks for the help.
+
+
+
+
+================================================================================
+
 
 Powerline pip installation option for Linux
 --------------------------------------------
@@ -1033,6 +1049,17 @@ POWERLINE_BASH_SELECT=1
 . ${POWERLINE_ROOT}/powerline/bindings/bash/powerline.sh
 
 
+powerline-daemon
+-----------------
+
+	options:
+
+		--replace, -r
+			Replace an already running instance.
+
+
+You may need to run 'powerline-daemon --replace' if you've updated powerline
+or changed its configuration.
 
 
 

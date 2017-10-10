@@ -1,0 +1,435 @@
+http://codewithdan.me/ng-2day-workshop
+
+https://github.com/DanWahlin?tab=repositories --> lists repositories
+
+https://github.com/johnpapa/angular-event-view-cli
+
+https://github.com/DanWahlin/ES6Samples
+
+
+Look at Dynamic Component Dashboard
+
+    https://github.com/DanWahlin/Angular-DynamicComponentDashboard
+
+    looked interesting how you can dynamically click and drag components.
+
+
+
+sourceMaps: true => see typescript in the browser.
+
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": true,
+    "allowJs": true
+  }
+}
+
+allowsJs: true => allows you to compile to JS to .. JS.
+
+==============================================================================
+
+TypeScript playground
+*********************
+
+http://www.typescriptlang.org/play/
+
+var Customer = /** @class */ (function () {
+
+    function Customer() {
+
+    }
+
+    return Customer;
+
+}());
+
+iffy - without an iffy JS will not execute.
+
+==============================================================================
+
+    TS Modules
+    **********
+
+'strict' by default if you do modules
+
+Modules rely on export/import
+
+export var name = 'James';
+export var city = Chandler
+==============================================================================
+
+    Powerline Shell
+    ****************
+
+Arrow-style command prompt: Powerline-Shell
+https://fedoramagazine.org/add-power-terminal-powerline/
+https://github.com/banga/powerline-shell
+https://www.youtube.com/watch?v=Rbn65qdd2Wg
+
+https://unix.stackexchange.com/questions/352426/how-to-get-the-arrow-style-bash-prompt-after-installing-powerline
+
+
+==============================================================================
+
+    angular demo
+    ************
+
+$ ng serve -o // open vavorite browser
+
+
+$ ng eject 
+
+    you are now ejected from the build process .. and you get to play with
+    the webpack config yourself.
+
+
+Plnkr
+-----
+
+https://codecraft.tv/courses/angular/quickstart/plunker/
+
+
+==============================================================================
+
+On bootstrapping, you can put multiple components in bootstrap:
+
+    bootstrap: [AppComponent, AppComponent2, AppComponent3]
+
+but you end up with different DOM trees, and these compoents are not sharing
+anything.
+
+
+==============================================================================
+
+
+Mike Brocchi??? is heading up Angular CLI development for shared components.
+https://github.com/Brocco
+
+
+
+
+==============================================================================
+
+    Discussing Shared vs Core angular modules
+    *****************************************
+
+John Papa mentioned one of his demo apps
+https://github.com/johnpapa/angular-event-view-cli
+that demonstrates the concept of 
+
+    core module
+    shared module
+
+He also wrote parts of the angular doc NgModule that describes the concept
+
+https://angular.io/guide/ngmodule#the-core-module
+https://angular.io/guide/ngmodule#shared-modules
+
+
+
+
+==============================================================================
+
+    pipes
+    *****
+
+built-in: json, currency
+
+Can help you debug data by dumping to console.    
+
+    <pre>
+        {{ names | json }}
+    </pre>
+
+
+
+==============================================================================
+
+
+    Services
+    ********
+
+@Injecteble
+
+    doesn't mean that the service is injectable.
+    means: the contstructor of this class (service in this case) is injectable.
+
+
+Idea: a guard to see how many services are in the injector.
+
+
+
+==============================================================================
+
+    Forms
+    *****
+
+Angular offers two form-building technologies: reactive forms and template-driven forms. 
+The two technologies belong to the @angular/forms library and 
+share a common set of form control classes.
+
+But they diverge markedly in philosophy, programming style, and technique. 
+They even have their own modules: the ReactiveFormsModule and the FormsModule. 
+
+    Template-Driven or Declarative
+    ------------------------------
+
+HTML driven
+
+FormsModule
+NgForm
+NgModel
+NgSubmit
+
+You put NgModel on all your form elements.  ngForm and ngModel directives
+work together to provide change state and validation functionality:
+ - check if form/controls are dirty/pristine
+ - check if form/controls are valid/invalid
+
+
+    ReactiveFormsModule (Imperative)
+    --------------------------------
+
+Angular reactive forms facilitate a reactive style of programming that favors explicit management of the data flowing between a non-UI data model (typically retrieved from a server) and a UI-oriented form model that retains the states and values of the HTML controls on screen. Reactive forms offer the ease of using reactive patterns, testing, and validation.
+
+ReactiveFormsModule
+FormGroup 
+    - a collection of one or more form controls
+FormControlName
+FormBuilder
+
+Sample application:
+
+https://github.com/DanWahlin/Angular-Forms
+
+
+    ReactiveForms vs Template-Driven
+    --------------------------------
+
+If you prefer less code and more HTML form work, then use template-driven.
+
+If you prefer TDD, more functionality in the code, use Reactive Forms.
+
+
+
+
+
+==============================================================================
+
+
+    Angular Testing
+    ***************
+
+Repo: https://github.com/joeeames/TopCoders-angular2-testing.git
+
+Workshop Presentation
+----------------------
+https://docs.google.com/presentation/d/1FYr10N1sLKo9yNxIM28Xaahz8BRxIMYCs7NjXoDgHsU/edit#slide=id.g17e2acfc6a_3_68
+
+
+Workshop Materials
+------------------
+https://docs.google.com/document/d/1aSc9ndWBiQRObQ1AWVmdx7BDj3ksyhog85zGIHSHTuw/edit#
+
+
+Types of tests
+
+isolated tests
+shallow intergration tests
+deep intergation tests
+
+
+
+==============================================================================
+
+
+    Routing
+    *******
+
+child routes
+
+    We may have the need for multiple routers or nested routes
+    
+        const routes: Routes = [  
+          {     
+            path: 'customers/:id', component: CustomerComponent, 
+            children: [         
+               { path:'details', component: CustomerDetailsComponent }, 
+               { path:'orders',  component: CustomerOrdersComponent },     
+               { path:'edit',    component: CustomerEditComponent }    
+            ]
+          }
+        ];
+
+
+    Route Guards
+    ------------
+
+Guards allow us to make a decision at key points in the routing lifecycle and either continue, abort or take a new direction
+
+    E.g. during order entry accidentally hitting back button.
+
+CanActivate
+    protect this route
+
+CanActivateChild  
+    protect child routes
+
+CanLoad
+    before we load this code .. 
+
+CanDeactivate
+    ideal for asking the user if they want to cancel changes before leaving.
+
+Resolve
+    could allow you to load next screen only when data for next screeen is 
+    available.   essentially, allows you to get data in advance.
+    eager or lazy loading  
+
+
+NOTE: all of these guards are for user experience/convenience. NOT security.
+
+
+==============================================================================
+
+
+    Easy / Lazy Loading
+    ********************
+
+Allows us to load NgModules eagerly or lazily.
+
+eager: at startup
+
+lazy:  on demand
+
+let's say you have a module that's 10MB.  you don't want that loaded
+eagerly.
+
+options:
+    1. prefetching
+    2. on demand
+
+Defining Lazy Routes
+--------------------
+
+    - use loadChildren
+    - load the module by path and name (string value)
+    - do NOT import module reference.
+
+
+Configuring feature module path
+-------------------------------
+
+look at 'orders' feature which lazily loads OrdersModule
+
+
+
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'customers' },
+  { path: 'customers', loadChildren: 'app/customers/customers.module#CustomersModule' },
+  { 
+    path: 'orders', 
+    loadChildren: 'app/orders/orders-routing.module#OrdersRoutingModule' 
+  },
+  { path: '**', pathMatch: 'full', component: PageNotFoundComponent },
+];
+
+
+
+Now, in the feature module routing, path ('') will be applied when
+user enters .../orders   -> that will load OrderListComponent.
+
+const routes: Routes = [
+  {
+    path: '', component: OrdersComponent,
+    children: [
+      { path: '', component: OrderListComponent },
+      { path: ':id', component: OrderComponent}]
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class OrdersRoutingModule { }
+
+
+Compiling
+---------
+
+Each lazy-loaded module will be compiled as a separate JS file so it can be
+loaded separately.
+
+
+Module Preloading Strategy
+---------------------------
+
+PreloadModulesStrategy implements PreloadingStrategy {
+    
+    preload(route: Route, load: () => Observable<any> {
+
+    });
+}
+
+
+==============================================================================
+
+
+    Angular Optimization (John Papa)
+    ********************
+
+Techniques how to optimize code
+
+1. only import things that you're using (remove unused imports)
+2. run `ng bulid` and examine sizes of your bundles/modules
+
+    e.g. vendor.bundles.js  3.56 MB
+
+    now run `ng build --prod`
+
+    polyfills are for legacy browser compatibility
+
+    vendor.bundles.js is now 675 KB
+
+    --prod does AOT
+
+soon to be revieled
+
+    ng build --prod --build-optimizer
+
+
+    ng build --prod -sm true // source-maps true
+
+
+Source maps explorers 
+
+    look for a lot of small boxes with small lettering!!!!
+
+    do not import the entire RxJS library - only the operators you need.
+
+
+webpack-bundle-analyzer
+
+    another good analyzer particularly if you didn't write the code.
+
+        ng build --prod --build-optimizer -sm(?) --stats-json
+
+
+==============================================================================
+
+
+
+
+
+
+
+
+
