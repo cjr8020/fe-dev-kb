@@ -825,5 +825,274 @@ $ .config/bin/powerline-shell --generate-config > ~/.powerline-shell.json
   ]
 }
 
+another option
+
+{
+  "segments": [
+    "virtual_env",
+    "time",
+    "hostname",
+    "ssh",
+    "cwd",
+    "git",
+    "jobs",
+    "set_term_title",
+    "newline",
+    "root"
+  ],
+  "mode": "flat",
+  "cwd": {
+    "mode": "plain"
+  },
+  "theme": "default"
+}
+
+================================================================================
+
+
+Powerline pip installation option for Linux
+--------------------------------------------
+
+
+1. Install Python 3.2+, Python 2.6+ or PyPy and pip with setuptools. This step is distribution-specific, so no commands provided.
+
+2. Install Powerline using one of the following commands:
+
+	pip install --user powerline-status
+
+will get the latest release version and
+
+	pip install --user git+git://github.com/powerline/powerline
+
+will get the latest development version.
+
+
+
+powerline-gitstatus installation
+--------------------------------
+
+https://github.com/jaspernbrouwer/powerline-gitstatus
+
+
+	$ pip install --user powerline-gitstatus
+
+You will need to add colorschemes to 
+
+	.config/powerline/config_files/colorschemes/default.json:
+
+    "gitstatus":                 { "fg": "gray8",           "bg": "gray2", "attrs": [] },
+    "gitstatus_branch":          { "fg": "gray8",           "bg": "gray2", "attrs": [] },
+    "gitstatus_branch_clean":    { "fg": "green",           "bg": "gray2", "attrs": [] },
+    "gitstatus_branch_dirty":    { "fg": "gray8",           "bg": "gray2", "attrs": [] },
+    "gitstatus_branch_detached": { "fg": "mediumpurple",    "bg": "gray2", "attrs": [] },
+    "gitstatus_tag":             { "fg": "darkcyan",        "bg": "gray2", "attrs": [] },
+    "gitstatus_behind":          { "fg": "gray10",          "bg": "gray2", "attrs": [] },
+    "gitstatus_ahead":           { "fg": "gray10",          "bg": "gray2", "attrs": [] },
+    "gitstatus_staged":          { "fg": "green",           "bg": "gray2", "attrs": [] },
+    "gitstatus_unmerged":        { "fg": "brightred",       "bg": "gray2", "attrs": [] },
+    "gitstatus_changed":         { "fg": "mediumorange",    "bg": "gray2", "attrs": [] },
+    "gitstatus_untracked":       { "fg": "brightestorange", "bg": "gray2", "attrs": [] },
+    "gitstatus_stashed":         { "fg": "darkblue",        "bg": "gray2", "attrs": [] },
+    "gitstatus:divider":         { "fg": "gray8",           "bg": "gray2", "attrs": [] }
+
+Now, add your segment to config.json
+
+"show_tag" will take an extra git call, so may not want it
+
+			{
+			    "function": "powerline_gitstatus.gitstatus",
+			    "priority": 40,
+			    "args": {
+			    	"show_tag": true
+			    }
+			}	
+
+
+
+Fonts installation
+------------------
+
+Fontconfig
+	
+	This method only works on Linux. It’s the second recommended method if terminal emulator supports it as patching fonts is not needed, and it generally works with any coding font.
+
+1. Download the latest version of the symbol font and fontconfig file:
+
+	wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+	wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+
+2. Move the symbol font to a valid X font path. Valid font paths can be listed with xset q:
+
+	mv PowerlineSymbols.otf ~/.local/share/fonts/
+
+3. Update font cache for the path the font was moved to (root priveleges may be needed to update cache for the system-wide paths):
+
+	fc-cache -vf ~/.local/share/fonts/
+
+4. Install the fontconfig file. For newer versions of fontconfig the config path is ~/.config/fontconfig/conf.d/, for older versions it’s ~/.fonts.conf.d/:
+
+	mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
+
+If custom symbols still cannot be seen then try closing all instances of the terminal emulator. Restarting X may be needed for the changes to take effect.
+
+If custom symbols still can’t be seen, double-check that the font have been installed to a valid X font path, and that the fontconfig file was installed to a valid fontconfig path. Alternatively try to install a patched font.
+
+
+Repository Root
+----------------
+
+http://powerline.readthedocs.io/en/master/installation.html#repository-root
+
+When using pip {repository_root} directory referenced in documentation may be found using pip show powerline-status. 
+
+	 $  pip show powerline-status
+	---
+	Metadata-Version: 2.0
+	Name: powerline-status
+	Version: 2.6
+	Summary: The ultimate statusline/prompt utility.
+	Home-page: https://github.com/powerline/powerline
+	Author: Kim Silkebaekken
+	Author-email: kim.silkebaekken+vim@gmail.com
+	Installer: pip
+	License: MIT
+	Location: /home/<username>/.local/lib/python2.7/site-packages
+	Requires: 
+	Classifiers:
+	  Development Status :: 5 - Production/Stable
+	  Environment :: Console
+	  Environment :: Plugins
+	  Intended Audience :: End Users/Desktop
+	  License :: OSI Approved :: MIT License
+	  Natural Language :: English
+	  Operating System :: Microsoft :: Windows
+	  Operating System :: POSIX
+	  Programming Language :: Python :: 2.6
+	  Programming Language :: Python :: 2.7
+	  Programming Language :: Python :: 3.2
+	  Programming Language :: Python :: 3.3
+	  Programming Language :: Python :: 3.4
+	  Programming Language :: Python :: Implementation :: CPython
+	  Programming Language :: Python :: Implementation :: PyPy
+
+
+
+In the output of pip show there is a line like Location: {path}, that {path} is {repository_root}. Unless it is --editable installation this is only applicable for {repository_root}/powerline/… paths: something like {repository_root}/scripts/powerline-render is not present.
+
+When using other packages referenced paths may not exist, in this case refer to package documentation.
+
+
+
+Bash prompt
+-----------
+http://powerline.readthedocs.io/en/latest/usage/shell-prompts.html#bash-prompt
+
+
+Add the following line to the bashrc, where {repository_root} is the absolute path to the Powerline installation directory (see repository root):
+
+. {repository_root}/powerline/bindings/bash/powerline.sh
+
+Note
+
+Since without powerline daemon bash bindings are very slow PS2 (continuation) and PS3 (select) prompts are not set up. Thus it is advised to use
+
+	powerline-daemon -q
+	POWERLINE_BASH_CONTINUATION=1
+	POWERLINE_BASH_SELECT=1
+	. {repository_root}/powerline/bindings/bash/powerline.sh
+
+Got the following error:
+
+The program 'powerline-daemon' is currently not installed. You can install it by typing:
+
+	sudo apt install powerline
+
+No problem after that.. 
+
+#----------------------------------------------
+# disabled powerline activation
+#----------------------------------------------
+
+#function _update_ps1() {
+#    PS1="$(~/.local/bin/powerline-shell $?)"
+#}
+#
+#if [ "$TERM" != "linux" ]; then
+#    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+#fi
+
+#----------------------------------------------
+# active powerline activation
+#----------------------------------------------
+export POWERLINE_ROOT=/home/craiskin/.local/lib/python2.7/site-packages
+
+
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+. ${POWERLINE_ROOT}/powerline/bindings/bash/powerline.sh
+
+
+
+
+
+
+Configuration
+-------------
+
+Powerline is configured with one main configuration file, and with separate configuration files for themes and colorschemes. All configuration files are written in JSON, with the exception of segment definitions, which are written in Python.
+
+Powerline provides default configurations in the following locations:
+
+Main configuration
+
+	powerline/config.json
+
+Colorschemes
+
+	powerline/colorschemes/name.json, 
+	powerline/colorschemes/extension/__main__.json, 
+	powerline/colorschemes/extension/name.json
+
+Themes
+
+	powerline/themes/top_theme.json, 
+	powerline/themes/extension/__main__.json, 
+	powerline/themes/extension/default.json
+
+
+Here {powerline} is one of the following:
+
+1. The default configuration directory located in the main package: 
+
+	powerline_root/powerline/config_files. 
+
+May be absent in some packages (e.g. when installing via Gentoo ebuilds).
+
+2. If variable $XDG_CONFIG_DIRS is set and non-empty, then to any 
+directory/powerline where {directory} is a directory listed in a colon-separated $XDG_CONFIG_DIRS list. 
+Directories are checked in reverse order.
+Here's what it's set to on ubuntu 16.04:
+
+	XDG_CONFIG_DIRS=/etc/xdg/xdg-xubuntu:/usr/share/upstart/xdg:/etc/xdg:/etc/xdg
+
+
+3. User configuration directory located in $XDG_CONFIG_HOME/powerline. 
+
+	This usually corresponds to ~/.config/powerline on all platforms.
+
+	$ mkdir ~/.config/powerline
+
+
+	Quick Setup Guide
+
+Look at configuration in powerline_root/powerline/config_files. If you want to modify some file you can create ~/.config/powerline directory and put modifications there: all configuration files are merged with each other.
+
+	Existing multiple configuration files that have the same name, but are placed in different directories, will be merged. Merging happens in the order given in the above list of possible {powerline} meanings.
+
+
+
+
+
 
 ================================================================================
