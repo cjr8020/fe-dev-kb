@@ -425,6 +425,60 @@ webpack-bundle-analyzer
 
 ==============================================================================
 
+    Igor Minar: Software Engineering as Engineering Discipline
+    -----------------------------------------------------------
+Presentation: https://goo.gl/oLfoQC      
+
+- assure engineering quality
+    - future maintenance is expected
+    - test automation
+    - test maintainability
+    - test takes too long
+        - compared to what? bug fixes? problem resolution?
+
+- make engineering reproducable
+    - control your variables (if for given input, we get the same output)
+        - dependencies - use npm or yarn lock files
+            - lock versions of all tools & deps
+            - consider VM images for CI
+        - build process
+            - same build for local and CI
+                - use Bazel 
+        - network
+            - avoid installing dependencies from Internet
+                - use repository proxies
+
+
+- Measure and Track
+    - make engineering quantifiable
+    - fast
+        - what should be fast?
+        - how fast is fast enough?
+    - reflect business or UX objectives
+        - startup time (TTI)
+        - responsiveness (response latency, navigation from route to route)
+        - engaging UX (smoothness in FPS)
+    - use existing tools
+        - benchpress
+        - lighthouse
+        - webpagetest.org
+
+    - should track metrics over time
+        - google analytics
+
+      
+
+
+
+
+
+    Alex Richabaugh: Advanced Angular Concepts
+    -------------------------------------------
+
+
+
+==============================================================================
+
 
 
 
