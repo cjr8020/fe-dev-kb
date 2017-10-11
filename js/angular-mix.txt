@@ -1137,6 +1137,29 @@ so instead, you need to use:
 
 
 
+export function _movieModuleLoader() {
+    return MovieModule;  // ref to that Module created by import
+}
+
+export const crisisCenterRoutes: Routes = [
+    {
+        path: '',
+        component: ShellComponent,
+        children: [
+            { path: 'welcome', component: WelcomeComponent },
+            {
+                path: 'movies',
+                loadChildren: _movieModuleLoader,
+                canActivate: [AuthGuard]
+            },
+            { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+        ]
+    },
+    { 
+        path: '**', component: PageNotFoundComponent 
+    }
+];
+
 
 ==============================================================================
 
