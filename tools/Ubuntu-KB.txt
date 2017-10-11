@@ -874,11 +874,11 @@ Powerline pip installation option for Linux
 
 2. Install Powerline using one of the following commands:
 
-	pip install --user powerline-status
+	pip install powerline-status
 
 will get the latest release version and
 
-	pip install --user git+git://github.com/powerline/powerline
+	pip install git+git://github.com/powerline/powerline
 
 will get the latest development version.
 
@@ -890,11 +890,11 @@ powerline-gitstatus installation
 https://github.com/jaspernbrouwer/powerline-gitstatus
 
 
-	$ pip install --user powerline-gitstatus
+	$ pip install powerline-gitstatus
 
 You will need to add colorschemes to 
 
-	.config/powerline/config_files/colorschemes/default.json:
+	.config/powerline/colorschemes/default.json:
 
     "gitstatus":                 { "fg": "gray8",           "bg": "gray2", "attrs": [] },
     "gitstatus_branch":          { "fg": "gray8",           "bg": "gray2", "attrs": [] },

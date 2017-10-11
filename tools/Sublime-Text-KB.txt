@@ -1,4 +1,9 @@
 
+Problem with Package Control?
+
+use ctrl+` to open console, then execute Package Control command and see 
+if there are errors.. 
+
 
 Keyboard Shortcuts
 *******************
