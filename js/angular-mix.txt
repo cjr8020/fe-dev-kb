@@ -951,7 +951,191 @@ Resources: https://blog.thoughtram.io/exploring-angular-2/
             );
     }
 
+
+
 https://github.com/SanderElias/AngularMix2017Demo
+
+
+
+
+    Angular Routing
+-----------------------------------------------------
+Deborah Kurata    
+
+https://github.com/DeborahK/MovieHunter-routing
+
+Routing Parameters
+    - required
+    - optional
+    - query
+
+Decide which ones you want.  You cannot mix and match them.
+
+Required
+    configure: 
+        { path: 'movies/:id', component: MovieDetailComponent }
+    
+    activate:
+        <a [routerLink]="['/movies', movie.id]"> ... </a>
+
+        this.router.navigate(['/movies', this.movie.id]);
+
+    resulting URL:
+
+    http://localhost:4200/movies/5
+
+    read:
+
+    this.route.snapshot.paramMap.get('id');
+
+Optional parameters
+
+    - not configured on the path
+
+        { path: 'movies', component: MovieListComponent }
+
+    activate:
+
+        <a [routerLink]="['/movies', {title:ring, si: true}]"    
+
+
+Query parameters
+
+    - you acivate them using queryParams directive
+
+        Activate:
+
+
+
+            <a [routerLink]="[/movies]"
+               [queryParams]=
+
+When to use which type of parameters
+----------------
+
+- YOU use required params when you HAVE TO HAVE that value
+
+- Optional or Query when you want to pass some value to another route.   
+
+- Query parameters can be retained across multiple routes - by passing them along.
+
+Not sure on the purpose of the optional parameters.  Query params seem to be
+the preferred option to required.
+
+
+Preventing Partial Page Displays
+-------------------
+
+We do that with a Resolver
+
+    @Injectable
+    export class MovieResolver implements Resolve<IMovie> {
+
+        resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IMovie>{
+
+
+        }
+    }
+
+    add as provider
+
+    add to router path:
+
+        {
+            path: ':id',
+            resolve: {movie: MovieResolver},
+            component: MovieDetailComponent
+        }
+
+Display a spinner
+-----------------
+
+on every single page where we are waiting for data to be retrieved.
+
+    checkRouterEvent(routerEvent: Event): void {
+        if (routerEvent instanceof NavigationStart) {
+            this.loading = true;
+        }
+
+        if (routerEvent instanceof NavigationEnd ||
+            routerEvent instanceof NavigationCancel ||
+            routerEvent instanceof NavigationError) {
+            this.loading = false;
+        }
+
+
+<span class="glyphicon glyphicon-refresh glyphicon-spin spinner" *ngIf="loading"></span>
+<router-outlet></router-outlet>
+
+
+{ enableTracing: true }
+------------------------
+
+@NgModule({
+    imports: [
+        RouterModule.forRoot([
+            {
+                path: '',
+                component: ShellComponent,
+                children: [
+                    { path: 'welcome', component: WelcomeComponent },
+                    {
+                        path: 'movies',
+                        loadChildren: './movies/movie.module#MovieModule',
+                        canActivate: [AuthGuard]
+                    },
+                    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+                ]
+            },
+            { path: '**', component: PageNotFoundComponent }
+        ]) // , { enableTracing: true })
+    ],
+    exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+Guards
+---------
+
+Improve UX experience
+by confirming whether user wants to navigate away without saving data
+or by redirecting to login when user is not logged in
+
+checks if the object is "dirty"
+
+
+    @Injectable()
+    export class MovieEditGuard implements CanDeactivate<MovieEditComponent> {
+
+        canDeactivate(component: MovieEditComponent): boolean {
+            if (component.isDirty) {
+                const title = component.movie.title || 'New Movie';
+                return confirm('Navigate away and lose all changes to ${title}?');
+            }
+        }
+        return true;
+
+    }
+
+
+Keep Tabs
+-------------
+
+forms, pages, views with tabs.
+
+one way to implement tabs with router
+
+When you use AOT - it will not like this lambda syntax on loadChildren
+
+    loadChildren: () => MovieModule
+
+so instead, you need to use:
+
+    loadChildren: _
+    loadChildren: './movies/movie.module#MovieModule',   ??? 
+
+
 
 
 ==============================================================================
