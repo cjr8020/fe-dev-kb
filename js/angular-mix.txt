@@ -657,5 +657,303 @@ Out of the box:
 
 
 ==============================================================================
+==============================================================================
+
+    Wednesday
+
+==============================================================================
+==============================================================================
+
+
+    TypeScript: Tooling for Titans
+------------------------------------------
+
+
+
+    Central Data Stores are Amazing: Now, stop using them so much!
+------------------------------------------------------------------
+
+Sergio Cruz
+@hashtagserg
+
+NgRx
+Redux Fundamentals
+Understand Side Effects of Functional Programming
+
+Fundamentals of Redux and NgRx
+----
+How to pass data from parent to child components
+    property binding
+Data flow
+
+    <app>
+<sidebar>    <dashbar>
+
+NgRx store lives entirely outside of this hierarchy.
+components can simply subscribe to this store to receive data.
+
+NgRx is great at managing application state.
+1. Share data across component trees.
+2. Share data across routes.
+whats the diff between injecting services into components and NgRx?
+NgRx offers good structure and scalability.
+
+Using services, people come up with their own patterns.  Every app looks different.
+With NgRx, state management starts to look similar and recognizable.
+
+Side Effects
+---
+
+    user submits form
+    action handled by reducer
+    effects trigger other actions
+    action is handled by reducer
+    effect triggers other actions
+    ....
+    ....
+
+Proceed with caution!!
+
+Act globally - think locally.
+Redux is great at managing of APPLICATION STATE
+
+other things should be kept local.
+
+For things local to components, Inject Services!
+
+Redux and NgRx
+---------------
+    1. greate for managing application state
+    2. side effects isolate logic from components
+    3. avoid using your Central Data Store for local data.
+
+
+
+
+
+    My Ally, the CLI
+------------------------------------------
+Mike Brocchi
+
+
+
+    Reactive Angular
+-------------------------------------------
+Jason Aden
+
+Observable.let
+lettable operators
+
+Make your RxJS code modular
+Problems being solved: 
+
+1. problem with prototypes
+
+    import 'rxjs/add/operator/map';
+
+side-effectful import
+
+Observable.prototype.map = map;
+
+Cannot be tree-shaken.
+
+Operator is retained whether used or not.
+Difficult to code-spit
+"undefined" is not a function.
+
+Other problem with prototypes: 
+
+2. API for creating operators can be confusing.
+RxJS operators can be used only on RxJS Observables
+
+
+What is RxJs  "let" operator?
+---
+
+    .map(data => manipulate(data))
+    .let(applySchedules)
+
+"lettable" operators
+
+    RxJS 5.5
+
+    import {filter} from 'rxjs/operators';
+
+now you can just import all operators - these will be lettable versions of 
+operators - which can be tree shaken
+takes predicate and returns function that receives an observable
+
+how do you compose "lettable" operators
+
+    composed thru the "pipe" operator
+
+        let sumEven = Observable
+            .from([1,2,3,4])
+            .pipe(
+                filter(),
+                reduce()
+            )
+            .subscribe()
+
+
+- no side-effectful imports
+- tree shakable(smaller apps)
+
+
+
+    Malicious Input: Angular Has Our Back
+------------------------------------------------------
+Brian Clark
+@_clarkio
+
+angular.io/guide/security
+
+OWASP Guide 
+
+prevents cross-site scripting natively.
+
+On node.js platform
+
+    https://www.npmjs.com/package/express-validator
+    https://www.npmjs.com/package/xss-filters  # developed by yahoo
+
+Content Security Policy
+------------------------
+
+    1. content-security-policy: default-src 'self'
+    2. describes sources types in directives (css, image, etc.)
+    3.
+
+https://www.npmjs.com/package/helmet
+helps implemnet content-security policy
+
+Summary:
+1. learned about XSS attack
+2. XSS mitigation
+3. How angular can help
+4. how node can help
+
+
+NgRx Patterns and Best Practices
+---------------------------------
+Viktor Savkin
+
+based on Enterprise Integration Pattens
+
+What is NgRx and Why Use it?
+
+Create and Dispatch
+Receive and Process
+
+    reducer will pick it up
+
+
+Action: dispatch a message
+
+    this.store.dispatch({
+        type: 'CONFIRM_TODO_DELETION',
+        payload: {todoId: this.todo.id}
+    })  
+
+Types of Actions
+
+    commands
+    documents 
+    events
+
+Command:
+
+{
+    type: 'TODO',
+    payload: data
+}
+
+Events
+
+{
+    type: 'APP_WENT_OFFLINE'
+}
+
+Commands
+- may provide a reply
+
+Events
+- never expect a reply
+
+Correlation ID
+- request-reply
+- 
+
+Store
+-----
+
+route -> transform -> side effects -> reducer
+
+route: Action Deciders
+transform: Action Transformers
+
+
+Guard your app from user mayhem
+--------------------------------------------------
+John Niedzwiecki
+
+https://github.com/RHGeek/guard-user-mayhem
+
+
+
+
+
+
+    RxJS Observables in Angular
+----------------------------------------------------------
+Ward Bell & Sander Elias
+
+repo: https://github.com/SanderElias/AngularMix2017Demo
+
+
+Angular APIs using Observables
+
+HttpClient
+Async Pipe
+
+
+Search with debounceTime
+
+    http://embed.plnkr.co/SIltBL/
+
+    Example: WikipediaComponent
+
+        keyWords$ = this.searchTerm.valueChanges
+            .debounceTime(300)
+            .distinctUntilChanges()
+            .switchMap(searchTerm => this.wikiService.load(searchTerm))
+            .map(this.makeResultsPretty);
+
+
+Do I need to unsubscribe?
+    
+- are you listening to a long-lived source?
+- if so, does that thing complete on its own? soon enough?
+- if not, you must unsubscribe.
+
+Resources: https://blog.thoughtram.io/exploring-angular-2/
+
+
+    Take Until
+
+    ngOnInit() {
+        this.t.time('TakeUntil')
+            .takeUntil(this.onDestroy.asObservable())
+            .subscribe(
+                time => (this.time = time),
+                err => console.error(err),
+                () => console.log('')
+            );
+    }
+
+https://github.com/SanderElias/AngularMix2017Demo
+
+
+==============================================================================
 
 
