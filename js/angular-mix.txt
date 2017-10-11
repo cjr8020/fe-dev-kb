@@ -462,28 +462,200 @@ Presentation: https://goo.gl/oLfoQC
         - benchpress
         - lighthouse
         - webpagetest.org
-
     - should track metrics over time
         - google analytics
 
       
 
 
-
-
-
     Alex Richabaugh: Advanced Angular Concepts
     -------------------------------------------
+arick@google.com
+@synalx
+
+works on:
+- HttpClient
+- Service Worker
+
+
+Presentation: follow on twitter to get the slides
+
+Advanced Angular: 
+
+<ng-templates>
+
+    Left Nav UI
+        we want the route to dictate what shows up in Left-Nav
+
+        well .. we can have route send innerHTML to send data to LeftNav
+
+        or we can use templates .. 
+        we mostly use templates with components..
+        there is another type of template - <ng-template>
+        TemplateRef - reference to a template that we can send around in 
+        services
+
+        <ng-template #myTemplate>
+
+        @ViewChild('myTemplate')
+
+        so:
+            - routes declare a template
+            - send template to left nav
+
+        how to render a template? View -> View Container - @ViewChild
+        <ng-container> is like an invisible <div>
+
+        <ng-template> + Directive = Template Directive
+
+
+2nd problem: Image Carousel
+
+
+
+Rob Wormald: Enterprise Angular
+------------------------------------------------
+
+@robwormal
+Developer Advocate at google
+Labs Project
+
+Cool idea: how can I use angular components as DOM elemnents in other,
+non-angular, environments (anything)?
+
+Enhancing existing HTML pages (CMS)
+
+    - sites driven by CMS, where you might have > 1 "root" component
+    - possible today, but quite complex
+    - widgets, angular.io functionality
+
+Angular Embedded (angualar repo "embedded")
+    
+    - how do we embed Angular in other environments (React, JQuery, etc.)
+
+
+Web Components (no real spec)
+made up of 
+    - HTML Templats
+    - Shadow DOM
+    - HTML Imports
+    - Custom Elements
+
+
+Jeremy Elbourne: Angular Component Developer Kit (CDK)
+------------------------------------------------------
+
+CDK announcment: http://angularjs.blogspot.com/2017/07/angular-material-status-update.html
+
+Over the course of working on Angular Material, an important goal has been crafting a general, reusable foundation upon which components can be built. We've reached the point now where we want to start sharing this foundation with everyone as a standalone package: the Angular CDK.
+
+The goal of the CDK is to give developers more tools to build awesome components for the web. This will be especially useful for projects that want to take advantage of the features of Angular Material without adopting the Material Design visual language.
+
+
+
+Alex Eagle: Angular with Bazel and Closure
+---------------------------------------------------------------
+
+@Jakeherringbone
+
+presetation: 
+
+https://github.com/alexeagle/angular-bazel-example
+
+Incrementality
+    compile each package separately
+
+    @NgModule was designed as a compilation unit
+    You could compile each @NgModule separately
+
+
+    //airplane:app
+        - // team0:module
+        - // shared:logo
+        - // 
+
+https://bazel.build/
+
+Bazel only rebuilds what's necessary.
+Bazel and Webpack are good at different things
+
+Same as internal Google toolchain
+One build tool for frontend and backend
+Hermeticity: means it is "sealed", never need to clean
+
+config: BUILD.bazel
+google plans to maintain these for you.. 
+
+
+
+
+Nx: The New Way to Build Enterprise Angular Apps
+Jeff Cross & Victor Savkin
+-------------------------------------------------------------------
+
+    Nx - Nrwl (prounounced "n r wall") extentions
+
+nrwl.io/nx
+
+Nx Workspace
+
+    - unified versioning
+    - promotes code sharing and reuse.
+    - Nx can handle setting up an Angular CLI project in an Nx Workspace format
+    - would support multiple Angular applications and shared libs
+
+once you have Nx Workspace set up, adding new Angular applications and libs 
+is as easy as running `ng generate`.
+
+Examples:
+
+NgRx is great but many decisions are left to teams
+Nx helps use NgRx by providing a consistent way that works for most teams.
+
+ng generate workspace mycurrentapp --collection=@nrwl/...
+
+
+What Nx Provides
+
+    Productivity
+
+        helps teams quickly setup enterprise Angular apps by providing 
+        a default setup for complex projects. 
+        provides runtime libraries to simplify complex tasks with state
+        management and testing
+
+    Consistency
+
+        out of the box, Angular CLI follows the Angular style guide and helps
+        enforce patterns and practices with app folder/file structure, naming
+        conventions, component/module organization, etc
+
+        Nx builds on the CLI foundation, and provides a more opinionated 
+        architecture which allows Nx to provide more advanced code generation
+        and analysis, with stronger conventions around code organization and 
+        state management in place.
+
+    Safety
+
+        The contributors to Nx have worked with many teams building massive 
+        Angular applicaitons, and found common mistakes and antipatterns which 
+        can lead to race conditions, performance issues, or code maintainability.
+        many of these mistakes can be identified by static analysis at develop
+        time.
+
+Out of the box:
+
+    - Workspace
+    - State Management
+        - NgRx
+        - Data Persistence
+    - Linters
+    - Code Formatter
+    - Upgrade Shell
+
 
 
 
 ==============================================================================
-
-
-
-
-
-
-
 
 
