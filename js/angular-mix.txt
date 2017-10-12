@@ -1165,4 +1165,69 @@ export const crisisCenterRoutes: Routes = [
 
 ==============================================================================
 
+Angular Dynamic Pages 
+----------------------------------
+Ward Bell
+
+Demonstrates ability to 
+- inject components into components/modules without modifying the receiving component/module
+- inject components via constructor
+
+Open issues
+     - nested embedded components
+     - lazy loading of the embedded components
+     - code splitting
+
+ https://github.com/wardbell/ng-dynamic-app
+
+
+
+Mega Bootstrap
+
+some.html
+
+<div> .. blah .. blah </div>
+<component-1></component1>
+<div> .. blah .. blah </div>
+<component-2></component1>
+
+Bootstrap the doc
+
+this.embeddedComponentFactories.forEach()
+
+EmbeddedComponents - compoent that holds declarations of all components
+
+
+    providers: [
+    ]
+    entryComponents: embeddedComponents  // anything Angular wont find on its own
+
+
+
+addTitle() - creates browsing history
+
+
+ngDoCheck() {
+    this.embeddedCompnentInstances.forEach(
+        comp => comp.changeDetectorRef.detectChanges()
+    );
+}
+
+
+ngOnDestroy() {
+    this.destroyEmbeddedComponentInstances();
+}
+
+
+--- can pass components to Module via constructor
+
+export class QuestionareModule {
+    constructor(EmbeddedComponents) {
+
+    }
+}
+
+
+==============================================================================
+
 
