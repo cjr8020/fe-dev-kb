@@ -1290,4 +1290,81 @@ Selectors
 
 ==============================================================================
 
+Forgotten Security
+-------------------------------------
+
+Brian Clark [ https://github.com/clarkio ]
+https://www.clarkio.com/
+https://www.clarkio.com/about/ - see publishings and github projects
+
+https://angular.io/guide/security
+https://github.com/clarkio/vulnerable-app
+
+
+
+- Deter your enemies 
+
+- Defending against
+
+    -infantry
+    -arrows
+    -mortars
+
+OWASP owasp.org
+
+Access Control
+
+    AAA
+
+applied to client-server paradign
+
+    browser                Server
+    login    ------------- http://insecureheroes.com
+
+Cookie id=1 for  insecureheroes.com
+
+Cross-Site request forgery   XSRF Protection (see angular.io)
+--------------------------
+
+    synchronizer token pattern
+
+    gen random token
+    unique to user and session
+    included as a header
+    validated on server-side
+
+    node: module csurf will implement random token generation and validation.
+
+
+Attack: Stealing clicks
+---------------------
+
+attacker will load your site in iframe and make it invisible then put a 
+button that looks like something you want to click but the button is on top 
+of your iframe-loaded site.
+
+Helmet 
+https://helmetjs.github.io
+implements browser security for us.
+
+$ nsp check // nodesecurity/nsp - node security platform command-line tool
+            // https://nodesecurity.io
+
+Summary:
+
+ - faking requests
+ - stealing clicks
+ - package management
+
+ https://github.com/Azure-Samples/angular-cosmosdb
+ branch: insecure-heroes
+ https://github.com/Azure-Samples/angular-cosmosdb/tree/insecure-heroes
+
+ https://snyk.io
+
+
+
+
+==============================================================================
+
 
