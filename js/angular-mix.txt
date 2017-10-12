@@ -593,6 +593,8 @@ Nx: The New Way to Build Enterprise Angular Apps
 Jeff Cross & Victor Savkin
 -------------------------------------------------------------------
 
+https://github.com/nrwl/mixdemo
+
     Nx - Nrwl (prounounced "n r wall") extentions
 
 nrwl.io/nx
