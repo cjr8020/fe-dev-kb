@@ -659,6 +659,35 @@ Out of the box:
 
 
 ==============================================================================
+
+    What is Redux?
+
+redux.js.org
+predictable state container for JavaScript apps.
+
+    What is NgRx
+
+https://github.com/ngrx/platform
+
+@ngrx/store
+@ngrx/effects - side effect model for @ngrx/store to model event sources as actions
+@ngrx/router-store - bindings to connect to the Angular Router to @ngrx/store
+@ngrx/store-devtools - store instrumentation that enables debugger
+
+RxJS powered state management for Angular applications, inspired by Redux.
+is a controlled state container designed to write performant, consistent
+applications on top of Angular.  
+
+Core tenets:
+
+- state is a single immutable data structure
+- actions describe state changes
+- pure funcitons called reducers take the previous state and the next action
+  to compute the new state
+- state accessed with the Store, an Observable of state and an observer of actions.
+
+
+
 ==============================================================================
 
     Wednesday
@@ -1226,6 +1255,37 @@ export class QuestionareModule {
 
     }
 }
+
+
+==============================================================================
+
+Modeling Redux State - Jesse Sanders
+------------------------------------------------
+
+https://github.com/briebug/ngrx-model-state
+https://github.com/briebug/angular-redux-demo
+
+Adapter
+--------
+
+    The heavy lifter
+    provides methods to maintain our collections
+    addOne, addMany, addAll, removeOne, removeMany
+
+    interface EntityState<V> {
+        ids: stirng[];
+        entities: { [id: stirng]: V};
+    }
+
+
+Selectors
+---------
+
+    createSelector
+    createFeatureSelector
+
+
+@ngrx/platform - brand new, not even in npm registry yet
 
 
 ==============================================================================
