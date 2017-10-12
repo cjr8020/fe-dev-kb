@@ -479,6 +479,7 @@ works on:
 
 
 Presentation: follow on twitter to get the slides
+https://docs.google.com/presentation/d/1o1zbqxe-Fn4IdGRYeVGFNQb1PSiOpjXvIsNHRC7Bk1w/edit#slide=id.p3
 
 Advanced Angular: 
 
@@ -866,7 +867,7 @@ Summary:
 
 
 NgRx Patterns and Best Practices
----------------------------------
+--------------------------------------------------------------------------------
 Viktor Savkin
 
 based on Enterprise Integration Pattens
@@ -1361,6 +1362,39 @@ Summary:
  https://github.com/Azure-Samples/angular-cosmosdb/tree/insecure-heroes
 
  https://snyk.io
+
+==============================================================================
+
+First Mobile App with Angular and Ionic
+
+Steve Michelotti
+steve.michelotti@microsoft.com
+
+Latest version of Ionic
+
+    mobile optimized framework for building cross-platform apps (HTML/CSS/JS)
+    that look like iOS or Android native apps
+
+    built for native Cordova Apps
+
+    what is Cordova?
+        JS API "wraps" native API (e.g. camera)
+        for Native Mobile Apps (HTML/JS/CSS)
+        Plugin Ecosystem
+
+    why Ionic?
+        - angular/typescript
+        - navigation
+        - platform theming
+        - build tools
+
+First think is to install the CLI
+$ ionic --help
+
+$ ionic start start-wars-game-app blank
+
+Buttons
+Navigation
 
 
 
