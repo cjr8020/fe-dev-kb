@@ -532,5 +532,114 @@ my-shell-theme
 }
 
 
+Colorschems
+-----------------------------------------------
+
+https://github.com/ahaasler/powerline-colorscheme-material
+
+
+
+================================================================================
+
+	oh my zsh
+	**********
+
+https://github.com/robbyrussell/oh-my-zsh/	
+
+install
+---------
+
+via curl
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+via wget
+
+sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+
+plugins
+--------
+
+enable plugins in the .zshrc
+
+For example, this line might begin to look like this:
+
+plugins=(git bundler osx rake ruby)
+
+
+themes
+--------
+
+edit ~/.zshrc
+
+ZSH_THEME="agnoster"
+
+	agnoster theme
+	--------------
+
+	https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster
+
+	additional setup:
+
+	1. install one of the patched fonts from Vim-Powerline
+
+	https://github.com/powerline/fonts
+
+		# clone
+		git clone https://github.com/powerline/fonts.git --depth=1
+		# install
+		cd fonts
+		./install.sh
+		# clean-up a bit
+		cd ..
+		rm -rf fonts		
+
+	2. On some distros, Terminess Powerline is ignored by default and must 
+	   be explicitly allowed.   A fontconfig file is provided.
+	   Copy this file from the fontconfig directory to your home folder 
+	   under 
+
+	   $ cp ./fontconfig/50-enable-terminess-powerline.conf ~/.config/fontconfig/conf.d/  
+
+	   $ fc-cache -vf
+
+
+	 3. Optionally set DEFAULT_USER to your regular username followed
+	    by prompt_context(){} in ~/.zshrc to hide the "user@hostname"
+	    when you're logged in as yourself on your local machine.
+
+https://github.com/robbyrussell/oh-my-zsh/issues/2033	    
+
+generally:
+
+#  hide the “user@hostname” info when you’re logged in as yourself 
+# on your local machine.
+
+DEFAULT_USER=`whoami`
+prompt_context() {
+    local seq
+    seq='%(!.{%F{yellow}%}.)%n'
+    if [[ "$USER" != "$DEFAULT_USER" ]]; then
+        seq="$seq@%m"
+    fi
+    prompt_segment black default $seq
+}
+
+for those using 'agnoster' theme.
+	    	Edit agnoster.zsh-theme and find $user@%m 
+	    	then delete @%m
+	    	save
+	    	open your terminal 
+	    	Example: agnoster.zsh-theme
+
+
+# context: user@hostname (who am I and where am I)
+prompt_context() {
+	if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+		prompt_segment black default "%(!.%{%F{yellow}%}.$USER@%m"
+	fi
+}
+
+
 
 ================================================================================
