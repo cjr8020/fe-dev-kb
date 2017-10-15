@@ -212,6 +212,7 @@ I'm using settings:
 - zoom 200%
 
 When you open docky settings, it will offer "drag to reposition" handle.
+Or temporarily, enable "panel" mode - you will be able to reposition then.. 
 
 To create new launchers, you can just r-click on desktop and create a new launcher, then just drag it over to docky.
 
