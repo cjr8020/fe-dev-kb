@@ -581,30 +581,35 @@ ZSH_THEME="agnoster"
 
 	additional setup:
 
-	1. install one of the patched fonts from Vim-Powerline
+	Font Installation
 
-	https://github.com/powerline/fonts
+		https://powerline.readthedocs.io/en/latest/installation/linux.html#fonts-installation
 
-		# clone
-		git clone https://github.com/powerline/fonts.git --depth=1
-		# install
-		cd fonts
-		./install.sh
-		# clean-up a bit
-		cd ..
-		rm -rf fonts		
+		1. Download the latest version of the symbol font and fontconfig file:
 
-	2. On some distros, Terminess Powerline is ignored by default and must 
-	   be explicitly allowed.   A fontconfig file is provided.
-	   Copy this file from the fontconfig directory to your home folder 
-	   under 
+$ wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+$ wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
 
-	   $ cp ./fontconfig/50-enable-terminess-powerline.conf ~/.config/fontconfig/conf.d/  
+		2. Move the symbol font to a valid X font path.
 
-	   $ fc-cache -vf
+		$ mv PowerlineSymbols.otf ~/.local/share/fonts/
+
+		3. Update font cache for the path the font was moved to (root priveleges may be needed to update cache for the system-wide paths):
+
+		$ fc-cache -vf ~/.local/share/fonts/
+
+		4. Install the fontconfig file. For newer versions of fontconfig the config path is ~/.config/fontconfig/conf.d/, for older versions it’s ~/.fonts.conf.d/:
+
+		$ mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
+
+		If custom symbols still cannot be seen then try closing all instances of the terminal emulator. Restarting X may be needed for the changes to take effect.
+
+		If custom symbols still can’t be seen, double-check that the font have been installed to a valid X font path, and that the fontconfig file was installed to a valid fontconfig path. Alternatively try to install a patched font.
 
 
-	 3. Optionally set DEFAULT_USER to your regular username followed
+	DEFAULT_USER and prompt_context() {}
+
+	    Optionally set DEFAULT_USER to your regular username followed
 	    by prompt_context(){} in ~/.zshrc to hide the "user@hostname"
 	    when you're logged in as yourself on your local machine.
 
