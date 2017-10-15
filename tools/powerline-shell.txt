@@ -556,6 +556,10 @@ via wget
 
 sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
+this directory will be created:
+
+	~/.oh-my-zsh
+
 
 plugins
 --------
@@ -576,6 +580,11 @@ ZSH_THEME="agnoster"
 
 	agnoster theme
 	--------------
+
+	theme config file is located at:
+
+		~/.oh-my-zsh/themes/agnoster.zsh-theme
+		
 
 	https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster
 
@@ -645,6 +654,45 @@ prompt_context() {
 	fi
 }
 
+
+Agnoster newline
+--------------------------
+
+How to add newline to end of agnoster prompt?
+
+It boils down to putting an echo at the end of the prompt_build function.
+http://thisismecoding.com/multine-agnoster-oh-my-zsh/
+
+Add function
+
+prompt_newline() {
+  if [[ -n $CURRENT_BG ]]; then
+    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR
+%{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+  else
+    echo -n " %{%k%}"
+  fi
+
+  echo -n " %{%f%}"
+  CURRENT_BG=''
+}
+
+then insert that function call in the build_prompt function:
+
+## Main prompt
+build_prompt() {
+  RETVAL=$?
+  prompt_status
+  prompt_virtualenv
+  prompt_context
+  prompt_dir
+  prompt_git
+  prompt_hg
+  prompt_newline
+  prompt_end
+}
+
+PROMPT='%{%f%b%k%}$(build_prompt)'
 
 
 ================================================================================
