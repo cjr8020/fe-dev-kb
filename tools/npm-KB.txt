@@ -722,5 +722,21 @@ https://gist.github.com/alanhogan/a32889830384f4e190fa
 
 
 ==============================================================================
+	source-map-explorer
+	*******************
+
+$ sudo npm install -g source-map-explorer
+
+$ ng build --sourcemaps true
+$ source-map-explorer dist/vendor.bundle.js
+
+or for prod build:
+
+$ ng build --prod --sourcemaps true
+$ source-map-explorer dist/vendor.bundle.js dist/vendor.bundle.js.map
+
+
+
+==============================================================================
 
 
