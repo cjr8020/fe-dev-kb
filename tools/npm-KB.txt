@@ -680,4 +680,47 @@ enable ssl
 
 ==============================================================================
 
+	npm shrinkwrap
+	**************
+
+One of the main objectives of software engineering discipline is making engineering reproducible. However, the reality is that software is constantly changing, and each package has its own constraints about what other packages it requires to run (its dependencies). npm keeps track of these constraints, and authors express what kind of changes are compatible using semantic versioning, allowing authors to specify that their package will work with even future versions of its dependencies as long as the semantic versions are assigned properly.
+
+This does mean however that when you run npm install, there is no guarantee that you will get the same set of code now that you would have gotten an hour ago, or that you would get if you were to run it again an hour later. You may get a bunch of fixes now that weren't available an hour ago. This is great during development, where you want to keep up with changes upstream. But it's definitely not what you want for production deployment, though, where you want to validate whatever bits you're actually shipping.
+
+short version
+-------------
+As of 10.16.2017
+
+	1. our angular project (and angular/cli) are locked into npm v4.1.2
+	2. only mechanism available with npm v4 is npm-shrinkwrap.json
+	3. if you're wondering, --save-exact isn't a solution to this problem, see below..
+	4. npm v5 introduces package-lock.json which does not replace npm-shrinkwrap and essentially uses the same mechanism
+	5. yarn is arguably superior however it is a package manager running on top of npm and therefore requires modifications to the global build environment on the CI servers. 
+
+workflow
+--------
+
+To shrinkwrap an application for the first time
+
+1. run npm shrinkwrap --dev to generate initial version of npm-shrinkwrap.json
+2. commit npm-shrinkwrap.json to git
+
+To update dependencies in a shrinkwrapped application
+
+I've seen a number of issues with npm shrinkwrap reported by other people and exerienced them myself to conclude that the most reliable approach for updating an existing shrinkwrapped application is to remove and re-create the shrinkwrap. This will not provide me with a diff of npm-shrinkwrap.json file, however, I've found the diffs of that file to be confusing and inconsistent. My source of truth for dependency declaration is still package.json, so that is what I'll focus on.
+
+Therefore, here is the workflow to update an existing shrinkwrapped application:
+
+1. rm npm-shrinkwrap.json
+2. update dependency versions in package.json by editing it directly or running npm isntall .. commands
+3. optionally (but you may choose to), run npm prune or rm -rf node_modules before running npm install
+4. validate that the application works as expected with the new dependencies.
+5. run npm shrinkwrap --dev to generate new npm-shrinkwrap.json and commit it.
+
+Sources:
+https://gist.github.com/alanhogan/a32889830384f4e190fa
+
+
+==============================================================================
+
 
