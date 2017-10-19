@@ -1,0 +1,75 @@
+
+	reveal.js 
+	*********
+
+Getting started with generator-reveal
+---------------------------------------------------
+https://github.com/slara/generator-reveal
+
+
+using yeoman generator-reveal
+
+	$ sudo npm install -g generator-reveal
+	$ sudo npm install -g bower grunt
+
+once generator-reveal is installed
+make a new directory, and `cd` into it:
+
+	$ mkdir my-new-project && cd $_
+	$ yo reveal
+
+to view slides
+
+	$ grunt serve
+	started connect web server on http://localhost:9000
+
+to deploy
+
+	1. in package.json, modify repository as so
+
+		  "repository": {
+		    "type": "git",
+		    "url": "https://github.com/someuser/some-repo.git"
+		  },	
+
+	2. run `grunt deploy`
+
+		$ grunt deploy
+
+	   presentation will be deployed to gh-pages
+
+
+
+
+To start working on existing presentation
+---------------------------------------------------
+
+	$ cd my-existing-project
+	$ npm install && bower install
+
+
+
+Author slides
+---------------------------------------------------
+
+	$ yo reveal:slide "Slide Title" [--options]
+
+		available options:
+
+			--markdown
+			--attributes
+			--notes
+
+	will add `slides/slide-title.[html|md]
+	and the slide filename will be added to your `slides/list.json`
+
+	Vertical slides
+	--------
+
+	In order to add vertical slides, you can nest an array inside 
+	`slides/list.json`
+
+
+
+
+================================================================================

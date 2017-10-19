@@ -101,6 +101,14 @@ list installed packages
 
 	$ npm list -g --depth=0 [ | grep <package-name> ]
 
+or 
+	$ sudo npm list -g --depth=0 [..] # then npm check update will succeed
+
+if you get `npm ERR! extraneous: ...` at the tail-end of npm list output
+run
+	$ sudo npm -g update
+that fixed `extraneous` errors.
+
 
 using npm-check-updates
 -----------------------
