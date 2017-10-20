@@ -1,3 +1,7 @@
+post angular-mix write-up:
+https://blog.angular.io/the-angular-team-at-angularmix-2d56fd7fde65
+
+
 http://codewithdan.me/ng-2day-workshop
 
 https://github.com/DanWahlin?tab=repositories --> lists repositories

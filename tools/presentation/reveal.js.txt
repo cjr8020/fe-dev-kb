@@ -2,6 +2,10 @@
 	reveal.js 
 	*********
 
+https://github.com/hakimel/reveal.js
+
+
+
 Getting started with generator-reveal
 ---------------------------------------------------
 https://github.com/slara/generator-reveal
@@ -114,7 +118,51 @@ Author slides
 		        }
 		    }
 		]
-		
+
 		<section data-markdown="slides/slide-title.md" data-background="#ff0000"></section>	
+
+
+
+	Fragments
+	----------
+
+	ability to show/hide text after the initial display of the slide.
+	this can be used to reveal new information as you present without
+	overwhelming the audience with a wall of text up-front.
+
+	In regular markup, we accomplish this by adding the class of `fragment`
+	to an element:
+
+	<ul>
+		<li>This is here from the beginning</li>
+		<li class="fragment">This will appear as you advance the slide</li>
+		<li class="fragment">Then this will appear ... </li>
+	</ul>
+
+	When you're writing this in Markdown, adding a class to an object isn't simple - you can apply HTML comments using the .element selector:
+
+
+	* This is here from the beginning
+	* This will appear as you advance the slide <!-- .element: class="fragment" -->
+	* Then this will appear <!-- .element: class="fragment" -->	
+
+	The order of fragments can be controlled using `data-fragement-index` attribute:
+
+		data-fragement-index="1"
+
+	Background
+	----------
+
+	Likewise, if we wanted to add additional information to the entire slide
+	(e.g. a background image), we can do so simply by using `.slide` selector
+	at the top of our slide:
+
+	<!-- .slide: data-background-image="resources/my-background.jpg" -->
+
+
+	Images
+	------
+
+	![An image](images/an_image.jpg) <!-- .element height="50%" width="50%" -->
 
 ================================================================================
