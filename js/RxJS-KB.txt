@@ -373,8 +373,10 @@ Transforming Observables
               windows and emit these windows rather than emitting the items 
               one at a time
 
-  switchMap - map to observable, complete previous inner observable, emit values
-                - this operator can cancel in-flight network requests!
+  switchMap - map to observable, complete previous inner observable, 
+              emit values
+            - allows us to have the latest response
+            - this operator can cancel in-flight network requests!
 
 Filtering Observables
 

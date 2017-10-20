@@ -1,0 +1,478 @@
+
+	@@@@@@@@@@@@@@@@@@@@@@@@
+
+	Git Most Useful Commands
+
+	@@@@@@@@@@@@@@@@@@@@@@@@
+
+http://orga.cat/posts/most-useful-git-commands
+
+
+Set your details
+
+git config --global user.name "John Doe"
+git config --global user.email "john@example.com"
+Use --global to set the configuration for all projects. If git config is used without --global and run inside a project directory, the settings are set for the specific project.	
+
+See your settings
+
+git config --list
+
+
+git add
+********
+
+"git add -A" is equivalent to 
+
+	$ git add .; git add -u
+
+"git add -A" is a handy shortcut for doing both.	
+
+NOTE: `git add` === `git add -A` as of Git v.2.x
+
+
+git commit -am 
+***************
+
+	automatically stage all tracked, modified files before the commit
+	WILL NOT add unstaged new files (this is what 'git add -u' does..)
+
+
+	git fetch
+***************************
+
+Fetch all the branches from the repository.  This also downloads all of the required commits and files from the other repo..
+
+If you already have a remote alias setup with remote URL:
+
+	$ git fetch <remotename>
+
+Only fetch the specified branch:
+
+	$ git fetch <remote> <branch>
+
+
+
+Check differences between local and remote branches
+***************************************************
+
+One important thing to remember -- remote branches are also stored locally and therefore need to be updated when running commands on them.  To see that, look at file in:
+
+    .git/refs/heads/ [for local branches]
+    .git/refs/remotes/ [for tracking branches]
+
+	$ git fetch origin
+	$ git diff master origin/master
+
+(after fetch) To see differences in commits between local and remote branch:
+
+	$ git log master..origin/master
+	
+
+   
+push existing repo to new and different repo server   
+================================================== 
+
+1. Create a new repo at github.
+2. Clone the repo from fedora hosted to your local machine.
+3. $ git remote rename origin upstream
+4. $ git remote add origin URL_TO_GITHUB_REPO
+5. $ git push origin master
+
+Now you can work with it just like any other github repo. 
+To pull in patches from upstream, simply run 
+
+$ git pull upstream master && git push origin master
+
+how to change git remote
+========================
+
+$ git remote -v
+$ git remote set-url origin [new URL]
+
+
+working with branches
+**********************
+
+	$ git checkout -b <new-branch-name>
+
+		creates and checks out 'new-branch-name'		
+		-b = convenience option telling git to run `git branch` before
+		running checkout
+
+	$ git checkout -b <new-branch> <existing-branch>
+
+		same as above but base the new branch off of <existing-branch>		
+		instead of current branch
+
+	$ git push -u origin <new-branch-name>
+
+		pushes the newly-created branch to origin and sets up tracking..
+
+	$ git diff --name-status origin/master origin/develop
+
+		compares remote branches
+
+    # to delete a branch
+
+    $ git checkout develop
+    [you may want to merge first?]	
+    $ git branch -d <new-branch>
+
+    To delete remote branch
+
+    $ git push origin --delete <branch-name>
+
+working with remote branches
+****************************
+
+	# set up remote for local repo without one
+
+		# on branch "master"
+
+		$ git remote -v
+		$ git remote add origin https://github.com/SharedComponents/ess-data-access-dw.git
+		$ git  branch --set-upstream-to=origin/master master
+		$ git push [origin master]
+
+
+
+	# get tracking information on local branches:
+
+		$ git branch -vv
+
+		* develop 5ad292b [origin/develop] added try-with-resources to version resource
+		  master  0fbb96a [origin/master: behind 1] project scaffold
+
+
+    # to check out and track a remote branch (that you don't have yet)
+
+    	$ git fetch origin  			# to pull all remote branch info into your repo
+    	$ git checkout <branch-name>
+
+    # in older versions you had to say:
+
+    	$ git checkout --track origin/<remote_branch>
+
+    # to prune tracking branches that are no longer on the remote
+
+  		$ git remote prune origin
+
+
+    related: maven versions
+    ------------------------
+
+      	mvn versions:set -DnewVersion=0.3-RC
+
+	to save your changes
+	  
+	  	mvn versions:commit
+
+	if you made a mistake
+
+	  	mvn versions:revert  
+
+
+tag
+***************************
+
+create tag
+
+	$ git tag -a v1.0 -m "tagging release 1.0"
+
+
+push tags
+
+	$ git push --tags
+
+		or a single tag
+
+	$ git push origin <tag_name>	
+
+		or 
+
+	$ git push --follow-tags // will push annotated tags only
+
+		aslo: push.followTags = true	
+
+
+list your tags
+
+	$ git tag
+
+list remote tags 
+
+	$ git ls-remote --tags
+
+
+Search for tags with a particular pattern
+
+	$ git tag -l "v1.8.5*"		
+
+get info about a tag
+
+	$ git show v1.4
+
+check out a tag into a (tmp) branch e.g. for review
+
+	$ git checkout -b [branch-name] [tagname]
+	$ git checkout -b version2 v2.0.0	
+
+which branch contains tags?
+
+	$ git branch --contains v1.0
+
+	for the fetched branches (branches in remotes namespace):
+
+	$ git branch -a --contains <tag>
+	$ git branch -a --contains <commit>
+
+Which commit a tag refers to?
+
+	If you can find which commit a tag refers to:
+
+		$ git rev-parse --verify v1.0
+		53ad8477e0318f9d9a5ac64f5a11cb0650bf17d9
+
+	then you can find which branch contains that commit:
+
+		$ git branch --contains <commit>
+
+		$ git branch --contains 53ad8477e0318f9d9a5ac64f5a11cb0650bf17d9
+		* master
+
+delete local tags
+
+	$ git tag --delete tagname
+		e.g 
+	$ git tag --delete v1.0
+
+delete remote tags
+
+	$ git push --delete origin v1.0
+
+
+merge
+***************************
+
+	# start new feature
+	git checkout -b new-feature master
+
+	# do work
+	git add <changes>
+	git commit -m "new feature changes"
+
+	# merge in the new-feature branch into master
+	git checkout master
+	git merge new-feature
+
+	# delete the feature branch
+	git branch -d new-feature
+
+	# delete remote feature branch (if one exists)
+	git push origin --delete feature-branch
+	e.g.
+	> git branch -r
+		origin/distro-assembly-module
+	> git push origin -- delete distro-assembly-module # note, omitting "origin/"
+
+
+
+diff
+***************************
+
+	merge preview
+	-------------
+
+A way of showing what merge would actually look like.
+
+	$ git checkout master; git merge --no-ff --no-commit develop; git diff
+
+You can throw away the merge after you've looked at it with
+
+	$ git reset --hard
+
+
+	comparing local and remote branches
+	-----------------------------------
+
+	$ git branch  // to make sure I'm on the right branch
+	$ git status  // suppose I'm on develop branch
+	
+	$ git fetch  // updates my local definition of the remote branch
+	$ git diff origin/develop
+or explicitly
+	$ git diff <local branch> <remote-tracking-branch>
+e.g.
+	$ git diff develop origin/develop
+	
+Another option (to be verified)
+	
+	$ git diff <remote-tracking-branch> <local branch>
+	
+this shows what is going to be dropped and what is going to be added if I push the local branch.	
+
+Comparing commit differences between local and remote branches
+--------------------------------------------------------------
+
+You'd have fetch first if you haven't already.. and then
+
+	$ git fetch origin
+
+	$ git log master..origin/master
+
+	
+================================================================================
+
+	rebase with squash commits
+	**************************
+
+NOTE: 	Squash the newer into the older commit rather than the older into the newer one, even if you feel the newer one is "the one you want to keep". 
+
+
+
+You are on feature branch.
+You've completed the work on your feature and have N WIP commit messages.
+You want to squash all those commit messages into one BEFORE merging into develop branch.
+You had not intermediate merges from develop into your feature branch.
+
+	you are on my-feature-branch
+
+	$ git log --pretty=oneline
+	$ git rebase -i develop
+		- change all but one commit to "pick" .. the rest are 'squash'
+		  this should be the TOP one..
+		- do NOT remove any lines - that commit will be LOST if you do
+		- you can either 'reword', or 'pick' and change the commit message
+	$ git checkout develop
+	$ git merge my-feature-branch
+	$ git branch -d my-feature-branch
+
+note: if you had the remote tracking branch set up for your feature branch, you'll have to do this first, before deleting the local feature branch:
+
+	$ git push origin --delete my-feature-branch
+
+
+	if rebase goes bad..
+	--------------------
+
+	$ git rebase --abort		
+
+
+
+================================================================================
+
+	untrack / ignore files that have been committed to a git repo
+	*************************************************************
+
+To untrack a single file:
+
+	$ git rm --cached <filename>
+
+To untrack every file that is now in your .gitignore:
+
+	$ git rm -r --cached .
+or specific dir
+	$ git rm -r --cached .idea
+
+Then just run 
+
+	$ git add .
+
+and commit:
+
+	$ git commit -m ".gitignore is now setup"	
+
+
+To undo `git rm --cached <filename>` use:
+
+	$ git add <filename>	
+
+================================================================================
+
+	add existing project to GitHub
+	******************************
+
+$ git init
+$ git add .
+$ git commit -m "First commit"
+$ git remote add origin <remote repo URL>
+$ git push origin master
+
+================================================================================
+
+	move specific commit from one branch to another
+	***********************************************
+
+A have repository with two branches.
+Master branch commits:
+
+	c1, c2, c3, c4, c5, c6, c7, ..., c15, ...
+
+Staging Branch commits:
+
+	c1, c2, c3, c4, c5, c6, c7
+
+I want to move all commits from Master branch after c7 to staging branch
+and then revert Master branch.
+
+A: 
+
+git checkout staging
+git merge master
+git checkout master
+git reset --hard c7-hash
+
+
+================================================================================
+
+	navigate between commits
+	************************
+
+$  git log --pretty=oneline
+
+639114adcdbbdc57ee4f747792b22d8f48e03dad (HEAD -> master, origin/master, origin/HEAD) update readme
+c2a133b5098309df497309de8af50cceb8c41601 refactor application to use ngrx4
+42405a88a7f0caed66c7c858632d9751737b1fdb ad-hoc fixes
+41db9537517f3e8beec4eda09a6c11720423420c init commit
+
+$ git checkout 639114adcdbbdc57ee4f747792b22d8f48e03dad
+Note: checking out '639114adcdbbdc57ee4f747792b22d8f48e03dad'.
+
+	You are in 'detached HEAD' state. You can look around, make experimental
+	changes and commit them, and you can discard any commits you make in this
+	state without impacting any branches by performing another checkout.
+
+	If you want to create a new branch to retain commits you create, you may
+	do so (now or later) by using -b with the checkout command again. Example:
+
+	  git checkout -b <new-branch-name>
+
+	HEAD is now at 639114a... update readme
+
+To return to master
+
+$ git checkout master
+
+
+
+
+================================================================================
+
+	create GitHub Pages gh-pages branch
+	***********************************
+
+To create "gh-pages" orphaned branch in existing repo
+-----------------------------------------------------
+
+$ cd my-project
+$ git checkout --orphan gh-pages
+$ git rm -rf .  # to remove any existing content
+$ cp -R /some/directory/docs/* .  # also, create .gitignore if needed
+$ git add -A
+$ git commit -m "seed gh-pages branch"
+$ git push -u origin gh-pages	
+
+
+================================================================================
+
