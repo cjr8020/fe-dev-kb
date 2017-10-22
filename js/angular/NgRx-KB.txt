@@ -54,12 +54,16 @@ Local UI state
 	of their behavior.  What should be the color of a button?
 
 
-Recommendation:
+Recommendations:
 ***************
-1. it's a good practice to reflect both the persistent and client state in the URL.
+1. when identifying the type of state, ask the following questions:
+	- can it be shared?
+	- what is its lifetime?
 
-2. Use immutable data for persistent and client state
-3. Optimistic updates require SEPARATE actions to deal with errors.
+2. it's a good practice to reflect both the persistent and client state in the URL.
+
+3. Use immutable data for persistent and client state
+4. Optimistic updates require SEPARATE actions to deal with errors.
 
 
 
