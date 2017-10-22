@@ -1,0 +1,150 @@
+
+	ExpressJS
+	*********
+
+fast minimalist web framework for Node.js
+
+===============================================================================
+
+	Basic routing
+	*************
+
+Routing refers to determining how an application responds to a client request
+to a particular endpoint - URI (path) + HTTP method (GET, POST, .. )
+
+Each route can have one or more handler functions which are executed when
+the route is matched.
+
+	app.method(path, handler);
+
+E.g. 
+
+	app.post('/user', (req, res) => {
+		res.send('Got a POST request');
+	});
+
+
+===============================================================================
+
+	Hello world
+	************
+
+
+install
+--------
+
+	$ mkdir myapp
+	$ cd myapp
+	$ npm init (entry point: index.js or server.js)
+	$ npm install express --save
+	$ npm install typescript --save-dev
+	$ npm install @types/express --save
+	$ tsc --init
+
+this creates package.json
+
+	{
+	  "name": "express-hello-world",
+	  "version": "1.0.0",
+	  "description": "test",
+	  "main": "server.js",
+	  "scripts": {
+	    "test": "echo \"Error: no test specified\" && exit 1"
+	  },
+	  "author": "",
+	  "license": "MIT",
+	  "dependencies": {
+    	"@types/express": "^4.0.37",	  
+	    "express": "^4.16.2"
+	  }
+	}
+
+.. and tsconfig.json:
+
+	{
+	    "compilerOptions": {
+	        "module": "commonjs",
+	        "target": "es5",
+	        "noImplicitAny": false,  // default
+	        "sourceMap": false
+	    }
+	}
+
+modify tsconfig.json to be:
+
+tsconfig.json
+
+{
+  "compilerOptions": {
+    "baseUrl": "",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "mapRoot": "./",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "target": "es5",
+    "noImplicitAny": true, 
+    "sourceMap": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "files": [
+    "./server.ts"
+  ]
+}
+
+
+add the following to package.json
+
+{
+  "name": "express-hello-world",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "server.js",
+  "scripts": {
+  	"server": "tsc && node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/express": "^4.0.37",
+    "express": "4.16.2"
+  },
+  "devDependencies": {
+  	"typescript": "2.5.3"
+  }
+}
+
+Now, create your hello-world service:
+
+server.ts
+----------
+
+import * as express from 'express';
+
+const app = express();
+const port = 8888;
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.listen(port, () => {
+    console.log(`Server port: ${port}`);
+});
+
+run server
+-----------
+
+	$ npm run server
+	Server port: 8888
+
+http://localhost:8888
+Hello World!
+
+
+
