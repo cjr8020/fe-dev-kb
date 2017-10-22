@@ -26,6 +26,150 @@ E.g.
 
 ===============================================================================
 
+	Modular routing
+	***************
+
+use express.Router class to create modular, mountable route handlers.
+A Router instance is a complete middleware and routing system.
+
+The following example:
+
+1. creates a router as a module
+2. loads a middleware function in it
+3. defines some routes
+4. mounts the router module on a path in the main app
+
+create a router file named `birds.js`
+-------------------------------------
+
+import * as express from 'express';
+
+const router = express.Router();
+
+// middleware specific for this router
+router.use(  (req, res, next) =>  {
+  console.log('Time: ', Date.now());
+  next();
+});
+
+// define the home page route
+router.get('/', function (req, res) {
+  res.send('Birds home page')
+}); 
+
+// define the about route
+router.get('/about', function (req, res) {
+  res.send('About birds')
+}); 
+
+now in the app file:
+---------------------
+
+import * as birds from './birds.js';
+
+app.use('/birds', birds);  // mount the router moudle on a path in the main app
+
+
+
+
+The app will now be able to handle request to:
+
+	/birds
+	/birds/about
+
+as well as call middleware function specific to this router.
+
+
+===============================================================================
+
+	or you can just use Router in your app file
+	********************************************
+
+
+import * as express from "express";
+import * as bodyParser from "body-parser";
+
+const app = express();
+
+const port = 4444;
+
+const router = express.Router();
+
+
+router.get("/talks", (req, res) => {
+	//
+});
+
+router.get("/talk", (req, res) => {
+	// 
+});
+
+router.post("/rate", (req, res) => {
+	// 
+});
+
+// CORS headers
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/", router); // mount Router on a path of the main app
+app.listen(port);
+
+console.log(`Server port: ${port}`);	
+
+
+
+===============================================================================
+
+	CORS in ExpressJS
+	*****************
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
+===============================================================================
+
+	404
+	***
+
+In Express, 404 responses are not a result of an error, so the error handler
+will not capture them.  
+
+404 simply indicates the absence of additional work to do -- Express has executed all middleware functions and routes, and found that none of them responded.
+
+So add a middleware function at the very bottom of the stack (below all other
+functions) to handle a 404 response:
+
+app.use( (req, res, next) => {
+	res.status(404).send("Sorry, cannot find that..");
+});
+
+
+
+===============================================================================
+
+	Error Hander
+	************
+
+You define error-handling middleware in the same way as other middleware, except with four arguments instead of three; specifically with the signature (err, req, res, next):
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+});
+
+
+===============================================================================
+
 	Hello world
 	************
 
