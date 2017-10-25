@@ -1,0 +1,155 @@
+
+Every form-intensive application has to provide answers for the following problems:
+
+1. how to keep track of the global form state
+2. know which parts of the form are valid and which are still invalid
+3. properly displaying error messages to the user so that the user knows what to do to make the form valid
+
+
+
+
+	Angular Forms
+ 	*************
+
+Angular offers two form-building technologies: reactive and template-driven.
+both belong to the `@angular/forms` library and share a common set of form
+control classes.
+
+But the diverge in philosophy, programming style and technique.
+
+They also have their own modules: ReactiveFormsModule and FormsModule.
+
+	which is better?
+	------------------
+
+they are two architectural paradigms with their own strengths and weaknesses.
+choose the approach that works best.
+and you may decide to use both in the same application.
+
+
+	what is FormGroup
+	-----------------
+
+Tracks the value and validity state of a group of FormControl instances.
+A FormGroup aggregates the values of each child `FormControl` into one 
+object, which each control name as the key.
+
+It calculates its status by reducing the statuses of its children.  E.g. if one of the controls in a group is invalid, the entire group become
+
+===============================================================================
+  	Angular Reactive Forms
+===============================================================================
+
+ 	Reactive forms is an Angular technique for creating forms in a reactive 
+ 	style that favor explicit management of the data flowing between a non-UI data model (typically retrieved from a server) and a UI-oriented form model
+ 	that retains the states and values of the HTML controls on the screen.
+
+ 	You create a tree of Angular form control objects in a component class
+ 	and bind them to native form control elements in the component template.
+
+ 	You create and manipulate form control objects directly in the component
+ 	class.  As the component class has immediate access to both the data model and the form control structure, you can push data model values into the
+ 	form controls and pull user-changed values back out.
+
+ 	The component can observe changes in form control state and react to those
+ 	changes.
+
+ 	One advantage of working with form control objects directly is that value
+ 	and validity updates are always synchronous and under your control.
+
+ 		Reactive forms are synchronous
+ 		------------------------------
+
+ 	1. you won't encounter the timing issues that sometimes occur in a template-driven form, and 
+
+ 	2. reactive forms can be easier to test.
+
+ 	In keeping with the reactive paradigm, the component preserves the immutabilty of the data model, treating it as a pure source of original values.
+
+Essential Form Classes
+----------------------
+
+	AbstractControl
+
+		abstract base class for the three concrete form control classes:
+
+	FormControl
+		tracks the value and validity status of an individual form control.
+		corresponds to an HTML form control such as an input box or selector.
+
+	FormGroup
+		tracks the value and validity state of a group of AbstractControl's
+		the group's properties include its child controls.  The top-level form
+		in your component is a FormGroup.
+
+	FormArray
+		tracks the value and validity state of a numerically indexed array of
+		AbstractControl's
+
+
+
+
+===============================================================================
+  	Angular Template-driven Forms
+===============================================================================
+
+You place HTML form controls (<input> and <select>) in the component template
+and bind them to data model properties in the component using directives like
+ngModel.
+
+You don't create Angular form control objects - angular directives create them for you, using the information in your data bindings.   
+
+You don't push or pull data values - angular handles that for you with ngModel.
+Angular updates the mutable 'data model' with user changes as they happen.
+While this means less code in component class, template-driven forms are asynchronous.
+
+
+ 	Template-Driven forms are asynchronous
+ 	--------------------------------------
+
+
+
+===============================================================================
+   	Reactive Forms Hello-world
+===============================================================================
+
+import the ReactiveFormsModule into app.module
+
+	imports: [
+		ReactiveFormsModule
+	]
+
+In the component code, import 
+
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+each form is bound to an instance of FormGroup.
+use FormBuilder to handle form conrol creation.
+Validators will help setup validation on each form control.
+
+add the following to the controller:
+
+export class HelloFormComponent implements OnInit {
+
+  formGroup: FormGroup;
+  post: any;
+  description: string = '';
+  name: string = '';
+
+  constructor(private fb: FormBuilder) {
+    this.formGroup = fb.group({
+      'name': [null, Validators.required],
+      'description': [null, Validators.compose([
+        Validators.required,
+        Validators.minLength(30),
+        Validators.maxLength(500)
+      ])],
+      'validate': ''
+    });
+  }
+
+The form will have a 'name' and a 'desription' text input fields.
+We will also have a checkbox called 'validate' which will demonstrate how 
+you can change validation requirements within the component.
+
+use FormBuilder to build a formGroup containing the form controls - form elements
