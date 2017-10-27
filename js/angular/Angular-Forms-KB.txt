@@ -153,3 +153,31 @@ We will also have a checkbox called 'validate' which will demonstrate how
 you can change validation requirements within the component.
 
 use FormBuilder to build a formGroup containing the form controls - form elements
+
+
+
+
+
+
+
+================================================================================
+
+NG_VALUE_ACCESSOR
+
+	import { NG_VALUE_ACCESSOR } from '@angular/forms';
+
+	used to provide a ControlValueAccessor for form controls.
+
+	See DefaultValueAccessor for how to implement it.
+
+
+DefaultValueAccessor
+
+	https://angular.io/api/forms/DefaultValueAccessor
+
+	The default accessor for writing a value and listening to changes that is used by the NgModel.
+
+		Example
+			<input type="text" name="searchQuery" ngModel>
+
+================================================================================

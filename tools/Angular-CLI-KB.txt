@@ -61,8 +61,7 @@ you should have the following in your .bashrc or .bash_profile
 
   source /opt/rh/devtoolset-2/enable
 
-
-==============================================================================  
+================================================================================  
 
 List currently installed version
 --------------------------------
@@ -78,7 +77,7 @@ Version 2.1.0-dev.20161003
 
   
 
-==============================================================================  
+================================================================================  
   update node and npm
   *******************
 
@@ -116,7 +115,19 @@ then
   $ rm -rf node_modules dist tmp typings
   $ npm install --save-dev angular-cli@webpack  
 
-==============================================================================  
+================================================================================  
+
+  ngc as drop-in replacement for tsc
+  **********************************
+
+https://angular.io/guide/aot-compiler#compile-with-aot
+
+  $ ngc --project ./tsconfig.json
+
+ngc is a drop-in replacement for tsc and is configured in the same way.
+it requires its own tsconfig.json with AOT-oriented settings.
+
+================================================================================  
 
 Usage
 -----

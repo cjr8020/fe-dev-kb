@@ -159,7 +159,7 @@ If anonymous access is disabled or write access is required for publishing a pac
   Once the realm is activated, a user can establish the auth to repository with the
   npm login command:
 
-    $ npm login --registry=https://nexus-dev.domain.com:8443/nexus/repository/npm-thirdparty/
+    $ npm login --registry=https://nexus.domain.com:8443/nexus/repository/npm-thirdparty/
 
   Provide your repository manager username and password as well as your email address when prompted. 
 

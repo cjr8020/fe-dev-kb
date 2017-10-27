@@ -378,6 +378,30 @@ You can also specify the bullet type with the <li> tag itself!
 
 =================================================================
 
+  forms
+  *****
+
+label element
+
+  may be used to attch information to controls.  each label is associated
+  with exactly one form control.
+
+  attributes:
+    for
+    accesskey
+    onfocus
+    onblur
+
+  the for attribute assocates a label with another control explicitly:
+  the value for the `for` attribute must be the same as the value of the `id`
+  attribute of the associated control elemnent.
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" />  
+
+
+=================================================================
+
   How to get youtube video thumbnail from YouTube API
   ***************************************************    
 
