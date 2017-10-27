@@ -1,9 +1,6 @@
 
-	@@@@@@@@@@@@@@@@@@@@@@@@
-
-	Git Most Useful Commands
-
-	@@@@@@@@@@@@@@@@@@@@@@@@
+	useful git commands
+	*******************
 
 http://orga.cat/posts/most-useful-git-commands
 
@@ -458,6 +455,8 @@ $ git checkout master
 
 
 ================================================================================
+	GitHub
+================================================================================
 
 	create GitHub Pages gh-pages branch
 	***********************************
@@ -472,6 +471,80 @@ $ cp -R /some/directory/docs/* .  # also, create .gitignore if needed
 $ git add -A
 $ git commit -m "seed gh-pages branch"
 $ git push -u origin gh-pages	
+
+
+
+	close issue with magic text in PR
+	*********************************
+
+Suppose you're fixing issue #234.  Put text 'fixes #234' in the description of your PR (or anywhere in the comment on the PR).  Merging the PR will automatically close that issue.
+
+	linking to comments
+	*******************
+
+Click the date/time next to the name in the comment header - that is how you link to that comment.
+
+	link to code
+	************
+
+to link to a specific line of code, click the line number next to the code in question. The URL is updated witht he line number.
+
+if you hold Shift and click another line, the URL is updated again, and now you've highlighted a range of lines.
+
+hold on, that's  pointing to the current branch.  what if the file changes?
+Then use "permalink" to the file in its current state.
+
+	creates lists with checkboxes in issues
+	******************************
+
+this will also produce a nifty "2 of 5" bar when looking at the issue list.
+
+Here is the syntax:
+
+ - [ ] Screen width (integer)
+ - [x] Service worker support
+ - [x] Fetch support
+ - [ ] CSS flexbox support
+ - [ ] Custom elements
+
+ That’s a space and a dash and a space and a left bracket and a space (or an x) and a close bracket and a space and then some words.
+
+ 	Project boards in GitHub with Trello
+ 	************************************
+https://hackernoon.com/12-cool-things-you-can-do-with-github-f3e0424cf2f0
+
+
+	GitHub wiki
+	***********
+
+For an unstructured collection of pages — just like Wikipedia — the GitHub Wiki offering (which I will henceforth refer to as Gwiki) is great.
+
+For a structured collection of pages — for example, your documentation — not so much. There is no way to say “this page is a child of that page”, or have nice things like ‘Next section’ and ‘Previous section’ buttons. 
+
+take Gwiki for a spin, I entered a few pages from the NodeJS docs as wiki pages, then created a custom sidebar so that I could emulate having some actual structure. The sidebar is there at all times, although it doesn’t highlight the page you are currently on.
+
+example: https://github.com/davidgilbertson/about-github/wiki
+
+	GitHub Pages with Jekyll
+	************************
+You may already know that you can use GitHub Pages to host a static site. And if you didn’t now you do. However this section is specifically about using Jekyll to build out a site.
+
+At its very simplest, GitHub Pages + Jekyll will render your README.md in a pretty theme. 
+
+If I click the "settings" tab for my site in GitHub, turn on GitHub Pages, and pick a Jekyll theme.. I will get a Jekyll-themed page.
+
+From this point on I can build out a whole static site based mostly around markdown files that are easily editable, essentially turning GitHub into a CMS.
+
+	Stylish Chrome Extension
+	*************************
+
+gives you ability to add styles/themes to websites.
+
+	GitHub as CMS
+	*************
+
+https://hackernoon.com/12-cool-things-you-can-do-with-github-f3e0424cf2f0
+
 
 
 ================================================================================

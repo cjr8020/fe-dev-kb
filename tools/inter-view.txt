@@ -1,0 +1,7 @@
+
+	interview stuff
+	***************
+
+Resources:
+https://github.com/yangshun/tech-interview-handbook
+https://hackernoon.com/the-tech-interview-cheatsheet-8e28d94f5f04
