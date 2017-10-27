@@ -113,13 +113,13 @@ While this means less code in component class, template-driven forms are asynchr
    	Reactive Forms Hello-world
 ===============================================================================
 
-import the ReactiveFormsModule into app.module
+1. import the ReactiveFormsModule into app.module
 
 	imports: [
 		ReactiveFormsModule
 	]
 
-In the component code, import 
+2. In the component code, import 
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -127,7 +127,13 @@ each form is bound to an instance of FormGroup.
 use FormBuilder to handle form conrol creation.
 Validators will help setup validation on each form control.
 
-add the following to the controller:
+3. Use FormBuilder to create a FromGroup with form controls
+
+	formControlName="name"
+	formControlName="description"
+	formControlName="validate"
+
+so, add the following to the controller:
 
 export class HelloFormComponent implements OnInit {
 
@@ -148,16 +154,71 @@ export class HelloFormComponent implements OnInit {
     });
   }
 
-The form will have a 'name' and a 'desription' text input fields.
-We will also have a checkbox called 'validate' which will demonstrate how 
-you can change validation requirements within the component.
+form template
 
-use FormBuilder to build a formGroup containing the form controls - form elements
+<div *ngIf="!name; else forminfo">
+  <form [formGroup]="formGroup" (ngSubmit)="addPost(formGroup.value)">
+    <div class="form-container">
+      <div class="row columns">
+        <h1>My Reactive Form</h1>
 
+        <label>Name
+          <input type="text" formControlName="name">
+        </label>
+        <div class="alert" *ngIf="!formGroup.controls['name'].valid && formGroup.controls['name'].touched">{{ titleAlert }}</div>
 
+        <br/>
 
+        <label>Description
+          <textarea  formControlName="description"></textarea>
+        </label>
 
+        <div class="alert" *ngIf="!formGroup.controls['description'].valid && formGroup.controls['description'].touched">You must specify a description that's between 30 and 500 characters.</div>
 
+        <br/>
+        <label>Minimum of 3 Characters</label>
+        <input type="checkbox" name="validate" formControlName="validate" value="1"> On
+
+        <input type="submit" class="button expanded" value="Submit Form" [disabled]="!formGroup.valid">
+      </div>
+    </div>
+  </form>
+</div>
+
+4. modifying validation rules dynamically
+
+   sometimes form validation requirements might change based on user input.
+   When the checkbox "validate" is 'on', that means, in this silly example, that
+   the 'name' input in addition to being required, will also need to be at least
+   3 characters long.
+   Each form field has a `valueChanges` method that we can subscribe to. So when
+   someone clicks on the 'validate' checkbox, we can act on it.
+   
+   When 'validate' checkbox is checked, the value becomes "1", b/c that is what is bound to the value in the HTML template.
+   
+   If validate === 1, then new validation rules are defined using setValidators(..).
+   
+   event though this code is ngOnInit which gets executed only on page reload,
+   b/c we are subscribing to value change events for that formControl, we get
+   immediate notifications and our callback function executes modifying the rules.
+
+	  ngOnInit() {
+	    console.log('ngOnInit is called');
+
+	    this.formGroup.get('validate').valueChanges.subscribe(
+
+	      (validate) => {
+
+	        if (validate == '1') { // and no, it should not be '==='
+	          this.formGroup.get('name').setValidators([Validators.required, Validators.minLength(3)]);
+	          this.titleAlert = 'You need to specify at least 3 characters';
+	        } else {
+	          this.formGroup.get('name').setValidators(Validators.required);
+	        }
+	        this.formGroup.get('name').updateValueAndValidity();
+
+	      });
+	  }
 
 
 ================================================================================
