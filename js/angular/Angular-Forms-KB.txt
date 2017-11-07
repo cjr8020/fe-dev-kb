@@ -87,6 +87,13 @@ Essential Form Classes
 		AbstractControl's
 
 
+FormControl
+-----------
+	optionally accepts three arguments:
+		1. initial data value
+		2. array of validators
+		3. array of async validators
+
 
 
 ===============================================================================

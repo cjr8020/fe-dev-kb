@@ -31,6 +31,15 @@ filter
 
 		let longerWords = words.filter(word => word.length > 4);
 
+	returns an array!!
+
+find 
+----
+
+	const element = someArray.find(x = > x.id === someId);
+	
+	returns element that matches 
+
 
 reduce
 ------

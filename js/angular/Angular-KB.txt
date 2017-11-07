@@ -955,7 +955,7 @@ Type
         is a grouping element that doesn't interfere with styles or layout
         because Angular doesn't put it in the DOM.
 
-        In order to avoid having to create an extra dif, we can instead use 
+        In order to avoid having to create an extra div, we can instead use 
         <ng-container> directive.
         
         E.g.:
@@ -2610,7 +2610,29 @@ ngStyle
         
     }
 
+===============================================================================
 
+  angular component styles
+  ************************
+
+/deep/
+>>> 
+
+  component style normally applies only to the component's own template. Using /deep/ selector we can force a style down through the child component tree into all child component views. /deep/ selector forces its style to its own component, child component, nested component, view children and content children. Suppose we have components with parent child relationship as follows. 
+
+    PersonComponent -> CompanyComponent -> AddressComponent
+
+  In PersonComponent we are using following CSS file with /deep/ selector. 
+  >>> will force PersonComponent style to Company and Address component.
+
+NOTE: as of 11.2017:
+https://angular.io/guide/component-styles
+The shadow-piercing descendant combinator is deprecated and support is being removed from major browsers and tools. As such we plan to drop support in Angular (for all 3 of /deep/, >>> and ::ng-deep). Until then ::ng-deep should be preferred for a broader compatibility with the tools.
+
+
+
+
+===============================================================================
 
 
 Structural Directives
