@@ -104,6 +104,9 @@ Ctrl-Shift-Up|Down
 Ctrl-Shift-J
                 join lines
 
+Ctrl-Alt-Enter
+                insert line above "Start New Line Before Current"
+
 
 Search
 ===============
