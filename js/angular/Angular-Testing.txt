@@ -625,7 +625,7 @@ note: this automatically provides the service in app.module.ts
 
 Tests still pass at this point.. 
 
-
+================================================================================
 
   Spying on the real service
   --------------------------
@@ -677,6 +677,107 @@ and ngOnInit() is called during the first change detection cycle.
 but the tests need to wait at least one more full turn of the JS engine
 before the value becomes available.
 
+================================================================================
+
+  Spying on a Mock service
+  --------------------------
+
+You can inject a mock service into your component
+
+    let component: SomeComponent;
+    let fixture: ComponentFixture<SomeComponent>;
+    let ce: HTMLElement;
+    let titleService: Title;
+    let mockAuthenticationService: MockAuthenticationService;
+
+
+    describe('SomeComponent', () => {
+
+      beforeEach(async(() => {
+
+        // override provider 
+
+        mockAuthenticationService = new MockAuthenticationService();
+        TestBed.overrideProvider(AuthenticationService, {useValue: mockAuthenticationService});
+
+        // configure testing module using actual component config
+
+        TestBed.configureTestingModule({
+          declarations: [
+            SomeComponent,
+          ],
+          imports: [
+            RouterModule,
+            FormsModule,
+            NgIdleModule.forRoot(),
+            ModalModule.forRoot(),
+            AccordionModule.forRoot()
+          ],
+          providers: [
+            {provide: Router, useClass: RouterStub},
+            {provide: AuthenticationService}
+          ]
+        })
+          .compileComponents();
+      }));
+
+
+.. then in tests, you can either spy on it in beforeEach .. 
+
+
+      beforeEach(() => {
+
+        // create component
+        createComponent();
+
+        // create mock
+        spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+          .and
+          .returnValue(Observable.of(mockMaskedIdentifiers_emailPreferred_noOtherVerifiedDefaults));
+
+        // make component do something
+        component.getUserOtpDeliveryChannelOptions();
+
+        // expect spy to have been called
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+      });
+
+
+
+.. or in actual tests
+
+      it('should have span id="default-otp-channel" display correct mfaOtpDestination', () => {
+        // create a spy
+        spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+          .and
+          .returnValue(Observable.of(mockMaskedIdentifiers_emailPreferred_noOtherVerifiedDefaults));
+
+        // make component do something
+        component.getUserOtpDeliveryChannelOptions();
+
+        // expect spy to have been called
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+
+        // test view .. 
+
+      });
+
+Be aware that you cannnot spy on the same object.method within the same
+scope:
+
+  describe
+
+    beforeEach
+      spy either here, or in "it"s, but not both.
+
+    it
+      spy here 
+
+    it 
+      spy here
+
+
+================================================================================
 
 async() 
 
