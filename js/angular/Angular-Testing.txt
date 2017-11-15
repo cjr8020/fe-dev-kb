@@ -354,6 +354,11 @@ https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/
 https://stackoverflow.com/questions/41567825/write-angular2-tests-and-changing-the-mock-return-values-make-it-dry
 
 
+Also see below:
+
+  Spying on a Mock service
+  --------------------------
+
 
 ================================================================================
 
@@ -721,6 +726,8 @@ You can inject a mock service into your component
           .compileComponents();
       }));
 
+If you need to force your component template to reload --> see below
+
 
 .. then in tests, you can either spy on it in beforeEach .. 
 
@@ -775,6 +782,34 @@ scope:
 
     it 
       spy here
+
+
+  If you need your component template to reload (refresh view)
+  ------------------------------------------------------------
+
+use 
+
+  async()
+  fixture.whenStable().then()
+
+    it('should display alt options accordion with 4 channels', async(() => {
+      createComponent();
+      spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+        .and
+        .returnValue(Observable.of(mockMaskedIdentifiers_mobileTextPrefered_plus_email_and_phone_verified_defaults));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      // wait for it ..
+      fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+        expect(component.viewModel.altChannels.length).toBe(4);
+        const accordions = ce.querySelectorAll('accordion');
+        expect(accordions.length).toBe(1);
+      });
+    }));
+
 
 
 ================================================================================
@@ -868,6 +903,49 @@ jasmine.done
   Although there is no direct access to the getQuote promise inside
   TwainComponent, the spy has direct access which makes it possible to 
   wait for 'getQuote' to finish.    
+
+
+  Async setTimeout gets interfered with by another component
+  -----------------------------------------------------------
+
+If you have another component that uses setTimeout, your async() tests
+will fail with   
+
+  Error: Timeout - Async callback was not invoked within timeout 
+  specified by jasmine.DEFAULT_TIMEOUT_INTERVAL
+
+You will need to replace this child component with a Dummy if it is 
+not key to testing this component
+
+
+/**
+ * Reason for the dummy idle timeout component is:
+ * idle-timeout component has its own setTimeout which interferes with the Async callback timeout
+ */
+@Component({
+  selector: 'lgn-idle-timeout',
+  template: '<p>Dummy Timeout Component</p>'
+}) class DummyIdleTimeoutComponent {}
+
+
+
+  beforeEach(async(() => {
+
+    TestBed.configureTestingModule({
+      declarations: [
+        DummyIdleTimeoutComponent,  // <====
+      ],
+      imports: [
+()
+      ],
+      providers: [
+
+      ]
+    })
+      .compileComponents();
+  }));
+
+
 
 
   Test a component with routing
