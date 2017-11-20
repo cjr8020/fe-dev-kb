@@ -359,6 +359,70 @@ Also see below:
   Spying on a Mock service
   --------------------------
 
+1. Inject a mock service in the outer 'describe' by overridingProvider.
+2. Then, in every "inner" describe define a mock response and implement a spy
+
+describe('SomeComponent', () => {
+
+  beforeEach(async(() => {
+    mockAuthenticationService = new MockAuthenticationService();
+    TestBed.overrideProvider(AuthenticationService, {useValue: mockAuthenticationService});
+
+    TestBed.configureTestingModule({
+      declarations: [
+
+      ],
+      imports: [
+
+      ],
+      providers: [
+        {provide: Router, useClass: RouterStub},
+        {provide: AuthenticationService}
+      ]
+    })
+      .compileComponents();
+  }));
+
+  describe('Scenario 1', () => {
+    ...
+  })
+
+
+  describe('Scenario 4', () => {
+
+    const mockResponse = {...};
+
+    beforeEach(() => {
+      createComponent();
+    });    
+
+    it('should do something special', async(() => {
+    createComponent();
+    spyOn(mockAuthenticationService, 'getAuthenticated')
+      .and
+      .returnValue(Observable.of(mockResponse));
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    // wait for it ..
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+      expect(component.viewModel.something.length).toBe(4);
+    });
+  }));
+
+  })
+
+  function createComponent() {
+  fixture = TestBed.createComponent(MfaUntrustedDeviceComponent);
+  component = fixture.componentInstance;
+  ce = fixture.debugElement.nativeElement;
+  fixture.detectChanges();
+}
+
+
+
 
 ================================================================================
 
