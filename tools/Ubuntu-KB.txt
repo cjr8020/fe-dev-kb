@@ -795,6 +795,7 @@ Maven
 	$ cd /opt
 	$ sudo wget http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz 
 	$ sudo tar -xzvf apache-maven-3.5.2-bin.tar.gz
+	$ sudo rm apache-maven-3.5.2-bin.tar.gz
 	$ sudo ln -s apache-maven-3.5.2 maven
 	$ sudo vi /etc/profile.d/mavenenv.sh
 
@@ -804,6 +805,32 @@ export PATH=${M2_HOME}/bin:${PATH}
 	$ sudo chmod -x /etc/profile.d/mavenenv.sh
 	$ source /etc/proflie.d/mavenenv.sh
 	$ mvn --version
-	
+add to ~/.oh-my-zsh/custom
+	$ vi ~/.oh-my-zsh/custom/java-dev-env.zsh
+
+# maven
+source /etc/profile.d/mavenenv.sh
+
+Gradle
+
+	$ cd /opt
+	$ sudo wget wget https://services.gradle.org/distributions/gradle-4.3.1-bin.zip
+	$ sudo unzip -d /opt gradle-4.3.1-bin.zip
+	$ sudo rm gradle-4.3.1-bin.zip
+	$ sudo ln -s gradle-4.3.1 gradle
+	$ sudo vi /etc/profile.d/gradleenv.sh
+
+export PATH=${PATH}:/opt/gradle/bin
+
+	$ sudo chmod -x /etc/profile.d/gradleenv.sh
+	$ source /etc/profile.d/gradleenv.sh
+
+add to ~/.oh-my-zsh/custom/java-dev-env.zsh
+
+	$ vi ~/.oh-my-zsh/custom/java-dev-env.zsh
+
+# gradle
+source /etc/profile.d/gradleenv.sh
+
 
 ================================================================================
