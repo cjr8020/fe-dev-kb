@@ -800,7 +800,9 @@ Maven
 	$ sudo vi /etc/profile.d/mavenenv.sh
 
 export M2_HOME=/opt/maven
-export PATH=${M2_HOME}/bin:${PATH}	
+export PATH=${M2_HOME}/bin:${PATH}
+export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
+
 
 	$ sudo chmod -x /etc/profile.d/mavenenv.sh
 	$ source /etc/proflie.d/mavenenv.sh
