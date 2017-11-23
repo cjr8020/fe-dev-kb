@@ -780,3 +780,30 @@ $ chsh --shell /bin/zsh
 
 
 ================================================================================
+
+	Installing Java Maven
+	*********************
+
+	$ sudo apt-get update -y
+	$ sudo apt-get-repository ppa:webupd8team/java
+	$ sudo apt-get update -y
+	$ sudo apt-get install oracle-java8-installer
+	$ java -version
+
+Maven
+
+	$ cd /opt
+	$ sudo wget http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz 
+	$ sudo tar -xzvf apache-maven-3.5.2-bin.tar.gz
+	$ sudo ln -s apache-maven-3.5.2 maven
+	$ sudo vi /etc/profile.d/mavenenv.sh
+
+export M2_HOME=/opt/maven
+export PATH=${M2_HOME}/bin:${PATH}	
+
+	$ sudo chmod -x /etc/profile.d/mavenenv.sh
+	$ source /etc/proflie.d/mavenenv.sh
+	$ mvn --version
+	
+
+================================================================================
