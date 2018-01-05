@@ -1,0 +1,186 @@
+
+	JavaScript
+	**********
+
+===============================================================================
+
+	Array functions
+	***************
+
+a JavaScript can be constructed using either
+
+	var arr = []; // using array literal notation
+
+or 
+
+	var arr = new Array(); // using constructor notation.
+
+filter
+------
+
+	creates a new array with all elements that pass the test implemented 
+	by the provided function
+
+		var words = ["one", "two", "three", "four"];
+
+		var longerWords = words.filter(function(word) {
+			return word.length > 4;
+		});
+
+	ES6 version
+
+		let longerWords = words.filter(word => word.length > 4);
+
+	returns an array!!
+
+find 
+----
+
+	const element = someArray.find(x = > x.id === someId);
+	
+	returns element that matches 
+
+
+reduce
+------
+
+	arr.reduce(callback[, initialValue])
+
+	applies a function against an accumulator and each element in the array
+	(from left to right) to reduce it to a single value.
+
+	e.g. without initialValue
+
+		[0, 1, 2, 3, 4].reduce( (acc, n) => acc + n);
+
+	e.g. w/ initialValue
+
+		[0, 1, 2, 3, 4].reduce( (acc, n) => (acc + n), 5);
+
+
+===============================================================================
+
+	String functions
+	***************
+
+indexOf
+---------
+
+	str.indexOf(searchValue[, fromIndex])
+
+
+	returns the index within the calling String object of the first occurence of the specified value, starting the search at 'fromIndex'
+	returns -1 if the value not found
+
+
+===============================================================================
+
+	Operators
+	*********
+
+comma 
+--------
+
+	the comma is only a comma operator when it acts on two expressions
+
+		lefthand_expr, righthand_expr
+
+	e.g.
+
+		a = (1, 2);  // a == 2
+
+	evaluates each expression starting with lefthand, and returns the value of
+	the righthand expression.  So the above stores `2` in "a"
+
+	precedence
+
+		the comma operator has the lowest precedence, so need parens.
+		without parens
+
+		a = 1, 2;  // returns 2 and stores 1 in `a`
+
+		the expression will be parsed as 
+
+		(a=1), 2;
+
+	side effects
+
+		why bother with the lefthand expression if it's value is lost?
+		b/c the lefthand expression can have a side effect that affects the
+		righthand expession.
+
+		e.g. accumulator for the reduce function could be provided as:
+
+			(acc[t.id] = t, acc) 
+
+		the lefthand expression is evaluated first
+
+			acc[t.id] = t
+
+		and then the righthand expression is returned.
+
++ plus 
+--------
+
+	used with a variable to convert a string to number
+
+		+var || 0;  // return numeric value of `var` or zero
+
+	if conversion cannot be perfored, NaN is returned
+
+		n = +"five"; // NaN
+
+
+===============================================================================
+
+	object properties
+	*****************
+
+iterate over object properties
+------------------------------
+
+  for (let property in talks) {
+      if (talks.hasOwnProperty(property)) {
+          console.log(`talks[${property}]: ${talks[property]}`);
+      }
+  }
+
+	`hasOwnProperty` checks to see is this is a property specific to this class
+	and not the one inherited from a base class.
+
+
+object to string
+------------------
+
+	JSON.stringify(obj);
+
+
+
+===============================================================================
+
+	object of name value pairs
+	**************************
+
+there are two ways to add properties to an object
+
+var obj = {
+	key1: value1,
+	key2: value2
+};
+
+	obj.key3 = "value3"; // using dot notation
+
+or
+
+	obj["key3"] = "value3"; // using square bracket notation
+
+The second form is frequently used when the name of the property is determined
+dynamically:
+
+	var getProperty = function(propertyName) {
+		// returns the value of the property whose name is provided dynamically
+		return obj[propertyName]; 
+	}
+
+
+===============================================================================

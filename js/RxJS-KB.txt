@@ -353,7 +353,8 @@ Creating new Obervables
               and create a new fresh one for each observer
   empty/never/throw
             - create Os that have very precise and limited behavior
-  interval  - create an O that emits a sequence spaced by an interval
+  interval  - create an Observable that emits a sequence of integers 
+              spaced by an interval (ms)
   just      - covert an object or set of objects into an O that emits that
               those objects
   range     - creates an O that emits a range of sequential integers
@@ -373,8 +374,10 @@ Transforming Observables
               windows and emit these windows rather than emitting the items 
               one at a time
 
-  switchMap - map to observable, complete previous inner observable, emit values
-                - this operator can cancel in-flight network requests!
+  switchMap - map to observable, complete previous inner observable, 
+              emit values
+            - allows us to have the latest response
+            - this operator can cancel in-flight network requests!
 
 Filtering Observables
 
@@ -412,6 +415,62 @@ http://reactivex.io/documentation/operators.html#tree
 Observable Operators
 =====================================================
 
+
+forEach()
+---------
+
+  main intent: clarify situations where you are processing an observable 
+  sequence of bounded/finite duration in a more 'synchronous' manner.
+
+    this.http.post(
+      `${this.url}/rate`, 
+      {id: talk.id, yourRating: rating})
+    .forEach(() => {});
+
+
+  in RxJS 4.0, forEach and subscribe behaved identically.
+  in RxJS 5.0 (ES7), the two are NOT the same.
+
+  item$
+  .forEach(value => console.log('next', value))
+  .then(() => console.log('complete'), e => console.error('error', e));
+
+  forEach is a special kind of operator - internally it will subscribe to the
+  Observable and return a Promise.
+
+  https://github.com/ReactiveX/rxjs/blob/master/src/Observable.ts#L227
+
+
+    subscribe vs forEach
+    --------------------
+
+  public subscribe(
+    observerOrNext: Observer | Function, 
+    error: Function, 
+    complete: Function)
+  : Subscription
+
+  Observable.subscribe is where you do most of your true Observable handling.
+  It returns a subscription token which you can use to cancel your subscription.  This is important - when you do not know the duration of 
+  the events/sequence you have subscrbided to, or if you may need to stop
+  listening before a known duration.
+
+
+  public forEach(next: Function, PromiseCtor?: PromiseConstructor): Promise
+
+  Observable.forEach returns a promise
+  that will either resolve or reject when the Observable completes or errors.
+  It is intended to clarify situations where you are processing an observable 
+  sequence of bounded/finite duration in a more 'synchronous' manner, 
+  such as collating all the incoming values and presenting once, by handling 
+  the Promise.
+
+  You can act on each value, as well as errors and completion events, either way.  
+
+  So the most significant different between RxJS 5 subscribe and forEach is the inability to cancel a promise.
+
+
+
 map()
 -----
 
@@ -434,8 +493,70 @@ filter()
 
 
 
-FlatMap
+FlatMap aka mergeMap
 --------------------------------------------------------------------------
+
+Ex.1
+
+  //emit 'Hello'
+  const source = Rx.Observable.of('Hello');
+  //map to inner observable and flatten
+  const example = source.mergeMap(val => Rx.Observable.of(`${val} World!`));
+  //output: 'Hello World!'
+  const subscribe = example.subscribe(val => console.log(val));
+
+Ex.2 
+
+
+    console.log('---------------- mergeMap ---------------------');
+
+    const outer$:Observable<number> = Observable.interval(50).take(5);
+    const inner$:Observable<number> = Observable.interval(2000).take(1);
+
+    const source$:Observable<string> = outer$.mergeMap( x => {
+        return inner$.map( y => `${x}:${y}`);
+    });
+
+    source$.subscribe( r => console.log(r) );
+
+    // output:
+      0:0
+      1:0
+      2:0
+      3:0
+      4:0
+
+    // none of the values were lost, any time an observable emitted a value
+    // their emitted values were merged.
+    // but it takes BOTH inner$ and outer$ to emit values before source$
+    // would emit a value.
+
+    Also try this for outer$ and inner$
+
+    const outer$:Observable<number> = Observable.interval(2000).take(5);
+    const inner$:Observable<number> = Observable.interval(50).take(5);
+
+    you will see that every time outer$ emits a value every 2 sec, it will 
+    execute its inner function which will return an Observable returning 5 values. so the output will be:
+
+      0:0
+      0:1
+      0:2
+      0:3
+      0:4
+
+      1:0
+      1:1
+      1:2
+      1:3
+      1:4
+      
+    etc.. 
+
+
+
+NOTE: the inner$ has to emit a value BEFORE mergeMap will emit any values.
+
 
 transform the items emitted by an Observable into Observables, then flatten
 the emissions from those into a single Observable.
@@ -444,8 +565,10 @@ the emissions from those into a single Observable.
   each item emitted by the source Observable, where the function returns an
   Observable that itself emits items.
 
-  flatMap then merges the emissions of these resulting Observables, emitting these
-  merged results as its own sequence.
+  flatMap then merges the emissions of these resulting Observables, emitting these merged results as its own sequence.
+
+As soon as the inner observable emits a value, the mergeMap will combine
+both, the values emitted by the outer observable and the value emitted by the inner observable and merge them.
 
 
 SwitchMap
@@ -483,7 +606,7 @@ SwitchMap
       Observable   => use 'switchMap'
 
 
-  The switchMap operator will create a derived observable (called inner observab le) from a source observable and emit those values.
+  The switchMap operator will create a derived observable (called inner observable) from a source observable and emit those values.
 
   When the source emits a new value, it will create a new inner observable and 
   switch to those values instead.
@@ -511,6 +634,37 @@ A:
   than 200-300ms and are triggered while a user is typing 
   see:
   https://stackoverflow.com/documentation/rxjs/8247/common-recipes/26559/discarding-slow-outdated-rest-calls
+
+
+
+switchMap vs (flatMap or mergeMap)
+--------------------------------------------------------------------------
+
+"merge" - think use everything on all the steams, or merge everything
+
+"swtich" - switch to using data on the newer stream
+
+
+  with switchMap, the moment the inner$ observable becomes avaiable, the 
+  output no longer listens to data from outer$ - switchMap effectively 
+  switches over to inner$ and unsubscribes from outer$
+
+  ex:
+
+  console.log('---------------- switchMap ---------------------');
+
+  const outer$:Observable<number> = Observable.interval(50).take(5);
+  const inner$:Observable<number> = Observable.interval(2000).take(1);
+
+  const source$:Observable<string> = outer$.switchMap( x => {
+      return inner$.map( y => `${x}:${y}`);
+  });
+
+  source$.subscribe( r => console.log(r) );
+
+  // outputs "4:0", all previous values that outer$ generated a lost
+  // switchMap switched to listening to inner$ which was more recent.
+
 
 
 Retry(number: number)
@@ -653,6 +807,34 @@ returns empty Observable
     empty observable, i.e.
       Observable.empty()
       Observable.of() 
+
+
+
+
+take
+---------------------------------------------------------------------------
+
+  emit the specified number of values before completing
+
+  Observable.interval(1000)
+      .take(5)  // take the first 5 emitted values
+      .subscribe( val => {
+          console.log(`emitted val: ${val}`);
+      });  
+
+
+
+interval
+---------------------------------------------------------------------------
+
+  Observable.interval(1000)
+      .take(5)  // take the first 5 emitted values
+      .subscribe( val => {
+          console.log(`emitted val: ${val}`);
+      });
+
+
+
 
 
 

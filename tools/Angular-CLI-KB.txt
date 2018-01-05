@@ -61,8 +61,7 @@ you should have the following in your .bashrc or .bash_profile
 
   source /opt/rh/devtoolset-2/enable
 
-
-==============================================================================  
+================================================================================  
 
 List currently installed version
 --------------------------------
@@ -78,7 +77,7 @@ Version 2.1.0-dev.20161003
 
   
 
-==============================================================================  
+================================================================================  
   update node and npm
   *******************
 
@@ -116,7 +115,19 @@ then
   $ rm -rf node_modules dist tmp typings
   $ npm install --save-dev angular-cli@webpack  
 
-==============================================================================  
+================================================================================  
+
+  ngc as drop-in replacement for tsc
+  **********************************
+
+https://angular.io/guide/aot-compiler#compile-with-aot
+
+  $ ngc --project ./tsconfig.json
+
+ngc is a drop-in replacement for tsc and is configured in the same way.
+it requires its own tsconfig.json with AOT-oriented settings.
+
+================================================================================  
 
 Usage
 -----
@@ -679,6 +690,21 @@ ng build
     aliases: -bh <value>
   --aot (Boolean) (Default: false)
 
+  note: AOT is now default for `ng build --prod`
+
+  comparison: vendor bundle 4.48 MB vs 1.36 MB
+
+ ng build
+chunk {vendor} vendor.bundle.js, vendor.bundle.js.map (vendor) 4.48 MB [initial] [rendered]
+
+ ng build --target=production --environment=prod --base-href "/"
+
+chunk {0} 0.380daef586dccc983abc.chunk.js () 1.7 kB {2}  [rendered]
+chunk {1} polyfills.bcca0da82aa526ccd1c3.bundle.js (polyfills) 172 kB {5} [initial] [rendered]
+chunk {2} main.b0350a67fc07ad6a11b7.bundle.js (main) 335 kB {4} [initial] [rendered]
+chunk {3} styles.71ed30077384b0b5da7b.bundle.css (styles) 158 kB {5} [initial] [rendered]
+chunk {4} vendor.a3a2e37057ab90a00758.bundle.js (vendor) 1.36 MB [initial] [rendered]
+chunk {5} inline.0ee6b3be76eaa660ac45.bundle.js (inline) 1.47 kB [entry] [rendered]
 
 
 ==============================================================

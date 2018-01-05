@@ -955,7 +955,7 @@ Type
         is a grouping element that doesn't interfere with styles or layout
         because Angular doesn't put it in the DOM.
 
-        In order to avoid having to create an extra dif, we can instead use 
+        In order to avoid having to create an extra div, we can instead use 
         <ng-container> directive.
         
         E.g.:
@@ -1037,7 +1037,104 @@ Type
       }
 
     }
+
+  Creating Custom Directives
+  ......................................
+
+  great example: 
+    https://github.com/anein/angular2-trim-directive
+
+    also a good example of creating a angular-friendly npm module
+
+
+    Decorators
+
+      @HostListener
+        function decorator
+        provides a way to detect if the user is hovering over the host element
+
+        @HostListener({ 
+          eventName?: string
+          args?: string[]
+        })
+
+        accepts
+          - (optional) eventName
+          - (optional) args string[]
+        e.g.
+        @HostListener('mouseover') onHover() {
+          // window.alert("Hover");
+        }
+
+      @HostBinding
+
+        allows us to bind to `input properties` in the host element
+        this directive can change the properties of the host element, such as
+        list of classes taht are set on the host element as well as a number
+        of other properties.
+
+    selector?: string
+
+      The CSS selector that trigger the instantiation of a directive.
+      Angular only allows directives to trigger on CSS selectors that 
+      do not cross element boundaries.
+
+      selector may be declared as one of the following:
+
+        - element-name: select by element name
+        - .class: select by class name
+        - [attribute] select by attribute name
+        - [attribute=value] selecte by attribute name and value
+        - :not(sub_selector): select only if the element does NOT match the sub_s
+        - selector1, selector2 : select if either selector1 or selector2 matches
           
+        Example:
+
+          selector: 'input[type=text]'
+
+          <form>
+            <input type="text">
+            <input type="radio">
+          </form>
+
+        The directive would only be instantiated on the <input type="text"> element.
+
+      providers?: Provider[]
+
+        defines the set of injectable objects that are visible to a Directive
+        and its light DOM children
+
+    example of custom directive:
+
+      @Directive({
+        selector: 'input[lgnInputTextTrim]',
+        providers: [
+          { provide: NG_VALUE_ACCESSOR, useExisting: InputTextTrimDirective, multi: true }
+        ]
+      })
+      export class InputTextTrimDirective extends DefaultValueAccessor {
+
+        // set a new value to the field and model.
+        private set value( val: any ) {
+          // update element
+          this.writeValue( val );
+          // update model
+          this.onChange( val );
+        }
+
+        /**
+         * Updates the value on 'blur' event.
+         * @param {string} event  event.type that triggered
+         * @param {string} value  event.target.value
+         */
+        @HostListener('blur', ['$event.type', '$event.target.value'])
+        onInput(event: string, value: string): void {
+          // if defined - trim, otherwise don't
+          this.value = (value) ? value.trim() : value;
+        }
+      }    
+
+
 
 
 7. Services
@@ -1258,6 +1355,39 @@ Purpose:
         <div *ngSwitchDefault>Showing Default Data</div>
 
       </div>
+
+
+Providers
+------------------------------------------
+
+  useExisting 
+
+    example
+
+      providers: [
+          A, 
+          {provide: B, useClass: A}, 
+          {provide: C, useExisting: A}]    
+
+      if you have 
+
+        constructor(private a: A)
+
+      an instance for the first provider will be created
+
+        constructor(private b: B)
+
+      an instance for the 2nd provider will be created
+
+        constructor(private c: C)
+
+      an instance of the first provider will be injected
+
+      but if you had started fresh with 
+
+        constructor(private c: C)
+
+      an instance of the first provider is created and injected
 
 
 
@@ -2480,7 +2610,29 @@ ngStyle
         
     }
 
+===============================================================================
 
+  angular component styles
+  ************************
+
+/deep/
+>>> 
+
+  component style normally applies only to the component's own template. Using /deep/ selector we can force a style down through the child component tree into all child component views. /deep/ selector forces its style to its own component, child component, nested component, view children and content children. Suppose we have components with parent child relationship as follows. 
+
+    PersonComponent -> CompanyComponent -> AddressComponent
+
+  In PersonComponent we are using following CSS file with /deep/ selector. 
+  >>> will force PersonComponent style to Company and Address component.
+
+NOTE: as of 11.2017:
+https://angular.io/guide/component-styles
+The shadow-piercing descendant combinator is deprecated and support is being removed from major browsers and tools. As such we plan to drop support in Angular (for all 3 of /deep/, >>> and ::ng-deep). Until then ::ng-deep should be preferred for a broader compatibility with the tools.
+
+
+
+
+===============================================================================
 
 
 Structural Directives
@@ -3206,7 +3358,6 @@ footer.component.html
     </div>
   </div>
 </div>
-
 
 
 

@@ -1,0 +1,168 @@
+
+	reveal.js 
+	*********
+
+https://github.com/hakimel/reveal.js
+
+
+
+Getting started with generator-reveal
+---------------------------------------------------
+https://github.com/slara/generator-reveal
+
+
+using yeoman generator-reveal
+
+	$ sudo npm install -g generator-reveal
+	$ sudo npm install -g bower grunt
+
+once generator-reveal is installed
+make a new directory, and `cd` into it:
+
+	$ mkdir my-new-project && cd $_
+	$ yo reveal
+
+to view slides
+
+	$ grunt serve
+	started connect web server on http://localhost:9000
+
+to deploy
+
+	1. in package.json, modify repository as so
+
+		  "repository": {
+		    "type": "git",
+		    "url": "https://github.com/someuser/some-repo.git"
+		  },	
+
+	2. run `grunt deploy`
+
+		$ grunt deploy
+
+	   presentation will be deployed to gh-pages
+
+
+
+
+To start working on existing presentation
+---------------------------------------------------
+
+	$ cd my-existing-project
+	$ npm install && bower install
+
+
+
+Author slides
+---------------------------------------------------
+
+	$ yo reveal:slide "Slide Title" [--options]
+
+		available options:
+
+			--markdown
+			--attributes
+			--notes
+
+	will add `slides/slide-title.[html|md]
+	and the slide filename will be added to your `slides/list.json`
+
+	Vertical slides
+	--------
+
+	In order to add vertical slides, you can nest an array inside 
+	`slides/list.json`
+
+		[
+		    "index.md",
+		    [
+		        "vertical-html.html",
+		        "vertical-markdown.md"
+		    ],
+		    [
+		        "vertical-html-2.html",
+		        "vertical-markdown-2.md"
+		    ],
+		    "the-end.md"
+		]
+
+	Simple (Image) Slides
+	---------------
+
+	Sometimes, you just need a slide with a background image.
+	That's ok, a slide object does not need a filename
+
+		[
+		    "index.md",
+		    {
+		        "attr": {
+		            "data-background": "http://example.com/image.png"
+		        }
+		    }
+		]	
+
+	Attributes
+	----------
+
+		$ yo reveal:slide "Slide Title" --attributes
+
+	adds a slide Object with an `attr` key.
+	Attributes will be passed to `section` element containing the slide:
+
+		[
+		    "index.md",
+		    {
+		        "filename": "slide-title.md",
+		        "attr": {
+		            "data-background": "#ff0000"
+		        }
+		    }
+		]
+
+		<section data-markdown="slides/slide-title.md" data-background="#ff0000"></section>	
+
+
+
+	Fragments
+	----------
+
+	ability to show/hide text after the initial display of the slide.
+	this can be used to reveal new information as you present without
+	overwhelming the audience with a wall of text up-front.
+
+	In regular markup, we accomplish this by adding the class of `fragment`
+	to an element:
+
+	<ul>
+		<li>This is here from the beginning</li>
+		<li class="fragment">This will appear as you advance the slide</li>
+		<li class="fragment">Then this will appear ... </li>
+	</ul>
+
+	When you're writing this in Markdown, adding a class to an object isn't simple - you can apply HTML comments using the .element selector:
+
+
+	* This is here from the beginning
+	* This will appear as you advance the slide <!-- .element: class="fragment" -->
+	* Then this will appear <!-- .element: class="fragment" -->	
+
+	The order of fragments can be controlled using `data-fragement-index` attribute:
+
+		data-fragement-index="1"
+
+	Background
+	----------
+
+	Likewise, if we wanted to add additional information to the entire slide
+	(e.g. a background image), we can do so simply by using `.slide` selector
+	at the top of our slide:
+
+	<!-- .slide: data-background-image="resources/my-background.jpg" -->
+
+
+	Images
+	------
+
+	![An image](images/an_image.jpg) <!-- .element height="50%" width="50%" -->
+
+================================================================================

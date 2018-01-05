@@ -354,6 +354,75 @@ https://github.com/angular/angular-es/blob/master/public/docs/_examples/testing/
 https://stackoverflow.com/questions/41567825/write-angular2-tests-and-changing-the-mock-return-values-make-it-dry
 
 
+Also see below:
+
+  Spying on a Mock service
+  --------------------------
+
+1. Inject a mock service in the outer 'describe' by overridingProvider.
+2. Then, in every "inner" describe define a mock response and implement a spy
+
+describe('SomeComponent', () => {
+
+  beforeEach(async(() => {
+    mockAuthenticationService = new MockAuthenticationService();
+    TestBed.overrideProvider(AuthenticationService, {useValue: mockAuthenticationService});
+
+    TestBed.configureTestingModule({
+      declarations: [
+
+      ],
+      imports: [
+
+      ],
+      providers: [
+        {provide: Router, useClass: RouterStub},
+        {provide: AuthenticationService}
+      ]
+    })
+      .compileComponents();
+  }));
+
+  describe('Scenario 1', () => {
+    ...
+  })
+
+
+  describe('Scenario 4', () => {
+
+    const mockResponse = {...};
+
+    beforeEach(() => {
+      createComponent();
+    });    
+
+    it('should do something special', async(() => {
+    createComponent();
+    spyOn(mockAuthenticationService, 'getAuthenticated')
+      .and
+      .returnValue(Observable.of(mockResponse));
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    // wait for it ..
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+      expect(component.viewModel.something.length).toBe(4);
+    });
+  }));
+
+  })
+
+  function createComponent() {
+  fixture = TestBed.createComponent(MfaUntrustedDeviceComponent);
+  component = fixture.componentInstance;
+  ce = fixture.debugElement.nativeElement;
+  fixture.detectChanges();
+}
+
+
+
 
 ================================================================================
 
@@ -625,7 +694,7 @@ note: this automatically provides the service in app.module.ts
 
 Tests still pass at this point.. 
 
-
+================================================================================
 
   Spying on the real service
   --------------------------
@@ -677,6 +746,137 @@ and ngOnInit() is called during the first change detection cycle.
 but the tests need to wait at least one more full turn of the JS engine
 before the value becomes available.
 
+================================================================================
+
+  Spying on a Mock service
+  --------------------------
+
+You can inject a mock service into your component
+
+    let component: SomeComponent;
+    let fixture: ComponentFixture<SomeComponent>;
+    let ce: HTMLElement;
+    let titleService: Title;
+    let mockAuthenticationService: MockAuthenticationService;
+
+
+    describe('SomeComponent', () => {
+
+      beforeEach(async(() => {
+
+        // override provider 
+
+        mockAuthenticationService = new MockAuthenticationService();
+        TestBed.overrideProvider(AuthenticationService, {useValue: mockAuthenticationService});
+
+        // configure testing module using actual component config
+
+        TestBed.configureTestingModule({
+          declarations: [
+            SomeComponent,
+          ],
+          imports: [
+            RouterModule,
+            FormsModule,
+            NgIdleModule.forRoot(),
+            ModalModule.forRoot(),
+            AccordionModule.forRoot()
+          ],
+          providers: [
+            {provide: Router, useClass: RouterStub},
+            {provide: AuthenticationService}
+          ]
+        })
+          .compileComponents();
+      }));
+
+If you need to force your component template to reload --> see below
+
+
+.. then in tests, you can either spy on it in beforeEach .. 
+
+
+      beforeEach(() => {
+
+        // create component
+        createComponent();
+
+        // create mock
+        spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+          .and
+          .returnValue(Observable.of(mockMaskedIdentifiers_emailPreferred_noOtherVerifiedDefaults));
+
+        // make component do something
+        component.getUserOtpDeliveryChannelOptions();
+
+        // expect spy to have been called
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+      });
+
+
+
+.. or in actual tests
+
+      it('should have span id="default-otp-channel" display correct mfaOtpDestination', () => {
+        // create a spy
+        spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+          .and
+          .returnValue(Observable.of(mockMaskedIdentifiers_emailPreferred_noOtherVerifiedDefaults));
+
+        // make component do something
+        component.getUserOtpDeliveryChannelOptions();
+
+        // expect spy to have been called
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+
+        // test view .. 
+
+      });
+
+Be aware that you cannnot spy on the same object.method within the same
+scope:
+
+  describe
+
+    beforeEach
+      spy either here, or in "it"s, but not both.
+
+    it
+      spy here 
+
+    it 
+      spy here
+
+
+  If you need your component template to reload (refresh view)
+  ------------------------------------------------------------
+
+use 
+
+  async()
+  fixture.whenStable().then()
+
+    it('should display alt options accordion with 4 channels', async(() => {
+      createComponent();
+      spyOn(mockAuthenticationService, 'getMaskedUserIdentifiers')
+        .and
+        .returnValue(Observable.of(mockMaskedIdentifiers_mobileTextPrefered_plus_email_and_phone_verified_defaults));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      // wait for it ..
+      fixture.whenStable().then(() => {
+        fixture.detectChanges();
+        expect(mockAuthenticationService.getMaskedUserIdentifiers).toHaveBeenCalledTimes(1);
+        expect(component.viewModel.altChannels.length).toBe(4);
+        const accordions = ce.querySelectorAll('accordion');
+        expect(accordions.length).toBe(1);
+      });
+    }));
+
+
+
+================================================================================
 
 async() 
 
@@ -767,6 +967,49 @@ jasmine.done
   Although there is no direct access to the getQuote promise inside
   TwainComponent, the spy has direct access which makes it possible to 
   wait for 'getQuote' to finish.    
+
+
+  Async setTimeout gets interfered with by another component
+  -----------------------------------------------------------
+
+If you have another component that uses setTimeout, your async() tests
+will fail with   
+
+  Error: Timeout - Async callback was not invoked within timeout 
+  specified by jasmine.DEFAULT_TIMEOUT_INTERVAL
+
+You will need to replace this child component with a Dummy if it is 
+not key to testing this component
+
+
+/**
+ * Reason for the dummy idle timeout component is:
+ * idle-timeout component has its own setTimeout which interferes with the Async callback timeout
+ */
+@Component({
+  selector: 'lgn-idle-timeout',
+  template: '<p>Dummy Timeout Component</p>'
+}) class DummyIdleTimeoutComponent {}
+
+
+
+  beforeEach(async(() => {
+
+    TestBed.configureTestingModule({
+      declarations: [
+        DummyIdleTimeoutComponent,  // <====
+      ],
+      imports: [
+()
+      ],
+      providers: [
+
+      ]
+    })
+      .compileComponents();
+  }));
+
+
 
 
   Test a component with routing

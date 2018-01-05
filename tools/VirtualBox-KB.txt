@@ -13,6 +13,9 @@ Adjust window size: Host-A
 The main menu bar is hidden in full-screen mode.
 You can access it by pressing Host+Home
 
+Note: if you lose your menu or status bar, use Host (right ctrl) + Home key
+to get a menu that you will need to navigate with your arrow keyes,
+select View > Menu Bar or Status Bar
 
 =========================================================================
 
