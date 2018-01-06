@@ -61,6 +61,34 @@ you should have the following in your .bashrc or .bash_profile
 
   source /opt/rh/devtoolset-2/enable
 
+
+12/2017 - 01/2018 angular/cli installation issue
+-------------------------------------------------
+
+https://github.com/angular/angular-cli/issues/8402
+
+after updating node/npm and removing cli,
+  $ sudo npm install -g @angular/cli@latest 
+fails with recurring message:
+
+  gyp WARN EACCES user "root" does not have permission to access the dev dir "/usr/local/lib/node_modules/@angular/cli/node_modules/node-sass/.node-gyp/8.9.1"
+
+node: 8.9.4
+
+
+Fixing permissions did not work on Ubuntu 16.04
+
+  $ sudo chown -R $(whoami) /usr/local/lib/node_modules
+
+npm --allow-root  DID NOT WORK
+
+  $ sudo npm install -g @angular/cli --allow-root
+
+--unsafe-perm (THIS INSTALLED angular/cli)
+
+  $ sudo npm install --unsafe-perm -g @angular/cli
+
+
 ================================================================================  
 
 List currently installed version
