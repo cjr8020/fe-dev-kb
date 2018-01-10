@@ -1254,7 +1254,16 @@ or update .angular-cli.json
     }
   }
 
-if you have symlinks in the source tree
+if you have symlinks in the source tree.
+
+Starting with Angular 5, you also need to include your linked library in 
+tsconfig.json
+
+
+  "include": [
+    "src/**/*",
+    “node_modules/your-library/index.ts",
+  ]
 
 
 ================================================================================
