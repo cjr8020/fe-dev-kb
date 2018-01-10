@@ -1235,3 +1235,26 @@ matches our target server configuration:
 
 
 ================================================================================
+
+  use 'npm link' with angular-cli
+  *******************************
+
+either run 
+
+  $ ng serve --preserve-symlinks
+
+or update .angular-cli.json
+
+  ...
+  "defaults": {
+    "styleExt": "scss",
+    "component": {},
+    "build": {
+      "preserveSymlinks": true
+    }
+  }
+
+if you have symlinks in the source tree
+
+
+================================================================================
