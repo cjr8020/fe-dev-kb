@@ -1262,7 +1262,7 @@ tsconfig.json
 
   "include": [
     "src/**/*",
-    “node_modules/your-library/index.ts",
+    "node_modules/your-library/index.ts",
   ]
 
 
