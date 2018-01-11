@@ -754,4 +754,55 @@ $ source-map-explorer dist/vendor.bundle.js dist/vendor.bundle.js.map
 
 ==============================================================================
 
+	npm link
+	*************
+
+package linking is a two-step process
+
+1. `npm link` in a package folder will create a symlink in the global folder
+
+		{prefix}/lib/node_modules/<package>
+
+	that links to the package where the `npm link` command was executed.
+
+	it will also link any bins in the package to 
+
+		{prefix}/bin/{bin}
+
+2. in some other location, `npm link package-name` will create a symbolic link
+   from globally installed "package-name" to "node_modules/" of the current 
+   folder.
+
+   note: "package-name" is taken from `package.json`, not from directory name.
+
+ Example:
+
+ 	$ cd ~/projects/node-redis			# go into the package directory
+ 	$ sudo npm link 					# create a global link
+ 	$ cd ~/projects/node-bloggy			# go into some other package dir
+ 	$ sudo npm link redis 				# link-install the package
+
+ Now, any changes to ~/projects/node-redis will be reflected in 
+ ~/projects/node-bloggy/node_modules/node-redis
+
+ Note: the link should be to the package name, not the directory name
+ for that package.
+
+ You can shortcut the two steps in one:
+
+ 	$ cd ~/projects/node-bloggy 		# go into the dir of your main project
+ 	$ sudo npm link ../node-redis		# link the dir of your dependency
+
+ The second line is equivalent of doing:
+
+ 	$ (cd ../node-redis; sudo npm link)
+ 	$ sudo npm link node-redis
+
+ That is it first creates a global link, and then links the global installation 
+ target into your projects `node_modules` folder.
+
+
+
+==============================================================================
+
 
