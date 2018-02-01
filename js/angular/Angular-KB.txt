@@ -1,9 +1,9 @@
 
-	@@@@@@@@@@@@@@@@@
+	@@@@@@@@@@@
 
-		Angular 2
+		Angular
 
-	@@@@@@@@@@@@@@@@@
+	@@@@@@@@@@@
 
 
 
@@ -3537,6 +3537,13 @@ and the JokeListComponent template to this
 This is called CONTENT PROJECTION -> we project content from 
 the PARENT component to the CHILD component.
 
+
+================================================================================
+
+  Angular libraries with schematics
+  *********************************
+
+https://github.com/caroso1222/ng-lib-schematics
 
 ================================================================================
 
