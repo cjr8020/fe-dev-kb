@@ -349,6 +349,16 @@ $ sudo add-apt-repository ppa:webupd8team/atom
 $ sudo apt-get update
 $ sudo apt-get install atom
 
+to uninstall
+
+$ sudo apt remove --purge atom
+
+or
+
+$ sudo apt-get purge atom
+$ sudo apt-get install ppa-purge
+$ sudo ppa-purge webupd8team/atom
+
 
 ===============================================================
 
