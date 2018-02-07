@@ -1267,3 +1267,70 @@ tsconfig.json
 
 
 ================================================================================
+
+  application paths
+  ******************
+
+Typescript has this `path mapping` feature
+https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping
+
+Loaders use mapping configurations to map module names to files at runtime.
+
+Typescript supports the declaration of such mappings using "paths" property
+in tsconfig.json.
+
+{
+  "compilerOptions": {
+    "baseUrl": ".", // This must be specified if "paths" is.
+    "paths": {
+      "jquery": ["node_modules/jquery/dist/jquery"] // This mapping is relative to "baseUrl"
+    }
+  }
+}
+
+NOTE: "baseUrl" must be specified when using "paths" b/c this mapping 
+is relative to "baseUrl".
+
+This TypeScript feature allows us to avoid relative paths to create 
+reference pointers that can be resolved for each application in their
+tsconfig.json:
+
+
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@environment": [
+        "./environments/environment.ts"
+      ],
+      "@services/*": [
+        "./app/services/*"
+      ]
+    }
+  }
+}
+
+
+With this in place, you can absolutely import from `@environment`:
+
+import {environment} from '@environment';
+
+
+Another example:
+
+"compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@directives/*": ["app/shared/directives/*"],
+      "@services/*": ["app/shared/services/*"],
+      "@models/*": ["app/shared/models/*"],
+      "@assets/*": ["assets*"],
+      "@components/*": ["app/components/*"]
+    },
+...
+Example:
+import { ShoppingItem } from "@models/shopping-item.model";
+
+
+================================================================================
