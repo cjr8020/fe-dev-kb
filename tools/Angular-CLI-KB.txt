@@ -1276,6 +1276,9 @@ https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping
 
 Loaders use mapping configurations to map module names to files at runtime.
 
+tsconfig.json
+-------------
+
 Typescript supports the declaration of such mappings using "paths" property
 in tsconfig.json.
 
@@ -1332,5 +1335,20 @@ Another example:
 Example:
 import { ShoppingItem } from "@models/shopping-item.model";
 
+
+tsconfig.app.json
+-----------------
+
+There is just one more thing to do in an angular-cli project -- remove baseUrl 
+from tsconfig.app.json which extends tsconfig.json and overwrites the baseUrl 
+we've just provided in our tsconfig.json above thus breaking our pointers.
+
+baseUrl is required if you use paths,.. and since currently there are no paths 
+in tsconfig.app.json, removing baseUrl has no effect and solves the webpack 
+build error:
+
+ERROR in src/app/component-library/footer/footer.component.ts(2,29): error TS2307: Cannot find module '@environment'.
+src/app/component-library/footer/footer.component.ts(3,25): error TS2307: Cannot find module '@deploy/build-info'.
+src/environments/environment.ts(2,27): error TS2307: Cannot find module '@deploy/build-info'.
 
 ================================================================================
