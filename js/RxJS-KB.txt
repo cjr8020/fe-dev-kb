@@ -1603,3 +1603,29 @@ custom application event bus
 
 
 ================================================================================
+
+  TypeError: Observable_1.Observable.throw is not a function
+  **********************************************************
+
+Since RxJS 5.5.x, looks like now instead of importing throw, 
+use ErrorObservable:
+
+// import { _throw } from 'rxjs/observable/throw';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+
+ErrorObservable.create('error');
+
+or
+
+    if (blah) {
+      return Observable
+        .fromPromise(blah);
+    } else {
+      return ErrorObservable.create(new Error('Unlucky'));
+    }
+
+
+
+
+
+================================================================================
