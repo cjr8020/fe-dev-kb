@@ -695,6 +695,46 @@ enable ssl
 
 ==============================================================================
 
+	npm package.json and package-lock.json
+	**************************************
+
+02.2018 update
+Clearly, we are not the only ones who have been wondering how the heck this 
+package.json and package-lock.json are supposed work together. 
+Below is a sampling of issues to make us feel better
+
+https://github.com/npm/npm/issues/16866
+https://stackoverflow.com/questions/45022048/why-does-npm-install-rewrite-package-lock-json
+https://github.com/npm/npm/issues/18103
+https://github.com/npm/npm/issues/17979#issuecomment-332701215
+
+Recently (circa npm 5.4.2) some of the weird interplay between package.json and package-lock.json has been fixed:
+
+
+
+  1. If you have a package.json and you run npm i we generate a package-lock.json from it.
+
+  2. If you run npm i against that package.json and package-lock.json, 
+     the latter will never be updated, even if the package.json would be happy 
+     with newer versions.
+
+  3. If you manually edit your package.json to have different ranges and run 
+     npm i and those ranges aren't compatible with your package-lock.json then 
+     the latter will be updated with version that are compatible with your package.json. 
+     Further runs of npm i will be as with 2 above.
+
+
+With that, I suggest:
+
+a) we update to npm 5.6.x as build engine
+
+b) as the interplay between package.json and package-lock.json is now supposed to be more predictable, we should check in package-lock.json into our git repo and observe the behavior.
+
+c) if we manually edit package.json, package-lock.json is now supposed to be updated accordingly, 
+and we should examine the changes and confirm this behavior.
+
+==============================================================================
+
 	npm shrinkwrap
 	**************
 
@@ -823,6 +863,52 @@ package linking is a two-step process
  target into your projects `node_modules` folder.
 
 
+
+==============================================================================
+
+	npm snapshots?
+	*************
+
+An NPM registry has no native concept of snapshot unlike Maven registries.
+
+snapshots are pre-release versions of modules that can be repeatedly published to a repository.  In a Maven project, all you have to do is to declare your version as x.x.x-SNAPSHOT, and the Maven repository will accurately manage which deployment is the most recent, and serve that version any time a Maven build requests version x.x.x-SNAPSHOT.
+
+mimic npm snapshots
+-------------------
+we can mimic Maven SNAPSHOT behavior using the following strategy:
+
+
+Publish your modules with -SNAPSHOT suffix but append an incremented number each time you publish:  -SNAPSHOT.#
+
+	1.0.0-SNAPSHOT.1
+	1.0.0-SNAPSHOT.2
+	etc..
+
+The reason for the additional incremented number is that the NPM registry will not allow to redeploy over the existing version number.   Even npm publish -f will no longer allow you to do that.
+
+dependency declaration
+----------------------
+
+In the consuming application, you can declare your dependency as 
+
+	"^1.0.0-SNAPSHOT"
+
+and NPM will fetch the latest version, 1.0.0-SNAPSHOT.2, for instance.
+
+This is because 
+
+	1.0.0-SNAPSHOT < 1.0.0-SNAPSHOT.1 < 1.0.0-SNAPSHOT.2
+
+
+Caveat:  do not expect this 1.0.0-SNAPSHOT.2  < 1.1.0-SNAPSHOT.0 to work.   This is because SemVer requires the same [major, minor, patch] tuple when using a pre-release tag as described in the docs.
+
+Therefore, when you publish a new prerelease version:
+
+	1.0.1-SNAPSHOT.0
+
+you will also need to change the dependency declaration to
+
+	"^1.0.1-SNAPSHOT"
 
 ==============================================================================
 
