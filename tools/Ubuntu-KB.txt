@@ -244,6 +244,29 @@ wget -nv -O Release.key \
 apt-key add - < Release.key
 apt-get update
 
+
+Applications
+
+	Applications are looked up in the "applications/" directories in 
+	the $XDG_DATA_HOME and $XDG_DATA_DIRS which are set in the 
+	environment variables.
+
+	Your current environment configuration results in the following
+	application directories:
+
+		/home/gobber/.local/share/applications
+		/usr/share/xubuntu/applications
+		/usr/share/xfce4/applications
+		/usr/local/share/applications
+		/usr/share/applications
+		/var/lib/snapd/desktop/applications
+
+	Every application is presented by a desktop file which has an ID.
+	The desktop file ID is built using the path of the desktop file
+	relative to the applications directory and turning "/" into "-".
+	If multiple files have the same desktop ID, the first one in the 
+	precedence order given above is used.
+
 ===============================================================
 
 	installing docky
