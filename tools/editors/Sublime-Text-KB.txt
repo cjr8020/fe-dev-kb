@@ -21,10 +21,15 @@ sublime-keymap User:
 
 ========================================================================
 
+Install Predawn theme
+
+	Package Control: Install Package
+	Predawn
+then,
 sublime-settings -User:
 
 {
-	"color_scheme": "Packages/Color Scheme - Default/Espresso Libre.tmTheme",
+	"color_scheme": "Packages/Predawn/predawn.tmTheme",
 	"font_size": 9,
 	"ignored_packages":
 	[
@@ -35,7 +40,8 @@ sublime-settings -User:
 	[
 		80,
 		100
-	]
+	],
+	"theme": "predawn-DEV.sublime-theme"
 }
 
 ========================================================================

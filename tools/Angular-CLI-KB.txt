@@ -1266,6 +1266,25 @@ tsconfig.json
   ]
 
 
+**update**
+according to this [issue](https://github.com/angular/angular-cli/issues/8284) the need to include your uncompiled TS library is not limited to symlinks or `npm link` use cases.   
+
+This [angular blog](https://blog.angular.io/version-5-0-0-of-angular-now-available-37e414935ced) mentions angular 5 implementing stricter TypeScript standards: 
+
+*"Previously if we detected a lazy loaded route and you were manually specifying a list of files or include in your tsconfig.json, we would automatically add these routes, but we now follow the TypeScript specification and no longer do this."*
+
+The `tsconfig` files is what determines what TS files are compiled.  By default `./src/tsconfig.app.json` will only pick up files inside `src/`.   If you have a file outside source (like an included library of uncompiled TS source), it won't be picked up automatically by angular 5 cli.  Therefore, you need to add them explicitly to your tsconfig.
+
+You can add your includes in either `./tsconfig.json`
+or
+to one or both (depending your need)
+```
+./src/tsconfig.app.json
+./src/tsconfig.spec.json
+```
+
+
+
 ================================================================================
 
   application paths

@@ -19,6 +19,32 @@ select View > Menu Bar or Status Bar
 
 =========================================================================
 
+
+	Installing Xubuntu 17.04 on virtual box
+	***************************************
+
+XPS 15
+------
+
+New -> 	Name: "xubuntu-16.04"
+		Memory size: 16 (of 32)
+		
+		if installing from an image from www.osboxes.org/xubuntu
+
+			use 3rd option: "Use an existing virtual hard drive file"
+			note: xubuntu x64 17.04 is a
+				dynamic default 100GB max
+
+
+		Processors: 4 
+		Enable PAE/NX
+		Video Mem: 33MB of 128MB
+
+Install xubuntu
+
+		add the ISO image to the guest to boot from
+		VM | Settings | Storage - select "Empty" drive under Controller: IDE
+
 	Installing Xubuntu on virtual box
 	*********************************
 
@@ -143,6 +169,7 @@ Provide additional capability to your guest VM:
 Make sure the current user has sudo:
 
 $ sudo adduser <username> sudo
+$ sudo adduser <username> vboxsf
 
 To install Guess Additions:
 ---------------------------
@@ -233,3 +260,162 @@ if you are annoyed with num/scroll lock notifications when you move
 between host and guest os, uninstall your setpoint software.
 
 =======================================================================
+
+	Convert between Fixed and Dynamic Disk 
+	**************************************
+https://www.howtogeek.com/312456/how-to-convert-between-fixed-and-dynamic-disks-in-virtualbox/	
+
+
+Step 1 - Locate VBoxManage command and run on command prompt
+
+	cd "C:\Program Files\Oracle\VirtualBox"
+
+Step 2 - list VDIs
+
+	VBoxManage.exe list hdds
+
+		this will list all HDDs known
+
+	VBoxManage.exe showhdinfo disk "C:\path\to\something.vdi"
+
+		Format variant: dynamic default
+
+			shows this disk as `dynamic`
+
+Step 3 - Convert
+
+  To convert a virtual disk from fixed to dynamic, run the following command:
+
+	VBoxManage.exe clonemedium disk "C:\path\to\source.vdi" "C:\path\to\destination.vdi" –variant Standard
+
+
+  To convert a virtual disk from dynamic to fixed, run the following command:
+
+  	VBoxManage.exe clonemedium disk "C:\path\to\source.vdi" "C:\path\to\destination.vdi" –variant Fixed
+
+
+Step 4 - Remove the old virtual disk
+
+	The above command just clones the existing disk. You end up with both the original disk file and a new disk file.
+
+	First, you’ll need to actually remove the existing virtual disk from VirtualBox. In VirtualBox, right-click the virtual machine that uses the virtual disk and select “Settings”.
+	Select “Storage” to view connected storage devices. Right-click the original VDI and select “Remove Attachment”. Click “OK” afterwards.
+
+	In the Command Prompt, run the following command to view a list of all virtual disks on your computer:
+
+		VBoxManage.exe list hdds
+
+	Locate the UUID of the original disk you want to delete. You can copy it to your clipboard by selecting it with your mouse’s left mouse button and then right-clicking it.
+
+	Run the following command to remove the original disk from VirtualBox’s registry and delete it. You can right-click in the Command Prompt window to paste the UUID.
+
+		VBoxManage.exe closemedium <UUID> --delete
+
+Step Five - Rename the New Disk
+
+	You should now rename the new disk file so that it has the same name as the original one. Just navigate to it in a File Explorer or Windows Explorer window.
+
+	Right-click the VDI file, select “Rename”, and change it to the original name. For example, here we renamed the Windows-fixed.vdi file we created to Windows.vdi.
+
+	Once you’ve renamed the disk, remove the old disk name from VirtualBox. Click File > Virtual Media Manager in VirtualBox and locate the renamed disk’s original name—it will have a yellow warning icon to the left of it. Right-click it and select “Remove”. Click “Remove” again to confirm and close “Close”.
+
+Step Six: Insert the Disk In VirtualBox
+
+	Head back into VirtualBox, right-click the virtual machine associated with the virtual disk, and select “Settings”. Under Storage, right-click the SATA controller and select “Add Hard Disk”.
+
+	Select “Choose Existing Disk” and browse to the file you just renamed.
+	Click “OK” to close the virtual machine settings window. You should now be able to boot the virtual machine normally. Its disk will be either a fixed or dynamic disk—whichever you converted it to.
+
+================================================================================
+
+	Increase size of virtual disk
+	*****************************
+https://www.howtogeek.com/124622/how-to-enlarge-a-virtual-machines-disk-in-virtualbox-or-vmware/	
+
+To enlarge a virtual disk in VirtualBox, you’ll need to use the VBoxManage command from a Command Prompt window. First, shut down the virtual machine – ensure its state is set to Powered Off, not Saved.
+
+Second, open a Command Prompt window from your Start menu and change to VirtualBox’s program files folder so you can run the command:
+
+	cd “C:\Program Files\Oracle\VirtualBox”
+
+The following command will operate on the VirtualBox virtual disk located at “C:\Users\Chris\VirtualBox VMs\Windows 7\Windows 7.vdi”. It will resize the virtual disk to 81920 MB (80 GB).
+
+	VBoxManage modifyhd “C:\Users\Chris\VirtualBox VMs\Windows 7\Windows 7.vdi” --resize 81920
+
+(Use two dashes before resize in the command above.)
+
+
+	VBoxManage \
+		modifyhd “C:\Users\<username>\VirtualBox VMs\<vm_name>\<disk_name>.vdi” \
+		–-resize <size in MB>
+
+	e.g. 100 GB => 100.000 MB
+
+Replace the file path in the command above with the location of the VirtualBox disk you want to resize and the number with the size you want to enlarge the image to (in MB).
+
+Note that this process doesn’t enlarge the partition on the virtual hard disk, so you won’t have access to the new space yet – see the Enlarge the Virtual Machine’s Partition section below for more information.
+
+	Now start your virtual machine. You will receive the same warning about space that prompted you to engage in this procedure. 
+
+
+On your VM guest
+-----------------
+https://askubuntu.com/questions/101715/resizing-virtual-drive
+
+1. Start the partition manager `gparted` 
+	install it if is is missing 
+		sudo apt-get install gparted
+
+2. Get rid of the swap partition, which prevents you from expanding the root partition. 
+
+	Note that you cannot harm the rest of your machine - this is all happening 
+	inside a single file. 
+	Worst case scenario you trash this file and you have to use your backup instead.
+
+	- Make a note of the size of the linux-swap partition 4 GiB in my case
+	- Right click on it and Swapoff
+	- Right click on it and Delete
+	- Apply by clicking on the checkmark (Apply all operations). 
+	  Ignore the dire warning
+
+	- right click on the extended file system that once housed the swap partition 
+		/dev/sda2 in all likelihood 
+		and delete it
+
+	- right click on the root partition (/dev/sda1) and resize it. 
+
+		Tab to the 'Free space following' field and enter the size of the swap partition. 
+		Shift-Tab and the machine will work out the new size for you automatically.
+
+	- Right click in the unallocated space at the end and make it an extended partition
+	- Right click in the new partition and select linux-swap in the File system field.
+	- Commit your changes as before
+	- Right click on your swap partition and select swapon
+
+
+
+Note that you may have to activate swap and edit /etc/fstab after doing this 
+
+
+================================================================================
+
+	HighDPI solving high DPI issues for guest VMs
+	*********************************************
+
+https://teklern.blogspot.com/2017/10/installing-ubuntu-17.html
+https://blog.jamesbayley.com/2016/02/10/fixed-tiny-screen-in-virtualbox-guest/
+
+On Dell XPS 15
+Settings
+	Display
+		scale factor: 200%
+		3d accell: enabled
+
+Ubuntu guest
+	install GuestAdditions
+	Mouse: configure mouse size
+
+
+
+
+================================================================================

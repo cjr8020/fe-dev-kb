@@ -3365,9 +3365,15 @@ footer.component.html
 
   Centralized Store Pattern
   *************************
+
   Angular Ngrx Store 
 
 http://blog.angular-university.io/angular-ngrx-store-and-effects-crash-course/  
+
+Other references:
+https://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/
+https://www.bersling.com/2017/06/05/state-management-ngrxstore-vs-angular-services/
+
 
 
 origins: facebook counter bug

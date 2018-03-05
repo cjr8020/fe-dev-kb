@@ -77,6 +77,23 @@ Xubuntu
 
 ===============================================================
 
+	@@@@@@@@@@@@@
+
+	xubuntu 17.04
+
+	@@@@@@@@@@@@@
+
+
+VB image: www.osboxes.org/xubuntu
+
+	username: osboxes.org
+	password: osboxes.org
+
+
+
+
+===============================================================
+
 
 	@@@@@@@@@@@@@
 
@@ -104,7 +121,7 @@ Proxy settings
 
 http://askubuntu.com/questions/531906/virtualbox-proxy-settings-with-14-04
 
-NOTE: at Standard, on my xubunty VM, all the settings below are without "username:password".
+NOTE: at .., on my xubunty VM, all the settings below are without "username:password".
 
 
 Open a terminal.Ctrl + Alt + T
@@ -193,6 +210,62 @@ To enable additional workspaces:
 
 open the System / Settings window
 Workspaces
+
+===============================================================
+
+	application launchers options
+	*****************************
+
+https://www.slant.co/topics/3945/versus/~rofi_vs_albert_vs_docky	
+
+Albert
+--------
+https://github.com/albertlauncher/albert
+https://albertlauncher.github.io/docs/installing/
+https://albertlauncher.github.io/docs/using/
+
+
+Rofi
+--------
+https://github.com/DaveDavenport/rofi/
+https://www.devmanuals.net/install/ubuntu/ubuntu-17-04-lts-Zesty-Zapus/installing-rofi-on-ubuntu17.04.html
+
+Synapse
+---------
+https://www.devmanuals.net/install/ubuntu/ubuntu-17-04-lts-Zesty-Zapus/installing-synapse-on-ubuntu17.04.html
+
+===============================================================
+
+	installing albert
+	*****************
+
+wget -nv -O Release.key \
+  https://build.opensuse.org/projects/home:manuelschneid3r/public_key
+apt-key add - < Release.key
+apt-get update
+
+
+Applications
+
+	Applications are looked up in the "applications/" directories in 
+	the $XDG_DATA_HOME and $XDG_DATA_DIRS which are set in the 
+	environment variables.
+
+	Your current environment configuration results in the following
+	application directories:
+
+		/home/gobber/.local/share/applications
+		/usr/share/xubuntu/applications
+		/usr/share/xfce4/applications
+		/usr/local/share/applications
+		/usr/share/applications
+		/var/lib/snapd/desktop/applications
+
+	Every application is presented by a desktop file which has an ID.
+	The desktop file ID is built using the path of the desktop file
+	relative to the applications directory and turning "/" into "-".
+	If multiple files have the same desktop ID, the first one in the 
+	precedence order given above is used.
 
 ===============================================================
 
@@ -788,6 +861,7 @@ uninstall
 
 $ chsh --shell /bin/zsh
 
+see @powerline-shell.txt for oh-my-zsh installation.
 
 ================================================================================
 
