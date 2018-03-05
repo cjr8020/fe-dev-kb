@@ -838,6 +838,7 @@ uninstall
 
 $ chsh --shell /bin/zsh
 
+see @powerline-shell.txt for oh-my-zsh installation.
 
 ================================================================================
 

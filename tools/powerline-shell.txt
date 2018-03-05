@@ -11,6 +11,7 @@ install
 via curl
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
 via wget
 
 sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
@@ -85,14 +86,6 @@ https://github.com/robbyrussell/oh-my-zsh/issues/2033
 
 
 #  hide the “user@hostname” info when you’re logged in as yourself 
-# on your local machine.
-
-		for those using 'agnoster' theme.
-	    	Edit agnoster.zsh-theme and find $user@%m 
-	    	then delete @%m
-	    	save
-	    	open your terminal 
-	    	Example: agnoster.zsh-theme
 
 
 # context: user@hostname (who am I and where am I)
@@ -126,7 +119,7 @@ How to add newline to end of agnoster prompt?
 It boils down to putting an echo at the end of the prompt_build function.
 http://thisismecoding.com/multine-agnoster-oh-my-zsh/
 
-Add function:
+Add function to ~/.oh-my-zsh/themes/agnoster.zsh-theme:
 
 
 # this one has smaller space between separator and cursor
@@ -171,7 +164,7 @@ build_prompt() {
 PROMPT='%{%f%b%k%}$(build_prompt)'
 
 
-Another agnoster newline
+Another agnoster newline  - not using this one
 ------------------------------
 
 Change prompt to:
