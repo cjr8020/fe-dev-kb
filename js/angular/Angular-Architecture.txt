@@ -1,0 +1,144 @@
+
+	*****************************
+
+		Angular Architecture
+
+	*****************************
+
+
+================================================================================
+
+	View Layer Architecture
+	************************
+
+https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/
+
+
+Smart Components vs Presentation Components
+*******************************************
+
+smart components
+
+	app-level components, or controller components
+	very tied to this particular application
+	it would be hard to reuse it in another app
+
+	knows where data comes from, or what type of data there is .. 
+	does not know how to present data to the user
+
+	receives application-specific dependencies via constructor, e.g. LessonService.
+	injects data to the presentation component via @Input, and 
+	receives any actions that the presentation component might trigger via @Output
+	by using @Output, the presentation component remains isolated from the 
+	smart component via a cleanly defined interface.
+
+
+presentation components
+
+	pure or dumb components
+
+	receives data via @Input
+	does not know/care where the data comes from
+	responsibility: purely present data to user and not fetch from any location
+
+
+==> PROBLEM: custom events don't bubble up!
+
+	If you have a deep tree of components and you want a component multiple levels
+	above to know about the event, the event will not bubble.
+
+		Let's say, we have several levels: the lesson list is inside a collapsible
+		panel which is inside a tab panel.
+		The lesson still wants to notify the home component that a lesson was 
+		selected via the `lesson` event.  But the two components in the middle,
+		TabPanel and CollapsiblePanel, are non application-specific Presentation
+		Components (e.g. they are Angular Material lib components) - they do not
+		know about the `lesson` event, so they cannot bubble it up.
+
+
+
+Presentation Component
+-----------------------
+
+	import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+	import {Lesson} from "../shared/model/lesson";
+
+	@Component({
+	  selector: 'lessons-list',
+	  template: `
+	      <table class="table lessons-list card card-strong">
+	          <tbody>
+	          <tr *ngFor="let lesson of lessons" (click)="selectLesson(lesson)">
+	              <td class="lesson-title"> {{lesson.description}} </td>
+	              <td class="duration">
+	                  <i class="md-icon duration-icon">access_time</i>
+	                  <span>{{lesson.duration}}</span>
+	              </td>
+	          </tr>
+	          </tbody>
+	      </table>  
+	  `,
+	  styleUrls: ['./lessons-list.component.css']
+	})
+	export class LessonsListComponent {
+
+	  @Input()
+	  lessons: Lesson[];
+
+	  @Output('lesson')
+	  lessonEmitter = new EventEmitter<Lesson>();
+
+	    selectLesson(lesson:Lesson) {
+	        this.lessonEmitter.emit(lesson);
+	    }
+
+	}
+  
+
+Smart Component
+-------------------
+
+Using @Output the presentation component remains isolated from the smart component via a clearly defined interface:
+
+ - the lessons list presentation component only knows that it emitted an event, but does not know what are the receivers of the event or what will the receivers do in response to the event
+
+ - the home screen smart component subscribes to the lesson custom event and reacts to the event, but it does not know what triggered the event. Did the user double click on the lessons list or did the user click a view button? This is transparent to the smart component.
+
+
+	import { Component, OnInit } from '@angular/core';
+	import {LessonsService} from "../shared/model/lessons.service";
+	import {Lesson} from "../shared/model/lesson";
+
+	@Component({
+	  selector: 'app-home',
+	  template: `
+	      <h2>All Lessons</h2>
+	      <h4>Total Lessons: {{lessons?.length}}</h4>
+
+	      <div class="lessons-list-container v-h-center-block-parent">
+	          <lessons-list [lessons]="lessons" (lesson)="selectLesson($event)"></lessons-list>
+	      </div>
+	`,
+	  styleUrls: ['./home.component.css']
+	})
+	export class HomeComponent implements OnInit {
+
+	    lessons: Lesson[];
+
+	  constructor(private lessonsService: LessonsService) {
+	  }
+
+	  ngOnInit() {
+	     ...
+	  }
+
+	  selectLesson(lesson) {
+	    ...
+	  }
+
+	}
+
+
+
+
+================================================================================
