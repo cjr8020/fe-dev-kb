@@ -605,6 +605,28 @@ echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sou
 
 ============================================================
 
+  Installing WebStorm
+  ********************
+
+$ sudo tar -xvf WebStorm-*.tar.gz -C /opt/
+$ sudo ln -s /opt/WebStorm-173.4674.32 /opt/WebStorm
+
+run 
+
+$ /opt/WebStorm/bin/idea.sh
+================================================================================
+
+  Installing Intellij IDEA
+  ********************
+
+$ sudo tar -xvf ideaIC-*.tar.gz -C /opt/
+$ sudo ln -s /opt/idea-IC-173.4674.33 /opt/idea-IC
+
+run 
+
+$ /opt/idea-IC/bin/idea.sh
+============================================================
+
 	install Meld Merge
 	******************
 
