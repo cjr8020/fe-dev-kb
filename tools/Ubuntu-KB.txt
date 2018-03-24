@@ -267,6 +267,11 @@ Applications
 	If multiple files have the same desktop ID, the first one in the 
 	precedence order given above is used.
 
+
+Autolaunch
+
+	$ ln -s /usr/share/applications/albert.desktop ~/.config/autostart/
+
 ===============================================================
 
 	installing docky
