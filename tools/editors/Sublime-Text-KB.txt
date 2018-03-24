@@ -207,6 +207,23 @@ Open Terminal at Project Folder
 
 	Press ctrl+alt+shift+t on Windows and Linux, or cmd+alt+shift+t on OS X
 
+Package Settings
+
+	The default settings can be viewed by accessing the Preferences > Package Settings > Terminal > Settings – Default menu entry. 
+
+	To ensure settings are not lost when the package is upgraded, make sure all edits are saved to Settings – User.
+
+Override default
+
+	Windows
+
+		open Preferences > Package Settings > Terminal > Settings – User
+		enter the following:
+
+{
+  // Replace with your own path to cmder.exe
+  "terminal": "U:\\AppData\\Programs\\ConEmu-v160428\\ConEmu64.exe"
+}		
 
 ===================================================================================
 
