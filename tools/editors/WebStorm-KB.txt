@@ -143,6 +143,18 @@ Expand
 
 ================================================================================
 
+  Installing on Linux
+  ********************
+
+$ sudo tar -xvf WebStorm-*.tar.gz -C /opt/
+$ sudo ln -s /opt/WebStorm-173.4674.32 /opt/WebStorm
+
+run 
+
+$ /opt/WebStorm/bin/idea.sh
+
+================================================================================
+
 	Remap Ubuntu keyboard shortcuts
 	*******************************
 
