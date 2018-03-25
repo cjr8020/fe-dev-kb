@@ -940,7 +940,7 @@ export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.a
 
 
 	$ sudo chmod -x /etc/profile.d/mavenenv.sh
-	$ source /etc/proflie.d/mavenenv.sh
+	$ source /etc/profile.d/mavenenv.sh
 	$ mvn --version
 add to ~/.oh-my-zsh/custom
 	$ vi ~/.oh-my-zsh/custom/java-dev-env.zsh
