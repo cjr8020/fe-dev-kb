@@ -175,7 +175,7 @@ tag
 
 create tag
 
-	$ git tag -a v1.0 -m "tagging release 1.0"
+	$ git tag -a v1.0.0 -m "tagging release 1.0.0"
 
 
 push tags
