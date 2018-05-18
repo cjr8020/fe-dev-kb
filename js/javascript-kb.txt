@@ -131,6 +131,46 @@ comma
 		n = +"five"; // NaN
 
 
+!! (not not) operator 
+-----------------------
+
+"bang bang - you're boolean" - coerces Object to boolean.
+If it was falsey (e.g. 0, null, undefined, etc.), it will be `false`.
+otherwise, `true`.
+
+The first `!` negates it once, converting values like so:
+
+	undefined to true
+	null to true
+	+0 to true
+	-0 to true
+	'' to true
+	NaN to true
+	false to true
+	All other expressions to false
+
+the second `!` negates it again.
+
+
+!oObject  // inverted boolean
+!!oObject // non inverted boolean - so true boolean representation
+
+Example:
+
+let isIE8 = false;
+isIE8 = !! navigator.userAgent.match(/MSIE 8.0/);
+console.log(isIE8); // returns true or false
+
+if you 
+console.log(navigator.userAgent.match(/MSIE 8.0/));
+// returns `null`
+
+if you 
+console.log(!!navigator.userAgent.match(/MSIE 8.0/));
+// returns true or false
+
+
+
 ===============================================================================
 
 	object properties
