@@ -285,6 +285,33 @@ You might want to try a maven->force reimport from within intellij on the projec
 
 ================================================================================
 
+    Decompiling
+    ***********
+
+Decompile JVM class files using IntelliJ IDEA's embedded FernFlower decompiler.
+
+cd to a directory that contains classes/packages
+provide/create a src directory e.g. `src`
+execute the following script:
+
+decompile.bat
+-------------
+
+java -cp "C:\Program Files (x86)\JetBrains\IntelliJ IDEA 15.0.2\plugins\java-decompiler\lib\java-decompiler.jar" org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler -dgs=true . src
+
+decompile.sh
+------------
+
+#!/bin/bash
+
+java -cp "/Applications/IntelliJ IDEA 15.app/Contents/plugins/java-decompiler/lib/java-decompiler.jar" \
+  org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler \
+  -dgs=true \
+  classDir/ srcDir/    
+
+
+================================================================================
+
     Restore Defaults
     ****************
 
