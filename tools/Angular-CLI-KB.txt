@@ -1383,6 +1383,9 @@ src/environments/environment.ts(2,27): error TS2307: Cannot find module '@deploy
 5 -> 6
 ==========
 
+https://stackoverflow.com/questions/48970553/want-to-upgrade-project-from-angular-v5-to-angular-v6
+https://update.angular.io
+
 
 Step 1: make sure node 8.9+ is installed
 ----------------------------------------
@@ -1473,6 +1476,13 @@ Other DEV dependencies:
   so you can update the project accordingly
 
 
+Check
+----------------------------------------
+
+  At this point, your app may be able to run 
+
+  	$ ng serve
+
 
 Step 6: update RxJS
 ----------------------------------------
@@ -1484,7 +1494,7 @@ Step 6: update RxJS
 
 	To refactor TS code, run the following:
 
-	$ npm install -g rxjs-tslint
+	$ sudo npm install -g rxjs-tslint
 	$ rxjs-5-to-6-migrate -p src/tsconfig.app.json
 
   Once all of your dependencies have updated to RxJS 6, remove `rxjs-compat`
