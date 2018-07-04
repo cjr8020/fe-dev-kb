@@ -272,6 +272,12 @@ Autolaunch
 
 	$ ln -s /usr/share/applications/albert.desktop ~/.config/autostart/
 
+Settings - Albert
+
+	Hotkey: Alt+A
+	Enabled Extensions:
+		Applications
+
 ===============================================================
 
 	installing docky
