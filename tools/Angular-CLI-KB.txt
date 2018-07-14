@@ -5,6 +5,10 @@
 
   @@@@@@@@@@@@@@@@
 
+
+See `ng update` notes at the bottom.
+
+
 Update nodejs on ubuntu:
 ------------------------
 
@@ -1369,5 +1373,143 @@ build error:
 ERROR in src/app/component-library/footer/footer.component.ts(2,29): error TS2307: Cannot find module '@environment'.
 src/app/component-library/footer/footer.component.ts(3,25): error TS2307: Cannot find module '@deploy/build-info'.
 src/environments/environment.ts(2,27): error TS2307: Cannot find module '@deploy/build-info'.
+
+================================================================================
+
+	ng update
+	**********
+
+
+5 -> 6
+==========
+
+https://stackoverflow.com/questions/48970553/want-to-upgrade-project-from-angular-v5-to-angular-v6
+https://update.angular.io
+
+
+Step 1: make sure node 8.9+ is installed
+----------------------------------------
+
+Step 2: install @angular/cli 6 globally
+----------------------------------------
+
+$ npm install -g @angular/cli@latest
+
+	Angular CLI: 6.0.8
+	Node: 8.11.3
+	OS: linux x64
+	Angular: 6.0.7
+
+Step 3:  Install @angular/cli locally 
+----------------------------------------
+
+  If i'm on angular 5 project, my angular/cli version is probably somewhere here:
+
+    "@angular/cli": "1.6.3",
+    "@angular/compiler-cli": "^5.0.0",
+
+  and for angular 6, I need it here:
+
+    "@angular/compiler-cli": "^6.0.3",
+    "@angular-devkit/build-angular": "~0.6.8",
+    "typescript": "~2.7.2",
+    "@angular/cli": "~6.0.8",
+
+  So, before I run `npm install`, I modify package.json to the above and then run:    
+
+	$ npm install @angular/cli
+
+
+Step 4: migrate the old .angular-cli.json to new angular.json
+---------------------------------------------------------------
+
+	$ ng update @angular/cli
+
+
+Step 5: update your angular framework packages to v6
+----------------------------------------------------
+
+	$ ng update @angular/core
+
+Update Angular Material if you use it:
+
+	$ ng update @angular/material
+
+
+Other DEV dependencies:
+
+  angular 5 project has the following dev dependencies:
+
+    "@types/jasmine": "~2.5.53",
+    "@types/jasminewd2": "~2.0.2",
+    "@types/node": "~6.0.60",
+    "codelyzer": "^4.0.1",
+    "jasmine-core": "~2.6.2",
+    "jasmine-spec-reporter": "~4.1.0",
+    "karma": "~1.7.0",
+    "karma-chrome-launcher": "~2.1.1",
+    "karma-cli": "~1.0.1",							// gone in angular 6
+    "karma-coverage-istanbul-reporter": "^1.2.1",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "protractor": "~5.1.2",
+    "ts-node": "~3.2.0",
+    "tslint": "~5.7.0",
+
+  angular 6 project bootstraped with `ng new` as of 7-4-2018:
+
+    "@types/jasmine": "~2.8.6",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
+    "codelyzer": "~4.2.1",
+    "jasmine-core": "~2.99.1",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~1.7.1",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.0",
+    "karma-jasmine": "~1.1.1",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "protractor": "~5.3.0",
+    "ts-node": "~5.0.1",
+    "tslint": "~5.9.1"       
+
+  so you can update the project accordingly
+
+
+Check
+----------------------------------------
+
+  At this point, your app may be able to run 
+
+  	$ ng serve
+
+
+Step 6: update RxJS
+----------------------------------------
+
+	RxJS v6 has major changes from v5.
+	v6 brings backwards compatibility package rxjs-compat that will keep
+	your applications working, but you should refactor your TS code so that
+	it does not depend on rxjs-compat.
+
+	To refactor TS code, run the following:
+
+	$ sudo npm install -g rxjs-tslint
+	$ rxjs-5-to-6-migrate -p src/tsconfig.app.json
+
+  Once all of your dependencies have updated to RxJS 6, remove `rxjs-compat`
+  as it increases the bundle size
+
+  	$ npm uninstall rxjs-compat
+
+  See RxJS Upgrade Guide
+  https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md
+
+
+Finally: `ng serve`
+-----------------------------------------
+
+
+
 
 ================================================================================
