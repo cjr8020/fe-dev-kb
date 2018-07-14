@@ -549,3 +549,87 @@ https://hackernoon.com/12-cool-things-you-can-do-with-github-f3e0424cf2f0
 
 ================================================================================
 
+	go back in history to privous commit
+	************************************
+
+Temporarily switch to a earlier commit
+---------------------------------------
+
+If you want to temporarily go back, and do some work there, then come back to
+where you are now, all you have to do is checkout the desired commit:
+
+	# this will detach your HEAD, that is, leave you with no branch checked out:
+	git checkout ab34324bada
+
+Or if you want to make commits while you're there, go ahead make a new branch 
+from that commit:
+
+	git checkout -b old-state ab34324bada
+
+This could be handy if you want to generate a release from a previous point in 
+history:
+
+	git checkout -b feature-a-release ab34324bada		
+
+.. then merge to master and tag it.
+
+To go back where were, simply checkout the branch you were on again:
+
+	git checkout develop
+
+
+Hard delete unpublished commits
+-------------------------------
+
+If, on the other hand, you want to really get rid of everything you've done 
+since then, there are two options:
+
+1. if you haven't published any of these commits, simply reset:
+
+	# this will destroy any local modifications.
+	git reset --hard ab34324bada
+
+if there is work you want to keep
+
+	# this saves the modifications, then reapplies that patch after resetting
+	# you could get merge conflicts if you've modified things ..
+	git stash
+	git reset --hard ab34324bada
+	git stash pop
+
+
+2. If you've published your work, you probably don't want to reset the branch
+   since that's effectively rewriting history.
+
+   in this case, you could indeed revert the commits.
+   with git, revert has a very specific meaning - create a commit with the reverse
+   patch to cancel it out.  This way you don't re-write history
+
+   # this will create three separate revert commits:
+   
+   git revert a353543af 25eeee4ca 0766c065
+
+   # it also takes ranges.
+   # this will revert the last 2 commits
+
+   git revert HEAD~2..HEAD
+
+   # or you can revert a range of commits
+   
+   git revert a353543af..0766c065
+
+   # reverting a merge commit 
+   git revert -m 1 <merge-commit-sha>
+
+   # to get just one, you could use `rebase -i` to squash afterwards
+   # or, you could do it manually (be sure to do this at top level or the repo) 
+   # get your index and work tree into the desired state
+
+   git checkout 0d1d7fc32
+
+   
+
+
+
+================================================================================
+
