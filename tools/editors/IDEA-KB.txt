@@ -351,3 +351,13 @@ run
 
 $ /opt/idea-IC/bin/idea.sh
 ================================================================================
+
+    fatal: Authentication failed for git repo
+    *****************************************
+
+on Windows 10:
+
+    go to Credential Manager | Windows Credentials | edit or delete the entry
+
+
+================================================================================
