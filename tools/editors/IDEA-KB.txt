@@ -361,3 +361,42 @@ on Windows 10:
 
 
 ================================================================================
+
+    Create Entity Objects in IDEA Ulimate
+    *************************************
+http://jpdevelopment.blogspot.com/2015/11/create-entity-objects-from-db-schema.html
+
+ If you have a database schema and needs to create the entity objects matching the schema, 
+ Intellij IDEA can help you! All you have to to is follow this simple guide.
+ 
+ Setup data source
+ ------------------
+Start by adding a data source to the project, by clicking the "Database" tab in the right hand side of Intellij.
+Click the green plus, navigate to "Data Source" and choose "Oracle".
+
+Enter the data source info for the db you wish to connect to and click OK.
+
+Add framework support
+---------------------
+
+Add framework support by right clicking the project.
+Choose "JavaEE Persistence" as framework. Set version to 2.1, 
+provider to Hibernate and click OK. 
+A persistence.xml file will be created, which can be deleted after entity objects has been created.
+
+Assign data source
+------------------
+A new tab should be added in the left hand side of IntelliJ, named "Persistence". 
+Click it and a new Persistence frame opens. Right click the persistance unit (ticketing-core) and choose "Assign Data Sources..."
+
+Select data source
+Assign a data source to the persistence unit and click OK.
+
+Generate mapping
+Generate a mapping by right clicking the persistence unit and choose "Generate Persistence Mapping" and then "By Database Schema".
+
+Choose entities
+Choose a data source, package and the schemas, click OK and Yes in the pop up. 
+You should now have some some nice entity objects with basic mapping annotations!
+
+================================================================================
