@@ -630,6 +630,37 @@ if there is work you want to keep
    
 
 
+================================================================================
+
+	github 2FA and credential helper
+	********************************
+
+Turn on the credential helper to cache your credentials (so you only need to do this once):
+
+a. Windows:
+
+	git config --global credential.helper wincred
+
+b. Mac:
+
+	git config --global credential.helper osxkeychain	
+
+
+Set up a personal access token for accessing GitHub repositories - with
+gist, repo, and user scope. 
+
+	git push
+
+and use your access token.
+
+For Linux, you can:
+
+- Use credential.helper cache to cache for 15 minutes.
+- Use credential.helper store to store the credentials unencrypted on disk
+- Enter the access token every time
+
+There are other helpers floating around such as gnome/libsecret
 
 ================================================================================
 
+	
