@@ -1068,4 +1068,19 @@ Check every PPA before restoring
 
 Restore /etc/apt/sources.list.
 
+Note that the links to security software may have changed compared to the previous
+version.  Here are the links that you commented out earlier, this time from 
+the default 18.04 TLS distribution compliments of
+https://gist.github.com/jackw1111/d31140946901fab417131ff4d9ae92e3
+also shown here
+https://askubuntu.com/questions/1036408/what-is-the-default-content-of-etc-apt-sources-list-in-ubuntu-18-04-lts-bionic
+
+
+deb http://security.ubuntu.com/ubuntu bionic-security main restricted
+# deb-src http://security.ubuntu.com/ubuntu bionic-security main restricted
+deb http://security.ubuntu.com/ubuntu bionic-security universe
+# deb-src http://security.ubuntu.com/ubuntu bionic-security universe
+deb http://security.ubuntu.com/ubuntu bionic-security multiverse
+# deb-src http://security.ubuntu.com/ubuntu bionic-security multiverse
+
 ================================================================================
