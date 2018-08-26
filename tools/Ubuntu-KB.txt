@@ -668,6 +668,27 @@ $ sudo ln -s /opt/idea-IC-173.4674.33 /opt/idea-IC
 run 
 
 $ /opt/idea-IC/bin/idea.sh
+
+============================================================
+
+	installing VSCode
+	*****************
+
+https://code.visualstudio.com/docs/setup/linux
+
+Install repository and key
+
+$ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+$ sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+$ sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+
+Update package cache and install package:
+
+sudo apt-get install apt-transport-https
+sudo apt-get update
+sudo apt-get install code # or code-insiders
+
+
 ============================================================
 
 	install Meld Merge
