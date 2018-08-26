@@ -663,4 +663,38 @@ There are other helpers floating around such as gnome/libsecret
 
 ================================================================================
 
+	installing credential.helper on Ubuntu
+	**************************************
+https://stackoverflow.com/questions/36585496/error-when-using-git-credential-helper-with-gnome-keyring-as-sudo/40312117#40312117	
+
+libgnome-keyring is specific to GNOME and is now deprecated (since January 2014, actually).
+
+Git 2.11+ (Q4 2016) will include a new credential helper using libsecret.
+A new credential helper that talks via "libsecret" with implementations of XDG Secret Service API has been added to contrib/credential/.
+
+it uses libsecret which can support other implementations of XDG Secret Service API.
+
+1. install libsecret and the development libraries:
+
+	sudo apt-get install libsecret-1-0 libsecret-1-dev
+
+2. build the credential manager
+
+	cd /usr/share/doc/git/contrib/credential/libsecret
+
+if credential/libsecret folder with sources does not exist, downloade from source
+https://github.com/git/git/tree/master/contrib/credential/libsecret
+
+now, compile
+
+	sudo make
+
+3. Configure git to use the newly created credential.helper:
+
+	git config --global credential.helper /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+
+Note: some distroes like Arch and Fedora may provide helpers available already.
+
+================================================================================
+
 	
