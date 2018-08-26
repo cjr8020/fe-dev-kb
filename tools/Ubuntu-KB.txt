@@ -977,3 +977,95 @@ source /etc/profile.d/gradleenv.sh
 
 
 ================================================================================
+
+	xubuntu - launch TTY2
+	*********************
+
+Hit Ctrl+Alt+F2 - go to terminal TTY2	
+
+To exit TTY2, hit Ctrl+Alt+F7 
+
+
+================================================================================
+
+	xubuntu - LTS release upgrade
+	*****************************
+https://hamwaves.com/release-upgrade/en/index.html	
+
+Start by only installing long-term supported (LTS) releases.
+
+Wait for release XX.04.01
+
+Clean out sources.list
+-----------------------
+
+$ cd /etc/apt
+$ sudo cp sources.list sources.list.bup
+$ sudo vim sources.list
+
+In the sources.list file, comment out with a pound # all deb and deb-src lines below the following lines:
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a\ service to Ubuntu users.
+## This software is not part of Ubuntu, but is offered by third-party
+## developers who want to ship their latest software.
+
+
+Find the fastest repository
+---------------------------
+
+Unfortunately, the Debian netselect-apt command line tool for finding out the fastest —not the closest!— repository is not available in Ubuntu. Hence, following steps in the graphical user interface are necessary to perform this task:
+
+Open Update Manager.
+Click on the Settings… button.
+Select the Ubuntu Software tab.
+In the Download from: selector, choose Other….
+Click on the Select Best Server button and wait.
+Once finished, click on the Choose Server button.
+Click on Close.
+Click on Reload and wait.
+Finally, click on the Close button to close the Update Manager.
+
+
+Upgrade from within TTY2
+------------------------
+
+Hit [Ctrl]+[Alt]+[F2] to go to terminal TTY2. This will prevent lock-outs xscreensaver. Avoid TTY1 because of the many system messages.
+
+If confronted with blank TTY screens without any login prompt, edit /etc/default/grub:
+
+$ sudo vim /etc/default/grub
+Uncomment the line GRUB_TERMINAL=console. After performing this edit, do not forget to
+
+$ sudo update-grub
+$ sudo reboot -n
+
+Finally,
+---------------
+
+	$ sudo do-release-upgrade
+
+
+Clean-up
+---------------
+
+http://askubuntu.com/questions/140246/how-do-i-resolve-unmet-dependencies
+
+$ sudo apt-get autoclean
+$ sudo apt-get -f install
+
+0 upgraded, 0 newly installed, 0 to remove and 79 not upgraded.
+
+$ sudo apt-get -u dist-upgrade
+
+
+Restore sources.list
+----------------------
+
+Check every PPA before restoring
+
+Restore /etc/apt/sources.list.
+
+================================================================================
