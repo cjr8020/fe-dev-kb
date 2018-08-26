@@ -201,6 +201,15 @@ NTP synchronized: yes
 
 note: ntpdate is deprecated in favor of timedatectl
 
+check timezone
+---------------
+
+timedatectl status | grep "Time zone"
+
+set 
+
+sudo timedatectl set-timezone America/Los_Angeles (or New_York)
+
 ===============================================================
 
 	enable workspaces or virtual desks
