@@ -399,6 +399,22 @@ Note that you may have to activate swap and edit /etc/fstab after doing this
 
 ================================================================================
 
+	rename VM
+	**********
+
+	GUI
+
+Shut down the machine, right-click on the machine, choose "Settings..." and from "General" tab -> "Basic" tab -> type in the "Name" box and click "OK".
+
+	From terminal
+
+Shut down that machine and type this in terminal:
+
+	VBoxManage modifyvm ORIGNAL_NAME --name NEW_NAME
+
+
+================================================================================
+
 	HighDPI solving high DPI issues for guest VMs
 	*********************************************
 
