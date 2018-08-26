@@ -688,6 +688,22 @@ sudo apt-get install apt-transport-https
 sudo apt-get update
 sudo apt-get install code # or code-insiders
 
+To opt-out from usage reporting:
+
+From File > Preferences > Settings (macOS: Code > Preferences > Settings), add the following option to disable telemetry reporting, this will silence all telemetry events from the VS Code shell.
+
+    "telemetry.enableTelemetry": false
+
+restart.
+
+How to disable crash reporting
+VS Code collects data about any crashes that occur and sends it to Microsoft to help improve our products and services. Read our privacy statement to learn more.
+
+If you don't wish to send crash data to Microsoft, you can set the telemetry.enableCrashReporter setting to false.
+
+    "telemetry.enableCrashReporter": false
+
+restart.
 
 ============================================================
 
