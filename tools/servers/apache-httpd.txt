@@ -1,0 +1,574 @@
+	
+	@@@@@@@@@@@@@@@@
+
+		Apache 2
+
+	@@@@@@@@@@@@@@@@
+
+
+version info
+
+./sbin/httpd -v
+
+Server version: Apache/2.2.26 (Unix)
+Server built:   Jan 20 2015 14:28:06
+
+
+
+================================================================================
+
+	VirtualHost
+	***********
+
+Syntax:
+
+	<VirtualHost addr[:port] [addr[:port]] ...>
+		...
+	</VirtualHost>
+
+"addr" can be:
+
+	- the IP address of the virtual host
+	- a fully qualified domain name for the IP address of the virtual host
+	  (not recommended)
+	- (*) character
+	  which can only be used in combination with NameVirtualHost * to match all 
+	  IP addresses, or
+	- string "_default_" 
+      which us used only with IP virtual hosting to catch unmatched IP addresses
+
+
+When using IP-based virtual hosting, the special name "_default_" can be 
+specified in which case this virtual host will match any IP address that is not
+explicitly listed in another virtual host.
+
+	##
+	## SSL Virtual Host Context
+	##
+
+	<VirtualHost _default_:443>
+
+
+
+================================================================================
+
+
+Name-based vs. IP-based Virtual Hosts
+*************************************
+
+https://httpd.apache.org/docs/2.2/vhosts/name-based.html
+
+
+IP-based virtual hosts use the IP address of the connection to determine the
+correct virtual host to serve.
+Therefore, you have to have a separate IP address for each host.
+
+Name-based virtual hosting, the server relies on the cient to report to report
+the hostname as part of the HTTP headers.
+Using this technique, many different hosts can share the same IP address.
+
+Name-based virtual hostsing is usually simpler, since you need only configure
+your DNS server to map each hostname to the correct IP address, and then
+configure the Apache HTTP server to recognize the diffferent hostnames.
+
+You should use name-based virtual hosting unless you are using equipment that
+explicitly demands IP-based hosting.
+
+Historical reasons for IP-based virtual hosting based on cilent support are no
+longer applicable to a general-purpose web server, unless you're using a mod_ssl
+version without SNI support.
+
+
+Using Name-based Vitual Hosts
+*****************************
+
+To use name-based virtual hosting, 
+
+Step 1: you must designate the IP address 
+(and possibly port) on the server that will be accepting requests for the hosts.
+This is configured using the NameVirtualHost directive.
+In the normal case where any and all IP addresses on the server should be used
+you can use * as the argument:
+
+	NameVirtualHost *
+
+If you plan on using multiple ports (e.g. running SSL) you should add a Port to
+the argument, eg:
+
+	NameVirtualHost *:80
+
+Note that mentioning an IP address in a NameVirtualHost directive does not
+automatically make the server listen to that IP address.  See Listen directive.
+
+Step 2: next step is to create a VirtualHost block for each different host that
+you would like to serve.  The argument to the VirtualHost directive must match
+the defined NameVirtualHost directive.
+
+Inside the VirtualHost directive you will need at a minimum a ServerName to
+designate which host  is served and a DocumentRoot  to show where in the file
+system the content for that host lives.
+
+	NOTE: main host goes away
+	If you are adding virtual hosts to an existing web server, you must also 
+	create a VirtualHost block for the existing host.
+	
+	The ServerName and DocumentRoot included in this virtual host should be 
+	the same as the global ServerName and DocumentRoot.  
+
+	List this virtual host first in the configuration file so it will act as the 
+	default host.
+
+For example, suppose that you are serving the domain www.domain.tld and you wish to add the virtual host www.otherdomain.tld, which points at the same IP address. Then you simply add the following to httpd.conf:
+
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+  ServerName www.domain.tld
+  ServerAlias domain.tld *.domain.tld
+  DocumentRoot /www/domain
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName www.otherdomain.tld
+  DocumentRoot /www/otherdomain
+</VirtualHost>
+
+You can alternatively specify an explicit IP address in place of the * in both
+NameVirtualHost and VirtualHost directives.   You might want to do this in order
+to run some name-based virtual hosts on one IP address, and either IP-based, or 
+another set of name-based virtual hosts on another address.
+
+Now, when a request arrives, the server will first check if it is using an IP
+address that matches the NameVirtualHost.
+
+If it is, then it will look at each <VirtualHost> section with a matching IP and
+try to find one where the ServerName or ServerAlias matches the requested hostname.
+
+THE FIRST LISTED VIRTUAL HOST IS THE DEFAULT VIRTUAL HOST.
+
+================================================================================
+
+	Alias directive
+	******
+
+Alias directives are created either
+a) in the root-level server config, or
+b) inside a <VirtualHost> block
+
+The Alias directive allows documents to be stored in the local filesystem other
+than the DocumentRoot.
+
+URL with a (%-decoded) path beginning with URL-path will be mapped to local
+files beginning with directory-path:
+
+	Alias URL-path file-path|directory-path
+e.g.:
+	Alias /image /ftp/pub/image
+
+URL-path is case-sensitive
+
+	trailing slash "/"
+	------------------
+
+NOTE: if you include a trailing "/" on the URL-path then the server will require
+a trailing slash "/" in order to expand the alias.  That is 
+
+	Alias /icons/ /usr/loca/apache/icons/
+
+then the URL "/icons" will not be aliased as it lacks the trailing "/"
+
+In general, trailing slashes should be avoided in "Alias" directives.
+
+	DocumentRoot /srv/www/example.com/public_html/
+	Alias /code /srv/git/public
+	<Directory /srv/git/public>
+	    Order allow,deny
+	    Allow from all
+	</Directory> 
+
+If the above read 
+
+	Alias /code/ /svr/git/public
+
+a request for "http://example.com/code" without a trailing slash, would not
+match this Alias and would be served from the DocumentRoot.
+
+However, if the "Alias" is to be used in the middle of a URL:
+
+	http://example.com/ng/my-home
+
+then, trailing slash should probably be there:
+
+
+	Alias /ng/ "/apps/angular-apps/"
+	<Directory /apps/angular-apps>
+	  Order allow,deny
+	  Allow from all
+	  AllowOverride All
+	</Directory>
+
+
+
+	<Directory>
+	-----------
+
+You may need to specify additional <Directory> sections which cover the destiation
+of aliases.  
+
+Direcory blocks need to be created after "Alias" directives - this makes it possible
+to permit access and control the behaviour of those sections.
+
+Aliasing occurs before <Directory> sections are checked, so only the
+destination of aliases are affected.
+
+E.g. if you are creating an Alias to a directory outside of your DocumentRoot,
+you may need to explicitely permit access to the target directory:
+
+Alias /image /ftp/pub/image
+<Directory /ftp/pub/image>
+	Order allow,deny
+	Allow from all
+</Directory>
+
+
+
+================================================================================
+
+	AliasMatch and DirectoryMatch
+	*****************************
+
+In addition to Alias, Apache provides an AliasMatch directive that offers similar functionality. AlaisMatch provides the additional ability to alias a class of requests for a given resource to a location outside of the DocumentRoot. 
+
+	DocumentRoot /srv/www/example.com/public_html/
+	AliasMatch /code/projects/(.+) /srv/git/projects/$1
+	<DirectoryMatch "^/srv/git/projects/.+$">
+	    Order allow,deny
+	    Allow from all
+	</Directory>
+
+Equivalent to "Alias" but makes use of RegEx instead of simple prefix matching.
+
+Syntax:
+
+	AliasMatch regex file-path|directory-path
+
+E.g.:
+
+	AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+
+
+================================================================================
+
+	Deny access to all files except index.html 
+	*******************************************
+http://serverfault.com/questions/407682/denying-access-to-all-files-except-index-html-apache
+
+Q: Could someone help me with apache .htaccess file to deny access to all files and sub directories except for index.html on the documentroot for an apache server?
+
+<Location />
+    Order deny,allow
+    <Files index.html>
+        Order allow,deny
+    </Files>
+</Location>
+
+but that didn't work.
+
+A: Try this:
+
+	Order allow,deny
+	Deny from all
+	<FilesMatch index\.html>
+	        Allow from all
+	</FilesMatch>
+
+
+
+================================================================================
+
+	mod_rewrite
+	***********
+
+RewriteBase directive
+
+	speicifies the URL prefix to be used for per-directory (htaccess) RewriteRule
+	directives that substitue a relative path.
+
+	required when you use a relative path in a substitution in .htaccess context
+
+
+
+
+================================================================================
+
+	deploy angular2 app to apache
+	*****************************
+
+https://github.com/mgechev/angular-seed/wiki/Deploying-prod-build-to-Apache-2
+
+You want to deploy your production build an Apache2 server.
+You will notice that 
+
+- reloading pages, besides root, and
+- deep linking
+
+will cause 404 errors (unless you're using Hash Location strategy).
+The reason is that all angular2 routes should be served via the index.html file.
+
+This can be achieved by adding a .htaccess file (in the same directory as the 
+index.html):
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+This piece of code makes use of the "mod_rewrite" module from Apache, so make
+sure it is enabled.
+
+Also, for the rewrite module to work, the apache configuration should have 
+================================================================================
+
+	AllowOverride Directive
+	***********************
+
+Syntax AllowOverride All|None|directive-type
+Default: All
+
+When the server finds an .htaccess file (as specified by AccessFileName), it
+needs to know which directives declared in that file can override earlier
+configuration directives.
+
+	AllowOverride is valid only in <Directory> sections specified without
+	regular expressions, not in <Location> <DirectoryMatch> or <Files>
+
+When set to "None", then .htaccess files are completely ignored.
+When set to "All", then any directive which has the .htaccess Context is allowed
+in .htaccess files.
+
+"directive-type" could be one of:
+
+	AuthConfig
+	FileInfo
+	Indexes
+	Limit
+	Options[=Option,..]
+
+E.g.
+
+	AllowOverride AuthConfig Indexes
+
+================================================================================
+
+	directory indexing
+	******************
+
+Is controled by Indexes Option
+Either all Options must start with + or -, or no Option may.
+
+If your goal is to turn off indexes. 
+
+	Options -Indexes
+
+If you want to make sure FollowSymlinks is also set, put a + in front of it:
+
+	# relative to whatever lower precedence section applies
+	Options -Indexes +FollowSymlinks
+
+If you want to turn everything but FollowSymlinks off:
+
+	# not relative
+	Options FollowSymlinks
+
+
+.htaccess
+---------------
+
+Options -Indexes +FollowSymlinks
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /ng/my-home/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /ng/my-home/index.html [L]
+</IfModule>
+
+
+
+# Block access to directories without a default document.
+#
+# You should leave the following uncommented, as you shouldn't allow
+# anyone to surf through every directory on your server (which may
+# includes rather private places such as the CMS's directories).
+
+<IfModule mod_autoindex.c>
+    # Prevent directory listing !!!
+    #
+    # WARNING: maybe this isn't allowed, because of a strict apache-config
+    #
+    Options -Indexes
+</IfModule>
+
+
+
+
+
+<Directory>
+-------------------
+
+<Directory /opt/apps/webapps/angular-apps/>
+  Options -Indexes +FollowSymlinks
+  Order allow,deny
+  Allow from all
+  AllowOverride All
+</Directory>
+
+
+================================================================================
+
+	frameable resource vulnerability
+	********************************
+
+The frame-ancestors directive can be used in a Content-Security-Policy HTTP response header to indicate whether or not a browser should be allowed to render a page in a <frame> or <iframe>. Sites can use this to avoid Clickjacking attacks by ensuring that their content is not embedded into other sites.
+	
+
+defalt-src
+--------------
+
+https://www.owasp.org/index.php/Content_Security_Policy_Cheat_Sheet
+
+The most basic policy assumes:
+
+ - all resources are hosted by the same domain of the document
+ - there are no inlines or evals for scripts and style resources
+
+ 	Content-Security-Policy: default-src 'self' 
+
+To tighten further, one can do the following:
+
+	Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';
+
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "default-src 'self'; img-src *.cloudflare.com; script-src 'self' www.google-analytics.com *.cloudflare.com"
+</IfModule>
+
+
+Preventing Clickjacking | framing
+-----------------------------------
+
+https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet	
+
+
+To prevent all framing of your content use:
+
+	Content-Security-Policy: frame-ancestors 'none'
+
+To allow for your site only, use:
+
+	Content-Security-Policy: frame-ancestors 'self'
+
+To allow for trusted domain (my-trusty-site.com), do the following:
+
+	Content-Security-Policy: frame-ancestors my-trusty-site.com 
+
+
+
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "default-src 'self' *.trusted.com; frame-ancestors 'self';"
+    Header set X-Content-Type-Options nosniff
+    Header set X-Frame-Options DENY
+</IfModule>
+
+
+
+
+X-Frame-Options
+--------------------
+
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+
+================================================================================
+
+	Increase Security with X-Security Headers
+	*****************************************
+
+https://htaccessbook.com/increase-security-x-security-headers/
+
+how to add X-Security Headers to protect against 
+ - cross-site scripting (XSS), 
+ - page-framing, and 
+ - content-sniffing
+
+
+Protect against XSS attacks
+----------------------------
+
+	# X-XSS-Protection
+	<IfModule mod_headers.c>
+		Header set X-XSS-Protection "1; mode=block"
+	</IfModule>
+
+This code works by adding the X-XSS-Protection header to your server responses. 
+Most modern web browsers understand this header and will use it to help protect 
+your site against cross-site scripting attacks.
+
+Protect against page-framing and click-jacking
+-----------------------------------------------
+
+	# X-Frame-Options
+	<IfModule mod_headers.c>
+		Header always append X-Frame-Options SAMEORIGIN
+	</IfModule>
+
+No modifications are required, simply copy/paste and done. 
+This code works by adding the X-Frame-Options header to your server responses. 
+Most modern web browsers understand this header and will use it to ensure that your page can be displayed in a frame only if the frame is on the same domain.
+
+Protect against content-sniffing
+---------------------------------
+
+	# X-Content-Type nosniff
+	<IfModule mod_headers.c>
+		Header set X-Content-Type-Options nosniff
+	</IfModule>
+
+
+This code works by adding the X-Content-Type-Options header to your server responses. 
+Most modern web browsers understand this header and will use it to ensure proper 
+MIME types for all loaded resources (e.g., CSS, JavaScript, fonts, images, video, et al).
+
+Combine all three X-Security Headers
+------------------------------------
+
+# Extra Security Headers
+<IfModule mod_headers.c>
+	Header set X-XSS-Protection "1; mode=block"
+	Header always append X-Frame-Options SAMEORIGIN
+	Header set X-Content-Type-Options nosniff
+</IfModule>
+
+
+another sample:
+
+<IfModule mod_headers.c>
+  <Directory />
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set x-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set Content-Security-Policy "default-src 'self'; font-src *;img-src * data:; script-src *; style-src *;"
+    Header always set Referrer-Policy "strict-origin"
+  </Directory>
+</IfModule>
+
+
+================================================================================
