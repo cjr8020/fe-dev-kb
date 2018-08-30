@@ -1,0 +1,13 @@
+
+	************
+		OSX
+	************
+
+
+Keyboard shortcuts
+
+
+cmnd-space					spotlight
+
+F4							launchpad
+
