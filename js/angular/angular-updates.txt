@@ -44,8 +44,26 @@ angular/cli
 		$ npm uninstall rxjs-compat
 
 
-
 ================================================================================
+
+	angular 6 `ng new` vulnerabilities
+	**********************************
+
+	$ ng new 
+	added 1103 packages from 1289 contributors and audited 24010 packages in 52.487s
+	found 12 vulnerabilities (9 low, 3 high)
+	  run `npm audit fix` to fix them, or `npm audit` for details
+
+
+	$ cd <project-dir>
+	$ npm audit
+
+shows all in karma
+
+	$ npm i karma@3.0.0 --save 
+	+ karma@3.0.0
+	added 12 packages from 53 contributors, removed 32 packages, updated 21 packages and audited 25057 packages in 13.583s
+	found 0 vulnerabilities
 
 
 
