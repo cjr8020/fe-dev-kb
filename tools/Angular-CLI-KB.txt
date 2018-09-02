@@ -944,7 +944,7 @@ Chrome now has the ability to run in headless mode since version 59, so you can 
 To use Chrome in headless mode, you need to add the following section to your karma.conf.js
 
     browsers: ['Chrome','ChromeHeadless'],
-    singleRun: true,
+    singleRun: false,
     customLaunchers: {
       ChromeHeadless: {
         base: 'Chrome',
@@ -965,7 +965,7 @@ in the same file.
 
 Now, if you added a 2nd browser, you can say:
 
-  $ ng test --browser ChromeHeadless
+  $ ng test --browsers ChromeHeadless --watch=false
 
 or just 
 
@@ -979,8 +979,8 @@ e.g.:
 
   "scripts": {
     ... 
-    "test": "ng test --browser ChromeHeadless --watch false",
-    "test-debug": "ng test --browser Chrome",
+    "test": "ng test --browsers ChromeHeadless --watch=false --code-coverage=true",
+    "test-debug": "ng test --browsers Chrome",    
   },
 
 and then run as:

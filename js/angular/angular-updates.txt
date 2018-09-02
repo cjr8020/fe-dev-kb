@@ -14,6 +14,11 @@ Upgrading to Angular 6
 
 Node version 8.9+ or newer
 
+e.g.:
+node: 10.8.0
+npm : 6.2.0
+
+
 angular/cli
 
 	update angular/cli gloabally and locally
@@ -40,3 +45,8 @@ angular/cli
 
 
 
+================================================================================
+
+
+
+================================================================================

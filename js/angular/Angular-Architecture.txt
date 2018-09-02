@@ -142,3 +142,26 @@ Using @Output the presentation component remains isolated from the smart compone
 
 
 ================================================================================
+
+	Angular libraries
+	*****************
+
+Angular v6 CLI delivers integration with ng-packagr.
+
+ng-packgr
+---------
+https://www.npmjs.com/package/ng-packagr
+
+	Transpiles your library to Angular Package Format.
+
+
+Creating a library
+-------------------------------------------------------
+
+	In angular 6, angular.json represents what is now called a 'workspace'
+	with possibly multiple projects.
+
+
+
+
+================================================================================
