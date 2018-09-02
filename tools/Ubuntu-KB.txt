@@ -201,6 +201,21 @@ NTP synchronized: yes
 
 note: ntpdate is deprecated in favor of timedatectl
 
+
+force ntp sync
+---------------
+
+when the clock is too much out of sync (more than 3 sec) it won't get update
+automatically.  To force it manually:
+
+	$ sudo service ntp stop
+	$ sudo ntpd -gq 				<-- here you can see it's getting sync
+	$ sudo service ntp start
+
+confirm
+
+	$ timedatectl
+
 check timezone
 ---------------
 
