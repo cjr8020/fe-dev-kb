@@ -224,7 +224,7 @@ angular.json projects object
 
 
 Testing the library
------------------------
+================================================================================
 
 Typically, we use `npm install` to add a library to our app.
 
@@ -365,6 +365,91 @@ Display `example-ng6-lib` Component
 
     $npm run test-lib
     $npm run test-app
+
+
+Adding another component to the library
+***************************************
+
+1. Generate a new component in our library.
+2. Add the component to our library module’s exports.
+3. Add the component to our entry file.
+4. Rebuild our library after we make changes to it.
+5. Use the new component in our application
+
+1. Generate a new component in our library.
+-------------------------------------------
+
+  $ ng g comp foo --project=example-ng6-lib
+
+    CREATE projects/example-ng6-lib/src/lib/foo/foo.component.css (0 bytes)
+    CREATE projects/example-ng6-lib/src/lib/foo/foo.component.html (22 bytes)
+    CREATE projects/example-ng6-lib/src/lib/foo/foo.component.spec.ts (607 bytes)
+    CREATE projects/example-ng6-lib/src/lib/foo/foo.component.ts (257 bytes)
+    UPDATE projects/example-ng6-lib/src/lib/example-ng6-lib.module.ts (327 bytes)
+
+2. Add the component to our library module’s exports.
+-----------------------------------------------------
+
+    import { FooComponent } from './foo/foo.component';
+
+    @NgModule({
+      imports: [
+      ],
+      declarations: [
+        ExampleNg6LibComponent,
+        FooComponent],             <--
+      exports: [
+        ExampleNg6LibComponent,
+        FooComponent               <--
+      ]
+    })
+    export class ExampleNg6LibModule { }
+
+
+
+3. Add the component to our entry file.
+----------------------------------------
+
+  while <enl-foo> component is useable without adding it to the entry file,
+  however, FooComponent.class itself won't be exported:
+  adding a reference like this:
+
+    fooComponent: FooComponent;
+
+  causes:
+
+    Module has no exported member 'FooComponent'
+
+
+  FOR COMPONENTS:
+  Using export makes the element visible.
+  Adding it to the entry file makes the class visible.
+
+
+    public_api.ts
+    -------------
+
+  /*
+   * Public API Surface of example-ng6-lib
+   */
+
+  export * from './lib/example-ng6-lib.service';
+  export * from './lib/example-ng6-lib.component';
+  export * from './lib/example-ng6-lib.module';  
+  export * from './lib/foo/foo.component';           <-- 
+
+  
+4. Rebuild our library after we make changes to it.
+
+  $ ng build --prod example-ng6-lib
+
+
+5. Use the new component in our application
+
+add <enl-foo>
+
+  <enl-example-ng6-lib></enl-example-ng6-lib>
+  <enl-foo></enl-foo>
 
 
 ================================================================================
