@@ -1,0 +1,70 @@
+
+	************************
+
+		Angular updates
+
+	************************
+
+
+================================================================================
+
+Upgrading to Angular 6
+***********************	
+
+
+Node version 8.9+ or newer
+
+e.g.:
+node: 10.8.0
+npm : 6.2.0
+
+
+angular/cli
+
+	update angular/cli gloabally and locally
+
+		$ npm install -g @angular/cli
+		$ npm install @angular/cli
+		$ ng update @angular/cli
+
+	update all your Angular framework packages to v6
+
+		$ ng update @angular/core
+		$ ng update @angular/material
+
+	RxJS v6 has major changes from v5.
+	v6 brings backwards compatibility package rxjs-compat that will keep your applications working, but you should refactor TypeScript code so that it doesn't depend on rxjs-compat. To refactor TypeScript code run following:
+
+		$ npm install -g rxjs-tslint
+		$ rxjs-5-to-6-migrate -p src/tsconfig.app.json
+
+
+	Once all of your dependencies have updated to RxJS 6, remove rxjs- compat as it increases bundle size. please see this RxJS Upgrade Guide for more info.
+
+		$ npm uninstall rxjs-compat
+
+
+================================================================================
+
+	angular 6 `ng new` vulnerabilities
+	**********************************
+
+	$ ng new 
+	added 1103 packages from 1289 contributors and audited 24010 packages in 52.487s
+	found 12 vulnerabilities (9 low, 3 high)
+	  run `npm audit fix` to fix them, or `npm audit` for details
+
+
+	$ cd <project-dir>
+	$ npm audit
+
+shows all in karma
+
+	$ npm i karma@3.0.0 --save 
+	+ karma@3.0.0
+	added 12 packages from 53 contributors, removed 32 packages, updated 21 packages and audited 25057 packages in 13.583s
+	found 0 vulnerabilities
+
+
+
+================================================================================

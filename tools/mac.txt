@@ -15,3 +15,122 @@ sh-cmd-3					screenshot entire screen (into PNG on desktop)
 ctrl-sh-cmd-3				screenshot entire screen into clipboard
 sh-cmd-4					screenshot selection (into PNG on desktop)
 ctrl-sh-cmd-4				screenshot selection into clipboard
+
+
+================================================================================
+
+	oh-my-zsh - iTerm2 - solarized
+	******************************
+
+https://gist.github.com/ZenLulz/c812f70fc86ebdbb189d9fb82f98197e
+
+$ brew cask install iterm2
+
+$ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+$ vi ~/.zshrc
+
+ZSH_THEME="agnoster"
+
+Install the required fonts
+--------------------------
+
+We need to provide specific fonts for iTerm2 to properly handle the theme agnoster. For that purpose, we are going to install the Powerline fonts.
+
+# Cloning
+git clone https://github.com/powerline/fonts.git
+
+# Installation
+cd fonts
+./install.sh
+
+# Clean up
+cd ..
+rm -rf fonts
+
+Apply the newly-installed fonts
+--------------------------------
+
+Open the preferences of iTerm2 (cmd+,) and click on the tab Profiles then Text 
+and finally click on the button "Change font" to select 
+
+	12pt Meslo LG S DZ Regular for Powerline
+
+Configure the colors set in iTerm2
+-----------------------------------
+
+Open the preferences of iTerm2 (cmd+,) and click on the tab 
+Profiles then Colors and finally click on the dropdown list Color Presets.... 
+Select the item Solarized Dark.
+
+
+================================================================================
+
+	iTerm2 V3
+	*********
+
+shortcuts
+	https://gist.github.com/squarism/ae3613daf5c01a98ba3a
+
+cmd-d 
+cmd-shift-d 
+	divide an existing session vertically or horizontally, respectively. 
+
+cmd-opt-arrow 
+cmd-[ and cmd-]
+	navigate among split panes
+
+cmd-shift-enter
+	"maximize" the current pane--hiding all others in that tab
+	same command restores the hidden panes.
+
+opt-space
+	hotkey window
+	most commonly used for occasional administrative tasks
+
+instant replay
+	To enable, press cmd-opt-B
+	Once you are in instant replay mode, you can use the left and right arrow keys to navigate back and forward through time. Esc exits instant replay mode. By default, each session uses up to 4MB to save its instant replay history, and this can be adjusted under Preferences > General > Instant Replay uses __ MB per session.
+
+	Another benefit of Instant Replay is that it shows you the exact time that something appeared on your screen down to the second. This is useful when trying to figure out when an error occurred, for example.
+
+cmd-enter
+	full screen
+
+cmd-F
+	find on page
+
+	tab
+	shift-tab
+		expand the select to the right or left
+
+opt-enter
+	paste the current selection
+
+cmd-;
+	autocomplete
+	Just type the start of any word that has ever appeared in your window and then Cmd-; will pop open a window with suggestions. 
+
+
+
+
+
+================================================================================
+
+	Sublime on OSX
+	**************
+
+Usage
+Open Terminal at File Press ctrl+shift+t on Windows and Linux, or cmd+shift+t on OS X
+Open Terminal at Project Folder Press ctrl+alt+shift+t on Windows and Linux, or cmd+alt+shift+t on OS X
+
+Preferences > Package Settings > Terminal > Settings - User
+
+{
+    "terminal": "iTerm2-v3.sh",
+    "parameters": ["--open-in-tab"]
+}
+
+================================================================================
+
+>>>>>>> 8c9ad46c9b32fde3f1faca8e6666b0368e44ed64
