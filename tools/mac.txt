@@ -6,8 +6,12 @@
 
 Keyboard shortcuts
 
-
+ctrl-shift-power			lock screen
 cmnd-space					spotlight
-
 F4							launchpad
+cmnd-W						close window
 
+sh-cmd-3					screenshot entire screen (into PNG on desktop)
+ctrl-sh-cmd-3				screenshot entire screen into clipboard
+sh-cmd-4					screenshot selection (into PNG on desktop)
+ctrl-sh-cmd-4				screenshot selection into clipboard
