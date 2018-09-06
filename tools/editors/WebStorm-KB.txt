@@ -172,3 +172,12 @@ Also, Ctrl-Alt-L - reformat code conflicts with "lock screen"
 
 
 ================================================================================
+
+	Error: ng Component is not included in a module and will not be available
+	inside a template
+
+Error comes from Angular language service (https://github.com/angular/angular/issues/14961). You can disable it by clearing Angular language service checkbox in Settings | Languages & Frameworks | Typescript
+	
+
+
+================================================================================
