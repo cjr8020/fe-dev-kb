@@ -146,3 +146,18 @@ Preferences > Package Settings > Terminal > Settings - User
 
 ================================================================================
 
+	launch Cisco AnyConnect CLI
+	***************************
+
+Assuming /opt/cisco/anyconnect/bin/vpnagentd is running
+
+/opt/cisco/anyconnect/bin/vpn -s connect HOST	
+
+printf 'USERNAME\nPASSWORD\ny' | /opt/cisco/anyconnect/bin/vpn -s connect HOST	
+
+to disconnect:
+
+/opt/cisco/anyconnect/bin/vpn disconnect
+
+================================================================================
+
