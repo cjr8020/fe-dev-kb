@@ -133,4 +133,16 @@ Preferences > Package Settings > Terminal > Settings - User
 
 ================================================================================
 
->>>>>>> 8c9ad46c9b32fde3f1faca8e6666b0368e44ed64
+	Mac OS X auto start on login
+	****************************
+
+/System/Library/LaunchAgents
+               /LaunchDaemons
+
+/Library/LaunchAgents
+        /LaunchDaemons
+
+~/Library/LaunchAgents
+
+================================================================================
+
