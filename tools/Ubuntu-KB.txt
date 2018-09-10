@@ -1188,3 +1188,27 @@ deb http://security.ubuntu.com/ubuntu bionic-security multiverse
 # deb-src http://security.ubuntu.com/ubuntu bionic-security multiverse
 
 ================================================================================
+
+	release file is not valid yet
+	invalid for another 6h 41min 34sec
+	*****************************
+
+
+$ sudo apt-get update
+
+	E: Release file for http://us.archive.ubuntu.com/ubuntu/dists/bionic-security/InRelease is not valid yet (invalid for another 6h 41min 34s). Updates for this repository will not be applied.
+
+
+Your clock is off - sync:
+
+force ntp sync
+---------------
+
+when the clock is too much out of sync (more than 3 sec) it won't get update
+automatically.  To force it manually:
+
+	$ sudo service ntp stop
+	$ sudo ntpd -gq 				<-- here you can see it's getting sync
+	$ sudo service ntp start
+
+================================================================================

@@ -33,7 +33,11 @@ angular/cli
 		$ ng update @angular/material
 
 	RxJS v6 has major changes from v5.
-	v6 brings backwards compatibility package rxjs-compat that will keep your applications working, but you should refactor TypeScript code so that it doesn't depend on rxjs-compat. To refactor TypeScript code run following:
+	v6 brings backwards compatibility package rxjs-compat that will keep your applications working, 
+
+		$ npm install rxjs-compat@6
+
+	but you should refactor TypeScript code so that it doesn't depend on rxjs-compat. To refactor TypeScript code run following:
 
 		$ npm install -g rxjs-tslint
 		$ rxjs-5-to-6-migrate -p src/tsconfig.app.json
