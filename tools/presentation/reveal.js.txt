@@ -5,67 +5,18 @@
 https://github.com/hakimel/reveal.js
 
 
+================================================================================
 
-Getting started with generator-reveal
----------------------------------------------------
-https://github.com/slara/generator-reveal
+See below:
 
+installation
 
-using yeoman generator-reveal
-
-	$ sudo npm install -g generator-reveal
-	$ sudo npm install -g bower grunt
-
-once generator-reveal is installed
-make a new directory, and `cd` into it:
-
-	$ mkdir my-new-project && cd $_
-	$ yo reveal
-
-to view slides
-
-	$ grunt serve
-	started connect web server on http://localhost:9000
-
-to deploy
-
-	1. in package.json, modify repository as so
-
-		  "repository": {
-		    "type": "git",
-		    "url": "https://github.com/someuser/some-repo.git"
-		  },	
-
-	2. run `grunt deploy`
-
-		$ grunt deploy
-
-	   presentation will be deployed to gh-pages
+	1. scaffold with revealer
+	2. deploy to gh-pages
 
 
+================================================================================
 
-
-To start working on existing presentation
----------------------------------------------------
-
-	$ cd my-existing-project
-	$ npm install && bower install
-
-
-
-Author slides
----------------------------------------------------
-
-	$ yo reveal:slide "Slide Title" [--options]
-
-		available options:
-
-			--markdown
-			--attributes
-			--notes
-
-	will add `slides/slide-title.[html|md]
-	and the slide filename will be added to your `slides/list.json`
 
 	Vertical slides
 	--------
@@ -164,5 +115,289 @@ Author slides
 	------
 
 	![An image](images/an_image.jpg) <!-- .element height="50%" width="50%" -->
+
+================================================================================
+
+	revealer
+	********
+https://www.npmjs.com/package/revealer
+
+- installs reveal.js's dev dependencies within the reveal.js dependency
+- watches your src dir, and copies them into the reveal.js package src
+- runs reveal.js's server-watcher-browser-launcher tooling.
+- onbuild `revealer --build` automatically merges your content with reveal.js' 
+  and outputs a runnable, static website!
+
+get started:
+
+	$ mkdir <my-presentation>
+	$ cd <..>
+	$ npm i revealer
+	$ npx revealer --start
+
+the presetnation is in `src/index.html`.
+
+add some npm scripts:
+
+{
+  "scripts": {
+    "start": "revealer --start",
+    "build": "revealer --build dist",
+    "clean": "rm -rf dist"
+  }
+}
+
+Example:
+
+{
+  "name": "ng-complib-reveal",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "revealer --start",
+    "build": "revealer --build dist",
+    "clean": "rm -rf dist",
+    "deploy": "git subtree push --prefix dist origin gh-pages"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "reveal.js": "^3.7.0",
+    "revealer": "^2.1.3"
+  }
+}
+
+Now run:
+
+	$ npm run build
+
+
+================================================================================
+
+	setup deploy to gh-pages
+	************************
+
+Initialize this project as a git repo:
+---------------------------------------
+
+
+--->  DO NOT IGNORE `dist` in `.gitignore` in this project <----
+
+
+	$ echo "# ng-complib-reveal" >> README.md
+	$ git init
+	$ git add -A
+	$ git commit -m "bootstrap reveal.js project"
+	$ git remote add origin <remote-url>
+	$ git push -u origin master
+
+Add `deploy` script:
+
+  "scripts": {
+    "start": "revealer --start",
+    "build": "revealer --build dist",
+    "clean": "rm -rf dist",
+    "deploy": "git subtree push --prefix dist origin gh-pages"
+  },
+
+run deploy:
+
+	$ npm run deploy
+
+Contents of `dist` pushed to `gh-pages` on the remote.
+
+Commit changes to `package.json` in master branch:
+
+	$ git add -A
+	$ git commit -m "added deploy script"
+	$ git push
+
+
+
+
+
+
+================================================================================
+
+-->> @not needed if you're using `npm run deploy` script above <<---
+
+
+	gh-pages-deploy
+	***************
+https://www.npmjs.com/package/gh-pages-deploy
+
+--> NOTE: 
+	this tool assumes that the only branch you care about in this repo is
+	gh-pages.
+
+	So, when you create a repo, just create `gh-pages` right away
+	and work out of that branch going forward.
+
+
+create git repo
+-------------------------------------------------
+
+$ 
+$ git checkout --orphan gh-pages
+$ git rm -rf .  # to remove any existing content
+$ cp -R /some/directory/docs/* .  # also, create .gitignore if needed
+$ git add -A
+$ git commit -m "seed gh-pages branch"
+$ git push -u origin gh-pages	
+
+your gh-pages site will be published on 
+
+	https://<github-user-name>.github.io/<your-repo-with-gh-pages>/
+
+
+
+install globally:
+-------------------------------------------------
+
+	$ npm install gh-pages-deploy -g 
+
+or 
+install as a devDependency:
+-------------------------------------------------
+
+	$ npm install gh-pages-deploy --save-dev
+
+Configure (all of these are optional):
+-------------------------------------------------
+
+package.json:
+
+  "gh-pages-deploy": {
+    "staticpath": "dist",
+    "cname": "nope.org",
+    "prep": [
+      "build-sass",
+      "optimize-img"
+    ],
+    "commit": "a custom commit message",
+    "post": [
+      "clean-source"
+    ],
+    "noprompt": false
+  },
+
+where
+
+	"staticpath" 
+		path to your files to be copied over to the root directory
+
+	"cname" 
+		content for CNAME file
+
+	"prep" 
+		an array of script names to run before pushing to github, this can be any script that you have declared in your "scripts" object in your package.json.
+
+	"commit" 
+		a custom commit message to be used when committing to git
+
+	"post" 
+		an array of script names to run after "prep", but before add/commit/push
+
+	"noprompt" 
+		if this is set to true, the prompt will be bypassed and you will never need to confirm the commands before deploying.
+
+
+add npm script:
+-------------------------------------------------
+
+  "scripts": {
+    "deploy": "gh-pages-deploy -- 'A custom commit message'",
+  },
+
+
+
+
+
+================================================================================
+
+	reveal-cli
+	**********
+
+Generate base project structure based on blueprints
+Deploy slides to GitHub Projects
+
+	$ npm install -g reveal-cli
+
+Generate a project
+
+	$ reveal new <project-name>
+
+Deploy to gh-pages
+
+	$ cd path/to/project
+	$ reveal deploy
+
+requires a .git repo with a valid GitHub remove
+
+
+================================================================================
+
+
+---->>  @Deprecated (bower and grunt)
+
+
+Getting started with generator-reveal
+---------------------------------------------------
+https://github.com/slara/generator-reveal
+
+
+using yeoman generator-reveal
+
+	$ sudo npm install -g generator-reveal
+	$ sudo npm install -g bower grunt
+
+once generator-reveal is installed
+make a new directory, and `cd` into it:
+
+	$ mkdir my-new-project && cd $_
+	$ yo reveal
+
+to view slides
+
+	$ grunt serve
+	started connect web server on http://localhost:9000
+
+to deploy
+
+	1. in package.json, modify repository as so
+
+		  "repository": {
+		    "type": "git",
+		    "url": "https://github.com/someuser/some-repo.git"
+		  },	
+
+	2. run `grunt deploy`
+
+		$ grunt deploy
+
+	   presentation will be deployed to gh-pages
+
+
+
+
+To start working on existing presentation
+---------------------------------------------------
+
+	$ cd my-existing-project
+	$ npm install && bower install
+
+
+
+Author slides
+---------------------------------------------------
+
+	$ yo reveal:slide "Slide Title" [--options]
+
+		available options:
+
+			--markdown
+			--attributes
+			--notes
+
+	will add `slides/slide-title.[html|md]
+	and the slide filename will be added to your `slides/list.json`
 
 ================================================================================

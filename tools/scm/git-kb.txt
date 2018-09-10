@@ -34,6 +34,29 @@ git commit -am
 	automatically stage all tracked, modified files before the commit
 	WILL NOT add unstaged new files (this is what 'git add -u' does..)
 
+	remove files from unpushed commit
+	----------------------------------
+
+	so you added a file in you recent commit that shouldn't have been there.. 
+
+		$ git rm --cached .idea/workspace.xml
+		# stage .idea/workspace.xml for removal, but leave it on disk
+
+		$ git commit --amend -CHEAD
+		# amend the previous commit with the above change(s)
+
+		$ git push
+		
+		# or add a .gitignore 
+
+		$ echo "/.idea" > .gitignore
+		$ git add -A
+		$ git commit -m "add .gitignore"
+		$ git push
+		# push rewritten modified commit
+
+
+
 
 	git fetch
 ***************************
@@ -471,6 +494,10 @@ $ cp -R /some/directory/docs/* .  # also, create .gitignore if needed
 $ git add -A
 $ git commit -m "seed gh-pages branch"
 $ git push -u origin gh-pages	
+
+your gh-pages site will be published on 
+
+	https://<github-user-name>.github.io/<your-repo-with-gh-pages>/
 
 
 
