@@ -16,7 +16,15 @@ ctrl-sh-cmd-3				screenshot entire screen into clipboard
 sh-cmd-4					screenshot selection (into PNG on desktop)
 ctrl-sh-cmd-4				screenshot selection into clipboard
 
+power (1.5 sec)				get shutdown/restart dialog
+power (5 sec)				force shutdown
 
+ctrl-cmd-power				force restart
+ctrl-opt-cmd-power			force turn it off
+
+sh-opt-cmd-power			sleep
+sh-cmd-Q					logout
+sh-opt-cmd-Q				logout without dialog
 ================================================================================
 
 	oh-my-zsh - iTerm2 - solarized
