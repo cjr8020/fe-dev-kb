@@ -25,6 +25,8 @@ ctrl-opt-cmd-power			force turn it off
 sh-opt-cmd-power			sleep
 sh-cmd-Q					logout
 sh-opt-cmd-Q				logout without dialog
+
+cmd-opt-D					hide/show Dock
 ================================================================================
 
 	oh-my-zsh - iTerm2 - solarized
