@@ -29,7 +29,6 @@ git config --global --unset credential.helper
 
 
 
-
 git add
 ********
 
@@ -676,6 +675,12 @@ if there is work you want to keep
 	github 2FA and credential helper
 	********************************
 
+NOTE: credential.helper currently does not support differnt identifies
+per URI:
+https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
+https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
+
+
 Turn on the credential helper to cache your credentials (so you only need to do this once):
 
 a. Windows:
@@ -706,6 +711,13 @@ There are other helpers floating around such as gnome/libsecret
 
 	installing credential.helper on Ubuntu
 	**************************************
+
+NOTE: credential.helper currently does not support differnt identifies
+per URI:
+https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
+https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
+
+	
 https://stackoverflow.com/questions/36585496/error-when-using-git-credential-helper-with-gnome-keyring-as-sudo/40312117#40312117	
 
 libgnome-keyring is specific to GNOME and is now deprecated (since January 2014, actually).
