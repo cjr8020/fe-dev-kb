@@ -592,6 +592,8 @@ now, compile
 
 	git config --global credential.helper /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 
+	git config --global credential.helper 'cache --timeout=86400 --socket /home/gobber/.cache/.git-credential-cache/socket'
+
 Note: some distroes like Arch and Fedora may provide helpers available already.
 
 ================================================================================
