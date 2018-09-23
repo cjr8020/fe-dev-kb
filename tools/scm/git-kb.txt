@@ -15,6 +15,20 @@ See your settings
 
 git config --list
 
+Force using local user per repo
+-------------------------------
+
+# Require setting user.name and email per-repo:
+$ git config --global user.useConfigOnly true
+
+# Remove email address from global config:
+$ git config --global --unset-all user.email
+
+Note: you may have to unset credential.helper first 
+git config --global --unset credential.helper
+
+
+
 
 git add
 ********
@@ -46,7 +60,7 @@ git commit -am
 		# amend the previous commit with the above change(s)
 
 		$ git push
-		
+
 		# or add a .gitignore 
 
 		$ echo "/.idea" > .gitignore
