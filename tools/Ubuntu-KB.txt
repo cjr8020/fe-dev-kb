@@ -564,6 +564,13 @@ To resize, use Alt-rclick and drag.
 	installing credential.helper on Ubuntu
 	**************************************
 	
+NOTE: credential.helper currently does not support differnt identifies
+per URI:
+https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
+https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
+
+==> @see how to disable credential.helper for a single repository	
+	
 https://stackoverflow.com/questions/36585496/error-when-using-git-credential-helper-with-gnome-keyring-as-sudo/40312117#40312117	
 
 libgnome-keyring is specific to GNOME and is now deprecated (since January 2014, actually).
@@ -592,11 +599,6 @@ now, compile
 
 	git config --global credential.helper /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 
-
-NOTE: credential.helper currently does not support differnt identifies
-per URI:
-https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
-https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
 
 
 	git config --global credential.helper 'cache --timeout=86400 --socket /home/gobber/.cache/.git-credential-cache/socket'
