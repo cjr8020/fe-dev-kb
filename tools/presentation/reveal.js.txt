@@ -114,17 +114,37 @@ Fragments
 Background
 ----------
 
-	Likewise, if we wanted to add additional information to the entire slide
-	(e.g. a background image), we can do so simply by using `.slide` selector
-	at the top of our slide:
+	color
 
-	<!-- .slide: data-background-image="resources/my-background.jpg" -->
+		<section data-background-color="#ff0000">
+			<h2>Color</h2>
+		</section>
+
+	image
+
+		<section data-background-image="http://example.com/image.png">
+			<h2>Image</h2>
+		</section>
+
+		<section data-background-image="http://example.com/image.png" data-background-size="100px" data-background-repeat="repeat">
+			<h2>This background image will be sized to 100px and repeated</h2>
+		</section>
+
+	video 
+
+		<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-video-loop data-background-video-muted>
+			<h2>Video</h2>
+		</section>
 
 
 Images
 ------
 
-	![An image](images/an_image.jpg) <!-- .element height="50%" width="50%" -->
+	    <section>
+          <h5>Screenshot</h5>
+          <img src="./img/webui-screenshot.png" style="width: 15em"/>
+        </section>
+
 
 ================================================================================
 

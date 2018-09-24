@@ -216,6 +216,9 @@ The shared folders will be under /media with "sf_" prefix:
 
 	/media/sf_ws
 
+NOTE: reinstall Guest Additionas if you don't see shared folder content in:
+
+	/media/sf_<share-name>
 
 =======================================================================
 
