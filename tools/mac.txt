@@ -25,6 +25,26 @@ ctrl-opt-cmd-power			force turn it off
 sh-opt-cmd-power			sleep
 sh-cmd-Q					logout
 sh-opt-cmd-Q				logout without dialog
+
+cmd-opt-D					hide/show Dock
+
+--------------------------------------------------------------------------------
+iTerm shortcuts
+---------------
+
+opt-space 					navigate from current to iTerm and back
+command-,					settings
+
+cmd-T 						new tab
+cmd-N  						new window
+cmd-d 						split veritically with current profile
+cmd-enter 					toggle full screen
+cmd-/ 						find cursor
+
+
+fn-> arrow 					go to end of the line
+fn-< arrow 					go to start of the line
+
 ================================================================================
 
 	oh-my-zsh - iTerm2 - solarized

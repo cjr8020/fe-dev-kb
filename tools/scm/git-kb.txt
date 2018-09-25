@@ -15,6 +15,19 @@ See your settings
 
 git config --list
 
+Force using local user per repo
+-------------------------------
+
+# Require setting user.name and email per-repo:
+$ git config --global user.useConfigOnly true
+
+# Remove email address from global config:
+$ git config --global --unset-all user.email
+
+Note: you may have to unset credential.helper first 
+git config --global --unset credential.helper
+
+
 
 git add
 ********
@@ -46,7 +59,7 @@ git commit -am
 		# amend the previous commit with the above change(s)
 
 		$ git push
-		
+
 		# or add a .gitignore 
 
 		$ echo "/.idea" > .gitignore
@@ -674,10 +687,39 @@ if there is work you want to keep
    
 
 
+
+
+================================================================================
+
+	how to disable credential.helper for a single repository
+	********************************************************
+
+https://stackoverflow.com/questions/13198143/how-do-i-disable-gits-credential-helper-for-a-single-repository
+
+[credential]
+    helper = 
+
+With git 2.9 (June 2016), this (helper = ) will actually work
+
+The credential.helper configuration variable is cumulative and there is no good way to override it from the command line.
+As a special case, giving an empty string as its value now serves as the signal to clear the values specified in various files.
+
+credential: let empty credential specs reset helper list
+Since the credential.helper key is a multi-valued config list, there's no way to "unset" a helper once it's been set. So if your system /etc/gitconfig sets one, you can never avoid running it, but only add your own helpers on top.
+
+Since an empty value for credential.helper is nonsensical (it would just try to run "git-credential-"), we can assume nobody is using it. Let's define it to reset the helper list, letting you override lower-priority instances which have come before.
+
 ================================================================================
 
 	github 2FA and credential helper
 	********************************
+
+NOTE: credential.helper currently does not support differnt identifies
+per URI:
+https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
+https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
+
+@see how to disable credential.helper for a single repository
 
 Turn on the credential helper to cache your credentials (so you only need to do this once):
 
@@ -709,6 +751,14 @@ There are other helpers floating around such as gnome/libsecret
 
 	installing credential.helper on Ubuntu
 	**************************************
+
+NOTE: credential.helper currently does not support differnt identifies
+per URI:
+https://stackoverflow.com/questions/48420399/github-separate-credentials-for-two-accounts-on-windows
+https://stackoverflow.com/questions/47974196/permission-denied-when-pushing-file-to-remote/47975913#47975913
+
+==>  @see how to disable credential.helper for a single repository
+
 https://stackoverflow.com/questions/36585496/error-when-using-git-credential-helper-with-gnome-keyring-as-sudo/40312117#40312117	
 
 libgnome-keyring is specific to GNOME and is now deprecated (since January 2014, actually).

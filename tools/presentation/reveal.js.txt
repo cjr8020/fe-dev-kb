@@ -16,66 +16,75 @@ installation
 
 
 ================================================================================
+	
+Presentation
+------------------------------------------------
+The presentation markup hierarchy needs to be 
+
+	.reveal > .slides > section 
+
+where the section represents one slide and can be repeated indefinitely. 
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>Slide 1</section>
+				<section>Slide 2</section>
+			</div>
+		</div>
 
 
-	Vertical slides
-	--------
+If you place multiple section elements inside of another section 
+they will be shown as vertical slides. 
 
-	In order to add vertical slides, you can nest an array inside 
-	`slides/list.json`
+	<div class="reveal">
+		<div class="slides">
+			<section>Single Horizontal Slide</section>
+			<section>
+				<section>Vertical Slide 1</section>
+				<section>Vertical Slide 2</section>
+			</section>
+		</div>
+	</div>
 
-		[
-		    "index.md",
-		    [
-		        "vertical-html.html",
-		        "vertical-markdown.md"
-		    ],
-		    [
-		        "vertical-html-2.html",
-		        "vertical-markdown-2.md"
-		    ],
-		    "the-end.md"
-		]
-
-	Simple (Image) Slides
-	---------------
-
-	Sometimes, you just need a slide with a background image.
-	That's ok, a slide object does not need a filename
-
-		[
-		    "index.md",
-		    {
-		        "attr": {
-		            "data-background": "http://example.com/image.png"
-		        }
-		    }
-		]	
-
-	Attributes
-	----------
-
-		$ yo reveal:slide "Slide Title" --attributes
-
-	adds a slide Object with an `attr` key.
-	Attributes will be passed to `section` element containing the slide:
-
-		[
-		    "index.md",
-		    {
-		        "filename": "slide-title.md",
-		        "attr": {
-		            "data-background": "#ff0000"
-		        }
-		    }
-		]
-
-		<section data-markdown="slides/slide-title.md" data-background="#ff0000"></section>	
+The first of the vertical slides is the "root" of the others (at the top), 
+and will be included in the horizontal sequence.
 
 
+Markdown
+------------------------------------------------
 
-	Fragments
-	----------
+To enable Markdown, add the data-markdown attribute to your <section> elements 
+and wrap the contents in a <textarea data-template>
+
+Sensitive to indentation (avoid mixing tabs and spaces) and line breaks 
+(avoid consecutive breaks).
+
+	<section data-markdown>
+		<textarea data-template>
+			## Page title
+
+			A paragraph with some text and a [link](http://hakim.se).
+		</textarea>
+	</section>
+
+
+Element Attributes
+------------------
+
+Special syntax (through HTML comments) is available for adding attributes 
+to Markdown elements. This is useful for fragments, amongst other things.
+
+<section data-markdown>
+	<script type="text/template">
+		- Item 1 <!-- .element: class="fragment" data-fragment-index="2" -->
+		- Item 2 <!-- .element: class="fragment" data-fragment-index="1" -->
+	</script>
+</section>
+
+
+Fragments
+----------
 
 	ability to show/hide text after the initial display of the slide.
 	this can be used to reveal new information as you present without
@@ -101,20 +110,41 @@ installation
 
 		data-fragement-index="1"
 
-	Background
-	----------
 
-	Likewise, if we wanted to add additional information to the entire slide
-	(e.g. a background image), we can do so simply by using `.slide` selector
-	at the top of our slide:
+Background
+----------
 
-	<!-- .slide: data-background-image="resources/my-background.jpg" -->
+	color
+
+		<section data-background-color="#ff0000">
+			<h2>Color</h2>
+		</section>
+
+	image
+
+		<section data-background-image="http://example.com/image.png">
+			<h2>Image</h2>
+		</section>
+
+		<section data-background-image="http://example.com/image.png" data-background-size="100px" data-background-repeat="repeat">
+			<h2>This background image will be sized to 100px and repeated</h2>
+		</section>
+
+	video 
+
+		<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-video-loop data-background-video-muted>
+			<h2>Video</h2>
+		</section>
 
 
-	Images
-	------
+Images
+------
 
-	![An image](images/an_image.jpg) <!-- .element height="50%" width="50%" -->
+	    <section>
+          <h5>Screenshot</h5>
+          <img src="./img/webui-screenshot.png" style="width: 15em"/>
+        </section>
+
 
 ================================================================================
 
@@ -167,8 +197,17 @@ Example:
 
 Now run:
 
+to develop and test your preso
+
+	$ npm run start
+
+to build a dist of your preso
+
 	$ npm run build
 
+to deploy your presentation
+
+	$ npm run deploy
 
 ================================================================================
 
