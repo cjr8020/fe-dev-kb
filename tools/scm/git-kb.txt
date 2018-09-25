@@ -342,6 +342,23 @@ You'd have fetch first if you haven't already.. and then
 	$ git log master..origin/master
 
 	
+
+
+stash
+***************************
+
+	$ git stash 		// push a new stash onto the stack
+	$ git stash list 	// list changes stored on the stack
+
+	$ git stash pop		// re-apply previously stashed changes
+						// default: most recent change
+or 
+	$ git stash apply 	// re-apply stashed changes AND keep them in your stash
+
+	$ git stash save "config temp changes"  // annotate stash
+	$ git stash pop stash@{2} 				// re-apply stash by id
+
+
 ================================================================================
 
 	rebase with squash commits
