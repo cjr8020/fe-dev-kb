@@ -371,6 +371,12 @@ or
 	$ git stash save "config temp changes"  // annotate stash
 	$ git stash pop stash@{2} 				// re-apply stash by id
 
+cleaning
+
+	$ git stash drop stash@{1}
+or
+	$ git stash clear
+
 
 ================================================================================
 
