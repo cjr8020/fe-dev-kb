@@ -28,6 +28,13 @@ sh-opt-cmd-Q				logout without dialog
 
 cmd-opt-D					hide/show Dock
 
+app switcher
+------------
+
+cmd-Tab						switch between running apps
+cmd-Tab, when on app, hold Alt (opt), let go of Cmd
+							switch to minimized or hidden app.
+
 --------------------------------------------------------------------------------
 iTerm shortcuts
 ---------------
@@ -188,4 +195,38 @@ to disconnect:
 /opt/cisco/anyconnect/bin/vpn disconnect
 
 ================================================================================
+
+	homebrew
+	********
+
+Install
+--------
+
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+$ brew install [package]
+$ brew install wget
+$ brew analytics off
+
+uninstall 
+---------
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+
+
+cask
+-----
+$ brew update
+$ brew tap caskroom/cask
+$ brew install brew-cask-completion
+
+update and upgrade
+------------------
+$ brew update && brew upgrade brew-cask-completion && brew cleanup && brew cask cleanup
+
+
+================================================================================
+
+	multiple version of Java JDK
+	****************************
+================================================================================
+
 
