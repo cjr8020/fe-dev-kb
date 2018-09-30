@@ -5,16 +5,6 @@
 http://orga.cat/posts/most-useful-git-commands
 
 
-Set your details
-
-git config --global user.name "John Doe"
-git config --global user.email "john@example.com"
-Use --global to set the configuration for all projects. If git config is used without --global and run inside a project directory, the settings are set for the specific project.	
-
-See your settings
-
-git config --list
-
 Force using local user per repo
 -------------------------------
 
@@ -24,8 +14,27 @@ $ git config --global user.useConfigOnly true
 # Remove email address from global config:
 $ git config --global --unset-all user.email
 
-Note: you may have to unset credential.helper first 
-git config --global --unset credential.helper
+
+!! credential helper currently does not support different identities per URI
+Therefore, you can choose to have global credential.helper cache one identity,
+and disable credential.helper in other repos using other identitiy
+
+$ cd <my-repo-using-uncached-identity>
+$ git config --local credential.helper ""
+
+This will create `.git/config` with 
+
+[credential]
+    helper = 
+
+
+
+See your settings
+------------------
+
+git config --list
+
+
 
 
 
