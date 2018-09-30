@@ -3,6 +3,8 @@
 		OSX
 	************
 
+switch control and command keys in keyboard prefs?	
+
 
 Keyboard shortcuts
 
@@ -34,6 +36,9 @@ app switcher
 cmd-Tab						switch between running apps
 cmd-Tab, when on app, hold Alt (opt), let go of Cmd
 							switch to minimized or hidden app.
+
+3 finger swipe up			show multiple desktops
+3 finger swipe left/right	switch between multiple desktops
 
 --------------------------------------------------------------------------------
 iTerm shortcuts
