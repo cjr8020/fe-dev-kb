@@ -806,4 +806,70 @@ Note: some distroes like Arch and Fedora may provide helpers available already.
 
 ================================================================================
 
+	git subtree for gh-pages deployment
+	***********************************
+
+You have a project that builds a deployable artifact to, say, `dist` folder.
+You manage the project in a repo, probably in `master` branch.
+But you need to deploy `dist` contents to `gh-pages` branch.
+
+Frequently, you set up a separate git repo in `dist` just to push to 
+`gh-pages` for publishing, but there is a simpler way.
+
+1. remove your <build-folder>  (e.g. `dist`) from `.gitignore`.
+2. run build - it generates `dist` folder.
+3. when ready to deploy to gh-pages
+
+	# replace build_folder as appropriate
+    git subtree push --prefix build_folder origin gh-pages
+
+Git pushes a subset of your repo - your <build_folder> to gh-pages.
+
+One problem:  `git subtree` does not have a `--force` option.
+
+To overcome that:
+
+	$ git push origin `git subtree split --prefix build_folder master`:gh-pages --force  
+
+e.g. if <build_folder> == dist:
+
+	$ git push origin `git subtree split --prefix dist master`:gh-pages --force	  	
+	
+
+issues with `git subtree push`
+------------------------------
+
+When you're trying to update `gh-pages` against a rebased `master`, you will run
+into this this situation:
+
+	$ npm run deploy
+
+	> something@1.0.0 deploy /some/folder
+	> git subtree push --prefix dist origin gh-pages
+
+	git push using:  origin gh-pages
+	. . .
+	 ! [rejected]        6e836d06b9b82a26ef1a703f6e103b0f85bb236a -> gh-pages (non-fast-forward)
+	error: failed to push some refs to 'https://github.com/some/repo.git'
+	hint: Updates were rejected because a pushed branch tip is behind its remote
+	hint: counterpart. Check out this branch and integrate the remote changes
+	hint: (e.g. 'git pull ...') before pushing again.
+	hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+We're just using gh-pages to deploy a new buid here, so forcing is not an issue
+The problem is:
+
+	`git subtree` does not have a `--force` option.
+
+So to get around it:
+
+
+$ git push origin `git subtree split --prefix <build_folder> master`:gh-pages --force
+
+where 
+
+	build_folder = 'dist'	
+
+================================================================================
+
 	
