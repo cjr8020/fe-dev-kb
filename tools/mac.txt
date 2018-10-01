@@ -3,7 +3,7 @@
 		OSX
 	************
 
-switch control and command keys in keyboard prefs?	
+switch control and command keys in keyboard prefs?
 
 
 Keyboard shortcuts

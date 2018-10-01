@@ -490,7 +490,7 @@ create script in root `package.json` of your project
 
 Now, when you execute 
 
-  $ npm run lib-back
+  $ npm run lib-pack
 
 the script will `cd` to the library `dist` folder and run `npm pack`
 to create a package file named something like:
@@ -500,6 +500,15 @@ to create a package file named something like:
 
 Or you can combine build and pack together:
 
+  "scripts": {
+    ...
+    "build_lib": "ng build --prod example-ng6-lib",
+    "npm_pack": "cd dist/example-ng6-lib && npm pack",
+    "package": "npm run build_lib && npm run npm_pack"
+  },
+
+================================================================================
+================================================================================
 
 Use the library in a separate HOST application
 ***********************************************
