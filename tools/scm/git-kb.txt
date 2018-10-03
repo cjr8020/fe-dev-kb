@@ -35,7 +35,16 @@ See your settings
 git config --list
 
 
+git proxy pass
+---------------
 
+you can configure proxy on a per-remote basis:
+
+	$ git config --local --add remote.origin.proxy "proxy.hostname.com:8080"
+
+or you can unset proxy 
+
+	$ git config --local --add remote.origin.proxy ""
 
 
 git add
