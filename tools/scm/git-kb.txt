@@ -881,4 +881,17 @@ where
 
 ================================================================================
 
+	delete remove file from git repo without deleting
+	*************************************************
+
+For single file:
+
+	$ git rm --cached mylogfile.log
+
+For single directory:
+
+	$ git rm --cached -r mydirectory	
+
+================================================================================
+
 	
