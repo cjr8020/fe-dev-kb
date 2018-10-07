@@ -498,7 +498,7 @@ to create a package file named something like:
   example-ng6-lib-1.0.0.tgz
 
 
-Or you can combine build and pack together:
+Or you can combine build and pack together: 
 
   "scripts": {
     ...
