@@ -145,6 +145,30 @@ Images
           <img src="./img/webui-screenshot.png" style="width: 15em"/>
         </section>
 
+Table
+------
+
+      <section>
+        <h3>Side by Side</h3>
+        <table style="border: 1px solid black; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: grey; color: black;">
+              <th>header 1</th>
+              <th>header 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>row 1</td>
+              <td>row 1</td>
+            </tr>
+            <tr>
+              <td>row 2</td>
+              <td>row 2</td>
+            </tr>            
+          </tbody>
+        </table>
+      </section>
 
 ================================================================================
 
