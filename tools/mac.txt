@@ -240,7 +240,9 @@ $ brew install brew-cask-completion
 $ brew tap caskroom/versions // allow cask to lookup versions
 
 
-$ list java versions
+list java versions
+-------------------
+
 $ brew search java
 
 $ brew cask info java8
@@ -318,6 +320,24 @@ $ jenv local oracle64-1.6.0.39
 Configure shell instance version
 
 $ jenv shell oracle64-1.6.0.39
+
+================================================================================
+
+	@ in ls -l   extended attributes
+	********************************
+
+use `xattr` to view and modify
+
+	xattr -l <file> 		# list the names of all attributes
+	xattr -w <attr-name> <attr-value> <file>  # set
+	xattr -d <attr-name> <file>  # deletes attr-name
+	xattr -c <file> 		# deletes all xattrs
+	xattr -h 				# prints help
+
+
+com.apple.quarantine
+
+	xattr is to prompt ask for user permission to run first time.
 
 ================================================================================
 
