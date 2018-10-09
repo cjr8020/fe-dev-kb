@@ -34,6 +34,11 @@ See your settings
 
 git config --list
 
+================================================================================
+
+	proxy
+	*****
+
 
 git proxy pass
 ---------------
@@ -45,6 +50,65 @@ you can configure proxy on a per-remote basis:
 or you can unset proxy 
 
 	$ git config --local --add remote.origin.proxy ""
+
+================================================================================
+	
+
+show proxy config
+
+	$ git config --global --get-regexp http.*
+
+or local config
+
+	$ git config --get-regexp http.*
+
+set global proxy
+----------------
+
+	$ git config --global http.proxy http://proxyUsername:proxyPassword@proxy.server.com:port
+
+or specific domain
+
+git config --global http.https://domain.com.proxy http://proxyUsername:proxyPassword@proxy.server.com:port
+git config --global http.https://domain.com.sslVerify false
+
+url specific proxy
+
+	git config --global http.https://domain.com.proxy http://proxyUsername:proxyPassword@proxy.server.com:port
+
+that would result in ~/.gitconfig
+
+	[http]
+	[http "https://domain.com"]
+		proxy = http://proxyUsername:proxyPassword@proxy.server.com:port
+
+
+SSL protocol errors
+--------------------
+
+	$ git -c http.sslVerify=false clone https://domain.com/path/to/git
+or set permanently
+	$ git config http.sslVerify false
+or per domain
+	$ git config --global http.https://domain.com.sslVerify false
+
+	[http]
+	[http "https://domain.com"]
+		proxy = http://proxyUsername:proxyPassword@proxy.server.com:port
+		sslVerify = false
+
+
+unset proxy or ssl stuff
+-------------------------
+
+git config --global --unset http.proxy
+git config --global --unset http.https://domain.com.proxy
+
+git config --global --unset http.sslVerify
+git config --global --unset http.https://domain.com.sslVerify
+
+================================================================================
+
 
 
 git add
