@@ -40,6 +40,12 @@ cmd-Tab, when on app, hold Alt (opt), let go of Cmd
 3 finger swipe up			show multiple desktops
 3 finger swipe left/right	switch between multiple desktops
 
+finder
+-------
+
+cmd-sh-.					toggle show|hide hidden files/folders
+
+
 --------------------------------------------------------------------------------
 iTerm shortcuts
 ---------------
