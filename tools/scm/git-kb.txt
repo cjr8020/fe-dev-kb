@@ -8,12 +8,24 @@ http://orga.cat/posts/most-useful-git-commands
 Force using local user per repo
 -------------------------------
 
-# Require setting user.name and email per-repo:
-$ git config --global user.useConfigOnly true
+	# Require setting user.name and email per-repo:
+	$ git config --global user.useConfigOnly true
 
-# Remove email address from global config:
-$ git config --global --unset-all user.email
+	# Remove email address from global config:
+	$ git config --global --unset-all user.email
 
+set repo specific 
+--------------------------
+
+	$ git config --local user.name " ... "
+	$ git config --local user.email " ... "
+
+to verify
+
+	$ cat .git/config
+
+credential helper
+-----------------
 
 !! credential helper currently does not support different identities per URI
 Therefore, you can choose to have global credential.helper cache one identity,
