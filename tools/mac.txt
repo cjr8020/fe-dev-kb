@@ -46,6 +46,11 @@ finder
 cmd-sh-.					toggle show|hide hidden files/folders
 
 
+selection
+---------
+
+sh-fn-cmd-down-arrow		select text from cursor to end of document
+
 --------------------------------------------------------------------------------
 iTerm shortcuts
 ---------------
@@ -100,6 +105,12 @@ cmd-;
 	autocomplete
 	Just type the start of any word that has ever appeared in your window and then Cmd-; will pop open a window with suggestions. 
 
+
+--------------------------------------------------------------------------------
+Intellij IDEA shortcuts
+-----------------------
+
+ctrl-n 	(same as alt-insert) new class | file | etc .. 
 
 
 ================================================================================
@@ -369,6 +380,20 @@ use `xattr` to view and modify
 com.apple.quarantine
 
 	xattr is to prompt ask for user permission to run first time.
+
+================================================================================
+
+	who is listeing on given port
+	=============================
+
+macOS High Sierra
+
+	$ lsof -nP -i4TCP:$PORT | grep -i listen
+
+on older
+
+	$ lsof -nP -iTCP:$PORT | grep -i listen
+	$ lsof -nP -i:$PORT | grep -i listen	
 
 ================================================================================
 

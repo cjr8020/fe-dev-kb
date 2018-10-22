@@ -507,6 +507,109 @@ Or you can combine build and pack together:
     "package": "npm run build_lib && npm run npm_pack"
   },
 
+
+Now, the overall sequence of steps:
+
+1. build the library
+
+    ng build --prod your-ng6-lib
+
+2. pack the library
+
+    cd dist/your-ng6-lib && npm pack
+
+
+
+Adding global assets to ng6 library
+************************************
+
+as of angular/cli v6, ng-packagr doesn't support bundling global assets ..yet,
+so this needs to be done manually
+
+https://stackoverflow.com/questions/50595900/angular-6-building-a-library-with-assets
+
+copy global styles manually into dist/
+
+  cp -R projects/example-ng6-lib/assets dist/example-ng6-lib
+
+
+So, the sequence becomes:
+
+1. build the library
+
+    ng build --prod your-ng6-lib   &&
+    cp -R projects/example-ng6-lib/assets dist/example-ng6-lib
+
+
+2. pack the library
+
+    cd dist/your-ng6-lib && npm pack
+
+
+"scripts": {
+
+    "_copy-lib-assets": "cp -R projects/sfg-ng-brand-library/assets dist/example-ng6-lib",
+
+    "_build-lib": "ng build --prod example-ng6-lib && npm run _copy-lib-assets",
+    
+    "_pack-lib": "cd dist/sfg-ng-brand-library && npm pack",
+    
+    "package-lib": "npm run _build-lib && npm run _pack-lib",
+
+}
+
+
+Adding global SASS styles to ng6 library
+****************************************
+
+just like with global assets, angular/cli v6 (ng-packagr) does not support 
+global styles yet.. 
+
+To do that manually, use scss-bundle
+
+  https://www.npmjs.com/package/scss-bundle
+
+which bundles all SCSS imports into a single file recusively, so we need to 
+add it as a devDependency to the library project:
+
+  $ npm install --save-dev scss-bundle
+
+  "scss-bundle": "^2.4.0",
+
+scss-bundle can run with a configuration file or without:
+
+with `scss-bundle.config.json`
+
+  $ scss-bundle -c scss-bundle.config.json
+
+{
+  "entry": "./projects/sfg-ng-brand-library/sass/styles.scss",
+  "dest": "./dist/sfg-ng-brand-library/sass/styles.scss"
+}
+
+without:
+
+  $ scss-bundle \
+      -e  ./projects/sfg-ng-brand-library/sass/styles.scss \
+      -d ./dist/sfg-ng-brand-library/sass/styles.scss
+
+So, we can add this as a step to `_build-lib` script:
+
+"_build-lib-styles": "scss-bundle -e ./projects/sfg-ng-brand-library/sass/styles.scss -d ./dist/sfg-ng-brand-library/sass/styles.scss",
+    
+"scripts": {
+  . . .
+
+    "_copy-lib-assets": "cp -R projects/sfg-ng-brand-library/assets dist/sfg-ng-brand-library",
+    "_build-lib-styles": "scss-bundle -e ./projects/sfg-ng-brand-library/sass/styles.scss -d ./dist/sfg-ng-brand-library/sass/styles.scss",
+    "_build-lib": "ng build --prod sfg-ng-brand-library && npm run _copy-lib-assets && npm run _build-lib-styles",
+    "_pack-lib": "cd dist/sfg-ng-brand-library && npm pack",
+    "package-lib": "npm run _build-lib && npm run _pack-lib",
+
+  . . . 
+}
+
+
 ================================================================================
 ================================================================================
 
