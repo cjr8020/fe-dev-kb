@@ -110,8 +110,15 @@ cmd-;
 Intellij IDEA shortcuts
 -----------------------
 
-ctrl-n 	(same as alt-insert) new class | file | etc .. 
+ctrl-n 	
+	(same as alt-insert) new class | file | etc .. 
 
+cmd-D 					duplicate line
+
+cmd-N 					open class
+cmd-sh-N 				open file
+
+sh-cmd-enter			complete construct
 
 ================================================================================
 
@@ -186,6 +193,9 @@ Preferences > Package Settings > Terminal > Settings - User
     "terminal": "iTerm2-v3.sh",
     "parameters": ["--open-in-tab"]
 }
+
+
+ctrl-opt-K					kill line
 
 ================================================================================
 
