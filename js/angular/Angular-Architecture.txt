@@ -757,6 +757,16 @@ configuration object
  })
  export class AppModule {}
 
+and in a service where this config is needed:
+
+  @Injectable()
+  export class ContentfulService {
+    private client;
+
+    constructor(@Inject(ContentfulConfig) private  config)
+
+  }
+
 
 
  Another example:
@@ -792,7 +802,8 @@ import {NullComponent} from './pages/null/null.component';
 import {CommonModule} from '@angular/common';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
 import {NgIdleModule} from '@ng-idle/core';
-import {BrandLibraryConfigService} from './services/brand-library-config.service';
+
+
 
 @NgModule({
   providers: [ /* Do not add services here */ ],
@@ -823,7 +834,6 @@ export class NgBrandLibraryModule {
           provide: InjectedLibraryConfiguration,
           useValue: libraryConfig
         },
-        SfgBrandLibraryConfigService,
         AuthenticationService,
       ]
     };
@@ -841,11 +851,11 @@ export class FooterComponent implements OnInit {
   public buildInfo: BuildInfo;
 
   constructor(
-    @Inject(SfgBrandLibraryConfigService) private libraryConfigService
+    @Inject(InjectedLibraryConfiguration) private libraryConfig
   ) {}
 
   ngOnInit() {
-    this.buildInfo = this.libraryConfigService.buildInfo; 
+    this.buildInfo = this.libraryConfig.buildInfo; 
   }
 
 }
