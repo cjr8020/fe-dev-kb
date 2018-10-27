@@ -586,3 +586,298 @@ That will help ensure that all child NgModules have access to the same provider
 instances.
 
 ================================================================================
+
+  injectable angular modules
+  **************************
+
+https://medium.com/@michelestieven/angular-writing-configurable-modules-69e6ea23ea42
+
+A component could have a dependency on Classes, Values and Objects.
+
+useClass
+--------
+  when you use a classname to specify a provider
+
+    providers: [ MyService ]  
+
+  it's interpreted like this:
+
+    providers: [
+      {
+        provide: MyService,
+        useClass: MyService
+      }
+    ]
+
+  which means you could take a class, even a blank one, and exchange it with another
+
+    class MyService {}
+    class MyOtherService {}
+
+    providers: [
+      {
+        provide: MyService,
+        useClass: MyOtherService
+      }
+    ]
+
+  useful for mocking services, you can use this to intro a new service keeping
+  the old classname for compatibility reasons
+
+useValue
+---------
+
+  useful when you don't want to provide a class but a value (object)
+
+  let myObject = { greeting: 'Hello'} 
+
+  providers: [
+    {
+      provide: 'MyService',
+      useValue: myObject
+    }
+  ]
+
+  @Component({...})
+  export class AwesomeComponent {
+
+    constructor(@Inject('MyService') myService) {
+      console.log(myService.greeting);
+    }
+  }
+
+
+useFactory
+----------
+
+  uses a factory (a simple function) and angular provides the return value of that
+  function.  Useful when you want to do some checks or some operations before 
+  knowing what to provide.
+
+  let firstObject = { greeting: 'Hello World'};
+  let secondObject = { greeting: 'Hello Earth'};
+
+  providers: [
+    {
+      provide: 'MyService',
+      useFactory: () => {
+        if(...) return firstObject
+        else return secondObject
+      }
+    }
+  ]
+
+  @Component
+  export class AwesomeComp {
+    constructor(@Inject('MyService') myService) {
+      console.log(myService.greeting);
+    }
+  }
+
+
+InjectionToken
+---------------
+
+  now we want to provide string names and classes that will be overritten.
+
+  InjectionToken provides a name to us in the provide field, instead of using
+  strings or classes.
+
+  Since every instance of the InjectionToken is different, there are no 
+  naming collisions:
+
+    import { InjectionToken } from '@angular/core';
+    import { MyInterface } from '...';
+
+    const NewToken = new InjectionToken<MyInterface>('TOKEN');
+
+
+Injectable Modules
+******************
+
+Suppose you have a library that provides the ability to pull different models
+from a CMS.  The library will be in its own module.
+
+
+1. the library will expose a static forRoot() method that will accept a 
+configuration object
+
+2. the configuration object will be an InjectionToken and useValue
+
+3. the configuration object is defined by an interface
+
+
+  // the service
+  import { ContentfullService } from '...';
+
+  // interface to define the configuration object
+  interface ContentfulConfig {
+    appId: string;
+    appKey: string;
+  }
+
+
+  // InjectionToken
+  const InjectedContentfulConfig = new InjectionToken<ContentfulConfig>('Config');
+
+
+  @NgModule()
+  export class ContentfulModule {
+
+    static forRoot(config: ContentfulConfig): ModuleWithProviders {
+      return {
+        ngModule: ContentfulModule,
+        providers: [
+          ContentfulService,
+          {
+            provide: InjectedContentfulConfig,
+            useValue: config
+          }
+        ]
+      }
+    }
+  }
+
+ -----------------------------------------
+
+ Now, in the consuming application:
+
+
+ const contentfulConfig: ContentfulConfig = {
+  appId: 'cool-app',
+  appKey: '94qera09fad09fads'
+ }
+
+
+ @NgModule({
+  imports: [
+    ...
+    ContentfulModule.forRoot(contentfulConfig)
+  ]
+ })
+ export class AppModule {}
+
+
+
+ Another example:
+ ============================================
+
+ library:
+
+ng-brand-library-config.ts
+---------------------------
+
+import {BuildInfo} from './build-info';
+import {InjectionToken} from '@angular/core';
+
+export interface SfgNgBrandLibraryConfig {
+  buildInfo: BuildInfo;
+  env: string;
+}
+
+/**
+ * This is an injection token to accept the config object seeded with values injected by the consuming app.
+ */
+export const InjectedLibraryConfiguration = new InjectionToken<NgBrandLibraryConfig>('NgBrandLibraryConfig');
+
+
+ng-brand-library.module.ts
+---------------------------
+
+import {ModuleWithProviders, NgModule} from '@angular/core';
+import {FooterComponent} from './footer/footer.component';
+import {InjectedLibraryConfiguration, NgBrandLibraryConfig} from './model/ng-brand-library.config';
+import {AuthenticationService} from './services/authentication.service';
+import {NullComponent} from './pages/null/null.component';
+import {CommonModule} from '@angular/common';
+import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
+import {NgIdleModule} from '@ng-idle/core';
+import {BrandLibraryConfigService} from './services/brand-library-config.service';
+
+@NgModule({
+  providers: [ /* Do not add services here */ ],
+  imports: [
+    CommonModule,
+    ModalModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    NgIdleModule.forRoot()
+  ],
+  declarations: [
+    NullComponent,
+    FooterComponent
+  ],
+  entryComponents: [
+    NullComponent
+  ],
+  exports: [
+    FooterComponent
+  ]
+})
+export class NgBrandLibraryModule {
+  static forRoot(libraryConfig: NgBrandLibraryConfig): ModuleWithProviders {
+    return {
+      ngModule: NgBrandLibraryModule,
+      providers: [
+        // your library providers here
+        {
+          provide: InjectedLibraryConfiguration,
+          useValue: libraryConfig
+        },
+        SfgBrandLibraryConfigService,
+        AuthenticationService,
+      ]
+    };
+  }
+}
+
+
+In a library component:
+
+footer.component.ts
+--------------------
+
+export class FooterComponent implements OnInit {
+
+  public buildInfo: BuildInfo;
+
+  constructor(
+    @Inject(SfgBrandLibraryConfigService) private libraryConfigService
+  ) {}
+
+  ngOnInit() {
+    this.buildInfo = this.libraryConfigService.buildInfo; 
+  }
+
+}
+
+
+In a consuming app's AppModule
+
+app.module.ts
+--------------
+
+const ngBrandLibraryConfig: NgBrandLibraryConfig = {
+  buildInfo: {
+    timestamp: environment.buildTimestamp,
+    version: environment.buildVersion
+  },
+  env: environment.env
+};
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes),
+    ModalModule.forRoot(),
+    NgBrandLibraryModule.forRoot(ngBrandLibraryConfig)
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+================================================================================
