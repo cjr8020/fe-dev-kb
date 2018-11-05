@@ -3552,6 +3552,94 @@ Service scope and lifetime
   for the lifetime of the application.
 
 
+Data Access Service
+-----------------------
+
+data access service could be a pass-thru for components to a backend server,
+however in many cases, it is a state management service sharing entity state
+across components and services.
+
+service properties become a data cache.
+
+purpose of State Management Service:
+
+- provide state values
+- maintain and update state
+- observe state changes
+
+to do that
+
+- add a property to retain data
+- optionally, add code to expire data when stale
+
+
+Property Bag vs State Management Service
+-----------------------------------------
+
+ property bag to:               state mgmt service to:
+
+  retain view Setting           retrieve, manage, store state
+  pass data between component   share state between components
+
+                                methods to encapsulate retrieve operations
+                                retains and shares state values
+                                provides change notifications for BOUND values with getter
+
+                                cons:
+
+                                  stale data
+                                  need to expire
+                                  consider getting fresh data before updating/deleting
+                                  state is not immutable
+
+
+Binding and Change Detection
+-----------------------------
+
+Angular change detection watches all the property changes that are bound 
+to templates, even if the property changes in the service:
+
+
+template
+
+  // template binding to a property in component
+  name: {{product.productName}}
+
+component
+
+  export class ProductDetailComponent {
+    // bound property
+    product: IProduct;
+
+    ...
+
+      this.product.productName = 'Steel Hammer';
+  }
+
+service
+
+  export class ProductService {
+
+    // bound property
+    currentProduct: IProduct;
+  }
+
+product shell list component
+
+  onSelected(product: IProduct) {
+    this.productService.currentProduct = product;
+  }
+
+product detail component
+
+  // getter is bound to property in the service
+  get product(): IProduct {
+    return this.productService.currentProduct;
+  }
+
+product detail template
+  // template binding to component property
+  Name: {{product.productName}}
 
 
 
