@@ -2330,6 +2330,16 @@ ngIf
       <div *ngIf="show">Text to Show</div>
 
 
+  safe navigation operator
+
+    <table class='table' *ngIf='products?.length'>
+
+      // safe navigation operator returns 'null' if the value is null 
+      // and does not evaluate the expression 
+
+    </table>
+
+
 
 with else
 
@@ -3219,6 +3229,331 @@ the PARENT component to the CHILD component.
   *********************************
 
 https://github.com/caroso1222/ng-lib-schematics
+
+================================================================================
+
+  Angular Component Communication
+  *******************************
+
+
+Communicating with a Template
+------------------------------
+
+to notify component of changes in the template
+
+
+  Two-way binding - the long way:
+  -------------------------------
+
+  <input type='text'
+         [ngModel]='listFilter' // ngModel binding directive binds ngModel to 
+                                // to component' `listFilter` property
+          (ngModelChange) = 'onFilterChange($event)'/>
+                                // ngModelChange event is then bound to
+                                // a function
+
+
+  communicating with getters/setters
+  ----------------------------------
+
+    component: 
+
+    private _listFilter: string;
+
+
+    get listFilter(): string {
+      return this._listFilter;
+    }
+
+    set listFilter(value: string) {
+      this._listFilter = value;
+      this.performFilter(this._listFilter);
+    }
+
+    template:
+
+    <input type='text'
+      [(ngModel)]='listFilter' />
+
+  angular two-way binding communicates with the component using the exposed
+  getter/setter by convention.
+
+
+
+  ViewChild
+  ------------------------------
+
+  DOM
+    let divElement = document.getElementById('divElement');
+
+  Angular Decorator
+    @ViewChild('divElementVar') divElementRef: ElementRef;
+
+          <div #divElementVar>{{pageTitle}}</div>
+
+
+    The selector could also be 
+
+      - angular diretive like `ngModel`
+
+      @ViewChild(NgModel) filterInput: NgModel;
+
+        the ViewChild decorator then looks in the template for the specified 
+        directive:
+
+          <input type='text' [(ngModel)]='listFilter' />
+
+      - a child component or a custom directive
+
+      @ViewChild(StarComponent) star: StarComponent;
+
+        the ViewChild decorator then looks in the template for the custom 
+        directive or child component of the defined type:
+
+          <pm-star [rating] = 'product.starRating'></pm-star>
+
+      - template reference variable
+
+      @ViewChild('divElementVar') divElementRef: ElementRef;
+
+          <div #divElementVar>{{pageTitle}}</div>
+
+
+  ViewChildren
+  ----------------------------
+
+
+      - angular directive
+        @ViewChildren(NgModel) inputs: QueryList<NgModel>;
+
+      - custom directive or child component
+        @ViewChildren(StarComponent) stars: QueryList<StarComponent>;
+
+      - template reference variable(s)
+        @ViewChildren('divElementVar') divElementRefs: QueryList<ElementRef>;
+
+
+
+  communicating with @ViewChild
+  ------------------------------
+
+
+  component
+
+    using template reference variable: #filterElement:
+
+    @ViewChild('filterElement') filterElementRef: ElementRef;
+
+    /* setting focus on this DOM element */
+    ngAfterViewInit(): void {
+      this.filterElementRef.nativeElement.focus();
+    }
+
+
+  template
+
+    <input type='text' #filterElement
+          [(ngModel)] = 'listFilter' />
+
+
+
+          Component lifecycle:  
+            Component Constructed -> Initialized
+            Component's View Initialized -> Rendered
+
+            when in the Component's constructor, the View is not yet rendered
+
+
+            ngAfterViewInit() 
+              executes after component's view is initialized and rendered
+              this is where we can reliable use a property 
+              with ChildView decorator.
+
+
+  Note: when using ViewChild to access nativeElement:
+
+    - you're directly accessing the DOM!
+    - tightly coupled to the browser
+    - may not be able to use server-side rendering
+    - can pose a security threat if accessing innerHtml
+
+
+
+
+    Parent/Child relationship between component
+------------------------------------------------
+
+For components to have parent/child relationship, 
+the parent component's template must CONTAIN the child component.
+
+Components related via routing do NOT have parent/child relationship even if
+they have child routes - i.e. if a commponent is displayed in another component
+using a <router-outlet>.
+
+
+
+Communicating thru a Service
+*********************************
+
+
+Managing State techniques:
+
+  1. Property Bag
+
+    you define a service that has simple properties that components need:
+
+      @Injectable()
+      export class ParamService {
+        showImage: boolean;
+        filterBy: string;
+      }
+
+2. Basic State Management
+
+    a service that retrieves, manipulates, inserts, deletes .. app state
+
+      @Injectable() 
+      export class ProductService {
+
+        private products: IProduct[];
+
+        getProducts() {}
+        getProduct(id: number) {}
+        createProduct(product: IProduct) {}
+        . . .
+
+      }
+
+3. State Management With Notifications
+
+    with notifications using Subject, BehaviorSubject or similar
+
+      @Injectable()
+      export class ProductService {
+        private selectedProduct: IProduct;
+
+        private selectedProductSource = new BehaviorSubject<IProduct>();
+
+        selectedProductChanges$ = this.selectedProductSource.asObservable();
+      
+        . . .
+      }
+
+
+4. ngrx / Redux
+
+
+    ngrx is based on 4 core tenets:
+
+      4.1 state: immutable
+      4.2 actions: state changes
+      4.3 reducers: state + action = new state
+      4.4 store: 
+              Observable of state
+              Observable of actions
+
+
+
+Using Property Bag service
+---------------------------
+
+When user makes selections, those values are stored in the component.
+When user navigates away from the component, it is destroyed.
+When user returns to it, it is re-initialized with default values and it has
+no memory of user selections.
+
+If a service is introduced, user selections would be stored in the service, 
+which is now used to maintain the state of user selections.
+
+  @Injectable()
+  export class ProductParameterService {
+
+    showImage: boolean;
+    filterBy: string;
+
+    constructor() { }
+
+  }
+
+
+component:
+
+    constructor(
+      private productParameterService: ProductParameterService) {
+    }
+
+    get showImage(): boolean {
+        return this.productParameterService.showImage;
+    }
+
+    set showImage(value: boolean) {
+        this.productParameterService.showImage = value;
+    } 
+
+In the component, class property `showImage` is replaced with getter/setter
+which in turn delegate to the service to read/update the property.
+
+Property bag retains the values when the component is destroyed.
+
+However, 
+
+  property bag service can communicate changes to components ONLY if they 
+  use template property binding.
+
+
+Service scope and lifetime
+---------------------------
+
+  Service can be registered in the  `providers` array of a component or a module.
+
+  where we register, defines the service' scope and lifespan.
+
+    component: 
+
+      @Component({
+        . . .
+        providers: [
+          ProductService
+        ]
+      })
+
+    the service is available to the component and all of its children.
+
+- if you register the service in the Root App Component, the service will be
+  retained for the life of the application.
+
+- if you register a service in a non-root component, it will be available to
+  it all of its children, and it will be retained ONLY while that component is
+  loaded.
+
+- if you register a service in two different components, you will get two 
+  different instances of the service.
+
+  To monitor the scope and lifecycle of a service:
+
+    @Injectable()
+    export class SomeService implements OnDestroy {
+
+      constructor() {
+        console.log('Service created');
+      }
+
+      ngOnDestroy() {
+        console.log('Service destroyed');
+      }
+    }
+
+- if you register a service in a module, the service is registered in the app's
+  root, so it is available to all components in the application 
+  for the lifetime of the application.
+
+  however, if the module is lazy-loaded, the service will be available only 
+  to the components in that module.  once the module is loaded, it is availble
+  for the lifetime of the application.
+
+
+
+
 
 ================================================================================
 
