@@ -3392,6 +3392,24 @@ using a <router-outlet>.
 
 
 
+Getter to communicate view state changes across components
+*****************************************
+
+  get product(): IProduct | null {
+    return this.productService.currentProduct;
+  }
+
+
+To keep bound data in sync:
+
+  - define a property in a service
+  - bind that property in a template
+  - use a getter in the component class
+  - angular change detection does the rest
+
+however, this only works for "bound" data.
+
+
 Communicating thru a Service
 *********************************
 
@@ -3640,6 +3658,103 @@ product detail component
 product detail template
   // template binding to component property
   Name: {{product.productName}}
+
+
+
+================================================================================
+
+  Broadcast Service Notifications
+  *******************************
+
+Push notifications
+
+template
+
+  user clicked on item
+  <button ... (click) = 'onSelected(product)'>
+
+component
+
+  onSelected(product: IProduct) {
+    this.productService.changeSelectedProduct(product);
+  }
+
+Service
+
+  changeSelectedProduct(selectedProduct: IProduct) {
+    // broadcast the notification -> selected product changed!!
+  }
+
+another component or service
+
+  // listen and respond to that notification
+
+
+eventEmitter?? - NO!
+--------------
+only supports communication between child and parent components
+
+  @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+
+best practice discourages use of event emitter otherwise.
+
+
+
+Subject or BehaviorSubject
+==========================
+
+Needed when Angular change detection for bound properties is not available.
+
+is a special type of observable that can multicast a value or event to 
+multiple subscribers.
+
+Subject can be used to send out notifications
+often encapsulated in a service
+
+any component or service that subscribes to subject will receive notifications.
+
+Subject is ALSO and Observer - allows us to push new data into Observable sequence.
+Any component or service can feed new values into Subject using its next() method:
+
+  this.mySubject.next(item);
+
+the new value is then multicast to all subscribers.
+
+
+Example
+-----------
+
+  template
+
+    // button click event is captured
+    <button ... (click) = 'onSelect(product)' >
+
+  list component
+
+    // in the service call a method, rather than setting a property on the service
+    onSelect(product: IProduct) {
+      this.productService.changeSelectedProduct(product);
+    }
+
+  service
+
+    // subject is declared as private - no other code can access it directly
+    private selectedProductSource = new Subject<IProduct>();
+
+    // public Observable to expose `selectedProductSource` property as Observable
+    // any other component or service can subscribe to this Observable.. 
+    selectedProductChanges$ = this.selectedProductSource.asObservable();
+
+
+    changeSelectedProduct(selectedProduct: IProduct) {
+      this.selectedProductSource.next(selectedProduct);
+    }
+
+  subscribing component
+
+    this.productService.selectedProductChanges$.subscribe(
+      selectedProduct => this.product = selectedProduct
+    )
 
 
 

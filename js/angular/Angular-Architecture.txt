@@ -587,6 +587,63 @@ instances.
 
 ================================================================================
 
+  @Inject vs constructor injection
+  ********************************
+
+Should use @Inject only in situation where the injectable token is not a class.
+
+Example:
+
+  providers: [
+    AuthService,
+    { provide: Http, useValue: new CustomHttpImpl() }
+  ]
+
+Here we have two different providers, the AuthService and the CustomHttpImpl.
+In the first case, the token is AuthService which means we can inject AuthService
+using obviously AuthService type:
+
+  constructor(private authService: AuthService) {}
+
+With this constructor, Angular knows to look for AuthService with the token
+`AuthService`.
+
+In the second case, we provide CustomHttpImpl with the token `Http`. So we cannot
+inject `CustomHttpImpl` - we need to inject Http:
+
+  // error: no provider for CustomHttpImpl
+  constructor(private http: CustomHttpImpl) {}
+
+  // this will actually be the CustomHttpImpl, not Angular's Http
+  constructor(private http: Http) {}
+
+
+So you can tell from this that the tokens are all classes, which is enough for
+Angular to figure out how to inject.
+
+But let's say we have a String, or an Array of something we want to inject.
+We cannot tie it to any class token - so we need to create an artificial token
+like InjectionToken:
+
+let config = '{ "some": "json", "config": "data" }'
+
+export const CONFIG = new InjectionToken<Config>('Config');
+
+Now we have a token we want to inject:
+
+  providers: [
+    { provide: CONFIG, useValue: config }
+  ]
+
+and when we inject, we @Inject(TOKEN)
+
+
+  constructor(@Inject(CONFIG) config: string) {}
+
+
+
+================================================================================
+
   injectable angular modules
   **************************
 
