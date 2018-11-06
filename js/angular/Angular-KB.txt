@@ -3757,6 +3757,132 @@ Example
     )
 
 
+BehaviorSubject
+---------------
+
+  works like a Subject except for two key features:
+
+  - requires an initial value
+  - provides a current value on any new subscription
+
+  example:
+
+      /* currently selected product */
+      // Subject containing the source of selected product data
+      private selectedProductSource: BehaviorSubject<IProduct>
+        = new BehaviorSubject<IProduct | null>(null);
+      selectedProductChanges$ = this.selectedProductSource.asObservable();
+
+      constructor(private http: HttpClient) {
+      }
+
+      changeSelectedProduct(selectedProduct: IProduct | null): void {
+        this.selectedProductSource.next(selectedProduct);
+      }
+
+      /**
+       * Creates a new product item.
+       * Uses `changeSelectedProduct()` to update the BehaviorSubject which 
+       * will push out a notification to subscribers.
+       *   
+       * @param product
+       * @param headers
+       */
+      private createProduct(product: IProduct, headers: HttpHeaders): Observable<IProduct> {
+        product.id = null; // this b/c an in-mem backend is used
+        return this.http.post<IProduct>(this.productsUrl, product, {headers: headers})
+          .pipe(
+            tap(data => {
+              console.log('createProduct: ' + JSON.stringify(data));
+              this.products.push(data);
+              // set currently selected product to the inserted item
+              this.changeSelectedProduct(data);
+            }),
+            catchError(this.handleError)
+          );
+      }
+
+Subscribers subscribe to the BehaviorSubject
+
+
+  constructor(private productService: ProductService) { }
+
+  ngOnInit(): void {
+
+    // subscribe to BehaviorSubject observable to get the latest data
+    this.productService.selectedProductChanges$.subscribe(selectedProduct => {
+        this.selectedProduct = selectedProduct;
+    });
+
+    this.productService.getProducts().subscribe(
+      (products: IProduct[]) => {
+        this.products = products;
+      },
+      (error: any) => this.errorMessage = <any>error
+    );
+  }
+
+  // use the service method `changeSelectedProduct()` to update the BS Objservable
+  onSelected(product: IProduct) {
+    this.productService.changeSelectedProduct(product);
+  }
+
+
+  Preventing memory leaks with Subject subscriptions
+  **************************************************
+
+It is a good idea for subscribing components to unsubscribe from 
+BehaviorSubject Observables onDestroy:
+
+  // class variable to hold subscription
+  private selectedProductSubscription: Subscription;
+
+  ngOnInit(): void {
+    // store subscription
+    this.selectedProductSubscription = this.productService.selectedProductChanges$.subscribe(selectedProduct => {
+        this.selectedProduct = selectedProduct;
+    });
+
+  }
+
+  // unsubscribe onDestroy
+  ngOnDestroy(): void {
+    this.selectedProductSubscription.unsubscribe();
+  }  
+
+
+================================================================================
+
+  Does Service need a Subject or its variants?
+  ********************************************
+
+NO: 
+
+  - if notifications are not required
+  - if notifiations are for bound properties, you don't need Subject
+
+
+YES:
+
+  - if you need notifications
+  - if notifications are more than just changes to bound properties
+
+
+  Which Subject to use?
+  ---------------------
+
+Subject:
+
+  - if requires no initial value
+  - broadcasts items as they are pushed
+
+BehaviorSubject:
+
+  - if you want an initial value
+  - if subscriber requires the most recent value on subscription, and then 
+    broadcast items as they are pushed.
+
+Other variants can provide ALL previous values.
 
 ================================================================================
 

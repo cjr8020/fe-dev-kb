@@ -120,6 +120,8 @@ cmd-sh-N 				open file
 
 sh-cmd-enter			complete construct
 
+sh-ctrl					find in Path
+
 ================================================================================
 
 	oh-my-zsh - iTerm2 - solarized
