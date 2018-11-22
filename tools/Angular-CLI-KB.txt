@@ -797,6 +797,54 @@ angular-cli.json
 
 =========================================================================
 
+  proxying requests to backend server
+  ***********************************
+
+
+Suppose, your b/e API runs on some.domain.com:8443.
+Suppose, in production, you've activated some kind of proxy-pass on the web 
+server/gateway (whatever it is) to route API requests to your API server.
+In order to avoid CORS issues locally:
+
+1. run webpack with proxy.config.json
+2. direct your API requests to your local web server (e.g. http://localhost:4200)
+
+1. create file `proxy.conf.json` in the root of your project
+
+{
+  "/api": {
+    "target": "https://some.domain.com:8443",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
+
+2. add `proxyConfig` option to the `serve` target in CLI config, angular.json:
+
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "some-app:build",
+            "proxyConfig": "proxy.conf.json"
+          },
+          ...
+        },
+
+3. to run the server, just call `ng serve`:
+
+or create a script to run with SSL support:
+
+    "serve-ssl": "ng serve --ssl true --ssl-key './ssl/ssl.key' --ssl-cert './ssl/ssl.crt' --disableHostCheck"
+
+DON'T forget to use `https://localhost:4200/api/some/thing` in your 
+`environment.ts` (or whatever you're using for your local environment) in order
+to direct API requests to your local webpack server which in turn will proxy 
+requests to the actual API server.
+
+
+=========================================================================
+
   run local webpack server with SSL
   *********************************
 
