@@ -409,4 +409,30 @@ on older
 
 ================================================================================
 
+	keychain
+	********
+
+After you or your Mac administrator resets the password of your macOS user account, your Mac might ask you to update your keychain password or enter the password of your login keychain. It might also tell you that the system was unable to unlock your login keychain. That's because your login keychain is still using your old password.
+
+If you don't know your old password, the solution is to create a new login keychain.
+
+update keychain password
+------------------------
+
+if you know your old password, use that password to update your existing login keychain:
+
+	1. Open the Keychain Access app, which is in the the Utilities folder of your Applications folder.
+
+	2.From the Edit menu, choose “Change Password for Keychain 'login.'”
+
+	3. Enter the old password of your user account in the Current Password field. This is the password you were using before the password was reset.
+
+	4. Enter the new password of your user account in the New Password field. This is the password you're now using to log in to your Mac. Enter the same password in the Verify field.
+
+Click OK when done, then quit Keychain Access.
+
+Taken from mac support: https://support.apple.com/en-gb/HT201609
+
+================================================================================
+
 
