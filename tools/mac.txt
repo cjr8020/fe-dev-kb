@@ -435,4 +435,32 @@ Taken from mac support: https://support.apple.com/en-gb/HT201609
 
 ================================================================================
 
+	force wifi provider password prompt
+	***********************************
+
+forgetting networks doesn't help 
+network equipment caches MAC addresses and would not prompt if the connection
+is already established.
+
+1. open a terminal and enter ifconfig
+
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	ether 64:5a:ed:ea:9e:c2
+	inet6 fe80::1871:9851:723d:2a08%en0 prefixlen 64 secured scopeid 0x4
+	inet 172.16.101.116 netmask 0xffffff00 broadcast 172.16.101.255
+	nd6 options=201<PERFORMNUD,DAD>
+	media: autoselect
+	status: active
+
+2. tweek the last digit of the MAC address
+
+$ sudo ifconfig en0 lladdr 64:5a:ed:ea:9e:c2
+
+3. turn wifi off and on
+
+you should now be prompted ...
+
+
+================================================================================
+
 
