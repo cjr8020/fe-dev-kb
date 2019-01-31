@@ -981,4 +981,27 @@ For single directory:
 
 ================================================================================
 
+	mirror duplicate a repo with git clone
+	**************************************
+
+1. Create a new target repo for the mirror/clone
+
+	https://github.com/exampleuser/new-repository.git
+
+2. Create a clone
+
+Be in any directory where you can create a temp folder
+
+	$ git clone --bare https://github.com/exampleuser/old-repository.git
+
+This creates a temporary directory in the file system - old-repository.git
+
+3. Mirror-push to the new repo
+
+	$ cd old-repository.git
+	$ git push --mirror https://github.com/exampleuser/new-repository.git
+
+
+================================================================================
+
 	
