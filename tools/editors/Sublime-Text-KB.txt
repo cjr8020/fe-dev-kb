@@ -4,6 +4,15 @@ Problem with Package Control?
 use ctrl+` to open console, then execute Package Control command and see 
 if there are errors.. 
 
+debugging, or watching keystrokes:
+
+open console:  ctrl+`
+type: sublime.log_input(True) 
+console will now show everything you type .. 
+To turn off console log:
+type: sublime.log_input(False)
+
+
 
 Keyboard Shortcuts
 *******************
@@ -15,6 +24,28 @@ ctrl-cmd-^|V 				shift current line up|down
 
 Sublime Customizations
 **********************
+
+macos
+=====
+
+Q: In the shell, to jump to the beginning/end of line I press fn+Left/fn+Right.
+How can do the same in Sublime?
+
+`fn` key does not have any name in Sublime Text
+`fn-left` | `fn - right` is simply read as `Home`|`End`, so simply mapping
+
+Sublime Text | Preferences | Key Bindings - User
+
+[
+	{ "keys": ["home"], "command": "move_to", "args": { "to": "hardbol" } },
+	{ "keys": ["end"], "command": "move_to", "args": { "to": "hardeol" } }
+]
+
+Now, use `fn-left` | `fn - right` to jump to end/beginning of line.
+
+
+Windows
+=======
 
 sublime-keymap User:
 
