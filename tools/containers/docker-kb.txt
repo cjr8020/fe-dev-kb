@@ -93,6 +93,40 @@ or
 
 ================================================================================
 
+	Docker concepts
+	***************
+
+client-server architecture
+
+docker client talks to docker daemon who does the heavy lifting of building,
+running and distributing your Docker containers.
+
+docker client and daemon can run on the same machine, or
+you can connect a docker client to a remote docker daemon.
+docker client and daemon communicate using a REST API, over UNIX sockets, or
+a network interface.
+
+dockerd - Docker daemon
+	listens for Docker API requests
+	manages Docker objects (images, containers, networks, volumes)
+	communicates with other daemons to manage Docker services
+
+docker - Docker client
+	primary way users interact with Docker
+	can communicate with different daemons
+
+docker registries
+	store docker images
+	Docker Hub is a registry that anyone can use
+	Docker is configured to look for images on Docker Hub by default
+	you can run your provite registry - Docker Trusted Registry (DTR) which
+	is included with Docker Datacenter (DDC)
+
+
+
+
+================================================================================
+
 	Docker Hub
 	**********
 
@@ -197,6 +231,26 @@ To fix this problem, either remove the ~/.docker/ directory (it is recreated aut
 
 $ sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 $ sudo chmod g+rwx "$HOME/.docker" -R
+
+
+================================================================================
+
+	Install Docker CE on Mac
+	************************
+
+https://docs.docker.com/docker-for-mac/install/
+download Docker.dmg from 
+https://download.docker.com/mac/stable/Docker.dmg
+
+install (drag to applications)
+run (asks for priveledged acces)
+verify:
+
+	$ docker --version
+	$ docker run hello-world
+
+
+
 
 
 ================================================================================
