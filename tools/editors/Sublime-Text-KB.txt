@@ -20,6 +20,7 @@ Keyboard Shortcuts
 mac os
 ------
 ctrl-cmd-^|V 				shift current line up|down
+sh-cmd-D						duplicate line
 
 
 Sublime Customizations

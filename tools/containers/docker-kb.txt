@@ -8,7 +8,95 @@
 
 ================================================================================
 
-Docker Registry
+	Commands
+	********
 
+get size of docker images
+--------------------------
+
+	$ docker images [repository[:tag]] # will display size
+
+e.g.
+
+	$ docker images java:8
+
+
+Inspecting images without pulling them
+------------------
+
+	https://ops.tips/blog/inspecting-docker-image-without-pull/
+
+
+
+================================================================================
+
+	Docker Hub
+	**********
+
+Docker Hub is a service provided by Docker for finding and sharing container images with your team. It provides the following major features:
+
+Repositories: Push and pull container images.
+Teams & Organizations: Manage access to private repositories of container images.
+Official Images: Pull and use high-quality container images provided by Docker.
+Publisher Images: Pull and use high-quality container images provided by external vendors. Certified images also include support and guarantee compatibility with Docker Enterprise.
+Builds: Automatically build container images from GitHub and Bitbucket and push them to Docker Hub
+Webhooks: Trigger actions after a successful push to a repository to integrate Docker Hub with other services.
+
+Quick Start
+
+	https://docs.docker.com/docker-hub/
+
+================================================================================
+
+	Docker Registry
+	***************
+
+The Registry is a stateless, highly scalable server side application that stores and lets you distribute Docker images. The Registry is open-source, under the permissive Apache license.
+
+The Registry is compatible with Docker engine version 1.6.0 or higher.
+
+Installation
+------------
+
+https://docs.docker.com/registry/deploying/
+
+
+
+Commands
+---------
+
+Start your registry
+
+	$ docker run -d -p 5000:5000 --name registry registry:2
+
+Pull (or build) some image from the hub
+
+	$ docker pull ubuntu
+
+Tag the image so that it points to your registry
+
+	$ docker image tag ubuntu localhost:5000/myfirstimage
+
+Push it
+
+	$ docker push localhost:5000/myfirstimage
+
+Pull it back
+
+	$ docker pull localhost:5000/myfirstimage
+
+Now stop your registry and remove all data
+
+	$ docker container stop registry && docker container rm -v registry
+
+
+================================================================================
+
+	Docker Trusted Registry
+	***********************
+
+Docker Trusted Registry (DTR) is the enterprise-grade image storage solution from Docker. You install it behind your firewall so that you can securely store and manage the Docker images you use in your applications.
+
+DTR is offered as an add-on to Docker Enterprise subscriptions of Standard or higher.
 
 ================================================================================
