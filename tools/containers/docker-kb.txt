@@ -8,6 +8,14 @@
 
 ================================================================================
 
+	CLI cheetsheets
+
+https://devhints.io/docker
+https://github.com/wsargent/docker-cheat-sheet
+
+
+================================================================================
+
 	Commands
 	********
 
@@ -41,6 +49,33 @@ e.g.
 	$ docker images java:8
 
 
+list containers
+---------------
+
+	$ docker ps -a
+	$ docker container ls -a  [-a includes non-running containers]
+
+	list all with "exited" status:
+
+	$ docker ps -a -q -f status=exited
+
+remove container
+----------------
+
+	$ docker rm [ container_id | container_name | first_three_of_id ]
+
+	remove all exited:
+
+	$ docker rm $(docker ps -a -q -f status=exited)
+
+remove image
+-------------
+
+	$ docker rmi <image-name>
+e.g.
+	$ docker rmi hello-world
+
+
 Inspecting images without pulling them
 ------------------
 
@@ -56,13 +91,32 @@ install docker nginx image
 run docker image
 ----------------
 
+	$ docker run [--name my-name] <image-name> # run "image-name" and give it a name
+
 	$ docker run --name my-nginx-c1 --detach nginx
+
+remove when stopped
+--------------------
+
+	$ docker run -rm <image-name>  # removes container when stopped
+
+
+publishing ports
+----------------
+
+	--publish <here>:<there>
+	--publish <host-port>:<container-port>
+
+	--publish 80:8080
+
+
 
 list running docker containers
 ------------------------------
 
 	$ docker ps
-	$ docker ps -a
+	$ docker ps -a    # includes exited
+
 
 run a command in a running container
 ------------------------------------
