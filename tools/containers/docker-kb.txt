@@ -49,13 +49,49 @@ e.g.
 	$ docker images java:8
 
 
+================================================================================
+
+		cleanup
+		*******
+
+clean up the data of a particular docker-compose stack, run
+This will take care of taking down the volumes, images and dangling stuff.
+
+	$ docker-compose down -v --rmi all --remove-orphans
+
+
+	$ docker rm -v $(docker ps -aq -f 'status=exited')
+	$ docker rmi $(docker images -aq -f 'dangling=true')
+
+	# ATTENTION: this will also remove volumes of docker-compose if the containers are barely stopped
+	$ docker volume rm $(docker volume ls -q -f 'dangling=true')
+
+
+$ docker system prune
+
+	This will remove all unused containers, volumes, networks and images (both dangling and unreferenced).
+
+	you can limit the pruning down to a single part, like the images, by issuing something like:
+
+$ docker image prune
+$ docker container prune
+$ docker network prune
+$ docker volume prune
+
+
 list containers
 ---------------
+
+-a, --all 
+-q, --quiet
 
 	$ docker ps -a
 	$ docker container ls -a  [-a includes non-running containers]
 
-	list all with "exited" status:
+	$ docker ps [-a] [-q] 
+	$ docker images [-a] [-q]
+
+list all with "exited" status:
 
 	$ docker ps -a -q -f status=exited
 
@@ -135,6 +171,9 @@ run a command in a running container
 or
 	$ docker exec -i -t <container-name> bash
 
+	-i 		interactive
+	-t 		terminal
+
 
 stop running container
 ----------------------
@@ -143,7 +182,80 @@ stop running container
 or
 	$ docker stop <container-id>
 
+================================================================================
 
+		docker-compose
+		**************
+
+
+docker-compose up
+	
+	Builds, (re)creates, starts, and attaches to containers for a service.
+
+	    -d, --detach               Detached mode: Run containers in the background,
+                               print new container names. 
+
+			--build                    Build images before starting containers
+
+
+	$ docker-compose up -d --build
+
+
+
+stop multi-container application
+---------------------------------
+
+docker-compose down
+
+	Stop and remove containers, networks, images, and volumes
+
+
+cleanup multi-container app
+---------------------------
+
+$ docker-compose down -v --rmi all --remove-orphans
+
+
+docker vs docker-compose
+-------------------------
+
+docker CLI
+	manages individual containers on a docker engine
+
+docker-compose CLI
+	manages a multi-container application 
+
+Usage of docker-compose requires 3 steps:
+
+	1. Define the app environment with a Dockerfile
+	2. Define the app services in docker-compose.yml
+	3. Run docker-compose up to start and run app
+
+
+
+
+down vs stop
+----------------------
+
+docker-compose stop
+
+	will stop your container, but will not remove it
+
+docker-compose down 
+
+	stops containers, removes them, as well as any networks created
+
+	-v will also remove volumes
+
+
+create new image from a container
+---------------------------------
+
+	$ docker commit <container> <image>
+
+	https://stackoverflow.com/questions/44027873/how-to-create-a-new-docker-image-from-a-running-container-on-amazon
+
+	https://blog.codeship.com/using-docker-commit-to-create-and-change-an-image/
 
 ================================================================================
 
