@@ -185,6 +185,14 @@ Select the item Solarized Dark.
 	Sublime on OSX
 	**************
 
+Package Control
+---------------
+
+	cmd-shift-P
+
+Terminal
+--------
+
 Usage
 Open Terminal at File Press ctrl+shift+t on Windows and Linux, or cmd+shift+t on OS X
 Open Terminal at Project Folder Press ctrl+alt+shift+t on Windows and Linux, or cmd+alt+shift+t on OS X
@@ -196,8 +204,23 @@ Preferences > Package Settings > Terminal > Settings - User
     "parameters": ["--open-in-tab"]
 }
 
+Indent XML
+----------
+
+	indent XML and JSON files
+
+	cmd-K, cmd-F
+
+	Selection | Format | Indent XML 
+	Selection | Format | Indent JSON
+
+
+Keyboard shortcuts
+------------------
 
 ctrl-opt-K					kill line
+
+ctrl-cmd-up|down		move line up|down
 
 ================================================================================
 
