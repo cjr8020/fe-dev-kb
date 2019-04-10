@@ -10,8 +10,13 @@ webpack-bundle-analyzer
 ************************
 
 
+	$ npm install --save-dev webpack-bundle-analyzer
 
-"bundle-report": "npm run clean && ng build --prod --stats-json && webpack-bundle-analyzer dist/<project-name>/stats.json"
+scripts:
+
+	"bundle-report": "npm run clean && ng build --prod --stats-json && webpack-bundle-analyzer dist/<project-name>/stats.json"
+
+	$ npm run bundle-report
 
 
 
