@@ -1,0 +1,34 @@
+
+	***********************
+
+		Angular Performance 
+
+	************************
+
+
+webpack-bundle-analyzer
+************************
+
+
+
+"bundle-report": "npm run clean && ng build --prod --stats-json && webpack-bundle-analyzer dist/<project-name>/stats.json"
+
+
+
+source-map-explorer
+********************
+
+	$ sudo npm install source-map-explorer -g
+
+
+In project:
+
+script:
+
+    "source-map": "npm run clean && ng build --prod --source-map",
+
+	$ source-map-explorer dist/<project-name>/main.f6d8a3b72b8896a1ae13.js
+
+	$ source-map-explorer dist/<project-name>/scripts.7468e82cfd2c8bcd9aa6.js
+
+Your source map only contains one source (webpack:///node_modules/stuff/assets/fontawesome-all.min.js)
