@@ -400,6 +400,21 @@ zshrc
 
 ================================================================================
 
+	Gradle
+	******
+
+Install homebrew if haven't already
+
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Install gradle
+
+	$ brew install gradle
+	$ gradle -v
+
+
+================================================================================
+
 	@ in ls -l   extended attributes
 	********************************
 
