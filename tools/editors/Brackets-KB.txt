@@ -112,7 +112,7 @@ Here are my customizations:
 to use extension manager, you may have to set "proxy" in brackets.json:
 
 {
-    "proxy": "http://proxy.standard.com:8080/"
+    "proxy": "http://proxy.acme.com:8080/"
 }
 
 On linux, I also experienced "Installation failed. Unknown internal error."

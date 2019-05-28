@@ -135,7 +135,7 @@ Put the following lines in the file:
 export http_proxy=http://username:password@proxyserver.net:port/
 export https_proxy=https://username:password@proxyserver.net:port/
 export ftp_proxy=http://username:password@proxyserver.net:port/
-export no_proxy="localhost,127.0.0.0/8,*standard.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
+export no_proxy="localhost,127.0.0.0/8,*acme.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
 
 Ctrl + O, save file. Ctrl + X, close nano.
 
@@ -147,7 +147,7 @@ Put the following lines in the file
 http_proxy=http://username:password@proxyserver.net:port/
 https_proxy=https://username:password@proxyserver.net:port/
 ftp_proxy=http://username:password@proxyserver.net:port/
-no_proxy="127.0.0.0/8,localhost,*.standard.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
+no_proxy="127.0.0.0/8,localhost,*.acme.com,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
 
 Ctrl + O, save file. Ctrl + X, close nano.
 

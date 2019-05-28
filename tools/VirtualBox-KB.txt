@@ -95,7 +95,7 @@ Put the following lines in the file:
 export http_proxy=http://username:password@proxyserver.net:port/
 export https_proxy=https://username:password@proxyserver.net:port/
 export ftp_proxy=http://username:password@proxyserver.net:port/
-export no_proxy="localhost,127.0.0.1,*.standard.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
+export no_proxy="localhost,127.0.0.1,*.acme.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
 
 Ctrl + O, save file. Ctrl + X, close nano.
 
@@ -126,24 +126,24 @@ config on xubi-one
 
 /etc/bash.bashrc
 
-export http_proxy=http://proxy.standard.com:8080/
-export https_proxy=http://proxy.standard.com:8080/
-export ftp_proxy=http://proxy.standard.com:8080/
-export no_proxy="localhost,127.0.0.1,*.standard.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
+export http_proxy=http://proxy.acme.com:8080/
+export https_proxy=http://proxy.acme.com:8080/
+export ftp_proxy=http://proxy.acme.com:8080/
+export no_proxy="localhost,127.0.0.1,*.acme.com,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12"
 
 
 /etc/environment
 
-http_proxy=http://proxy.standard.com:8080/
-https_proxy=http://proxy.standard.com:8080/
-ftp_proxy=http://proxy.standard.com:8080/
-no_proxy="127.0.0.1, localhost, *.standard.com, 192.168.0.0/16, 10.0.0.0/8, 172.20.0.0/16"
+http_proxy=http://proxy.acme.com:8080/
+https_proxy=http://proxy.acme.com:8080/
+ftp_proxy=http://proxy.acme.com:8080/
+no_proxy="127.0.0.1, localhost, *.acme.com, 192.168.0.0/16, 10.0.0.0/8, 172.20.0.0/16"
 
 /etc/apt/apt.conf
 
-Acquire::http::Proxy "http://proxy.standard.com:8080";
-Acquire::https::Proxy "http://proxy.standard.com:8080";
-Acquire::ftp::Proxy "http://proxy.standard.com:8080";
+Acquire::http::Proxy "http://proxy.acme.com:8080";
+Acquire::https::Proxy "http://proxy.acme.com:8080";
+Acquire::ftp::Proxy "http://proxy.acme.com:8080";
 
 
 
