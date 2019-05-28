@@ -1903,7 +1903,7 @@ ngOnInit
 create config service
 ---------------------
 $ mkdir src/app/shared
-craiskin@xubi-one:~/ws/standard/iam/iam-demo-ng2-product-app $ ng g s shared/Config
+craiskin@xubi-one:~/ws/acme/iam/iam-demo-ng2-product-app $ ng g s shared/Config
 installing service
   create src/app/shared/config.service.spec.ts
   create src/app/shared/config.service.ts
