@@ -1,0 +1,65 @@
+************
+	2FA
+************
+
+Google Authenticator
+Authy
+
+
+================================================================================
+
+	Authy
+	*****
+
+https://dashboard.authy.com/signin	
+
+Lost or stolen phone
+--------------------
+
+If you opted in for authy backups.. 
+
+1. install authy on new device
+2. use authy to confirm you're the owner of the original account
+   use the original phone number and country code use used when 
+   initially signing up for Authy
+3. you'll receive a OneCode notification on another device (SMS or Voice) and
+   will be able to to enter that value before your keys sync.  Once your keys
+   have synced, you will have to provide your backup password to decrypt your
+   keys.
+
+   	note: the Authy keys on this new device use a different TOTP seed value so 
+   	the codes provided will be different on each device.
+
+Remove a device from your Authy account
+---------------------------------------
+https://support.authy.com/hc/en-us/articles/360016196374-Remove-a-Device-from-your-Authy-Account
+
+When the Authy Multi-device feature is enabled, you can install Authy on a number of trusted devices, giving each of them access to your 2FA account tokens. This means that you may need to remove a device from Authy if it becomes lost, or is no longer in your possession, or even for troubleshooting.
+
+
+================================================================================
+
+	Google Authenticator
+	********************
+
+
+Lost or stolen phone
+--------------------
+
+1. install the authenticator app on new phone
+2. visit google's two-step verification (2SV) site on your computer.
+https://myaccount.google.com/signinoptions/two-step-verification/enroll-welcome
+
+	login to your google account to view your current 2SV settings
+
+3. click on Change Phone in the Authenticator app section.
+	or you can choose to disable google authentictor altogether (or temp) - 
+	google will revert to delivering your 2sv codes via SMS
+
+4. Open the authenticator app on your new phone and tap "Begin Setup > Scan barcode".
+
+	Scan the QR code displayed on googles website with the authenticator app,
+	then enter a 6-digit code to verify .. Once that's done, the codes on your
+	old device will no longer be valid.
+
+Repeat this process for each service you currently use with Google Authenticator, be it Apple, Facebook, Dropbox, or Amazon. Don't delete the Authenticator app off your old phone until you've moved all accounts to your new phone, otherwise you'll be locked out of those accounts -- and nobody wants that.
