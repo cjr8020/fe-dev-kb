@@ -1,0 +1,77 @@
+	***************	
+
+		proxy
+
+	***************
+
+================================================================================
+	CNTLM			
+	*****
+
+
+1. installed using defauts Program Files x86, but can be installed in 
+
+	%USER_HOME%/somewhere-else
+
+2. modified cntlm.ini  as follows:
+
+#
+# Cntlm Authentication Proxy Configuration
+#
+
+Username	<your-user-name>
+Domain		<your-domain>
+Proxy		<proxy-ip-address>:8080
+NoProxy		localhost, 127.0.0.*, 10.*, 192.168.*
+Listen		127.0.0.1:3128
+
+# NOTE: bind options:
+
+#Listen		0.0.0.0:3128
+Listen		127.0.0.1:3128
+#Listen		172.20.100.122:3128
+
+
+3. Run the following command:
+
+	C:\Program Files (x86)\Cntlm>cntlm -c cntlm.ini -H
+
+to generate the password hashes..
+
+
+
+4. Add the hashes info to cntlm.ini:
+
+
+#
+# Cntlm Authentication Proxy Configuration
+#
+
+Username	<your-user-name>
+Domain		<your-domain>
+Proxy		<proxy-ip-address>:8080
+NoProxy		localhost, 127.0.0.*, 10.*, 192.168.*
+Listen		127.0.0.1:3128
+
+Auth		NTLMv2
+
+PassLM          3F298E060559FA353DD9A4DC8CB1F253
+PassNT          61C877E26C6069EA9DCFD5B55FA4AE51
+# Only for user '<your-user-name>', domain '<your-domain>'
+PassNTLMv2      5C2432EAD52178C929A9577DD0E6C1CA   
+
+
+==> DO NOT FORGET to leave an empty line at the end of the file.
+Otherwise, the credentials will be required by the client program.	
+
+
+5. Test with curl:
+
+	this starts cntlm in interactive mode with verbose log output to the console
+	
+	>cntlm -v -c cntlm.ini  
+
+	>curl -v -x http://127.0.0.1:3128 http://www.google.com
+
+
+================================================================================
