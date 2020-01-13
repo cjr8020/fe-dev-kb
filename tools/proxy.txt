@@ -75,3 +75,66 @@ Otherwise, the credentials will be required by the client program.
 
 
 ================================================================================
+
+	px			
+	*****
+
+https://github.com/genotrance/px
+
+download latest binary
+
+To create a config
+------------------
+
+> px.exe --proxy=proxy.company.com:8080 --noproxy=127.0.0.1,10.0.0.0/8,192.168.0.0/16 --save
+
+To install (configure px to start at boot time via registry)
+----------
+
+> px --install
+
+To disable startup
+------------------
+
+> px --uninstall
+
+
+sample config file
+
+
+[proxy]
+server = proxy.company.com:8080
+pac = 
+port = 3128
+listen = 127.0.0.1
+allow = *.*.*.*
+gateway = 0
+hostonly = 0
+noproxy = 127.0.0.1,10.0.0.0/8,192.168.0.0/16
+useragent = 
+username =
+auth = 
+
+[settings]
+workers = 2
+threads = 5
+idle = 30
+socktimeout = 20.0
+proxyreload = 60
+foreground = 0
+log = 0
+
+
+================================================================================
+
+	winfoom		
+	*******
+
+https://github.com/ecovaci/winfoom
+
+Winfoom only works on Windows OS!
+The installation is pretty basic, just unzip the content of the released archive then, double click on launch.bat file.
+
+
+
+================================================================================
