@@ -6,6 +6,17 @@ fast minimalist web framework for Node.js
 
 ===============================================================================
 
+	express-generator
+	*****************
+
+	$ sudo npm install express-generator -g
+
+create an app
+
+	$ express <app-name> -e
+
+===============================================================================
+
 	Basic routing
 	*************
 
@@ -292,3 +303,59 @@ Hello World!
 
 
 
+
+===============================================================================
+
+	tutorial using express.js with express-generator
+	************************************************
+
+ 1. create ExpressJS project
+
+install express-generator using this command.
+
+	$ sudo npm install express-generator -g
+
+Next, create an Express.js app using this command.
+
+
+	$ express node-rest-api -e
+
+
+	 create : node-rest-api/
+	 . . .
+
+   change directory:
+     $ cd node-rest-api
+
+   install dependencies:
+     $ npm install
+
+   run the app:
+     $ DEBUG=node-rest-api:* npm start
+
+  $ cd node-rest-api && npm install
+  $ npm start
+
+ curl -v http://localhost:3000
+
+
+===============================================================================
+
+	using express.js with express-generator-typescript
+	**************************************************
+
+install express-generator-typescript:
+
+	$ sudo npm install express-generator-typescript -g 
+
+create an app with 
+
+	$ npx express-generator-typescript "node-rest-api"
+
+	$ cd "node-rest-api" && npm run start:dev
+
+
+ s
+
+
+===============================================================================

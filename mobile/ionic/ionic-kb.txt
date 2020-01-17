@@ -1,0 +1,159 @@
+	*************
+
+			ionic
+
+	*************
+
+
+Install ionic
+
+	$ sudo npm install -g ionic
+
+	$ ionic -v
+
+
+
+================================================================================
+
+	angular 8 - ionic 4 tutorial
+	****************************
+
+1. create ionic app of type angular
+2. install angular 8 material and CDK
+3. use dynamic imports for angular 8 route config
+4. create angular 8 REST API service
+5. view list of data
+6. view data details and add delete function
+7. add data
+8. edit data
+
+
+1. create ionic app
+--------------------
+
+$ ionic start ionic-angular-crud-app --type=angular
+
+if you get the following error:
+	gyp: No Xcode or CLT version detected!
+	gyp ERR! configure error
+https://github.com/nodejs/node-gyp/issues/1927
+
+do this
+
+	$ sudo rm -rf $(xcode-select -print-path)
+
+  $ xcode-select --install
+	xcode-select: note: install requested for command line developer tools
+
+update angular/cli if needed
+
+	$ ng update @angular/cli @angular/core
+
+
+If you get dependency incompatibility like below
+	Package "@ionic/angular" has an incompatible peer dependency to "zone.js" (requires "^0.8.26", would install "0.9.1").
+	Incompatible peer dependencies found. See above.
+
+Uninstall then install again the required dependency version.
+
+	npm uninstall --save zone.js
+	npm install --save zone.js
+
+then run `ng update` again..
+
+
+verify new app:  serve the app
+
+	$ ionic serve -l
+
+	accept the offer to install ionic/lab
+
+		> ionic-lab http://localhost:8100 --host localhost --port 8200 --project-type angular --app-name ionic-angular-crud-app --app-version 0.0.1
+
+		[INFO] Development server running!
+
+		       Lab: http://localhost:8200
+		       Local: http://localhost:8100
+
+		       Use Ctrl+C to quit this process
+
+		[INFO] Browser window opened to http://localhost:8200!
+
+
+2. install angular 8 material and CDK
+-------------------------------------
+
+Material components help in constructing attractive, consistent, and functional web pages and web applications while adhering to modern web design principles like browser portability, device independence, and graceful degradation. 
+
+
+	$ ng add @angular/material
+
+app.modules.ts
+
+	import { DragDropModule } from '@angular/cdk/drag-drop';
+	import { ScrollingModule } from '@angular/cdk/scrolling';
+	import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+	imports: [
+	  BrowserModule,
+	  FormsModule,
+	  ReactiveFormsModule,
+	  IonicModule.forRoot(),
+	  AppRoutingModule,
+	  BrowserAnimationsModule,
+	  DragDropModule,
+	  ScrollingModule
+	],	
+
+
+3. use dynamic imports for angular 8 route configuration
+--------------------------------------------------------
+
+
+	$ ionic g page product-detail
+	$ ionic g page product-add
+	$ ionic g page product-edit
+
+following routes are added:
+
+  {
+    path: 'product-detail',
+    loadChildren: () => import('./product-detail/product-detail.module').then( m => m.ProductDetailPageModule)
+  },
+  {
+    path: 'product-add',
+    loadChildren: () => import('./product-add/product-add.module').then( m => m.ProductAddPageModule)
+  },
+  {
+    path: 'product-edit',
+    loadChildren: () => import('./product-edit/product-edit.module').then( m => m.ProductEditPageModule)
+  }
+
+and the corresponding components generated.
+
+
+4. create REST API
+--------------------
+
+To be able to call REST API, import HttpClientModule
+
+	import {HttpClientModule} from '@angular/common/http';
+
+generate a service
+
+	$ ionic g service api
+
+
+5. view list of products with angular CDK DragDrop
+--------------------------------------------------
+
+
+in this demo, the ionic home page will display a list of products.
+also, we will implement the angular CDK DragDrop feature.
+
+edit home.page.ts
+
+
+
+
+================================================================================

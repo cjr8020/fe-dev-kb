@@ -5,61 +5,21 @@
 https://angular.io/guide/testing
 
 
-Jasmine
-  test framework
-  ships with an HTML test runner that executes tests in browser
-
-Angular testing utilities
-  create a test environment for the angular application code under test
-  use them to condition and control parts of the application as they 
-  interact within the Angular environment
-
-Karma
-  test runner ideal for writing and running unit tests while developing
-  the application.
-
-Protractor
-  use it to write and run e2e tests.
-  in e2e testing, one process runs the real application, and a second process
-  runs protractor tests that simulate user behavior and assert that the
-  application responds in the browser as expected.
-
-
 ================================================================================
 
-  Introduction to Jasmine
-  ***********************
+  mock REST API backend
+  *********************
 
-testing framework from Pivotal Labs using behavior driven notation.
+$ npm install json-server --save
 
-Suites
-  describe(string, function)  
-    take a title and a function
-    containing one or more specs
+"scripts": {
+  . . .
+  "json-server": "json-server" --watch db.json"
+}
 
-Specs
-  it(string, function) functions
-    take a title and a function containing one or more expectations
+$ npm run json-server
 
-Expectations
-  are assertions that evaluate to true or false:
-    expect(actual).toBe(expected)
-
-Matchers
-  are predefined helpers for common assertions:
-    toBe(expected)      - reference equality
-    toEqual(expected)   - deep comparison
-
-    complete list: https://github.com/JamieMason/Jasmine-Matchers
-
-Setup / Teardown
-
-  beforeEach
-  afterEach
-
-  beforeAll
-  afterAll
-
+output will show enpoints supported
 
 ================================================================================
 
