@@ -61,6 +61,7 @@ error 407 from proxy after CONNECT
 
 or set up URL-specific proxes (see below)
 
+note: URL encode pass if it contains special characters
 
 
 git proxy pass
