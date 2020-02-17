@@ -8,6 +8,106 @@
 
 ================================================================================
 
+  Component
+
+  @Input
+  @output
+
+
+Parent and Child components can communicate with each other via Inputs and
+Outputs.
+
+This is how parent (app.component) could use a chiild component (product-list.component)
+to display a list of components and accept an input (products) and emit an 
+output ($event)
+
+<product-list
+  
+    @Input  <---------- coming from parent property "products"
+
+  [procuctList]="products"
+
+
+    @Output ----------> $event going out to parent method productWasSelected()
+
+
+  (onProductSelected)="productWasSelected($event)">
+
+</products-list>
+
+
+using built-in events
+--------------------------------------
+
+@Component({
+  selector: 'button-clicked',
+  template: `
+    {{ value }}
+    <button (click)="increase()">Increase</button>
+    <button (click)="decrease()">Decrease</button>
+  `
+})
+export class ButtonClickedComponent {
+  value: number;
+
+  constructor() {
+    this.value = 1;
+  }
+
+  increase(): number {
+    this.value = this.value + 1;
+    return this.value;
+  }
+
+  decrease(): number {
+    this.value = this.value -1;
+    return this.value;
+  }
+}
+
+
+To emit a custom event
+--------------------------------------
+
+Custom event emitter component:
+
+  @Component({
+    selector: 'custom-event',
+    template: `
+      <button (click)="liked()">Like it?</button>
+    `
+  })
+  export class CustomEventComponent {
+    @Output() meLikey: EventEmitter<string>;
+
+    constructor() {
+      this.meLikey = new EventEmitter<string>();
+    }
+
+    liked(): void {
+      this.meLikey.emit('i like it a lot');
+    }
+  }
+
+Parent comp consuming the event emitted by its child:
+
+
+<div>
+  <custom-event
+    (meLikey)="somebodyLikedSomething($event)"
+    ></custom-event>
+</div>
+
+
+  somebodyLikedSomething(message: string) {
+    console.log(`ok say it: ${message}`);
+  }
+
+
+
+
+================================================================================
+
 	View Layer Architecture
 	************************
 
@@ -946,5 +1046,36 @@ const ngBrandLibraryConfig: NgBrandLibraryConfig = {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+================================================================================
+
+  HostBinding
+  ***********
+
+@Component({
+  selector: 'some-component',
+  . . .
+})
+export class SomeComponent implements NgOnInit {
+  
+  @HostBinding('attr.class') cssClass = 'row';
+
+}
+
+In the above example, the styling library provides a style class 'row'.
+
+You could certainly configure that class on the tag name for this component:
+
+  <some-component class="row"></some-component>
+
+but it would be nice to be able to encapsulate the component configuration
+within the component itsefl.
+
+@HostBinding() decorator allows us to set properties on the 'host' element 
+this component is attached to:
+
+  <some-component>
+
+class attribute with the value of 'row' in this example.
 
 ================================================================================
