@@ -7,6 +7,52 @@ https://angular.io/guide/testing
 
 ================================================================================
 
+  Jasmine
+  *******
+
+https://jasmine.github.io/api/edge/  
+
+
+Jamsine built-in matchers
+-------------------------
+
+
+toBe()
+toBeNull()
+toBeUndefined()
+toBeNaN()
+toEqual()
+toBeFalsy()/toBeTruthy()
+
+
+
+Jasmine spies
+------------------------
+
+Jasmine provides two ways for spying on method calls:
+
+  spyOn()
+  createSpy()
+
+Use spyOn() when the method already exists on the object.
+
+  spyOn() would execute the original method, and then you can use Jasmine
+  matchers to assert that something has happened.
+
+
+sometimes, it may be beneficial to completely repace the original method with
+a fake one for testing.  Perhaps, the original method takes too long to execute,
+or it depends on other objects that aren't available in the test context.
+Jasmine lets us handles this issue by creating a fake method using 
+
+  jasmine.createSpy()
+
+unlike spyOn(), creating a fake method circumvents the original method so that 
+it is not called during tests.
+
+
+================================================================================
+
   mock REST API backend
   *********************
 
@@ -20,6 +66,165 @@ $ npm install json-server --save
 $ npm run json-server
 
 output will show enpoints supported
+
+================================================================================
+
+  testing services with HttpClient
+  ********************************
+
+
+
+
+
+import {inject, TestBed} from '@angular/core/testing';
+import {DataService} from './data.service';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {Post} from './post.model';
+
+describe('DataService', () => {
+
+  beforeEach( () => {
+    TestBed.configureTestingModule(({
+      providers: [DataService],
+      imports: [HttpClientTestingModule]
+    }));
+  });
+
+  /**
+   * Ensures that httpMock expectations are met.
+   */
+  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    httpMock.verify();
+  }));
+
+
+  it(
+    'should be created',
+    inject([DataService], (dataService: DataService) => {
+      expect(dataService).toBeTruthy();
+    })
+  );
+
+
+  it('should be able to retrieve posts from API via GET',
+    inject([HttpTestingController, DataService],
+      (httpMock: HttpTestingController, service: DataService) => {
+
+        // prepare dummy data
+        const dummyPosts: Post[] = [
+          {
+            id: 1,
+            userId: '1',
+            body: 'Http Client',
+            title: 'Testing Angular Service'
+          },
+          {
+            id: 2,
+            userId: '2',
+            body: 'Hello World',
+            title: 'Testing Angular Services'
+          }];
+
+        // call the service
+        service.getPostData().subscribe(posts => {
+          expect(posts.length).toBe(2);
+          expect(posts).toEqual(dummyPosts);
+        });
+
+        // set expectations for the HttpClient mock
+        const request = httpMock.expectOne(`${service.ROOT_URL}/posts`);
+        expect(request.request.method).toBe('GET');
+
+        // finally, set the fake data to be returned by the mock.
+        request.flush(dummyPosts);
+      })
+  );
+
+});
+
+
+
+with fakeAsync 
+-------------------------
+
+import {fakeAsync, inject, TestBed, tick} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {Post} from './post.model';
+import {DataService} from './data.service';
+
+describe('DataService', () => {
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ HttpClientTestingModule ],
+      providers: [ DataService ]
+    });
+  });
+
+  it(
+    'should be created',
+    inject([DataService], (dataService: DataService) => {
+      expect(dataService).toBeTruthy();
+    })
+  );
+
+  it(
+    'should be able to retrieve posts from API via GET',
+    fakeAsync(
+      inject(
+        [DataService, HttpTestingController],
+        (dataService: DataService, httpMock: HttpTestingController) => {
+
+          // set up
+          let response = null;
+          const url = `${dataService.ROOT_URL}/posts`;
+          const dummyPosts: Post[] = [
+            {
+              id: 1,
+              userId: '1',
+              body: 'Http Client',
+              title: 'Testing Angular Service'
+            },
+            {
+              id: 2,
+              userId: '2',
+              body: 'Hello World',
+              title: 'Testing Angular Services'
+            }];
+
+          dataService.getPostData().subscribe(
+            (posts: Post[]) => {
+              response = posts;
+            },
+            (error: any) => {}
+          );
+
+          const requestMapper = httpMock.expectOne(url);
+          requestMapper.flush(dummyPosts);
+
+          tick();
+
+          expect(requestMapper.request.method).toBe('GET');
+
+          expect(response.length).toBe(2);
+          expect(response).toEqual(dummyPosts);
+        }
+      )
+    )
+  );
+
+
+});
+
+
+
+
+unit testing 204 response
+--------------------------
+
+
+  request.flush('', { status: 204, statusText: 'No Data' });
+
 
 ================================================================================
 
@@ -1491,6 +1696,119 @@ or
 
 
 ================================================================================
+
+  Controlling which tests run in Jasmine
+  **************************************
+
+http://thejsguy.com/2016/01/03/controlling-which-tests-run-in-jasmine.html
+
+
+Only Running Specific Tests / Specs
+------------------------------------
+
+If you want to run a specific test, use fit() instead of it(). The f stands for focused.
+
+  describe("description", function() {
+    fit("test 1", function() {
+
+    });
+
+    it("test 2", function() {
+
+    });
+  });
+
+In the example above, only test 1 will execute. You can use as many fit() calls as you would like and only those tests will execute. Similar to when you exclude tests, if you are using Jasmine with Karma, the output on the terminal will note how many tests executed and how many were skipped.
+
+What if you want to only run a specific describe() block? As you might guess, use fdescribe() instead of describe().
+
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+
+    it("test 2", function() {
+
+    });
+
+    it("test 3", function() {
+
+    });
+  });
+
+It is also worth noting that you can have focused and unfocused tests/specs inside nested fdescribe() blocks. When you do this, only the focused tests will run. For example:
+
+fdescribe("description", function() {
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+
+    fit("test 2", function() {
+
+    });
+  });
+
+  fit("test 3", function() {
+
+  });
+
+  it("test 4", function() {
+
+  });
+});
+
+In the example above, only test 2 and test 3 will run.
+
+If your fdescribe() block only has a single test/spec, you can just use it() and that test will execute.
+
+fdescribe("description", function() {
+  fdescribe("description", function() {
+    it("test 1", function() {
+
+    });
+  });
+
+  fit("test 2", function() {
+
+  });
+
+  it("test 3", function() {
+
+  });
+});
+In the example above, only test 1 and test 2 will execute.    
+
+
+Excluding Tests / Specs
+-----------------------
+
+If you want to exclude a specific test, simply use xit() instead of it(). The x means exclude.
+
+  describe("description", function() {
+    xit("description", function() {
+
+    });
+  });
+
+If you want to exclude an entire describe block, use xdescribe() instead of describe().
+
+  xdescribe("description", function() {
+    it("description", function() {
+
+    });
+
+    it("description", function() {
+
+    });
+  });
+
+When you exclude tests, these tests will be noted as “skipped”.
+
+
+
+================================================================================
+
 
 
 Test Debugging

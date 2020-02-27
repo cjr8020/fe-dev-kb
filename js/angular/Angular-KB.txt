@@ -2773,118 +2773,55 @@ Temporarily add a template reference variable named spy to the Name <input> tag 
 
 ================================================================================
 
-  Testing
-  *******
+  Dependency Injection (DI)
+  *************************
 
-================================================================================
+There are several ways we can configure resovling injected dependencies in
+Angular:
 
-  Controlling which tests run in Jasmine
-  **************************************
-
-http://thejsguy.com/2016/01/03/controlling-which-tests-run-in-jasmine.html
-
-
-Only Running Specific Tests / Specs
-------------------------------------
-
-If you want to run a specific test, use fit() instead of it(). The f stands for focused.
-
-  describe("description", function() {
-    fit("test 1", function() {
-
-    });
-
-    it("test 2", function() {
-
-    });
-  });
-
-In the example above, only test 1 will execute. You can use as many fit() calls as you would like and only those tests will execute. Similar to when you exclude tests, if you are using Jasmine with Karma, the output on the terminal will note how many tests executed and how many were skipped.
-
-What if you want to only run a specific describe() block? As you might guess, use fdescribe() instead of describe().
-
-  fdescribe("description", function() {
-    it("test 1", function() {
-
-    });
-
-    it("test 2", function() {
-
-    });
-
-    it("test 3", function() {
-
-    });
-  });
-
-It is also worth noting that you can have focused and unfocused tests/specs inside nested fdescribe() blocks. When you do this, only the focused tests will run. For example:
-
-fdescribe("description", function() {
-  fdescribe("description", function() {
-    it("test 1", function() {
-
-    });
-
-    fit("test 2", function() {
-
-    });
-  });
-
-  fit("test 3", function() {
-
-  });
-
-  it("test 4", function() {
-
-  });
-});
-
-In the example above, only test 2 and test 3 will run.
-
-If your fdescribe() block only has a single test/spec, you can just use it() and that test will execute.
-
-fdescribe("description", function() {
-  fdescribe("description", function() {
-    it("test 1", function() {
-
-    });
-  });
-
-  fit("test 2", function() {
-
-  });
-
-  it("test 3", function() {
-
-  });
-});
-In the example above, only test 1 and test 2 will execute.    
+1. Inject a (singleton) instance of a class
+2. Inject a `value`
+3. Call any function and inject the return value of that function
 
 
-Excluding Tests / Specs
------------------------
+1. Using a Class
+-------------
 
-If you want to exclude a specific test, simply use xit() instead of it(). The x means exclude.
+@NgModule({
+  imports: [
+    CommonModule
+  ],
+  providers: [
+    UserService // <-- added right here
+  ],
+  declarations: []
+})
 
-  describe("description", function() {
-    xit("description", function() {
+providers: [UserService]
 
-    });
-  });
+  is a shorthand for 
 
-If you want to exclude an entire describe block, use xdescribe() instead of describe().
+providers: [{ provide: UserService, useClass: UserService }];
 
-  xdescribe("description", function() {
-    it("description", function() {
 
-    });
+2. Using a Value
+--------------
 
-    it("description", function() {
+providers: [{ provide: "API_URL", useValue: "http://my.api.com/v1" }];
 
-    });
-  });
 
-When you exclude tests, these tests will be noted as “skipped”.
+export class SomeApiConsumerComponent {
+  constructor(@Inject("API_URL") apiUrl: string) {
+    // works!!
+  }
+}
+
+
+3. Configurable Service using Factories
+---------------------------------------
+
+
+
 
 
 
