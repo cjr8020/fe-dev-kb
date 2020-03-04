@@ -1834,4 +1834,31 @@ Test Debugging
   6. refresh the browser and it stops at the breakpoint.
 
 
+================================================================================
 
+  Karma Configuration
+  *******************
+
+
+Add a new reporter
+-------------------
+
+$ npm install karma-spec-reporter --save-dev
+
+in your karma.conf.js, add
+
+  plugins: [
+        . . .
+        require('karma-spec-reporter')
+      ],
+
+and add reporters array:
+
+
+  reporters: ['kjhtml', 'spec']
+
+
+
+
+
+================================================================================

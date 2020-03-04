@@ -1,0 +1,31 @@
+	*****************
+
+		Storybook JS
+
+	*****************
+
+
+================================================================================
+
+	Markdown Support
+	****************
+
+Markdown seems to be now added by default in .storybook/main.js
+
+
+module.exports = {
+  stories: ['../src/**/*.stories.ts'],
+  addons: ['@storybook/addon-actions', '@storybook/addon-links', '@storybook/addon-notes'],
+};
+
+
+However, you will still get an error
+
+TS2307: Cannot find module './notes/component-a.notes.md'.
+
+So to fix it, create globals.d.ts file in the root folder with:
+
+declare module '*.md';
+
+
+================================================================================

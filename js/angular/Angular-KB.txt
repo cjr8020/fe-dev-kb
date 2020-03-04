@@ -3823,6 +3823,38 @@ Other variants can provide ALL previous values.
 
 ================================================================================
 
+  Angular 8 / 9 Migration @ViewChild
+  ***********************************
+
+https://angular.io/guide/static-query-migration
+
+In preparation for this change, in version 8, we are migrating all applications and libraries to explicitly specify the resolution strategy for @ViewChild and @ContentChild queries.
+
+Specifically, this migration adds an explicit "static" flag that dictates when that query's results should be assigned. Adding this flag will ensure your code works the same way when upgrading to version 9.
+
+
+Before:
+
+  // query results sometimes available in `ngOnInit`, 
+  // sometimes in `ngAfterViewInit` (based on template)
+  @ViewChild('foo') foo: ElementRef;
+
+
+After:
+
+  // query results available in ngOnInit
+  @ViewChild('foo', {static: true}) foo: ElementRef;
+
+  OR
+
+  // query results available in ngAfterViewInit
+  @ViewChild('foo', {static: false}) foo: ElementRef;
+
+
+
+
+================================================================================
+
 
 
 
