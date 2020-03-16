@@ -1,0 +1,119 @@
+
+	*****************************
+
+		bootstrap / ngx-bootstrap
+
+	*****************************
+
+
+$ npm install bootstrap --save
+$ npm install ngx-bootstrap --save	
+
+
+================================================================================
+
+	using datepicker
+	****************
+
+	add bootstrap and ngx datepicker css to `angular.json`
+
+
+"styles": [
+     "node_modules/bootstrap/dist/css/bootstrap.min.css",
+     "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+     "src/styles.css"
+]
+
+in your `app.module.ts`  import 
+
+// Datepicker module
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker'; // <-- important !!!!
+
+  imports: [
+    . . .
+    BrowserAnimationsModule,
+    BsDatepickerModule.forRoot()
+  ],
+
+
+Basic Calendar in your template:
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-12 col-md-4 form-group">
+      <input type="text"
+            placeholder="Datepicker"
+            class="form-control"
+            bsDatepicker>
+    </div>
+    <div class="col-xs-12 col-12 col-md-4 form-group">
+      <input type="text"
+            placeholder="Daterangepicker"
+            class="form-control"
+            bsDaterangepicker>
+    </div>
+  </div>
+</div>
+
+
+
+adding animation 
+--------------------
+
+    <div class="col-xs-12 col-12 col-md-4 form-group">
+      <input
+      type="text"
+      placeholder="Datepicker"
+      class="form-control"
+      bsDatepicker
+      [bsConfig]="{ isAnimated: true }">
+
+
+ hide on scroll
+ ---------------------------
+
+
+ Hide Calendar Datepicker UI on Scroll
+
+In this step, i am going to tell you how can you easily hide the Datepicker Calendar UI on user scrolling, usually calendar pop up box stays visible when the user scrolls.
+
+The datepicker UI seems a bit awkward, let’s add the following code in your template, and it surely fixes the hide on scroll issue.
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-12 col-md-4 form-group">
+      <input
+      placeholder="Datepicker"
+      class="form-control"
+      bsDatepicker>
+    </div>
+  </div>
+</div>
+Code goes to angular.component.ts file:
+import { Component, HostListener, ViewChild } from '@angular/core';
+import { BsDatepickerDirective } from 'ngx-bootstrap/datepicker';
+import { componentFactoryName } from '@angular/compiler';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+
+export class AppComponent {
+  @ViewChild(BsDatepickerDirective, { static: false }) datepicker: BsDatepickerDirective;
+
+  @HostListener('window:scroll')
+  onScrollEvent() {
+    this.datepicker.hide();
+  }
+}
+Import HostListener, ViewChild and BsDatepickerDirective API at the top of your angular component.
+
+The @ViewChild() directive access the datepicker properties, bind the scroll event with HostListener scroll event to call the this.datepicker.hide() method to hide the calendar on the scroll.  
+
+
+   
+
+================================================================================

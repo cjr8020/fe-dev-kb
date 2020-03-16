@@ -67,13 +67,135 @@ $ npm run json-server
 
 output will show enpoints supported
 
+
+Another way:
+----------------------------
+
+create 
+
+  testing/
+    api/
+      db.json
+      routes.json
+
+db.json:
+------------------------------
+
+{
+  "quotes": [
+    {
+      "id": 1,
+      "quote": "Always do right. This will gratify some people and astonish the rest"
+    },
+    .
+    .
+    .
+  ]
+}
+
+routes.json:
+-------------
+
+{
+  "/api/*": "/$1"
+}
+
+
+package.json script:
+
+    "json-server": "json-server src/testing/api/db.json --routes src/testing/api/routes.json --no-cors=true"
+
+
+run 
+
+$ npm run json-server
+
+  Resources
+  http://localhost:3000/quotes
+
+  Other routes
+  /api/* -> /$1
+
+  Home
+  http://localhost:3000
+
+
+now either
+
+  http://localhost:3000/quotes
+or
+  http://localhost:3000/api/quotes
+
+work
+
+
+Resolving CORS
+----------------------------------------------------------
+
+Create the proxy configuration object
+Create a file name proxy.conf.json at the root of your application:
+{
+  "/api": {
+    "target": "http://localhost:3000"
+  }
+}
+
+Open the angular.json file and update the serve target by adding the key/value pair 
+
+  "proxyConfig": "proxy.conf.json"
+
+Update the workspace configuration file to use the proxy
+
+{
+  "serve": {
+    "builder": "@angular-devkit/build-angular:dev-server",
+    "options": {
+      "browserTarget": "my-app:build",
+      "proxyConfig": "proxy.conf.json"
+    },
+    "configurations": {
+      "production": {
+        "browserTarget": "my-app:build:production"
+      }
+    }
+  }
+}
+
+With this configuration, in development mode, all requests that start with /api will be forwarded to http://localhost:3000 where our mock API resides. No CORS issues anymore and when we deploy our application to production, no change is required to our Angular application to make it work with a real backend.
+
+Restart the server
+
+Restart the server to take into account the proxy configuration and check your browser again.
+
+
+
+Test in a Component
+-------------------------------------
+
+export class TwainComponent implements OnInit {
+
+  quotes$ = this.http.get('/api/quotes');
+
+  constructor(private http: HttpClient) { }
+
+}
+
+
+template:
+
+<h2>Quotes</h2>
+<div *ngFor="let quote of quotes$ | async">
+  <h3>{{quote.id}}</h3>
+    <p>{{quote.quote}}</p>
+</div>
+
+
+
+
 ================================================================================
 
   testing services with HttpClient
   ********************************
-
-
-
 
 
 import {inject, TestBed} from '@angular/core/testing';
@@ -1859,6 +1981,14 @@ and add reporters array:
 
 
 
+
+
+================================================================================
+
+  Can't bind to 'formGroup' since it isn't a known property of 'form'.'
+
+ you need to import ReactiveFormsModule
+ 
 
 
 ================================================================================

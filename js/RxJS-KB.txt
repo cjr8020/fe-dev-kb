@@ -6,20 +6,24 @@
   @@@@@@@@@@@@@@@@@@@@@@@
 
 
-ReactiveX
-
-  is a library for composing asynchronous programs by using observable sequences.
-  provides a long list of operators which allows us to filter, select, transform
-  combine and compose observables.  
+NOTE: 
+  one-line arrow function has an implied return.
+  multi-line arrow function, we need an explicit return statement.
 
 
-http://reactivex.io/rxjs/
+  error and complete()
+    when an error occurs, complete() is not executed.
 
-Reactive programming with observable streams.
 
-Observable is the key abstraction in this library.
+RxJS is a library for 
 
-An "observable" is a stream of events that we can process with array-like operators.
+  composing async and event-based programs by using observable sequences.
+
+  composing observable streams and optionally processing each item in the stream
+  using an extensive set of operators.
+
+it is a way to manage data as it flows though time.
+
 
 Stream
 
@@ -31,40 +35,115 @@ Stream
     - should return a value (data) or an error, and 
     - complete signal
 
-Observables
-  are used to watch these streams
-  will emit a function when a value, error or completed signal is returned
-  can be subscribed to by an Observer
-  will constantly watch streams and will update accordingly.
-
-  We can interact with these data streams via Observables as we would with an array.
-
-
-  let source = Rx.Observable.from(...);
-
-  let subscription = source.subscribe(
-    value => console.log('next value: %s', value),
-    error => console.log('error: %s', error),
-    () => console.log('Completed.')
-  );
-
-
-
-
-================================================================================
-
-  Advantages:
-
     - lazy by default
 
       Observables processing is "lazy" by default - nothing will happen
       until someone subscribes to it.
 
 
+Observer
+---------
+
+  const observer = {
+    next: apple => console.log(`Apple was emitted ${apple}`),
+    error: err => console.log(`Error occurred: ${err}`),
+    complete: () => console.log(`No more apples, go home`)
+  };
+
+
+Observable stream
+------------------
+
+  const appleStream = new Observable(appleObserver => {
+    appleObserver.next('Apple 1');
+    appleObserver.next('Apple 2');
+    appleObserver.complete();
+  });
+
+Start the stream
+-----------------
+
+  const subscription = appleStream.subscribe(observer);
+
+as part of the subscription process, 
+we tell the Observable how we will observe it.
+The subscribe() method returns a `subscription` object which represents
+the execution of the observable.
+
+Now that we've subscribed, the code in the constructor is executed:
+
+    appleObserver.next('Apple 1');
+    appleObserver.next('Apple 2');
+    appleObserver.complete();
+
+Typically, you don't pass the Observer object into the subscribe() method.
+Rather, you pass next(), error() and complete()  directly into the subscribe():
+
+
+  const sub = appleStream.subscribe(
+    apple => console.log(`Apple was emitted ${apple}`),
+    err => console.log(`Error occurred: ${err}`),
+    () => console.log(`No more apples, go home`)
+  );
+
+
+Stop the Observable stream to avoid memory leaks
+---------------------------
+
+  observer.complete() will automatically unsubscribe
+
+  some creation functions and operators e.g. of() from() and take() also 
+  automatically unsubscribe and  all Observable's complete() method.
+
+
+  sub.unsubscribe();
+
+
+Create observables using creation function (preferred)
+-------------------------------------------
+
+Some creation functions:
+
+  of()
+  from()
+  fromEvent()
+  interval()
+
+
+of() static function will emit every argument passed into it;
+
+
+  const appleStream = of('Apple');            // will emit one apple
+  const appleStream = of('Apple1', 'Apple2'); // will emit two apples
+
+
+
+from() static function takes an object and emits every element of that array:
+
+  const appleStream = from(['Apple1', 'Apple2']); will emit all elements of the array
+
+
+    from([20, 15, 10, 5]).subscribe(
+      item => console.log(`resulting item .. ${item}`),
+      err => console.log(`error occurred ${err}`),
+      () => console.log('complete')
+    );
+
+
+these are equivalent:
+
+  const apples = ['Apple1', 'Apple2'];
+
+  from(apples);
+  of( ... apples);  // using the spread operator
+
+
+
+
 ================================================================================
 
-  Observable
-  **********
+  Observable creation functions
+  ******************************
 
 from(ObservableInput<T>, Scheduler): Observable<T>
 ---------------------------------------------------------------------------
@@ -74,9 +153,14 @@ from(ObservableInput<T>, Scheduler): Observable<T>
 
   e.g.:
 
-    let observable = Observable.from(source);
-    class MyObserver implements Observer<number> { .. }
-    observable.subscribe(new MyObserver());
+  const appleStream = from(['Apple1', 'Apple2']); will emit all elements of the array
+
+
+    from([20, 15, 10, 5]).subscribe(
+      item => console.log(`resulting item .. ${item}`),
+      err => console.log(`error occurred ${err}`),
+      () => console.log('complete')
+    );
 
 
 fromEvent
@@ -96,102 +180,7 @@ fromEvent
     clicks.subscribe(x => console.log(x));
 
 
-create
----------------------------------------------------------------------------
- 
-  create(subscribe: function(subscriber))
 
-  subscribe - a function that accepts a Subscriber and invokes its 
-              next(), error() and complete() methods
-
-  create() converts a 'subscribe' function to an actual Observable.
-  this is equivalent to calling an Observable constructor.
-  write the 'subscribe' function so that it behaves as an Observable:
-    - it should invoke the Suscriber's next(), error() and complete() methods.
-
-  e.g.:
-
-    let obserable = Observable.create(observer => {
-      // do something
-      observer.next(..);
-      //
-      observer.complete();
-    });
-    // subscribe an observer
-    observable.subscribe(
-      value => console.log(`value: ${value}`); // next() callback
-      e => console.log(`error: ${e}`);         // error() callback
-      () => console.log("i'm done");           // complete() callback
-
-
-
-
-import {Observable} from 'rxjs';  
-
-I can create an observable from something like:
-
-an Array
-a Promise or 
-an Observable-like object.
-
-Before I can use an Observable, I need to suscribe to it as an Observer.
-
-An Observer needs three methods:
-
-  next(value) 
-    that's the method the Observable will invoke when there is a value to produce
-
-
-  error(e) {
-    console.log(`error: ${e}`);
-  }
-
-  /*
-   * if an Observable knows it has exausted all of its resources
-   * it can invoke complete method to indicate it's DONE
-   */
-  complete() {
-    console.log("complete");
-  }
-
-Note every Observable datasource can complete, or as long as the app is running.
-
-
-Observer without a class - just passing the Observer interface methods:
-
-    let numbers = [1,2,3];
-    let source = Observable.from(numbers);
-
-    source.subscribe(
-      value => console.log(`value: ${value}`),
-      e => console.log(`error: ${e}`),
-      () => console.log("complete")
-
-    );
-
-
-Observable.create()
--------------------
-
-Observable is created using create() method within which it interacts with the
-Observer object that is going to be passed it at subscribe time.
-
-    let numbers = [1,2,3];
-    let source = Observable.create(observer => {
-
-      for (let n of numbers) {
-        observer.next(n);
-      }
-
-      observer.complete();
-    });
-
-    source.subscribe(
-      value => console.log(`value: ${value}`),
-      e => console.log(`error: ${e}`),
-      () => console.log("complete")
-
-    );
 
 Observable.finally()
 --------------------
@@ -231,117 +220,27 @@ finally() vs completed()
       called after onNext() is called for the last time.
 
 
-================================================================================
-
-  Using Observables with Promises
-  *******************************
-
-Promise
-  resolves to a single value asynchronously
-  e.g. response from an Ajax call
-
-Observable
-  resolves (or emits) multiple values asynchronously over time
-  e.g. click events
-
-
-
-
-================================================================================
-
-  Fetch
-  *****
-
-WhatWG - web hypertext application technology working group
-
-Fetch standard defines requests, responses, and the process that binds them: 
-fetching.
-
-supported natively in chrome:
-
-> fetch
-  function fetch() { [native code] }
-> fetch("movies.json")
-  Promise{..}
-
-
-
-================================================================================
-
-  Observer
-  ********
-
-next(value: T): void
-  - the callback to receive notifications of type 'next' from the Observable,
-    with a value
-
-complete():void
-  - the callback to receive a valueless notification of type 'complete'
-
-error(err:any):void  
-  - the callback to receive notifications of type 'error' from the Observable,
-    with an attached Error.
-
-
-
-    Subscribe operator
----------------------------------------------------------------------------
-
-the 'subscribe' operator is the glue that connects an observer to an Observable.
-in order for an observer to see the items being emitted by an Observable, or 
-to receive error or completed notifications from the Observable, it must first
-subscribe to that Observable with this operator. E.g.:
-
-  result.subscribe(x => console.log(x));
-
-Here, "result" is an observable to which an observer is subscribing.  
-
-
-
-An Observable is called a 'cold' Observable if it doesn't emit items until an
-observer has subscribed to it.
-
-'hot' Observable - if it may begin emitting items at any time, and a subscriber 
-may begin observing the sequence of emitted items at some point after its 
-commencement, missing out on any items emitted previously.
-
-subscribe operator returns a subscription:
-
-  var subscription = source.subscribe(...);
-
-what will 'unsubscribe' method do?
-
-  - it depends on the Observable.
-
-
-Any time you have a long-running operation that might produce Observables, or
-you yourself create Observables that might create certain resources and you 
-need to provide the user with the ability to cancel the execution,
-that's when you implement the unsubscribe logic in a function that is returnable
-from Observable.create()
-
-with the purpose of cleanup resources and stop execution of some Observables.
-
-
-
-================================================================================
-
-  Subscription
-  ************
-
-represents a disposable resource, such as the execution of an Observable.
-a subscription has one important method:
-
-  unsubscribe()
-
-    takes no argument and just disposes the resource held by the subscription.
-
-
 
 ================================================================================
 
   Operators
   *********
+
+
+When processing Observables, items are piped through a set of operators.
+
+e.g.:
+
+  of(2, 4, 6)
+      .pipe(
+          map(item => item * 2),
+          tap(item => console.log(item)),
+          take(2)
+      ).subscribe(console.log);
+
+
+
+
 
 Operators by Category
 ----------------------
@@ -416,6 +315,20 @@ Observable Operators
 =====================================================
 
 
+tap()
+
+  use for debugging - taps into a stream without modifying it
+  performs actions outside of the flow of data.
+
+take()
+
+  emits the specified number of items
+  limits an unlimited stream
+  by unsubscribing from the observable stream after the expected number of items is taken.
+
+
+
+
 forEach()
 ---------
 
@@ -472,16 +385,14 @@ forEach()
 
 
 map()
------
+---------------------------------------------------------------------------
 
-  applies a given 'project' function to each value emitted by the source
-  Observable
+Transforms each emitted item:
 
-  --  1   2   3  -->
-
-observable.map(x => x * 10)
-
-  --  10  20  30 -->
+of(2,4,6)
+  .pipe(
+    map(item => item * 2)
+  ).subscribe(console.log);
 
 filter()
 --------

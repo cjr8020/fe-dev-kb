@@ -137,6 +137,8 @@ show version for a particular npm package:
 
 	$ npm view <package-name> versions
 
+	$ npm show <package-name> version
+
 ==============================================================================
 
 	installing packages with npm
