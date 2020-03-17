@@ -2741,6 +2741,166 @@ angular2-cache
 
 ================================================================================
 
+  Change Detection Strategies
+  ***************************
+
+  Default                           On Push
+
+  uses default checkAlways          Improves performance by minimizing change
+  every component is checked when   detection cycles
+  any change is detected
+                                    Component is only checked when:
+                                      @Input properties change
+                                      Event emits
+                                      a bound Observable emits
+
+You set changeDetection strategy via a decorator:
+
+
+  @Component({
+    templateUrl: 
+    changeDetection: ChangeDetectionStrategy.OnPush
+  })
+
+
+IMPORTANT: with OnPush, the template will not update (it won't check the Component)
+unless:
+
+  @Input properties change, or
+  Event emits, or
+  a bound Observable emits
+
+
+
+================================================================================
+
+  Declarative Data Retrieval Strategy
+  ***********************************
+
+Contrast with a procedural approach:
+
+  In the service, we have a procedure defined:
+
+    getProducts(): Observable<Product[]> { ... }
+
+  In the component, we call that procedure:
+
+    ngOnInit() {
+      this.product$ = this.productService.getProducts() ...
+    }
+
+To make the above more declarative
+
+  In the service, define a property that stores the result of HTTP GET
+
+    products$ = this.http.get<Product[]>(this.productsUrl);
+
+
+  In the component, assign a local property for the observable property in the service.
+
+    products$ = this.productService.products$;
+
+
+
+================================================================================
+
+  RxJS with Angular
+  *****************
+
+template access
+----------------------------------------------
+
+Async Pipe
+
+  Benefits of using an async pipe:
+    - no need to subscribe
+    - no need to unsubscribe
+    - improve change detection
+
+
+
+
+
+  can be used to access an observable directly in a template
+
+    "product$ | async"
+    
+  automatically subscribes to the Observable when component is init'd
+
+  returns each emitted value from the Observable
+
+  when a new item is emitted, component is marked to be checked for changes
+
+  unsubscribes when component is destroyed 
+
+
+Typical data retrieval pattern:
+
+
+  products: Product[] = [];
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.productService.getProducts()
+      .subscribe(products => this.products = products);
+  }
+
+
+    <div class="table-responsive">
+      <table class="table mb-0"
+             *ngIf="products">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Code</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>In Stock</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let product of products">
+          <tr>
+            <td>{{ product.productName }}</td>
+            <td>{{ product.productCode }}</td>
+            <td>{{ product.categoryId }}</td>
+            <td>{{ product.price | currency:"USD":"symbol":"1.2-2" }}</td>
+            <td>{{ product.quantityInStock }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+
+
+and here it is exposing observable to the template:
+
+  products$: Observable<Product[]>;
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.products$ = this.productService.getProducts();
+  }
+
+and in the template replace this 
+
+
+        <table class="table mb-0"
+             *ngIf="products">
+
+with
+
+        <table class="table mb-0"
+             *ngIf="products$ | async as products">
+
+
+
+
+================================================================================
+
   Caching with RxJs Observables in Angular 2
   ******************************************
 

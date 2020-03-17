@@ -142,6 +142,84 @@ these are equivalent:
 
 ================================================================================
 
+  Error Handling
+  --------------
+
+Two common strategies:
+
+  Catch and Replace
+
+    catch the errored observed and replace it with another Observable, 
+    for instance, 
+
+      created from hard-coded or local data, or 
+
+      an observable that emits an empty value or empty array, or
+
+      EMPTY RxJS constant - representing empty Observable that immediately completes.
+
+
+  Catch and Rethrow
+
+    catches the error, does something useful, 
+    and rethrows an error Observable
+
+
+
+
+
+catchError operator
+
+  - use it to catch an error and
+
+    - rethrow an error, or
+    - replace the errorred Observable to continue after the error occurs.
+
+  catchError(this.handleError);
+
+    example
+
+      return this.http.get<Product[]>(this.productsUrl)
+        .pipe(
+          catchError(err => {
+            console.error(err)
+
+            return of([
+              {id: 1, productName: 'cart'},
+              {id: 2, productName: 'hammer'}
+            ])
+          })
+        );
+
+
+throwError
+
+  is a creation function
+
+  it creates an Observable that emits no items:
+
+    Observable<never>
+
+  Immediately emits an error notification
+
+
+
+
+EMPTY  RxJS constant
+
+  creates an Observable that emits no items
+
+    and immediately emits a complete notification
+
+    return EMPTY;
+
+    used for returning an empty Observable
+
+
+
+
+================================================================================
+
   Observable creation functions
   ******************************
 
@@ -401,6 +479,55 @@ filter()
   specify the predicate
 
     observable.filter(x => x % 2 === 1);
+
+
+Examples mapping data with map()
+-----------------------------------
+
+- Consuming an array of Product
+- first, mapping the entire array to `products`
+- next, using products.map() to access each individual `product`
+- and map each originanl `product` to a new object literal
+
+  products$ = this.http.get<Product[]>(this.productsUrl)
+    .pipe(
+      map(products => products.map(product => ({
+        id: product.id,
+        productName: product.productName,
+        productCode: product.productCode,
+        description: product.description,
+        price: product.price * 1.5,
+        searchKey: [product.productName]
+        }) as Product)
+      ),
+      tap(data => console.log('Products: ', JSON.stringify(data))),
+      catchError(this.handleError)
+    );
+
+The above can be simplified with a spread (...) operator:
+
+      map(products => products.map(product => ({
+        ...product,
+        price: product.price * 1.5,
+        searchKey: [product.productName]
+        }) as Product)
+      ),
+
+  here, the spread copies any properties from the orginal object to the new object
+  replacing this:
+
+        id: product.id,
+        productName: product.productName,
+        productCode: product.productCode,
+        description: product.description,
+  with this:
+
+        ...product
+
+  then you only need statements for the properties to be modified
+
+
+
 
 
 
