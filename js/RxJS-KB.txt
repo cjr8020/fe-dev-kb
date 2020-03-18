@@ -258,7 +258,132 @@ fromEvent
     clicks.subscribe(x => console.log(x));
 
 
+================================================================================
 
+  Combining streams
+  *****************
+
+
+combineLatest  
+    = won't emit until all of the streams emit, 
+      and then it will emit whenever any of them emit.
+
+  productsWithCategory$ = combineLatest([
+    this.products$,                         --> [product[], category[]]
+    this.productCategories$
+  ]);
+
+
+withLatestFrom
+    = won't emit until all input streams emit, 
+      and emits only when the source stream emits
+      so the combined stream waits for all sources of data 
+
+   productsWithCategory$ = this.products$.pipe(
+    withLatestFrom(this.productCategories$)          --> [product[], category[]]
+   );
+
+
+forkJoin 
+    - only emits when ALL input streams COMPLETE, 
+      so the combined stream waits until both sets of data is returned
+
+
+  productsWithCategory$ = forkJoin([
+    this.products$,                         --> [product[], category[]]
+    this.productCategories$
+  ]);
+
+
+
+
+
+
+combineLatest
+---------------------------------------------------------
+
+  combination / creation item
+
+
+  creates an Observable whose values are defined 
+    - using the latest values from each input Observable
+
+      note: LATEST and not last...
+
+    combineLatest([a$, b$, c$])
+
+    - does not generate an output Observable until all streams have emitted at
+      least one value.
+
+  use it re-evalutate state when an action occurs
+
+
+
+withLatestFrom
+---------------------------------------------------------
+
+  it is a pipeable operator
+  it is a combination creation operator
+
+  takes a set of streams
+  subscribes
+  creates an output stream
+
+  does not emit until ALL streams have emitted a value and then ONLY
+  after the source stream emits
+
+  creates an Observable whose values are defined 
+
+    - using the latest values from each input observable
+    - but ONLY when the source stream emits
+
+  here we combine the source stream, a$, with two other streams to create a new
+  stream with values from each of the combined streams, 
+  BUT it only emits to the output stream when the source stream, a$, emits.
+
+
+usage: use it to 
+
+  - react to changes in only ONE stream, or
+  - to regulate the put of the other streams
+
+
+
+
+Example
+-----------------
+
+  product$ = this.http.get<Product[]>(this.url);
+
+  productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
+    .pipe(
+      tap(data => console.log('categories', JSON.stringify(data))),
+      catchError(this.handleError)
+    );
+
+
+
+  productsWtihCategories$ = combineLatest([
+    this.products$,
+    this.productsCategoryService.productCategories$
+  ]).pipe(
+    map( ([products, categories]) =>
+      products.map(product => ({
+        ...product,
+        price: product.price * 1.5,
+        category: categories.find(c => product.categoryId === c.id).name,
+        searchKey: [product.productName]
+      }) as Product)
+    )
+  );
+
+
+
+
+
+
+
+================================================================================
 
 Observable.finally()
 --------------------
@@ -1381,6 +1506,18 @@ let subscription2 = source2.subscribe(
   forkJoin
   ********
 Runs all observable sequences in parallel and collects their last elements.
+
+Note: LAST and not latest...
+
+is a static creation function, not a pipeable operator.
+
+is a combination creation function.
+
+Only emits when ALL input streams are Complete
+
+so do NOT use it with streams that do not Complete
+
+
 
 
   NOTE: 
