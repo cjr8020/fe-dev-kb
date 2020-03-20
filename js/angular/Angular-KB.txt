@@ -779,47 +779,56 @@ Angular modules and JavaScript modules
 
 
 
-  one-way from data source to view target
-  ---------------------------------------
+datasource-to-view
+-------------------
 
-      1. property style
+interpolation and template expressions
 
-       {{expression}} expression interpolation
+  {{expression}}
+  [target]="expression"
+  bind-target="expression"
 
-          <ul>
-            <li *ngFor="let hero of heroes"> {{hero}} </li>
-          </ul>
+  Element property
+  Component property
+  Directive property
 
-      2. attribute style
+  examples:
 
-        [target]="expression"
-
-          e.g. bind 'isUnchanged' property to button disabled state
-
-            <button [disabled]="isUnchanged">Save</button>
-
-              you're binding the button's 'disabled' attribute and setting
-              it to the current value of the component's 'isUnchanged' property.. 
-              right?  WRONG
-
-              These are not HTML attributes - these are properties fo DOM
-              elements, components and directives.
+    <img [src]="heroImageUrl">
+    <app-hero-detail [hero]="currentHero"></app-hero-detail>
+    <div [ngClass]="{'special': isSpecial}"></div>
 
 
-      3. class style
+view-to-source
+---------------
 
-        bind-target="expression"
+events
+
+  (target)="statement"
+  on-target="statement"
+
+  Element event
+  Component event
+  Directive event
+
+  examples:
+
+    <button (click)="onSave()">Save</button>
+    <app-hero-detail (deleteRequest)="deleteHero()"></app-hero-detail>
+    <div (myClick)="clicked=$event" clickable>click me</div>
+
+    <button (click)="deleteHero()">Delete hero</button>
+
+      A template statement has a side effect. That's the whole point of an event. 
+      It's how you update application state from user action.
+
+      The statement context is typically the component instance. 
+      The deleteHero in (click)="deleteHero()" is a method of the data-bound component.
 
 
 
-  one-way from view target to data source
-  ---------------------------------------
 
-      Event 
 
-        (view-target)="statement"
-        
-        on-target="statement"
 
 
   two-way 

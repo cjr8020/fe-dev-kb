@@ -1,0 +1,191 @@
+
+	********************
+
+		Angular Material 
+
+	********************
+
+
+================================================================================
+
+	<mat-button-toggle>
+	<mat-button-toggle-group>
+	*****************************
+
+
+The <mat-button-toggle>, an Angular Directive, is used to create a toggle or on/off button with material styling and animations. 
+
+mat-button-toggle buttons can be configured to behave as radio buttons or checkboxes. 
+
+Typically they are part of <mat-button-toggle-group>.
+
+app.module.ts
+--------------
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatButtonToggleModule, MatIconModule} from '@angular/material'
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+@NgModule({
+   declarations: [
+      AppComponent
+   ],
+   imports: [
+      BrowserModule,
+      BrowserAnimationsModule,
+      MatButtonToggleModule, MatIconModule,
+      FormsModule,
+      ReactiveFormsModule
+   ],
+   providers: [],
+   bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+app.component.css
+-----------------
+
+.tp-selected-value {
+   margin: 15px 0;
+}
+
+app.component.div
+------------------
+
+<mat-button-toggle-group #group = "matButtonToggleGroup">
+   <mat-button-toggle value = "left">
+      <mat-icon>format_align_left</mat-icon>
+   </mat-button-toggle>
+   <mat-button-toggle value = "center">
+      <mat-icon>format_align_center</mat-icon>
+   </mat-button-toggle>
+   <mat-button-toggle value = "right">
+      <mat-icon>format_align_right</mat-icon>
+   </mat-button-toggle>
+   <mat-button-toggle value = "justify" disabled>
+      <mat-icon>format_align_justify</mat-icon>
+   </mat-button-toggle>
+</mat-button-toggle-group>
+<div class = "tp-selected-value">Selected value: {{group.value}}</div>
+
+
+
+another example
+----------------
+
+template:
+-----------
+
+<div class="col col-md-12 p-0 mb-3">
+  <div [ngClass]= "{ 'required-marker': hasErrorCheck() }">
+
+  <mat-button-toggle-group
+    #group="matButtonToggleGroup"
+    [formControl]="formControlToUse"
+    [name]="'yesNoToggle'"
+    aria-label="yesNoToggle"
+    class="d-flex mw-100 my-0 align-items-center"
+    (change)="onToggleValueChange(group.value)" multiple="false"
+  >
+    <mat-button-toggle
+      class="flex-grow-1 m-0 sfg-button-toggle"
+      *ngFor="let item of buttonToggleValueOptions;"
+      [value]="item">{{item}}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+  </div>
+  <div class="tp-selected-value">Selected value: {{group.value}}</div>
+</div>
+
+component:
+------------
+
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
+import {ErrorKeyMessage} from '../shared/models/managed-content.model';
+import {Subscription} from 'rxjs';
+import {RxJsHelper} from '../shared/helper/RxJsHelper';
+import {ValidatorUtils} from '../shared/helper/validator-utils';
+
+
+@Component({
+  selector: 'app-yes-no-toggle',
+  templateUrl: './yes-no-toggle.component.html',
+  styleUrls: ['./yes-no-toggle.component.scss']
+})
+export class YesNoToggleComponent implements OnInit, OnDestroy  {
+
+  public buttonToggleValue = '';
+  public buttonToggleValueOptions: Array<string> = ['Yes', 'No'];
+
+  public DEFAULT_REQUIRED_MESSAGE = ValidatorUtils.REQUIRED_DEFAULT_MESSAGE;
+  public errorList: Array<{ id: string, message: string}> = [];
+  public hasAnyError: boolean;
+  public subscriptions: Subscription;
+  public yesMatButtonToggleTouched  = false;
+  public noMatButtonToggleTouched = false;
+
+  @Input() public formControlToUse: FormControl;
+  @Input() public useDefaultRequiredMessage = true;
+  @Input()
+  set customValidationErrors(value: Array<ErrorKeyMessage>) {
+    if (!!value) {
+      this.setErrorList(value);
+    }
+  }
+
+  constructor() { }
+
+  ngOnInit() {
+    this.subscriptions = this.formControlToUse.valueChanges.subscribe(() => {
+      this.hasAnyError = this.hasErrorCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    RxJsHelper.unSubscribeSafely(this.subscriptions);
+  }
+
+  private setErrorList(value: ErrorKeyMessage[]): any {
+    this.errorList = [];
+
+    value.forEach(item => {
+      const errorKey = Object.keys(item)[0];
+      const skip = this.useDefaultRequiredMessage && errorKey === ValidatorUtils.REQUIRED_ERROR_KEY;
+
+      if (!skip) {
+        this.errorList.push({ id: errorKey, message: item[errorKey] });
+      }
+    });
+  }
+
+  /**
+   * Touched itself won't set off an error on this control because a touch always represent a valid state.
+   * However, we support tabbing by using blur when tabbing out of a control.
+   * We still support touched because the OnSubmit triggers validation errors by touching all field elements.
+   */
+  public hasErrorCheck(): boolean {
+    return (this.formControlToUse.touched && this.formControlToUse.invalid);
+  }
+
+  public markAsTouchedOnBlur(): void {
+    if (this.noMatButtonToggleTouched && this.yesMatButtonToggleTouched) {
+      this.formControlToUse.markAsTouched();
+      this.noMatButtonToggleTouched = false;
+      this.yesMatButtonToggleTouched = false;
+    }
+  }
+
+  public onToggleValueChange(value: string): void {
+    console.log(`onToggleValueChange(${value})`);
+    this.formControlToUse.setValue(value);
+  }
+
+}
+
+
+
+
+================================================================================

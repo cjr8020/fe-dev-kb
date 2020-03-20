@@ -385,6 +385,29 @@ Example
 
 ================================================================================
 
+  Reacting to Actions
+  *******************
+
+
+filter
+------
+
+  transformation operator
+
+
+  filters to the items that match criteria specified in a provided function
+
+    filter(item => item === 'Apple')
+
+  works similar to array.filter() method
+
+
+
+
+
+
+================================================================================
+
 Observable.finally()
 --------------------
 
@@ -597,13 +620,7 @@ of(2,4,6)
     map(item => item * 2)
   ).subscribe(console.log);
 
-filter()
---------
 
-  filters values emitted by the source Observable by only emitting those that
-  specify the predicate
-
-    observable.filter(x => x % 2 === 1);
 
 
 Examples mapping data with map()
@@ -1146,23 +1163,6 @@ concatMap
     .defaultIfEmpty('NO_EFFECT')
 
 
-
-================================================================================
-
-Importing RxJS components
-*************************
-
-    import { Observable, Observer } from 'rxjs';
-
-in VSCode, if you place your cursor on 'rxjs' and hit F12, you will get a listing
-of everything that is being sent to the browser.
-
-There is a way to be more specific about what you need to import:
-
-    import { Observable } from 'rxjs/Observable';
-    import { Observer } from 'rxjs/Observer';
-    import 'rxjs/add/operator/map';
-    import 'rxjs/add/operator/filter';    
 
 
 ================================================================================
