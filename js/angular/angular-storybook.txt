@@ -7,6 +7,194 @@
 
 ================================================================================
 
+	Storybook for Angular
+	*********************
+
+$ npx -p @storybook/cli sb init --type angular
+
+manually:
+---------
+
+	$ npm install @storybook/angular --save-dev
+	$ npm install babel-loader @babel/core --save-dev 
+
+add npm script:
+
+	{
+	  "scripts": {
+	    "storybook": "start-storybook"
+	  }
+	}
+
+create main file:
+
+	.storybook/main.js
+
+	module.exports = {
+		stories: ['../src/**/*.stories.[tj]s'],
+	};
+
+storybook typescript configuration:
+
+	.storybook/tsconfig.json
+
+	{
+		"extends": "../tsconfig.json",
+		"exclude": [
+		  "../src/test.ts",
+		  "../src/**/*.spec.ts",
+		  "../projects/**/*.spec.ts"
+		],
+		"include": [
+		  "../src/**/*",
+		  "../projects/**/*"
+		]
+	}	
+
+================================================================================
+
+	writing stories
+	***************
+
+A Storybook is a collection of stories. Each story represents a single visual state of a component.
+
+Technically, a story is a function that returns something that can be rendered to screen.
+
+
+
+
+supported formats
+*****************
+
+
+
+	Component Story Format (CSF)
+	------------------------------------------------------------------------------
+
+	https://storybook.js.org/docs/formats/component-story-format/
+	https://medium.com/storybookjs/component-story-format-66f4c32366df
+
+	CSF has every affordance of the storiesOf API, but brings many additional benefits:
+		💎 Simple. 
+			Writing stories is as easy as exporting ES6 functions from your story file in a clean, standard format you know and love.
+		🚚 Portable. 
+			Component stories are easily consumed anywhere ES6 modules live, including your favorite testing tools like Jest and Cypress.
+		🔥 Optimized. 
+			Component stories don’t need any libraries other than your components. And because they’re ES6 modules, they’re even tree-shakeable!
+		☝️ Declarative. 
+			The declarative syntax is isomorphic to higher-level formats like MDX, enabling clean, verifiable transformations.
+		👾 Future-proof. 
+			Component stories hide Storybook’s underlying API, giving maintainers flexibility to improve Storybook without breaking any contracts.
+
+	CSF is supported in all frameworks except React Native, where you should use the storiesOf API instead.
+
+
+	example:
+
+		export default { title: 'atoms/Button' };
+		export const text = () => <Button>Hello</Button>;
+		export const emoji = () => <Button>😀😎👍💯</Button>;
+
+
+
+	Default Export
+	--------------
+
+		The default export defines metadata about your component, including 
+			the component itself, 
+			its title (where it will show up in the navigation UI story hierarchy), 
+			decorators, and 
+			parameters. 
+
+		title should be unique, i.e. not re-used across files.
+
+			import MyComponent from './MyComponent';
+
+			export default {
+			  title: 'Path/To/MyComponent',
+			  component: MyComponent,
+			  decorators: [ ... ],
+			  parameters: { ... }
+			}
+
+
+	Named Story Exports
+	-------------------
+
+		With CSF, every named export in the file represents a story function by default.
+
+			import MyComponent from './MyComponent';
+
+			export default { ... }
+
+			export const Basic = () => <MyComponent />;
+			export const WithProp = () => <MyComponent prop="value" />;
+
+		It’s recommended to start export names with a capital letter.
+
+		Story functions can be annotated with a story object 
+		to define story-level decorators and parameters, and also 
+		to define the name of the story.
+
+
+		export const Simple = () => <MyComponent />;
+
+		Simple.story = {
+		  name: 'So simple!',
+		  decorators: [ ... ],
+		  parameters: { ... }
+		};
+
+	Non-story exports
+	------------------
+
+		In some cases, you may want to export a mixture of story and non-stories. 
+		For example, it can be useful to export data that’s used in your stories.
+
+		you can use optional includeStories and excludeStories configuration fields in the default export, 
+		which can be set to either an array of strings, or a regular expression.
+
+			export default {
+			  title: 'MyComponent',
+			  component: MyComponent,
+			  includeStories: ['SimpleStory', 'ComplexStory']
+			}
+
+			export const simpleData = { foo: 1, bar: 'baz' };
+			export const complexData = { foo: 1, { bar: 'baz', baz: someData }};
+
+			export const SimpleStory = () => <MyComponent data={simpleData} />;
+			export const ComplexStory = () => <MyComponent data={complexData} />;
+
+		For this specific example the equivalent result can be achieved in a few ways depending on what’s convenient:
+
+			includeStories: ['SimpleStory', 'ComplexStory']
+			includeStories: /.*Story$/
+			excludeStories: ['simpleData', 'complexData']
+			excludeStories: /.*Data$/
+
+
+	storiesOf API 
+	------------------------------------------------------------------------------
+
+
+		storiesOf('atoms/Button', module)
+	  .add('text', () => <Button>Hello</Button>)
+	  .add('emoji', () => <Button>😀😎👍💯</Button>);
+
+
+
+
+	MDX Syntax
+	------------------------------------------------------------------------------
+
+
+
+
+
+
+================================================================================
+
 	Markdown Support
 	****************
 
@@ -26,6 +214,18 @@ TS2307: Cannot find module './notes/component-a.notes.md'.
 So to fix it, create globals.d.ts file in the root folder with:
 
 declare module '*.md';
+
+
+================================================================================
+
+	angular material 
+	****************
+
+angular material stories examples
+---------------------------------
+
+https://github.com/amcdnl/material-storybook
+https://amcdnl.github.io/material-storybook/
 
 
 ================================================================================

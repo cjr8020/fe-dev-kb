@@ -1,0 +1,45 @@
+
+	********
+
+		yarn
+
+	********
+
+$ brew install yarn
+
+
+================================================================================
+
+	yarn config
+	***********
+
+# set
+
+	$ yarn config set <key> <value> [-g|--global]
+
+# read
+
+	$ yarn config get <key> 
+
+# delete key
+
+	$ yarn config delete <key>
+
+# list
+
+	$ yarn config list
+
+ 
+
+$ yarn config set "strict-ssl" false -g 
+$ cat ~/.yarnrc
+
+
+================================================================================
+
+	usage
+	*****
+
+$ yarn install 
+
+================================================================================
