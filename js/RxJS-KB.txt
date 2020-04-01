@@ -385,23 +385,206 @@ Example
 
 ================================================================================
 
+  Data Stream vs Action Stream
+  ****************************
+
+when you call HTTP GET, the observable stream emits one item - response - the
+stream then completes 
+
+when a stream reacts to an action, the stream emits an item any time the action 
+occurs 
+
+combineLatest([data$, action$])
+  emits after both stream have emitted, and then again
+  every time the action stream emits
+
+  = the resulting array contains data$ and the latest action$ information.
+
+
+      productsWtihCategories$ = combineLatest([
+        this.products$,
+        this.productsCategoryService.productCategories$
+      ]).pipe(
+        map( ([products, categories]) =>
+          products.map(product => ({
+            ...product,
+            price: product.price * 1.5,
+            category: categories.find(c => product.categoryId === c.id).name,
+            searchKey: [product.productName]
+          }) as Product)
+        )
+      );
+
+  by combining a data steam with an action stream, our code auto reacts to user
+  actions and adjusts the display accordingly.
+
+
+
+How do we create an Action stream?
+-----------------------------------
+
+we could use fromEvent() to react to events
+
+a common technique is to use  Subject/BehaviorSubject
+
+
+a Subject is both an observable and an observer
+
+
+  Example
+  --------
+
+      A form control emits events containint selected category:
+
+
+          <select class="form-control"
+                  (change)="onSelected($event.target.value)">
+            <option value="0">- Display All -</option>
+            <option *ngFor="let category of categories$ | async as categories"
+                    [value]="category.id">{{ category.name }}</option>
+          </select>
+
+      We want use Subject so that it can broadcast category changes to N subscribers.
+
+
+        private categorySelectedSubject = new Subject<number>();
+        categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+
+
+      in our onSelected() 
+
+
+        onSelected(categoryId): void {
+          this.categorySelectedSubject.next(+categoryId);
+        }
+
+      we can call method the Subject as observer, which emits the item, categoryId,
+      into the stream.
+
+      This is how the item is emitted into the Action Stream.
+
+
+
+
+================================================================================
+
+
+  Observable
+  **********
+
+Methods:
+
+  lift()
+  subscribe()
+
+
+  Observer
+  ********
+
+Methods:
+
+  interface Observer<T> {
+    closed?: boolean
+    next: (value: T) => void
+    error: (err: any) => void
+    complete: () => void
+  }
+
+
+  Subject
+  *******
+
+Methods:
+
+  lift()
+  next()
+  error()
+  complete()
+  unsubscribe()
+
+    _trySubscribe()
+    _subscribe()
+
+  asObservable()
+
+
+
+================================================================================
+
   Reacting to Actions
   *******************
 
+1. Create an action stream with Subject or BehaviorSubject.
+2. Combine the initial action stream with the Data stream.
+3. Emit a value into the Action stream every time an action occurs.
 
-filter
-------
-
-  transformation operator
-
-
-  filters to the items that match criteria specified in a provided function
-
-    filter(item => item === 'Apple')
-
-  works similar to array.filter() method
+  that re-executes your observable pipeline reacting to user action.
 
 
+  Subject and BehaviorSubject
+  ***************************
+
+Subject is a special type what is both an Observable and an Observer
+
+
+  Unicast vs Multicast
+  --------------------
+
+Observable is Unicast - each subscriber gets its own copy of the stream.
+
+Subject is Multicast - its stream is shared across multiple Subscribers.
+
+
+  Subject
+  *******
+
+Example:
+-------------  
+
+private categorySelectedSubject = new Subject<number>();
+
+categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+
+// next() is called to emit the next categoryId to the action stream:
+
+onSelected(categoryId): void {
+  this.categorySelectedSubject.next(+categoryId);
+}
+
+
+products$ = combineLatest([
+
+])
+.pipe(
+  map( ([products, categoryId]) => 
+    products.filter(product => 
+      categoryId ? product.categoryId ==== categoryId : true) 
+  )
+);
+
+
+  BehaviorSubject is a special Subject 
+  ---------------
+
+    allows for the initial value to be set in the construtor.
+
+
+
+  Starting with Initial Value
+  ---------------------------
+
+
+use startWith(0)
+
+
+  this.categorySelectedAction$.pipe(startWith(0))
+
+
+use BehaviorSubject
+
+
+  private categorySelectedSubject = new BehaviorSubject<number>(0);
+  categorySelectedAction$ = this.categorySelectedSubject.asObservable();
 
 
 

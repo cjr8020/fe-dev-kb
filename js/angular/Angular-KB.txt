@@ -2759,8 +2759,8 @@ angular2-cache
   every component is checked when   detection cycles
   any change is detected
                                     Component is only checked when:
-                                      @Input properties change
-                                      Event emits
+                                      @Input properties change,
+                                      Event emits, or
                                       a bound Observable emits
 
 You set changeDetection strategy via a decorator:

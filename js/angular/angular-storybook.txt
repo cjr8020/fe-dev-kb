@@ -61,6 +61,10 @@ A Storybook is a collection of stories. Each story represents a single visual st
 Technically, a story is a function that returns something that can be rendered to screen.
 
 
+Examples:
+	https://github.com/IBM/carbon-components-angular/blob/master/src/dropdown/dropdown.stories.ts
+	https://indigo.keboola.com/?path=/story/bootstrap--buttons
+
 
 
 supported formats

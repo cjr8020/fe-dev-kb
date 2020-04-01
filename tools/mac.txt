@@ -110,6 +110,8 @@ cmd-;
 Intellij IDEA shortcuts
 -----------------------
 
+ctrl-opt-space  code completion assist
+
 ctrl-n 	
 	(same as alt-insert) new class | file | etc .. 
 

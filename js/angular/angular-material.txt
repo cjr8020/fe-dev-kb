@@ -5,6 +5,17 @@
 
 	********************
 
+Installation
+-------------
+
+	$ ng add @angular/material
+
+this adds 
+
+	@angular/cdk
+	@angular/material
+
+
 
 ================================================================================
 
