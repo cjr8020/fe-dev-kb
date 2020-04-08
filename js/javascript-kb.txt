@@ -4,6 +4,85 @@
 
 ===============================================================================
 
+
+Javascript destructuring
+------------------------
+
+  an expression that allows us to 
+
+  - extract data from arrays, objects, maps and sets into their own variable
+  - extract properties from an object or items from an array, multiple at a time.
+
+  e.g.
+    sometimes you need top level variables like:
+
+      const Person = {
+        first: 'Wes',
+        ...
+        twitter: '@wesbos'
+      };
+      const first = person.first;
+      const last = person.last;
+
+    You've got this repetitive code over and over again, where you need to make
+    a variable from something that is inside of an object, or inside of an array...
+
+    What we could do instead of creating multiple variables,
+    we destructure them in a single line like so:
+
+      const { first, last } = person;
+
+    Curly brackets on the LEFT side of the equals sign?  
+    That is not a block!.
+    That is not an object.
+    It's the new destructuring syntax.
+
+    The code above says, give me a variable called "first", a var called "last", 
+    and take it from the 'person' object.  We're taking the `first` property and 
+    the `last` property and putting them into a new var that will be scoped 
+    to the parent block (or window).
+
+      console.log(first);
+      console.log(last);
+
+
+Another example:
+
+const wes = {
+  first: 'Wes',
+  last: 'Bos',
+  links: {
+    social: {
+      twitter: 'https://twitter.com/wesbos',
+      facebook: 'https://facebook.com/wesbos.developer',
+    },
+    web: {
+      blog: 'https://wesbos.com'
+    }
+  }
+};
+
+
+I want to pull twitter and facebook URLs.. 
+
+const twitter = wes.links.social.twitter;
+const facebook = wes.links.social.facebook;
+// Annoying!
+
+
+// Much better
+const { twitter, facebook } = wes.links.social;
+console.log(twitter, facebook); // logs the 2 variables 
+
+
+Notice how we destructure `wes.links.social` and not just `wes`? 
+That is important because we are destructuring a few levels deep.
+
+
+
+
+===============================================================================
+
 	Array functions
 	***************
 

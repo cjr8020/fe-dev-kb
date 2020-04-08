@@ -198,6 +198,7 @@ throwError
 
   it creates an Observable that emits no items:
 
+
     Observable<never>
 
   Immediately emits an error notification
@@ -379,6 +380,15 @@ Example
 
 
 
+
+
+================================================================================
+
+  map 
+
+    operator
+
+    Applies a given project function to each value emitted by the source Observable, and emits the resulting values as an Observable.
 
 
 
@@ -591,6 +601,148 @@ use BehaviorSubject
 
 ================================================================================
 
+  Caching Data
+  ************
+
+Classic caching pattern is to define a var to store cached data
+
+  private products: Product[];
+
+  getProducts(): Observable<Product[]> {
+
+    if (this.products) {
+      return of(this.products);
+    }
+
+    return this.http.get<Product[]>(this.productsUrl)
+      .pipe(
+        tap(data => this.products = data),
+        catchError(this.handleError)
+      );
+  }
+
+A more declarative approach:
+
+  private productsUrl = 'api/products';
+
+  products$ = this.http.get<Product[]>(this.productsUrl)
+    .pipe(
+      shareReplay(1),
+      catchError(this.handleError)
+    );
+
+
+RxJS operator
+
+  shareReplay 
+  -----------
+
+- multicast operator
+- returns a Subject that shares a single subscription to the underlying source
+- takes in an optional buffer size, which is the number of items cached and replayed
+- replays the defined number of emissions on subscription
+- on subscribe, it replays a specified number of emitions
+- the items stay cached forever, even after there are no more subscribers
+
+
+  shareReplay(1);  // share the last emission
+
+in this case 
+
+  used to cache data in the application
+
+
+
+
+================================================================================
+
+  Higher Order Observables
+  --------------------------
+
+    some Observables emit primitives
+
+    some emit arrays .. or other observables
+
+
+    of(3,7)
+      .pipe(
+        map( id => this.http.get<Supplier>(`${this.url}/${id}`) )
+      ).subscribe();
+
+
+      this Observable emits another Observable returned by the HTTP.GET.
+
+      an Observable that emits an Observable is called a Higher Order observable
+
+
+      Outer observable
+
+      Inner observable 
+
+    but we're not subscribing to the inner observable.
+
+
+  Nested subscription - not recommended
+  --------------------------------------
+    
+
+    NOT recommended - should not have nested subscriptions in your code:
+
+      of(3,7)
+      .pipe(
+        map( id => this.http.get<Supplier>(`${this.url}/${id}`) )
+      ).subscribe( o =>
+          o.subscribe()
+      );
+
+    this is what higher order mapping operators are for ...
+
+
+
+  Higher Order Mapping operators
+  -------------------------------
+
+    Higher Order mapping operators transform inner observables
+
+
+    xxxMap() family of operators 
+    ----------------------------
+
+      concatMap
+      mergeMap
+      switchMap
+
+
+      Map each value 
+      - from a source (outer) Observable
+      - to a new (inner) Obserbable
+
+      Auto sub/unsub from inner Observables
+
+
+  with nested subscriptions
+
+      suppliersWithMap$ = of(1, 5, 8)
+        .pipe(
+          map(id => this.http.get<Supplier>(`${this.suppliersUrl}/${id}`) )
+        );
+
+
+      constructor(private http: HttpClient) {
+        this.suppliersWithMap$
+          .subscribe(o => o.subscribe(
+            item => console.log('map result', item)
+          ));
+      }
+
+  The above won't work in async pipe, and how to you unsubscribe!
+
+
+
+
+
+================================================================================
+
 Observable.finally()
 --------------------
 
@@ -627,6 +779,77 @@ finally() vs completed()
 
     OnCompleted
       called after onNext() is called for the last time.
+
+
+
+================================================================================
+
+  Creation Functions
+  ******************
+
+
+merge
+-----
+
+  combines multiple streams by merging their emissions
+
+    merge(a$, b$, c$)
+
+  static combination creation function, not a pipeable operator
+
+    -takes in a set of streams
+    -subscribes
+    -creates an output stream
+    -completes when all input streams complete
+
+  as values are emitted in the source streams, they are also emitted in the
+  resulting stream producing a combined stream of all values.
+
+
+
+scan
+----
+
+  accumulates itesm in a stream
+
+    scan( (acc, curr) => acc + curr)
+
+  used to totalling amounts
+
+
+merge + scan to react to an add() action
+----------------------------------------
+
+  data stream
+  action stream - emits new product
+
+example:
+  adding a new product
+
+    - first, merge two streams into a single stream
+    - then, aggregate them using scan()
+
+  merge(
+    this.product$,                  // data stream all products
+    this.newProductAddedAction$     // action stream - emits new product
+  )
+  .pipe(
+    scan( (acc: Product[], value: Product) => 
+      [...acc, value]
+    )
+  );
+
+    for scan() operation, the original product array is the initial value 
+    for the accumulator function.
+    when a new item emits, it is accumulated into the initial value as
+    defined by the accumulator function:
+
+      [...acc, value]
+
+    here, a new array is created using the (...) spread operator to copy 
+    the intial array, and 
+    then, new 'value' is added to that array.
+
 
 
 
@@ -792,16 +1015,6 @@ forEach()
   So the most significant different between RxJS 5 subscribe and forEach is the inability to cancel a promise.
 
 
-
-map()
----------------------------------------------------------------------------
-
-Transforms each emitted item:
-
-of(2,4,6)
-  .pipe(
-    map(item => item * 2)
-  ).subscribe(console.log);
 
 
 
@@ -1422,107 +1635,6 @@ catch() operator
           })
 
 
-
-==============================================================================
-
-
-  Functional Reactive Programming FRP
-  ***********************************
-
-Tutorial 1
-https://github.com/channikhabra/frp-with-rxjs-jschannel-conf/blob/master/README.org
-
-Task: 
- - render tweets to a web page
- - tweet looks like this
-      var tweets = [
-        {
-          id: 'tweet1',
-          username: 'koyote',
-          body: 'I will eventually catch you :3'
-        }
-        ...
-      (100 or so)];
-Dev spec:
-  - only show tweets from the logged-in user
-  - only show the tweets with specific hash-tags
-  - and replace the text emogies with images.
-
-So, the dev starts coding one problem at a time:
-
-var tweets = getTweets();
-tweets
-    .filter(t => t.username === me.username)   // filter tweets from this user
-    .filter(t => hasTag(selectedHTag, t.text)  // only tweets with selected #tag
-    .map(t => {
-      t.text = emogize(t.text);
-      return t;
-    })                     // replace text emogies with <img> tags
-                           // map is like filter but it takes a function... 
-    .forEach(t => render); // for each item in the processed collection, render...
-
-
-Code:
-
-    tweets
-      .filter(t => t.username === me.username)
-      .filter(t => t.text.split(' ').includes(selectedHTag))
-      .map(t => {
-        t.text = emogize(t.text);
-        return t;
-      })
-      .forEach(t => render);
-
-Source
-    +---------------------------+
-    |                           |
-    |        operations         |
-    |                           |
-    +---------------------------+
-                              Sink
-
-The data source is made to go through an operation, and the result is passed to
-a sink for side effects.
-The operations will not mutate the source.
-Given the same input, it will always produce same output - it's a pure function.
-Pure functions can be composed to make complex operations without any hassle.
-
-This functional approach brings a lot of value:
-
-  1. the code is readable
-  2. pure functions are easy to test
-  3. modular, compose-able code means ease of extension
-
-But this is JavaScript - turns out the source is asynchronous, and it produces
-one tweet at a time.
-
-First thing that came to mind - callbacks
-
-  - composability.. how would you compose with callbacks?
-  - dangling state can be nasty. imagine 6 levels deep with callbacks.  5th
-  uses something set by 2nd callback.  now debug
-  - readability is the first thing that gets murdered.
-
-Promises?
-
-Thanks to promises, async values can be passed around like regular data.
-but they are hard to compose.
-they resolve once at most and then be done with, and canceling a promise is not
-something you do in a pool of async requests
-
-with RxJS
-----------
-
-var tweets_ = Rx.Observable.fromPromise(getTweets);
-
-tweets_
-    .filter(t => t.username === me.username)
-    .filter(t => hasTag(selectedTag) )
-    .map(t => {
-      t.text = emogize(t.text);
-      return t;
-    })
-    .subscribe(x => render(x));
 
 
 
