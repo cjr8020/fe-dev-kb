@@ -1079,3 +1079,41 @@ this component is attached to:
 class attribute with the value of 'row' in this example.
 
 ================================================================================
+
+  Monorepo
+  ********
+
+
+Goals
+-----------
+
+Increase Visibility
+
+  teams within organization are often unaware of changes that other teams
+  are making.   
+
+
+Reuse Code Directly
+
+  traditional way to modularize and share code is to create a package.
+  there is a large amount of overhead when making changes to these.
+
+  versioning of various packages and staying current to update consuming 
+  applications is a challenge.
+
+  developer can work with the code directly.
+
+
+Ensure Consistent Version of Dependencies
+
+  Single version policy
+
+  Organizations or business units can choose to have 
+
+    - a single version of dependencies across all projects, or
+
+    - to have a "latest-minus-X" policy to ensure all are up-to-date.
+
+
+
+================================================================================

@@ -1,0 +1,92 @@
+
+	************
+
+		NRWL NX
+
+	************
+
+Resources:
+
+	courses by NRWL
+		https://nxplaybook.com/
+
+	interactive tutorial
+		https://nx.dev/angular/tutorial/01-create-application
+
+	nx workshop
+		https://github.com/alex-okrushko/ngrx-nx-workshop
+
+	nx vs lerna
+		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
+
+
+
+  workspace
+
+    a folder created by NX
+    consists of a single git repo with folders for 
+      apps
+      libs
+      along with scaffolding to help with building, linting, testing
+
+  app
+    produces a binary
+    contains minimul amount of code to packages many libs to create deployed artifact
+
+    if we have two separate targets (desktop and mobile), we might have two
+    separate apps.
+
+
+  apps/
+    booking/
+      booking-desktop/
+      booking-mobile/
+    check-in/
+      check-in-desktop/
+      check-in-mobile/
+
+
+  lib
+    a set of files packages together that is consumed by app
+    similar to node modules
+    can be published to NPM, or
+    bundled with deployed apps as is
+
+    have well defined public API in the `index.ts` file
+
+    some libs are used only by a partidular app, and
+    should go into the appropriate directory
+
+
+  libs/
+    booking/ <-- app-specific lib
+
+    even though such libraries can be used in more than one place, the goal 
+    of creating them is not code reuse, but factoring the appication into
+    well-defined modules to simplify the appication's maintenance
+
+
+  typical NX workspace contains only 4 types of libs:
+
+    feature
+    data-access
+    ui
+    util
+
+
+NX Configuration
+----------------
+
+	NX is configured for a workspace with these files:
+
+		nx.json
+			specific to NX
+
+
+		package.json
+			provided by npm
+
+		angular.json
+			provided by the CLI
+
+

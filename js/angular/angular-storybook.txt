@@ -4,6 +4,18 @@
 
 	*****************
 
+Resources:
+
+	https://storybook.js.org/docs/basics/writing-stories/
+	https://storybookjs.netlify.com/
+
+	angular material storybook
+		https://amcdnl.github.io/material-storybook/
+		https://github.com/amcdnl/material-storybook
+
+
+	https://github.com/IBM/carbon-components-angular
+
 
 ================================================================================
 

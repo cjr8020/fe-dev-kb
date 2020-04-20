@@ -738,6 +738,285 @@ in this case
   The above won't work in async pipe, and how to you unsubscribe!
 
 
+concatMap
+--------------------------------------------------------------------------
+
+  higher-order mapping + concatenation
+
+    - transforms each emitted item to a new (inner) Observable
+      as defined by a function
+
+      concatMap(i => of(i))
+
+    - processing is SERIAL
+
+      it waits for each inner Observable to complete before processing the 
+      next one
+
+    - the results are concatenated to the output stream in SEQUENCE
+
+
+Example
+--------
+
+  of('a1', 'a2')
+    .pipe(
+      concatMap(id => 
+        this.http.get<Apple>(`${this.url}/${id}`)
+      )
+    ).subscribe(console.log);
+
+
+  output stream: contains resolved Observables a1 and a2, all completed.
+
+    {a1}, {a2}
+
+
+  use concatMap to
+
+    - wait for prior Observable to complete before starting the next one
+
+    - if the request for one depends on the response of the previous
+      one.
+
+
+
+
+  example:
+  --------
+
+  suppliersWithConcatMap$ = of(1, 5, 8)
+    .pipe(
+      tap(id => console.log('concatMap source Observable', id)),
+      concatMap(id => this.http.get<Supplier>( `${this.suppliersUrl}/${id}`))
+    );
+
+
+
+  example
+  -------
+
+    this.authService.isAuthd()
+      .concatMap( resp => {
+        console.log('used is authd');
+        consold.log('resp.status: %s', resp.status);
+
+      })
+      .catch( error => {
+        console.log('user not authd');
+        return Observable.empty();
+      })
+
+
+  note:
+  -----
+
+  If any of the observables return Observable.empty() like 
+  the catch below, ForkJoin will short-circuit 
+
+
+  Observable.forkJoin(
+
+      Observable.from([...])
+        .concatMap( val => {
+          .
+          .
+          return Observable.of( .. )
+            .map( .. )
+            .catch( error => {              // <== this catch
+              return Observable.empty();    // return empty()!!!! 
+            })
+        }),
+
+        Observable.of(...)
+
+  )
+  .subscribe( () => {
+
+    // WILL NOT BE EXECUTED !!! 
+
+  });
+
+  unless you use 
+
+    .defaultIfEmpty('NO_EFFECT')
+
+
+
+
+
+
+mergeMap
+--------------------------------------------------------------------------
+
+  higher-order mapping + merging
+
+  transforms each emitted item to a new (inner) Observable as defined by a function
+
+    mergeMap(i => of(i))
+
+  executes each inner Observable in PARALLEL
+  merges the result
+
+  results are merged onto output stream in NO PARTICULAR order
+
+
+use to:
+
+  - process in Parallel
+  - when order doesn't matter
+
+
+Example
+-------
+
+  of('a1', 'a2')
+    .pipe(
+      mergeMap(id =>
+        this.http.get<Apple>(`${this.url}/${id}`)
+      )
+    ).subscribe(console.log);
+
+
+
+
+
+
+
+
+
+SwitchMap
+--------------------------------------------------------------------------
+
+  higher order mapping + switching
+
+  it is different from concatMap and mergeMap in that it:
+
+    - stops the prior inner Observable and
+
+    - switches to the new inner Observable
+
+Example
+-------
+
+  of('a1', 'a2')
+    .pipe(
+      switchMap(id =>
+        this.http.get<Apple>(`${this.url}/${id}`)
+      )
+    ).subscribe(console.log);
+
+
+Important: 
+  - when a1 is emitted, switchMap subscribes to that Observable 
+  - when a2 is emitted, switchMap unsubscribes from a1 before it even returns a result
+
+
+
+
+  1. why the term 'switch', what exaclty is being switched to and from?
+
+    the result observable can be switched from emitting the values 
+    of the first inner observable to emitting the values of the newly
+    created inner observable
+
+  2. why the term 'map', what is being mapped?
+
+    what is being mapped is the emitted source value, that is getting
+    mapped to an observable using the mapping function passed to switchMap.
+
+
+
+  RxJS provides several flattening operators like switch, concat, merge that
+  allow to merge multiple streams of observables into one stream.
+
+    simple case with map operator
+
+      Rx.Observable.of(1)
+        .map(x => x * 2)
+
+    a switchMap use case:
+
+      Rx.Observable.of('some_url')
+        .switchMap(url => this.http.get(url))
+
+    rule:
+
+      simple value => use 'map'
+      Observable   => use 'switchMap'
+
+
+  The switchMap operator will create a derived observable (called inner observable) from a source observable and emit those values.
+
+  When the source emits a new value, it will create a new inner observable and 
+  switch to those values instead.
+
+
+
+
+
+why use switchMap?
+-------------------
+
+
+https://stackoverflow.com/questions/42655134/angular-2-why-use-switchmap-when-retrieving-route-params
+
+Q: why do they need swtichMap?
+
+ngOnInit() {
+  this.route.params
+    .switchMap((params: Params) => this.service.getHero(+params['id']))
+    .subscribe((hero: Hero) => this.hero = hero);
+}
+
+A:
+
+  the difference from flatMap or concatMap is that as soon as the next trigger emits, the current async operation is canceled and retriggered.
+
+  which means, as soon as the route-params change, your hero-service is
+  automatically called again with the changed params and the previous call is
+  canceled so you won't receive outdated data.
+
+  this is especially helpful for search queries that might take longer 
+  than 200-300ms and are triggered while a user is typing 
+  see:
+  https://stackoverflow.com/documentation/rxjs/8247/common-recipes/26559/discarding-slow-outdated-rest-calls
+
+
+
+switchMap vs (flatMap or mergeMap)
+--------------------------------------------------------------------------
+
+"merge" - think use everything on all the steams, or merge everything
+
+"swtich" - switch to using data on the newer stream
+
+
+  with switchMap, the moment the inner$ observable becomes avaiable, the 
+  output no longer listens to data from outer$ - switchMap effectively 
+  switches over to inner$ and unsubscribes from outer$
+
+  ex:
+
+  console.log('---------------- switchMap ---------------------');
+
+  const outer$:Observable<number> = Observable.interval(50).take(5);
+  const inner$:Observable<number> = Observable.interval(2000).take(1);
+
+  const source$:Observable<string> = outer$.switchMap( x => {
+      return inner$.map( y => `${x}:${y}`);
+  });
+
+  source$.subscribe( r => console.log(r) );
+
+  // outputs "4:0", all previous values that outer$ generated a lost
+  // switchMap switched to listening to inner$ which was more recent.
+
+
+
+
+
+
 
 
 
@@ -1069,179 +1348,6 @@ The above can be simplified with a spread (...) operator:
 
 
 
-FlatMap aka mergeMap
---------------------------------------------------------------------------
-
-Ex.1
-
-  //emit 'Hello'
-  const source = Rx.Observable.of('Hello');
-  //map to inner observable and flatten
-  const example = source.mergeMap(val => Rx.Observable.of(`${val} World!`));
-  //output: 'Hello World!'
-  const subscribe = example.subscribe(val => console.log(val));
-
-Ex.2 
-
-
-    console.log('---------------- mergeMap ---------------------');
-
-    const outer$:Observable<number> = Observable.interval(50).take(5);
-    const inner$:Observable<number> = Observable.interval(2000).take(1);
-
-    const source$:Observable<string> = outer$.mergeMap( x => {
-        return inner$.map( y => `${x}:${y}`);
-    });
-
-    source$.subscribe( r => console.log(r) );
-
-    // output:
-      0:0
-      1:0
-      2:0
-      3:0
-      4:0
-
-    // none of the values were lost, any time an observable emitted a value
-    // their emitted values were merged.
-    // but it takes BOTH inner$ and outer$ to emit values before source$
-    // would emit a value.
-
-    Also try this for outer$ and inner$
-
-    const outer$:Observable<number> = Observable.interval(2000).take(5);
-    const inner$:Observable<number> = Observable.interval(50).take(5);
-
-    you will see that every time outer$ emits a value every 2 sec, it will 
-    execute its inner function which will return an Observable returning 5 values. so the output will be:
-
-      0:0
-      0:1
-      0:2
-      0:3
-      0:4
-
-      1:0
-      1:1
-      1:2
-      1:3
-      1:4
-      
-    etc.. 
-
-
-
-NOTE: the inner$ has to emit a value BEFORE mergeMap will emit any values.
-
-
-transform the items emitted by an Observable into Observables, then flatten
-the emissions from those into a single Observable.
-
-  flatMap transforms an Observable by applying a function that you provide to
-  each item emitted by the source Observable, where the function returns an
-  Observable that itself emits items.
-
-  flatMap then merges the emissions of these resulting Observables, emitting these merged results as its own sequence.
-
-As soon as the inner observable emits a value, the mergeMap will combine
-both, the values emitted by the outer observable and the value emitted by the inner observable and merge them.
-
-
-SwitchMap
---------------------------------------------------------------------------
-
-  1. why the term 'switch', what exaclty is being switched to and from?
-
-    the result observable can be switched from emitting the values 
-    of the first inner observable to emitting the values of the newly
-    created inner observable
-
-  2. why the term 'map', what is being mapped?
-
-    what is being mapped is the emitted source value, that is getting
-    mapped to an observable using the mapping function passed to switchMap.
-
-
-
-  RxJS provides several flattening operators like switch, concat, merge that
-  allow to merge multiple streams of observables into one stream.
-
-    simple case with map operator
-
-      Rx.Observable.of(1)
-        .map(x => x * 2)
-
-    a switchMap use case:
-
-      Rx.Observable.of('some_url')
-        .switchMap(url => this.http.get(url))
-
-    rule:
-
-      simple value => use 'map'
-      Observable   => use 'switchMap'
-
-
-  The switchMap operator will create a derived observable (called inner observable) from a source observable and emit those values.
-
-  When the source emits a new value, it will create a new inner observable and 
-  switch to those values instead.
-
-why use switchMap?
-https://stackoverflow.com/questions/42655134/angular-2-why-use-switchmap-when-retrieving-route-params
-
-Q: why do they need swtichMap?
-
-ngOnInit() {
-  this.route.params
-    .switchMap((params: Params) => this.service.getHero(+params['id']))
-    .subscribe((hero: Hero) => this.hero = hero);
-}
-
-A:
-
-  the difference from flatMap or concatMap is that as soon as the next trigger emits, the current async operation is canceled and retriggered.
-
-  which means, as soon as the route-params change, your hero-service is
-  automatically called again with the changed params and the previous call is
-  canceled so you won't receive outdated data.
-
-  this is especially helpful for search queries that might take longer 
-  than 200-300ms and are triggered while a user is typing 
-  see:
-  https://stackoverflow.com/documentation/rxjs/8247/common-recipes/26559/discarding-slow-outdated-rest-calls
-
-
-
-switchMap vs (flatMap or mergeMap)
---------------------------------------------------------------------------
-
-"merge" - think use everything on all the steams, or merge everything
-
-"swtich" - switch to using data on the newer stream
-
-
-  with switchMap, the moment the inner$ observable becomes avaiable, the 
-  output no longer listens to data from outer$ - switchMap effectively 
-  switches over to inner$ and unsubscribes from outer$
-
-  ex:
-
-  console.log('---------------- switchMap ---------------------');
-
-  const outer$:Observable<number> = Observable.interval(50).take(5);
-  const inner$:Observable<number> = Observable.interval(2000).take(1);
-
-  const source$:Observable<string> = outer$.switchMap( x => {
-      return inner$.map( y => `${x}:${y}`);
-  });
-
-  source$.subscribe( r => console.log(r) );
-
-  // outputs "4:0", all previous values that outer$ generated a lost
-  // switchMap switched to listening to inner$ which was more recent.
-
-
 
 Retry(number: number)
 --------------------------------------------------------------------------
@@ -1481,82 +1587,7 @@ concat example
 
 
 
-concatMap
---------------------------------------------------------------------------
 
-  use concatMap if the request for one depends on the response of the previous
-  one.
-
-    import 'rxjs/add/operator/concatMap';
-
-    Observable.from([1, 2, 3])
-      .concatMap( val => Observable.of(val));
-
-
-    Observable.of('Hello', 'Goodbye')
-        .concatMap( val => Observable.of(`${val} World!`))
-        .subscribe( val =>  console.log('Example One: ', val));
-
-
-  example:
-  --------
-
-    angular module for caching images. a provider service returns 
-    Observables of loaded resources, either sync if they are already 
-    cached, of async if not yet ..
-
-    public preloadImages(imgUrls: string[]) {
-      return Observable.from(imgUrls)
-        .concatMap( url => Observable.of(this.getImage(url)));
-    }
-
-  example
-  -------
-
-    this.authService.isAuthd()
-      .concatMap( resp => {
-        console.log('used is authd');
-        consold.log('resp.status: %s', resp.status);
-
-      })
-      .catch( error => {
-        console.log('user not authd');
-        return Observable.empty();
-      })
-
-
-  note:
-  -----
-
-  If any of the observables return Observable.empty() like 
-  the catch below, ForkJoin will short-circuit 
-
-
-  Observable.forkJoin(
-
-      Observable.from([...])
-        .concatMap( val => {
-          .
-          .
-          return Observable.of( .. )
-            .map( .. )
-            .catch( error => {              // <== this catch
-              return Observable.empty();    // return empty()!!!! 
-            })
-        }),
-
-        Observable.of(...)
-
-  )
-  .subscribe( () => {
-
-    // WILL NOT BE EXECUTED !!! 
-
-  });
-
-  unless you use 
-
-    .defaultIfEmpty('NO_EFFECT')
 
 
 
