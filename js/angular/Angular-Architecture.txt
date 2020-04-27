@@ -1116,4 +1116,25 @@ Ensure Consistent Version of Dependencies
 
 
 
+
+OSS projects vs Apps
+--------------------
+
+Ownership
+
+  OSS projects owned by a single team.
+
+  Apps in an Org are built by multiple teams
+
+
+Variability
+
+  OSS project is built for a single purpose by a single team.
+  The team can agree on the choice of tools and tech.
+
+  Apps are built by diff teams within an Org.
+
+
+
+
 ================================================================================

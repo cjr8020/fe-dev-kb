@@ -6,6 +6,93 @@
   @@@@@@@@@@@@@@@@@@@@@@@
 
 
+================================================================================
+
+  RxJS Operators
+  --------------
+
+`rxjs/operators`
+
+  RxJS Creation Functions
+  ------------------------
+
+import { }  from 'rxjs';
+
+if you see an error trying to use `pipe` method with the creation function,
+check to see that you're importing the creation function, not the operator.
+
+
+
+Hover over the observable to insure it's returning the expected type.
+
+http.get emits ONE item - response - often an array.
+
+  when you get an array as a response of HTTP.GET
+
+    map the emitted array
+    map each array element
+    transform each array element
+
+
+    Action Streams
+    ---------------
+
+Action streams only emit when they are active.
+Unhandled error in an action stream causes the stream to stop.
+
+Catch the error and replace the errored Observable to keep the stream active.
+
+  don't replace an errored action Observable with EMPTY as it will COMPLETE the action stream!
+
+  replace with a default or empty value instead.
+
+  Combination Operators
+  ----------------------
+
+don't emit until each source stream emits at least once
+
+  - combineLatest
+  - forkJoin
+  - withLatestFrom
+
+Action stream created with a Subject does not immediately emit
+
+  when combining with an action stream, consider using a BehaviorSubject,
+  since it emits a DEFAULT value upon subscription and ensures that the 
+  Action stream emits at LEAST ONCE.
+
+
+Complete Notification
+---------------------
+
+  some functions/operators require the input Observable(s) to complete
+  before they emit:
+
+    - forkJoin
+    - toArray
+
+  Take care when using these functions/operators with action streams
+  which often DON'T complete:
+
+    use innerObservables that do complete.
+
+
+Hot / Cold
+-----------
+
+  http.get  returns a COLD observervable - we must use subscribe or use async pipe
+  that subscribes for us...
+
+  Hot observable emits without subscribers
+
+    Subject
+    BehaviorSubject
+
+
+
+================================================================================
+
+
 NOTE: 
   one-line arrow function has an implied return.
   multi-line arrow function, we need an explicit return statement.
@@ -1015,8 +1102,176 @@ switchMap vs (flatMap or mergeMap)
 
 
 
+================================================================================
 
 
+  Combining related data streams
+  ******************************
+
+Two approaches:
+
+  get all data
+
+  just in time
+
+
+Get all data
+-------------
+
+  combineLatest(product$, suppliers$)
+
+you can use this approach when the data is of a reasonable size and you can cache it
+
+
+Just in Time
+-------------
+
+  you get cart with item in it, and then
+  you issue a GET request for the supplier of each item in the cart
+
+  using higher order Observables
+
+use this when data set is large and/or data changes frequently
+
+
+this.selectedProduct$
+  .pipe(
+    switchMap(product => 
+
+      from(product.supplierIds)
+      .pipe(
+        mergeMap(supplierId => 
+          this.http.get<Supplier>(...)),
+          toArray()
+        )
+      )
+    )
+  );
+
+NOTE: we use switchMap (not mergeMap) to retrieve data for the LATEST selected product.
+In case user clicks quickly over several products.
+
+
+NOTE: toArray() only emits when its input stream completes - it cannot produce
+and array of emissions until it has all of those emissions.
+
+but the source stream - the selectedProduct$ - does not complete - it continues
+to emit each time the user selects a new product!
+
+HOW DO YOU COMPLETE a STREAM within a STREAM that does NOT complete?
+
+  Inner Observable Technique
+  --------------------------
+
+  NOTE the inner observable:
+
+    from(product.supplierIds)
+      .pipe(
+        mergeMap(supplierId => this.http.get<Supplier>(...)),
+        toArray()
+      )
+
+  this inner observable createe a separate context - the "from" creation function
+  creates an Observable stream that emits its array elements and completes,
+  so since the `toArray()` is in this context - the toArray() completes.
+
+  use this inner observable tecnique to define a stream that completes,
+  or for encapsulating operations that can generate an error
+  when you don't want the error to stop the outer observable.
+
+
+
+
+
+
+
+
+================================================================================
+
+  Combining multiple Async Pipes
+  ******************************
+
+if you have multiple streams:
+
+
+  product$ = this.productService.selectedProduct$
+    .pipe(
+      catchError(err => {
+        this.errorMessageSubject.next(err);
+        return EMPTY;
+      })
+    );
+
+  // pageTitle = 'Product Detail';
+
+  pageTitle$ = this.product$
+    .pipe(
+      map((p: Product) =>
+        p ? `Product Detail for: ${p.productName}` : null)
+    );
+
+  productSuppliers$ = this.productService.selectedProductSuppliers$
+    .pipe(
+      catchError(err => {
+        this.errorMessageSubject.next(err);
+        return EMPTY;
+      })
+    );
+
+each resulting in an `async` pipes:
+
+
+<div class="card"
+     *ngIf="product$ | async as product">
+
+
+  <div class="card-header" *ngIf="pageTitle$ | async as pageTitle">
+    {{pageTitle}}
+  </div>
+
+    <div class="table-responsive">
+      <table class="table mb-0"
+             *ngIf="productSuppliers$ | async as productSuppliers">
+
+HOW can we combine all async pipes???
+
+
+  <div *ngIf="vm$ | async as vm ">
+
+name it "vm$" for View-Model, as it holds all data and actions for our view.
+
+
+  use combineLatest()
+  --------------------
+
+ emits an array of elements - latest from each stream. 
+
+
+  vm$ = combineLatest([
+    this.product$,
+    this.productSuppliers$,
+    this.pageTitle$
+  ])
+    .pipe(
+      filter(([product]) => Boolean(product)),
+      map(([product, productSuppliers, pageTitle]) =>
+        ({ product, productSuppliers, pageTitle})
+      )
+    );
+
+in the filter, we are only destructuring the first array element - product
+
+destucturing syntaxt = square brackets in parens when used on the left side of an arrow function
+
+  ([product]) 
+
+for the map operator, the entire array is destructured;
+
+  ([product, productSuppliers, pageTitle])
+
+then we define an object literal with the property for each array element.
+
+  ({ product, productSuppliers, pageTitle})
 
 
 

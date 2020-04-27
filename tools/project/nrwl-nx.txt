@@ -90,3 +90,16 @@ NX Configuration
 			provided by the CLI
 
 
+
+
+  apps/
+    booking/
+      booking-desktop/
+      booking-mobile/
+    check-in/
+      check-in-desktop/
+      check-in-mobile/
+  libs/
+    libA
+    libB
+    booking/ <-- app-specific lib
