@@ -5,6 +5,158 @@
 
 	************
 
+
+================================================================================
+
+creating an app
+---------------
+
+	$ npx nx g @nrwl/angular:app <app-name> --routing --style=scss
+
+creating a lib
+--------------
+
+	$ npx nx @nrwl/angular:lib --directory=store \
+		feature-list \
+		--routing \
+		--parentModule=apps/store/src/app/app.module.ts \
+		--lazy
+
+create a component
+------------------
+
+	$ npx nx g @nrwl/angular:component <comp-name> --project=
+
+	$ npx nx dep-graph
+
+
+
+================================================================================
+
+	Create an Nx Workspace
+	----------------------
+
+	$ npx create-nx-workspace [name]
+
+? What to create in the new workspace (Use arrow keys)
+❯ empty             [an empty workspace]
+  web components    [a workspace with a single app built using web components]
+  angular           [a workspace with a single Angular application]
+  angular-nest      [a workspace with a full stack application (Angular + Nest)]
+  react             [a workspace with a single React application]
+  react-express     [a workspace with a full stack application (React + Express)]
+  next.js           [a workspace with a single Next.js application]
+
+
+  CLI to power the Nx workspace       (Use arrow keys)
+❯ Nx           [Extensible CLI for JavaScript and TypeScript applications]
+  Angular CLI  [Extensible CLI for Angular applications. Recommended for Angular projects.]
+
+
+
+new my-org --preset="empty" --interactive=false --collection=@nrwl/workspace
+✔ Packages installed successfully.
+    Successfully initialized git.
+CREATE my-org/nx.json (461 bytes)
+CREATE my-org/tsconfig.json (509 bytes)
+CREATE my-org/README.md (2534 bytes)
+CREATE my-org/.editorconfig (245 bytes)
+CREATE my-org/.gitignore (503 bytes)
+CREATE my-org/.prettierignore (74 bytes)
+CREATE my-org/.prettierrc (26 bytes)
+CREATE my-org/workspace.json (1059 bytes)
+CREATE my-org/package.json (1099 bytes)
+CREATE my-org/apps/.gitkeep (1 bytes)
+CREATE my-org/libs/.gitkeep (0 bytes)
+CREATE my-org/tools/tsconfig.tools.json (218 bytes)
+CREATE my-org/tools/schematics/.gitkeep (0 bytes)
+CREATE my-org/.vscode/extensions.json (109 bytes)
+
+———————————————————————————————————————————————
+
+
+>  NX   NOTE  Nx CLI is not installed globally.
+
+  This means that you might have to use "yarn nx" or "npm nx" to execute commands in the workspace.
+  Run "yarn global add @nrwl/cli" or "npm install -g @nrwl/cli" to be able to execute command directly.
+
+
+  Run from your workspace
+  ***********************
+
+$ npx nx [ ... ]
+
+
+   
+
+  To install Nx globally
+  **********************
+
+
+  $ yarn global add @nrwl/cli
+
+ or
+
+ 	$ npm install -g @nrwl/cli
+
+nx --version
+9.2.3
+
+
+
+	Check installed plugins
+	-----------------------
+
+$ nx list
+
+>  NX  Installed plugins:
+
+  @nrwl/workspace (builders,schematics)
+
+
+>  NX  Also available:
+
+  @nrwl/angular (schematics)
+  @nrwl/bazel (schematics)
+  @nrwl/cypress (builders,schematics)
+  @nrwl/express (builders,schematics)
+  @nrwl/jest (builders,schematics)
+  @nrwl/linter (builders)
+  @nrwl/nest (builders,schematics)
+  @nrwl/next (builders,schematics)
+  @nrwl/node (builders,schematics)
+  @nrwl/nx-plugin (builders,schematics)
+  @nrwl/react (builders,schematics)
+  @nrwl/storybook (builders,schematics)
+  @nrwl/web (builders,schematics)
+
+
+>  NX  Community plugins:
+
+  @nxtend/ionic-react - An Nx plugin for developing Ionic React applications and libraries
+  @angular-architects/ddd - Nx plugin for structuring a monorepo with domains and layers
+  @offeringsolutions/nx-karma-to-jest - Nx plugin for replacing karma with jest in an Nx workspace
+  @flowaccount/nx-serverless - Nx plugin for node/angular-universal schematics and deployment builders in an Nx workspace
+  @dev-thought/nx-deploy-it - Nx plugin to deploy applications on your favorite cloud provider
+  @offeringsolutions/nx-protractor-to-cypress - Nx plugin to replace protractor with cypress in an nx workspace
+  @gperdomor/nx-docker - Nx plugin to build docker images of your affected apps
+
+
+
+
+Errors
+-------------------
+
+	Schematic "app" not found in collection "@nrwl/workspace".
+
+	Either the plugin for your framework isn't installed (e.g. @nrwl/angular) 
+	or it is not installed with `--save-dev` 
+
+
+
+================================================================================
+
+
 Resources:
 
 	courses by NRWL
@@ -19,15 +171,36 @@ Resources:
 	nx vs lerna
 		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
 
+================================================================================
 
 
   workspace
+  ---------
 
     a folder created by NX
-    consists of a single git repo with folders for 
+    consists of a single git repo with folders for:
+
       apps
       libs
-      along with scaffolding to help with building, linting, testing
+      tools
+
+      	along with scaffolding to help with building, linting, testing
+
+
+generates reasonable defaults for 
+	prettier
+	typescript
+
+which can be overridden by individual apps if necessary
+
+
+workspace.json or angular.json
+	indicate how different folders, apps and libs, relate to each other
+
+
+
+
+
 
   app
     produces a binary
@@ -35,6 +208,14 @@ Resources:
 
     if we have two separate targets (desktop and mobile), we might have two
     separate apps.
+
+
+    apps
+    ----
+
+main entry point for your apps
+keep apps as light weight as possible
+leave the heavy lifting for the `libs` folder
 
 
   apps/
@@ -103,3 +284,295 @@ NX Configuration
     libA
     libB
     booking/ <-- app-specific lib
+
+
+
+================================================================================
+
+	Nx Workspaces Tutorial
+	**********************
+
+https://github.com/nrwl/nx-workshop
+
+Directions
+-----------
+
+	To see lab solutions:
+
+		$ git checkout lab-x
+
+	To see final version
+
+		$ git checkout final-solution
+
+
+
+
+Lab 1: Create a new Nx Workspace
+---------------------------------
+
+	$ npx create-nx-workspace bg-board
+
+		empty
+		Nx CLI
+
+npx create-nx-workspace bg-hoard
+npx: installed 198 in 7.399s
+? What to create in the new workspace empty             [an empty workspace]
+? CLI to power the Nx workspace       Nx           [Extensible CLI for JavaScript and TypeScript ap
+plications]
+Creating a sandbox with Nx...
+warning " > @nrwl/workspace@9.2.3" has incorrect peer dependency "prettier@^1.19.1".
+[########################################################################################] 364/364
+new bg-hoard --preset="empty" --interactive=false --collection=@nrwl/workspace
+✔ Packages installed successfully.
+    Successfully initialized git.
+CREATE bg-hoard/nx.json (463 bytes)
+CREATE bg-hoard/tsconfig.json (509 bytes)
+CREATE bg-hoard/README.md (2538 bytes)
+CREATE bg-hoard/.editorconfig (245 bytes)
+CREATE bg-hoard/.gitignore (503 bytes)
+CREATE bg-hoard/.prettierignore (74 bytes)
+CREATE bg-hoard/.prettierrc (26 bytes)
+CREATE bg-hoard/workspace.json (1059 bytes)
+CREATE bg-hoard/package.json (1101 bytes)
+CREATE bg-hoard/apps/.gitkeep (1 bytes)
+CREATE bg-hoard/libs/.gitkeep (0 bytes)
+CREATE bg-hoard/tools/tsconfig.tools.json (218 bytes)
+CREATE bg-hoard/tools/schematics/.gitkeep (0 bytes)
+CREATE bg-hoard/.vscode/extensions.json (109 bytes)
+
+
+
+Lab 2: Generate an Angular app
+--------------------------------
+
+check installed plugins
+
+	$ npx nx --version
+	$ npx nx list
+
+
+
+add the angular plugin as DEV dependency
+
+	$ npm install --save-dev @nrwl/angular
+
+
+
+add angular material:
+
+	$ npm i @angular/material @angular/cdk
+
+
+use the Angular plugin to generate an Angular app called `store` 
+
+	$ npx nx generate @nrwl/angular:application store
+
+or
+
+	$ npx nx g @nrwl/angular:app store
+
+
+	$ npx nx g @nrwl/angular:app store
+
+		? Which stylesheet format would you like to use? CSS
+		? Would you like to configure routing for this application? Yes
+		✔ Packages installed successfully.
+		CREATE jest.config.js (250 bytes)
+		CREATE tslint.json (2311 bytes)
+		CREATE apps/store/tsconfig.json (97 bytes)
+		CREATE apps/store/src/favicon.ico (15086 bytes)
+		CREATE apps/store/browserslist (429 bytes)
+		CREATE apps/store/tsconfig.app.json (163 bytes)
+		CREATE apps/store/tslint.json (247 bytes)
+		CREATE apps/store/src/index.html (329 bytes)
+		CREATE apps/store/src/main.ts (375 bytes)
+		CREATE apps/store/src/polyfills.ts (2833 bytes)
+		CREATE apps/store/src/styles.css (80 bytes)
+		CREATE apps/store/src/assets/.gitkeep (0 bytes)
+		CREATE apps/store/src/environments/environment.prod.ts (51 bytes)
+		CREATE apps/store/src/environments/environment.ts (662 bytes)
+		CREATE apps/store/src/app/app.module.ts (417 bytes)
+		CREATE apps/store/src/app/app.component.css (2088 bytes)
+		CREATE apps/store/src/app/app.component.html (3017 bytes)
+		CREATE apps/store/src/app/app.component.spec.ts (1020 bytes)
+		CREATE apps/store/src/app/app.component.ts (214 bytes)
+		CREATE apps/store/jest.config.js (347 bytes)
+		CREATE apps/store/tsconfig.spec.json (233 bytes)
+		CREATE apps/store/src/test-setup.ts (30 bytes)
+		CREATE apps/store-e2e/tslint.json (97 bytes)
+		CREATE apps/store-e2e/cypress.json (410 bytes)
+		CREATE apps/store-e2e/tsconfig.e2e.json (167 bytes)
+		CREATE apps/store-e2e/tsconfig.json (137 bytes)
+		CREATE apps/store-e2e/src/fixtures/example.json (80 bytes)
+		CREATE apps/store-e2e/src/integration/app.spec.ts (402 bytes)
+		CREATE apps/store-e2e/src/plugins/index.js (832 bytes)
+		CREATE apps/store-e2e/src/support/app.po.ts (47 bytes)
+		CREATE apps/store-e2e/src/support/commands.ts (1068 bytes)
+		CREATE apps/store-e2e/src/support/index.ts (599 bytes)
+		UPDATE workspace.json (4977 bytes)
+		UPDATE package.json (2024 bytes)
+		UPDATE nx.json (588 bytes)
+
+
+Files modified:
+
+
+nx.json
+----------------------------
+
+  "projects": {
+    "store": {
+      "tags": []
+    },
+    "store-e2e": {
+      "tags": [],
+      "implicitDependencies": ["store"]
+    }
+  }
+
+
+
+workspace.json
+----------------------------
+
+
+  "projects": {
+    "store": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "apps/store",
+      "sourceRoot": "apps/store/src",
+      "prefix": "bg-hoard",
+
+
+
+
+================================================================================
+
+	Build an app
+	************
+
+nx build <architectName> <target> ...
+
+
+in workspace.json:
+
+  "projects": {
+    "store": {   <-- project name
+
+      "architect": {
+        "build": {    <-- 
+
+
+$ npx nx build store [--configuraiton=production]
+
+
+
+================================================================================
+
+
+	Create a Lib
+	************
+
+	$ npx nx g @nrwl/angular:lib --directory=store ui-shared
+
+
+? Which stylesheet format would you like to use? CSS
+CREATE libs/store/ui-shared/README.md (154 bytes)
+CREATE libs/store/ui-shared/tsconfig.lib.json (411 bytes)
+CREATE libs/store/ui-shared/tslint.json (250 bytes)
+CREATE libs/store/ui-shared/src/index.ts (46 bytes)
+CREATE libs/store/ui-shared/src/lib/store-ui-shared.module.ts (168 bytes)
+CREATE libs/store/ui-shared/src/lib/store-ui-shared.module.spec.ts (385 bytes)
+CREATE libs/store/ui-shared/tsconfig.json (126 bytes)
+CREATE libs/store/ui-shared/jest.config.js (373 bytes)
+CREATE libs/store/ui-shared/tsconfig.spec.json (236 bytes)
+CREATE libs/store/ui-shared/src/test-setup.ts (30 bytes)
+UPDATE workspace.json (6013 bytes)
+UPDATE nx.json (637 bytes)
+UPDATE tsconfig.json (587 bytes)
+
+
+NOTE: the `generate` lib command creates `store-ui-shared` library project
+
+	deriving it's name from "directory=store" and lib name "ui-shared"
+
+
+	"projects": {
+    "store": {
+      "tags": []
+    },
+    "store-e2e": {
+      "tags": [],
+      "implicitDependencies": ["store"]
+    },
+    "store-ui-shared": {
+      "tags": []
+    }
+  }
+
+
+
+Generate new component `header`
+--------------------------------
+
+and make sure it is exported from the lib module
+
+	$ npx nx g @nrwl/angular:component header --export --project=store-ui-shared
+
+
+libs/
+	store/
+		ui-shared/
+			src/
+				lib/
+					index.ts
+
+						export * from './lib/store-ui-shared.module';
+
+
+Import the `StoreUiSharedModule` you just created in the store `app.module.ts`
+
+import {StoreUiSharedModule} from '@bg-hoard/store/ui-shared';
+
+		@NgModule({
+		  declarations: [AppComponent],
+		  imports: [
+		    BrowserModule,
+		    MatCardModule,
+		    StoreUiSharedModule,
+		    RouterModule.forRoot([], { initialNavigation: 'enabled' })
+		  ],
+		  providers: [],
+		  bootstrap: [AppComponent]
+		})
+		export class AppModule {}
+
+NOTE: you will probably get a TS error on the module import (not found)
+
+	restart TS compiler in your editor
+		VSCode: CTRL+SHIFT+P  and search for 'Restart Typescript'
+		IDEA: go to TS tab in TypeScript tool window and 
+					click the "restart" button.
+
+
+Serve the App
+--------------
+
+	$ npx nx serve store
+
+Examine dependency graph
+------------------------
+
+
+	$ npx nx dep-graph
+
+>  NX   NOTE  Dep graph started at http://127.0.0.1:4211
+
+	store-e2e    -->    store  ----> store-ui-shared
+
+
+
+================================================================================

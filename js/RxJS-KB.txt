@@ -8,6 +8,14 @@
 
 ================================================================================
 
+  Resources:
+
+1. https://github.com/DeborahK/Angular-RxJS/tree/master/APM-Final
+2. https://rxjs.dev/api/operators/map
+
+
+================================================================================
+
   RxJS Operators
   --------------
 

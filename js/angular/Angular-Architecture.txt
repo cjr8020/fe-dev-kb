@@ -1137,4 +1137,16 @@ Variability
 
 
 
+3 Reasons for creating Libs
+---------------------------
+
+  1. Code Sharing 
+
+  2. Run tasks on less code 
+
+  3. Organization
+
+
+
+
 ================================================================================
