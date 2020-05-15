@@ -171,6 +171,14 @@ Resources:
 	nx vs lerna
 		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
 
+
+
+	Dev Workflow Using Git Submodules and Yarn Workspaces
+		https://blog.nrwl.io/dev-workflow-using-git-submodules-and-yarn-workspaces-14fd06c07964
+
+	Angular Monorepo pains
+		https://itnext.io/monorepo-pains-9064db3b9882
+
 ================================================================================
 
 
@@ -225,6 +233,11 @@ leave the heavy lifting for the `libs` folder
     check-in/
       check-in-desktop/
       check-in-mobile/
+  libs/
+  	common/
+  		desktop//
+  		mobile/
+    booking/
 
 
   lib
@@ -572,6 +585,255 @@ Examine dependency graph
 >  NX   NOTE  Dep graph started at http://127.0.0.1:4211
 
 	store-e2e    -->    store  ----> store-ui-shared
+
+
+
+================================================================================
+
+	generate Router Lib
+	********************
+
+
+Use `@nrwl/angular:lib` schematic to generate a new routing lib called
+
+`feature-game-detail` that:
+
+	- lives under folder `libs/store`
+	- has lazy loading
+	- has routing enabled
+	- it's parent routing module is `apps/store/src/app/app.module.ts`
+
+
+	$ npx nx g @nrwl/angular:lib feature-game-detail \
+				--directory=store \
+				--lazy \
+				--routing \
+				--parentModule="apps/store/src/app/app.module.ts"
+
+
+	$ npx nx g @nrwl/angular:lib feature-game-detail --directory=store --lazy --routing --parentModule="apps/store/src/app/app.module.ts"
+
+
+
+Here's what happened:
+
+app.module.ts
+---------------
+
+receives a new import
+
+  imports: [
+  	. . .
+    RouterModule.forRoot(
+      [
+        {
+          path: 'store-feature-game-detail',
+          loadChildren: () =>
+            import('@bg-hoard/store/feature-game-detail').then(
+              module => module.StoreFeatureGameDetailModule
+            )
+        }
+      ],
+      { initialNavigation: 'enabled' }
+    )
+  ],
+
+
+tsconfig.json
+---------------
+
+New path is added so the library code can be located by the TS compiler
+
+
+    "paths": {
+      "@bg-hoard/store/ui-shared": ["libs/store/ui-shared/src/index.ts"],
+      "@bg-hoard/store/util-formatters": [
+        "libs/store/util-formatters/src/index.ts"
+      ],
+      "@bg-hoard/store/feature-game-detail": [
+        "libs/store/feature-game-detail/src/index.ts"
+      ]
+    }
+
+
+libs/store/feature-game-detail/src/lib/store-feature-game-detail.module.ts
+--------------------------------------------------------------------------
+
+@NgModule({
+  imports: [
+    CommonModule,
+
+    RouterModule.forChild([
+      /* {path: '', pathMatch: 'full', component: InsertYourComponentHere} */
+    ])
+  ]
+})
+export class StoreFeatureGameDetailModule {}
+
+
+index.ts for this module
+--------------------------
+
+export * from './lib/store-feature-game-detail.module';
+
+
+
+Generate component under this lib
+*********************************
+
+	$ npx nx g @nrwl/angular:component game-detail --project=store-feature-game-detail
+
+    
+
+================================================================================
+
+
+	Add new app with NetJS API
+	**************************
+
+
+	$ yarn add @nrwl/nest
+
+
+Generate new NestJS app, called `api`
+
+	$ npx nx g @nrwl/nest:application api --frontendProject=store
+
+enter "blank" for directory
+
+
+Proxy config
+--------------
+
+	--frontendProject="store" argument creates a proxy configuration that
+	allows the Angular application to talk to the API in development.
+
+look at the "serve" target for `store` app in 
+workspace.json
+
+
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "store:build",
+            "proxyConfig": "apps/store/proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "store:build:production"
+            }
+          }
+        },
+
+note the `proxyConfig` property
+
+proxy.conf.json
+----------------
+
+{
+  "/api": {
+    "target": "http://localhost:3333",
+    "secure": false
+  }
+}
+
+
+
+
+To run the app
+
+	$ npx nx serve api
+
+
+
+
+================================================================================
+
+	Lab 9 - Create a type lib that the API and front-end can share
+	---------------------------------------------------------------
+
+
+$ npx nx dep-graph
+
+
+Create a new workspace lib called `util-interface`  inside the `libs/api` folder
+
+	note: create in the `/api` folder for now
+
+
+$ npx nx g @nrwl/workspace:lib util-interface --directory=api
+
+CREATE libs/api/util-interface/.eslintrc (78 bytes)
+CREATE libs/api/util-interface/README.md (190 bytes)
+CREATE libs/api/util-interface/tsconfig.json (126 bytes)
+CREATE libs/api/util-interface/tsconfig.lib.json (175 bytes)
+CREATE libs/api/util-interface/src/index.ts (42 bytes)
+CREATE libs/api/util-interface/src/lib/api-util-interface.ts (0 bytes)
+CREATE libs/api/util-interface/jest.config.js (266 bytes)
+CREATE libs/api/util-interface/tsconfig.spec.json (276 bytes)
+UPDATE tsconfig.json (879 bytes)
+UPDATE workspace.json (10675 bytes)
+UPDATE nx.json (840 bytes)
+
+
+Build the API
+
+$ npx nx build api
+
+
+$ pnx nx dep-graph
+
+
+	api is now connected to api-util-interface
+
+
+================================================================================
+
+	Move the interface `lib` 
+	-------------------------
+
+Front-end app doesn't have access to the interface defined in `api-util-interface`.
+Make it available to front-end by moving it 
+
+from the `api` folder
+
+to root /libs folder
+
+
+Do `--dry-run` first
+
+npx nx g @nwrl/workspace:move --projectName=api-util-interface util-interface --dry-run
+
+
+
+$ npx nx g @nwrl/workspace:move --projectName=api-util-interface util-interface
+
+	The library was moved 
+
+	from
+
+		/libs/api
+
+	to 
+
+		/libs
+
+The libraray name needs to be changed as well from
+
+	api-util-interface 
+
+to
+
+	util-interface
+
+Trigger the build of both `store` app and API projects to make it passes
+
+
+	$ npx nx build store
+
+	$ npx nx build api
+
+
 
 
 
