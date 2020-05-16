@@ -8,6 +8,40 @@
 
 ================================================================================
 
+	Caching and Affected
+	********************
+
+
+In Nx 9, we introduced computation caching with Nx.
+
+https://blog.nrwl.io/computation-caching-out-of-the-box-revamped-docs-community-plugins-and-more-in-nx-9-2-e97801116e02
+
+Your most common computations such as building apps and libraries, running unit tests, lint checks, and E2E tests are now cached locally by default.
+
+So your e2e tests will be cached, as long as you are using the same configuration.
+
+
+https://nx.dev/angular/guides/ci/monorepo-affected
+
+
+Affected and caching are used to solve the same problem: minimize the computation. But they do it differently, and the combination provides better results than one or the other.
+
+	Affected
+
+The affected command looks at the before and after states of the workspaces and figures out what can be broken by a change. Because it knows the two states, it can deduce the nature of the change
+
+	Caching
+
+Caching simply looks at the current state of the workspace and the environment (e.g., version of Node) and checks if somebody already ran the command against this state. Caching knows that something changed, but because there is no before and after states, it doesn't know the nature of the change. In other words, caching is a lot more conservative.
+
+If we only use affected, the list of projects that will be retested is small, but if we test the PR twice, we will run all the tests twice.
+
+If we only use caching, the list of projects that will be retested is larger, but if we test the PR twice, we will only run tests the first time.
+
+Using both allows us to get the best of both worlds. The list of affected projects is as small as it can be, and we never run anything twice.
+
+================================================================================
+
 creating an app
 ---------------
 
@@ -834,7 +868,125 @@ Trigger the build of both `store` app and API projects to make it passes
 	$ npx nx build api
 
 
+=================================================================================
+
+	lab-10:  Generate storybook stories for the shared ui component
+	------------------------------------------------------
+
+
+-> Add storybook
+
+	$ yarn add @nrwl/storybook
+
+
+-> Use `nrwl/angular:storybook-configuration` schematic to generate a storybook 
+configuration for the `store-ui-shared` project
+
+	$ npx nx generate @nrwl/angular:storybook-configuration store-ui-shared
+
+Answer YES to all questions
+
+	Note: 
+		`store-ui-shared` has one component `header` at this point.
+		the above command sets up storybook for `store/ui-shared` library, and
+		creates one story for that component, `primary` in
+
+			header.component.stories.ts
 
 
 
-================================================================================
+-> Import angular material `MatToolbarModule` into `header.component.stories.ts`
+
+
+	export const primary = () => ({
+	  moduleMetadata: {
+	    imports: [
+	      MatToolbarModule
+	    ]
+	  },
+	  component: HeaderComponent,
+	  props: {
+	    title: text('title', ''),
+	  }
+	});
+
+
+Serve storybook:
+
+	$ npx nx storybook store-ui-shared
+
+
+=================================================================================
+
+	lab-11:  e2e test the shared component
+	------------------------------------------------------
+
+
+The storybook schematic generates some e2e tests.
+try them out.
+
+
+storybook schematic generated some e2e tests.
+
+store-ui-shared-e2e/
+	src/integration/header/header.component.spec.ts
+	-----------------------------------------------
+
+note: 
+	beforeEach() sets up the header component with title=BoardGameHoard
+	and the test validates that.
+
+
+describe('store-ui-shared', () => {
+  beforeEach(() => cy.visit('/iframe.html?id=headercomponent--primary&knob-title=BoardGameHoard'));
+
+  it('should render the component', () => {
+    cy.get('bg-hoard-header').should('exist');
+  });
+
+  it('should show the title', () => {
+    cy.get('bg-hoard-header').contains('BoardGameHoard'); // <-- test
+  });
+});
+
+
+change those values to trigger different outcomes.
+
+Note on chaching
+----------------
+
+	In Nx 9, we introduced computation caching with Nx.
+	Your most common computations such as building apps and libraries, running unit tests, lint checks, and E2E tests are now cached locally by default.
+
+	So your e2e tests will be cached, as long as you are using the same configuration.
+
+
+Running e2e tests
+-----------------
+
+
+The following commands are equivalent:
+
+	nx e2e <project>
+	nx run <project>:e2e
+
+
+	$ nx e2e store-ui-shared-e2e
+or
+	$ nx run store-ui-shared-e2e:e2e
+
+or
+	$ npx nx run store-ui-shared-e2e:e2e
+
+
+Run E2E test with a custom base url:
+
+	nx e2e myapp-e2e --base-url http://localhost:4201
+
+Run E2E test with a specific target:
+
+	nx e2e myapp-e2e --configuration smoke
+
+
+
+=================================================================================
