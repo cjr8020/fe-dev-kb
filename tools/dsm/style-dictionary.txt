@@ -1,0 +1,10 @@
+
+	*********************
+
+		style-dictionary
+
+	*********************
+
+
+https://github.com/amzn/style-dictionary
+https://medium.com/@didoo/how-to-manage-your-design-tokens-with-style-dictionary-98c795b938aa

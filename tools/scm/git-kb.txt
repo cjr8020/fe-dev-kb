@@ -648,10 +648,14 @@ your gh-pages site will be published on
 
 Suppose you're fixing issue #234.  Put text 'fixes #234' in the description of your PR (or anywhere in the comment on the PR).  Merging the PR will automatically close that issue.
 
+
+
 	linking to comments
 	*******************
 
 Click the date/time next to the name in the comment header - that is how you link to that comment.
+
+
 
 	link to code
 	************
@@ -662,6 +666,8 @@ if you hold Shift and click another line, the URL is updated again, and now you'
 
 hold on, that's  pointing to the current branch.  what if the file changes?
 Then use "permalink" to the file in its current state.
+
+
 
 	creates lists with checkboxes in issues
 	******************************
@@ -678,9 +684,13 @@ Here is the syntax:
 
  That’s a space and a dash and a space and a left bracket and a space (or an x) and a close bracket and a space and then some words.
 
+
+
  	Project boards in GitHub with Trello
  	************************************
 https://hackernoon.com/12-cool-things-you-can-do-with-github-f3e0424cf2f0
+
+
 
 
 	GitHub wiki
@@ -694,6 +704,8 @@ take Gwiki for a spin, I entered a few pages from the NodeJS docs as wiki pages,
 
 example: https://github.com/davidgilbertson/about-github/wiki
 
+
+
 	GitHub Pages with Jekyll
 	************************
 You may already know that you can use GitHub Pages to host a static site. And if you didn’t now you do. However this section is specifically about using Jekyll to build out a site.
@@ -704,15 +716,130 @@ If I click the "settings" tab for my site in GitHub, turn on GitHub Pages, and p
 
 From this point on I can build out a whole static site based mostly around markdown files that are easily editable, essentially turning GitHub into a CMS.
 
+
+
 	Stylish Chrome Extension
 	*************************
 
 gives you ability to add styles/themes to websites.
 
+
+
 	GitHub as CMS
 	*************
 
 https://hackernoon.com/12-cool-things-you-can-do-with-github-f3e0424cf2f0
+
+
+
+	GitHub Templates
+	****************
+
+You must create templates on the repository's default branch. 
+Templates created in other branches are not available for collaborators to use. 
+You can store your pull request template in the repository's visible root directory, 
+the `docs` folder, 
+or the hidden .github directory. 
+
+Pull request template filenames are not case sensitive, 
+and can have an extension such as .md or .txt.
+
+
+PULL_REQUEST_TEMPLATE.md
+pull_request_template.md
+
+
+
+
+
+	GitHub CODEOWNDERS
+	*******************
+
+
+
+# This file is used to automatically request reviews on PRs.
+
+# These owners will be the default owners for everything in
+# the repo, unless a match on a later line takes precedence.
+# "@MyOrganization/MyTeam" below requests review from all members of MyTeam.
+*       @MyOrganization/MyTeam
+
+# It's also possible to add notifications based on language
+# or location in repo, etc.
+# More info at docs: https://help.github.com/articles/about-codeowners/
+
+
+Example
+-------
+
+Example of a CODEOWNERS file
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+*       @global-owner1 @global-owner2
+
+# Order is important; the last matching pattern takes the most
+# precedence. When someone opens a pull request that only
+# modifies JS files, only @js-owner and not the global
+# owner(s) will be requested for a review.
+*.js    @js-owner
+
+# You can also use email addresses if you prefer. They'll be
+# used to look up users just like we do for commit author
+# emails.
+*.go docs@example.com
+
+# In this example, @doctocat owns any files in the build/logs
+# directory at the root of the repository and any of its
+# subdirectories.
+/build/logs/ @doctocat
+
+# The `docs/*` pattern will match files like
+# `docs/getting-started.md` but not further nested files like
+# `docs/build-app/troubleshooting.md`.
+docs/*  docs@example.com
+
+# In this example, @octocat owns any file in an apps directory
+# anywhere in your repository.
+apps/ @octocat
+
+# In this example, @doctocat owns any file in the `/docs`
+# directory in the root of your repository.
+/docs/ @doctocat
+
+
+
+-----------------------------------------
+
+
+It looks like you've set up the CODEOWNERS file correctly, but I believe the issue you're having is down to team permissions.
+
+Teams are only requested for a review on a pull request when they have write access to the repository on the team itself. It's not enough for all the members to have write access, you need to grant write access to the actual team.
+
+https://help.github.com/articles/managing-team-access-to-an-organization-repository/
+
+Once you do this all future pull requests that involve files owned by that team should be automatically requested for a review.
+
+
+
+# This file is used to automatically request reviews on PRs.
+
+# These owners will be the default owners for everything in
+# the repo, unless a match on a later line takes precedence.
+# "@MyOrganization/MyTeam" below requests review from all members of MyTeam.
+
+*       @MyOrganization/MyTeam
+
+# It's also possible to add notifications based on language
+# or location in repo, etc.
+# More info at docs: https://help.github.com/articles/about-codeowners/
+
+Note: teams cannot be SECRET - must be publicly visible.
+
 
 
 

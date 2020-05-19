@@ -3015,6 +3015,11 @@ Catching global errors
 
 Typescript ERROR in build-info.ts (3,12): Cannot find name 'require'.
 
+Cannot find name 'require'
+
+Do you need to install type definitions for node? 
+Try `npm i @types/node` and then add `node` to the types field in your tsconfig
+
 
 declare const require: any;  // add this line
 
@@ -3023,6 +3028,20 @@ export const build = {
   version: require('../../package.json').version
 };
 
+
+add the following to tsconfig.app.json:
+
+    "types": ["node"],
+    "typeRoots": [ "../node_modules/@types" ]
+
+
+remove from tsconfig.json
+
+  "types": []
+
+or add
+
+  "types": ["node"]
 
 
 ================================================================================

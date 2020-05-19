@@ -8,6 +8,16 @@
 
 ================================================================================
 
+	Tags
+	****
+
+Adding tags to your libraries
+
+They can control which types of apps can take this library as a dependency.		
+
+
+================================================================================
+
 	Caching and Affected
 	********************
 
@@ -27,6 +37,8 @@ https://nx.dev/angular/guides/ci/monorepo-affected
 Affected and caching are used to solve the same problem: minimize the computation. But they do it differently, and the combination provides better results than one or the other.
 
 	Affected
+
+$ npm run affected:dep-graph
 
 The affected command looks at the before and after states of the workspaces and figures out what can be broken by a change. Because it knows the two states, it can deduce the nature of the change
 
@@ -986,6 +998,16 @@ Run E2E test with a custom base url:
 Run E2E test with a specific target:
 
 	nx e2e myapp-e2e --configuration smoke
+
+
+
+NEXT 
+
+See the Nx Workspaces course for creating a Shared assets library 
+https://nxplaybook.com/courses/709074/lectures/12736150
+
+last lesson
+
 
 
 

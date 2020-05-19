@@ -1,0 +1,16 @@
+******************
+
+	Design Tokens
+
+******************
+
+
+design tokens
+
+ are an agnostic way to store variables such as typography, color, and spacing 
+ so that your design system can be shared across platforms 
+ like iOS, Android, and regular ol’ websites.
+
+
+Lina Anne and Jon Levine from 2016
+
