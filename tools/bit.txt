@@ -1,0 +1,27 @@
+
+	********
+
+		bit
+
+	********
+
+https://bit.dev/
+
+
+Resources
+=========
+
+bit workflows
+https://docs.bit.dev/docs/workflows/workflows
+
+
+Quick Front-End Integrations Through Bit Components
+https://blog.bitsrc.io/quick-front-end-integrations-through-components-739625e7069d
+
+ngx-bootstrap on bit
+https://bit.dev/valor-software/ngx-bootstrap
+
+
+6 Ways to Share React Components in 2020
+https://blog.bitsrc.io/6-ways-to-share-and-reuse-react-components-6d80e2fd16cd
+

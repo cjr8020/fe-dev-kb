@@ -2,8 +2,17 @@
 	useful git commands
 	*******************
 
+================================================================================
+
+Resources
+---------
+
+A successful Git branching model
+https://nvie.com/posts/a-successful-git-branching-model/
+
 http://orga.cat/posts/most-useful-git-commands
 
+================================================================================
 
 Force using local user per repo
 -------------------------------

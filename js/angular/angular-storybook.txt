@@ -17,6 +17,10 @@ Resources:
 	https://github.com/IBM/carbon-components-angular
 
 
+	Building a Component Library with Angular and Storybook
+	https://morioh.com/p/3f422b81f6d3
+
+
 ================================================================================
 
 	Storybook for Angular
