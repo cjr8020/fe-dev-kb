@@ -5,6 +5,235 @@
 
 	*********************
 
+	developed by Danny Banks at Amazon, that allows you to manage design tokens (or “style properties”) for a design system.
+
 
 https://github.com/amzn/style-dictionary
+
+Cross-platform Styles with Style Dictionary
+https://dbanksdesign.github.io/style-dictionary-presentation/#/
+
+
+================================================================================
+
+
+How to manage your Design Tokens with Style Dictionary
+******************************************************
+
+Medium.com article by Cristiano Rastelli
+
+
 https://medium.com/@didoo/how-to-manage-your-design-tokens-with-style-dictionary-98c795b938aa
+https://github.com/didoo/style-dictionary-demo
+
+In a design system, people often use special entities called “design tokens” to store their “design decisions
+
+These entities are in the shape of key/value pairs, saved in specific file formats (usually JSON or YAML).
+
+These files are later used as input files, processed and transformed to generate different output files, with different formats, to be included and consumed by other projects and codebases.
+
+
+term "style properties" in stead of the more common "design tokens".
+
+
+================================================================================
+
+	Install
+	*******
+
+	$ npm install -g style-dictionary
+
+Or you can install it like a normal npm dependency. This is a build tool and you are most likely going to want to save it as a dev dependency:
+
+	$ npm install -D style-dictionary
+
+If you want to install it with yarn:
+
+	$ yarn add style-dictionary --dev	
+
+
+================================================================================
+
+	Quick Start
+	***********
+
+	$ npm i -g style-dictionary
+	
+	$ mkdir MyStyleDictionary
+	$ cd MyStyleDictionary
+
+now run
+
+	$ style-dictionary init basic   [ basic | complete ]
+
+
+		Copying starter files...
+
+		Source style dictionary starter files created!
+
+		Running `style-dictionary build` for the first time to generate build artifacts.
+
+
+		scss
+		✔︎  build/scss/_variables.scss
+
+		android
+		✔︎  build/android/font_dimens.xml
+		✔︎  build/android/colors.xml
+
+		ios
+		✔︎  build/ios/StyleDictionaryColor.h
+		✔︎  build/ios/StyleDictionaryColor.m
+		✔︎  build/ios/StyleDictionarySize.h
+		✔︎  build/ios/StyleDictionarySize.m
+
+		ios-swift
+		✔︎  build/ios-swift/StyleDictionary.swift
+
+		ios-swift-separate-enums
+		✔︎  build/ios-swift/StyleDictionaryColor.swift
+		✔︎  build/ios-swift/StyleDictionarySize.swift
+
+
+and build
+
+	$ style-dictionary build
+
+
+================================================================================
+
+
+	Style Properties
+	****************
+
+A style property is an attribute to describe something visually. 
+It is atomic (it cannot be broken down further). 
+
+Style properties have a name, a value, and optional attributes or metadata. 
+
+
+	Category / Type / Item 
+--------------------------
+
+Category <- describes the primitive nature of the property
+
+size
+
+	font
+
+		base: { value: 16 }
+		large: { value: 20 }
+
+
+
+Category								color
+
+Type         text			background		 border
+
+Item 		            page button  table
+
+Sub-Itme								primary secondary  tertiary 
+
+State 									active  base  disabled 
+
+
+
+================================================================================
+
+	CTI ( Category / Type / Item ) Structure
+	****************************************
+
+
+color
+
+	base
+		gray
+			light
+			medium
+			dard
+		red
+		green
+
+	font
+		base
+		secondary
+		tertiary
+
+size
+	
+	font
+		small
+		medium
+		large
+		base
+
+time
+	transition
+		short
+		base
+		long
+		xl
+
+	delay
+		short
+		base
+		long
+
+	duration
+		short
+		base
+		long
+
+
+
+--------------------------
+
+
+
+│   ├── brands/
+│   │   │── brand_#1/
+│   │   │   ├── color.json
+│   │   │── brand_#2/
+│   │   │   ├── color.json
+│   │   │── brand_#3/
+│   │   │   ├── color.json
+
+
+
+│   ├── globals/
+│   │   │── base/
+│   │   │   ├── index.json
+│   │   │── color/
+│   │   │   ├── basic.json
+│   │   │   ├── grayscale.json
+│   │   │   ├── features.json
+│   │   │   ├── social.json
+│   │   │── icon/
+│   │   │   ├── index.json
+│   │   │── ...
+│   │   │── spacing/
+│   │   │   ├── index.json
+│   │   │── typography/
+│   │   │   ├── index.json
+
+
+
+│   ├── platforms/
+│   │   │── android/
+│   │   │   ├── button.json
+│   │   │   ├── ...
+│   │   │   ├── typography.json
+│   │   │── ios/
+│   │   │   ├── button.json
+│   │   │   ├── ...
+│   │   │   ├── typography.json
+│   │   │── mobile_web/
+│   │   │   ├── button.json
+│   │   │   ├── ...
+│   │   │   ├── typography.json
+
+
+
+
+
+================================================================================

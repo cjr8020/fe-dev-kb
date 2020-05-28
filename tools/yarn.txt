@@ -43,3 +43,18 @@ $ cat ~/.yarnrc
 $ yarn install 
 
 ================================================================================
+
+	yarn workspaces
+	***************
+
+Resources
+-----------
+
+Organize Your Project’s Codebase Like A Pro
+https://www.smashingmagazine.com/2019/07/yarn-workspaces-organize-project-codebase-pro/
+
+Corralling Monorepos with Yarn Workspaces
+https://www.digitalocean.com/community/tutorials/workflow-corralling-monorepos-with-yarn-workspaces
+
+
+================================================================================

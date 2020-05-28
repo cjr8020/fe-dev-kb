@@ -4,6 +4,41 @@
 
 ******************
 
+Living Design System
+https://medium.com/salesforce-ux/living-design-system-3ab1f2280ef7
+
+Design Tokens in Design Systems
+https://speakerdeck.com/jina/design-tokens-in-design-systems
+
+Tokens in Design Systems
+https://medium.com/eightshapes-llc/tokens-in-design-systems-25dd82d58421
+
+Jina Anne and Jon Levine from 2016
+
+	how design tokens are used in the Lightning Design System at Salesforce
+	https://www.youtube.com/watch?v=wDBEc3dJJV8
+
+	Design Tokens: Scaling Design with a Single Source of Truth
+	https://aycl.uie.com/virtual_seminars/design_tokens_scaling_design_with_a_single_source_of_truth
+
+
+InVision DSM API
+Using design tokens in development
+https://support.invisionapp.com/hc/en-us/articles/115005682283#using-design-tokens-in-development
+
+
+================================================================================	
+
+	Managing Design Tokens with Storybook
+	*************************************
+
+https://dev.to/psqrrl/managing-design-tokens-using-storybook-5975
+https://storybook-design-token.netlify.app/?path=/story/components--menuitem
+
+
+
+================================================================================	
+
 
 design tokens
 
@@ -14,3 +49,33 @@ design tokens
 
 Lina Anne and Jon Levine from 2016
 
+	how design tokens are used in the Lightning Design System at Salesforce
+	https://www.youtube.com/watch?v=wDBEc3dJJV8
+
+	Design Tokens: Scaling Design with a Single Source of Truth
+	https://aycl.uie.com/virtual_seminars/design_tokens_scaling_design_with_a_single_source_of_truth
+
+
+Let’s take just one example: 
+
+you probably have a typographic scale that you want to be identical across a bunch of platforms
+
+Instead of storing the values for that scale in a CSS file and replicating them in every app or website, they can be stored in a JSON file that will then be transformed into the code needed for all those other platforms.
+
+
+{
+  "global": {
+    "type": "token",
+    "category": "typography"
+  },
+  "aliases": {
+    "TYPE_SIZE_SM": {
+      "value": "14px"
+    },
+    "TYPE_SIZE_MD": {
+      "value": "25px"
+    },
+    "TYPE_SIZE_LG": {
+      "value": "44px"
+    }
+ },

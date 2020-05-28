@@ -5,3 +5,10 @@
 
 *****************************
 
+A step-by-step guide to using design tokens in InVision DSM
+https://www.invisionapp.com/inside-design/dsm-design-tokens/
+
+
+DSM API
+Using design tokens in development
+https://support.invisionapp.com/hc/en-us/articles/115005682283#using-design-tokens-in-development

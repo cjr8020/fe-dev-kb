@@ -228,6 +228,20 @@ ctrl-opt-K					kill line
 
 ctrl-cmd-up|down		move line up|down
 
+
+
+Avoid Sublime adding a period on double space
+---------------------------------------------
+
+This was added with Sierra.
+
+It can be disabled globally via 
+
+	System Preferences -> Keyboard -> Text 
+
+and unchecking Add period with double-space.
+
+
 ================================================================================
 
 	Mac OS X auto start on login
