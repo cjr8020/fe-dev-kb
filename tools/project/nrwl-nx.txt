@@ -6,6 +6,35 @@
 	************
 
 
+
+Resources:
+
+	courses by NRWL
+		https://nxplaybook.com/
+
+	interactive tutorial
+		https://nx.dev/angular/tutorial/01-create-application
+
+	nx workshop
+		https://github.com/alex-okrushko/ngrx-nx-workshop
+
+	nx vs lerna
+		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
+
+
+
+	Dev Workflow Using Git Submodules and Yarn Workspaces
+		https://blog.nrwl.io/dev-workflow-using-git-submodules-and-yarn-workspaces-14fd06c07964
+
+	Angular Monorepo pains
+		https://itnext.io/monorepo-pains-9064db3b9882
+
+
+	Styles library recommendation
+
+		https://github.com/nrwl/nx/issues/1542
+
+
 ================================================================================
 
 	Tags
@@ -203,29 +232,6 @@ Errors
 ================================================================================
 
 
-Resources:
-
-	courses by NRWL
-		https://nxplaybook.com/
-
-	interactive tutorial
-		https://nx.dev/angular/tutorial/01-create-application
-
-	nx workshop
-		https://github.com/alex-okrushko/ngrx-nx-workshop
-
-	nx vs lerna
-		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
-
-
-
-	Dev Workflow Using Git Submodules and Yarn Workspaces
-		https://blog.nrwl.io/dev-workflow-using-git-submodules-and-yarn-workspaces-14fd06c07964
-
-	Angular Monorepo pains
-		https://itnext.io/monorepo-pains-9064db3b9882
-
-================================================================================
 
 
   workspace
@@ -347,6 +353,111 @@ NX Configuration
 
 
 
+================================================================================
+
+	Styles Library Recommendation
+	*****************************
+
+https://github.com/nrwl/nx/issues/1542
+
+We usually like to recommend to create a library specifically to handle the styles.
+
+You usually already have a UI library (containing only presentational components) that are shared between your apps and used by multiple feature libraries. You can create a library next to this one, handling only the styles. For example:
+
+libs/common/ui/my-ui-library1
+libs/common/ui/my-styles-library
+
+
+Inside the library you can have all your relevant .scss files that will be used by other libraries / apps.
+
+Then, concerning the import, you could do it in two ways, like you exposed.
+
+The first one is the deep imports ../../etc/etc/variables.scss.
+
+The second one is to use the stylePreprocessorOptions like you mentioned. With this option you will be able to write only import "variables"; which is neat. To achieve that you will need to setup the stylePreprocessorOptions for every apps that need those styles. You can do it by updating the angular.json file, here an example:
+
+
+
+"projects": {
+    "shop-client": {
+      "root": "apps/my-app",
+      "sourceRoot": "apps/my-app/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/my-app",
+            "deployUrl": "static/",
+            "index": "apps/my-app/src/index.html",
+            "main": "apps/my-app/src/main.ts",
+            "polyfills": "apps/my-app/src/polyfills.ts",
+            "tsConfig": "apps/my-app/tsconfig.app.json",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "libs/common/ui/my-styles-library/src/lib"
+              ]
+            },
+            "extractCss": true
+          },
+	
+
+If you have 
+
+	libs/core/sasslib/src/scss/_variables.scss
+
+
+and
+
+	            "stylePreprocessorOptions": {
+              "includePaths": [
+                "libs/core/sasslib/src/scss"
+              ]
+            },
+            "extractCss": true
+
+then
+
+	            "stylePreprocessorOptions": {
+              "includePaths": [
+                "libs/core/sfg-style-dictionary/src/scss"
+              ]
+            },
+            "extractCss": true
+
+
+Also make sure to
+
+	$ npm install sass-loader node-sass scss-bundle --save-dev
+
+If you keep getting 
+
+	SassError: File to import not found or unreadable: _variables.
+
+Run 
+
+	$ npm install 
+
+again!
+
+If your Intellij IDEA is showing "import not found", 
+
+then
+
+	you need to "Mark directory as" -> "Resource root".
+
+	so for this to work "libs/core/sfg-style-dictionary/src/scss"
+
+		mark "scss"  as "Resource root"
+
+	You need to right-click a directory that is a PARENT of directories from which you import. 
+	So if your imports look like:
+
+		@import "base/colors";
+
+	then you need to do that for the parent of base. Then, choose "Mark directory as" -> "Resource root".
 
 
 

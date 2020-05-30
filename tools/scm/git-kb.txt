@@ -1278,6 +1278,13 @@ The git submodule init command creates the local configuration file for the subm
 (2) initialize submodule configuration
 
 
+	Adding submodule to a specific subdirectory
+	-------------------------------------------
+
+$ git submodule add -b <branch> <url> <relative_path_4m_root>
+
+
+
 If you track branches in your submodules, you can update them via the --remote parameter of the git submodule update command. 
 
 
@@ -1360,7 +1367,7 @@ Currently Git provides no standard interface to delete a submodule.
 To remove a submodule called mymodule you need to:
 
 
-	$ git submodule deinit -f — mymodule
+	$ git submodule deinit -f —- mymodule
 
 	$ rm -rf .git/modules/mymodule
 
