@@ -5,6 +5,46 @@
 
 	********
 
+
+Install is the default behavior.
+npm install === yarn
+
+
+The Taco package is saved to your package.jsonimmediately.
+npm install taco --save === yarn add taco
+
+
+npm uninstall taco --save === yarn remove taco
+—-savecan be defaulted in NPM by npm config set save true but this is non-obvious to most developers. Adding and removing from package.json is default in Yarn.
+
+npm install taco --save-dev === yarn add taco --dev
+npm update --save === yarn upgrade
+Great call on upgrade vs update, since that is exactly what it is doing! Version number moves, upgrade is happening!
+*WARNING* npm update --save seems to be kinda broken in 3.11
+
+
+npm install taco@latest --save === yarn add taco
+npm install taco --global === yarn global add taco
+As always, use global flag with care.
+
+
+
+The packages are the same as on the NPM registry. Yarn is basically a new installer, where NPM structure and registry is the same.
+
+npm init === yarn init
+npm link === yarn link
+npm outdated === yarn outdated
+npm publish === yarn publish
+npm run === yarn run
+npm cache clean === yarn cache clean
+npm login === yarn login (and logout)
+npm test === yarn test
+npm install --production === yarn --production
+
+
+
+================================================================================
+
 $ brew install yarn
 
 

@@ -133,3 +133,68 @@ R:
 
 
 ================================================================================
+
+	set up simple node-sass project
+	********************************
+
+Node Sass example
+In the following example, we create a simple web project that uses the node-sass module.
+
+$ mkdir sass
+$ mkdir public/css
+
+In the project directory, we create three subdirectories. 
+In the sass directory, we will have SCSS code. 
+The SCSS code is translated into CSS and moved into the public/css directory.
+
+$ nodejs -v
+
+$ npm init
+
+We initiate a new Node application.
+
+$ npm install node-sass --save-dev
+
+To compile:
+
+    "sass": "node-sass -w scss -o public/css --recursive",
+    
+$ npm run sass
+    
+To test with `live-server`:
+    
+    "live-server": "npx live-server --open=public"
+
+$ npm run live-server
+
+
+package.json
+------------
+
+{
+  "name": "sass-runner",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "keywords": [
+    "node",
+    "sass"
+  ],
+  "author": "me",
+  "license": "ISC",
+  "description": "node-sass runner",
+  "scripts": {
+    "sass": "node-sass -w scss -o public/css --recursive",
+    "live-server": "npx live-server --open=public"
+  },
+  "dependencies": {
+    "node-sass": "^4.14.1"
+  }
+}
+
+
+
+
+================================================================================

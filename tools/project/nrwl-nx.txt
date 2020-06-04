@@ -443,6 +443,7 @@ Run
 again!
 
 If your Intellij IDEA is showing "import not found", 
+https://intellij-support.jetbrains.com/hc/en-us/community/posts/360000048404-SCSS-import-paths-cannot-be-resolved
 
 then
 

@@ -1,0 +1,161 @@
+
+	*****************
+
+		CSS Resources
+
+	*****************
+
+================================================================================
+
+SMACSS: Scalable Module Architecture for CSS
+---------------------------------------------
+
+	https://app.pluralsight.com/library/courses/scalable-modular-architecture-for-css/table-of-contents
+
+
+Max # of ppl who can productively, simult work on CSS is one!
+
+Object-Oriented CSS (Nicole Sullivan)
+
+Pattern Primer (Jeremy Keith)
+
+Practical Maintainable CSS presentation (Natalie Downe)
+
+
+
+SMACSS is
+---------------
+- Categorization
+- Naming Convention
+- Decouping CSS from HTML
+- State-based Designn
+
+
+Categorization
+--------------
+
+	Base styles  
+
+		* element selectors
+		
+			no classes, no ids 
+
+			html {}
+			body {}
+			h1, h2, h3 {}
+
+		* css resets
+		* normalize
+
+
+	Layout Styles
+
+		* Major Containing Elements
+
+			Header
+			Content
+			Sidebar
+
+		* Grid Systems
+
+		How do you group your content?
+
+
+
+	Modules
+
+		Content pieces 
+
+		contain content
+		are the majority of your site
+		each module is an interface that your users need to learn
+		each module is code that has to be written, delivered, and maintained
+
+		Submodules
+
+
+
+	Theme
+
+
+	body { background-color: #333; }
+
+	.layout-highlight { background-color: #CCC; }
+	.layout-constrained { width: 760px; }
+	.layout-content {}
+	.layout-sidebar {}
+
+	<div>
+		<div class="layout-constrained"></div>
+	</div>
+	<div class="layout-highlight">
+
+	</div>
+	<div>
+
+	</div>
+
+
+
+
+
+
+
+================================================================================
+
+	Creating a Living Style Guide with Sass and Vanilla JavaScript
+	--------------------------------------------------------------
+
+	https://app.pluralsight.com/library/courses/creating-living-style-guide-sass-vanilla-javascript/table-of-contents
+
+
+Building blocks of Design
+
+Creating a lightweight style guide
+
+Using globals 
+
+Biulding Components 
+
+Adding stateful styles
+
+
+What is a style guide?
+-----------------------
+
+Book that documents design in code.
+Goto document for globals and components.
+
+
+
+Custom vs. style guide generators
+
+
+	No JS libs or server-side deps 	| 	usually require SS or f/e deps
+	Highly customizable             |   Highly opinionated by design
+	Document code as you see fit	  |   document code to fit the style guide
+
+
+
+Style Guide Fundamentals
+-------------------------
+
+	Analyze design
+	Identify patterns and collections of objects
+	Globals like colors and spacing
+	HTML elements should be easily identifiable as shared styles
+	Components
+	States
+
+	
+
+
+Style Guide for Adopt-a-Tree
+-----------------------------
+
+
+
+
+
+
+================================================================================
