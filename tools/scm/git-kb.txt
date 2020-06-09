@@ -1348,6 +1348,8 @@ git commit -m "move submodule to latest commit in master"
 
 # share your changes
 git push
+
+
 Another developer can get the update by pulling in the changes and running the submodules update command.
 
 # another developer wants to get the changes

@@ -4043,6 +4043,32 @@ After:
 
 ================================================================================
 
+  expportAs
+  *********
+
+We know that @Component decorator functions take object, and this object contains a lot of properties. 
+So in this article we will learn about Exportas properties which is Inherited from Directive decorator .
+
+From Angular 5 you can export components and directives with different multiple names. 
+Exporting a component with multiple names can help you get a more readable code 
+and help users migrate without breaking changes.
+
+
+
+  import { Component } from '@angular/core';
+  @Component({
+     selector: 'app-component',
+     templateUrl: '<p>Hello world!</p>',
+     exportAs: 'ParentComponent, RootComponent'
+  })
+  export class AppComponent {}
+
+  
+
+This component can then be imported as AppComponent, ParentComponent or RootComponent.
+
+================================================================================
+
 
 
 
