@@ -5,6 +5,13 @@
 
 	*****************
 
+
+Making negative margins safer
+https://www.rawkblog.com/2019/01/flexbox-gutters-negative-margins-solved/
+
+
+
+
 ================================================================================
 
 SMACSS: Scalable Module Architecture for CSS
@@ -94,106 +101,6 @@ Categorization
 	<div>
 
 	</div>
-
-
-
-
-
-
-
-================================================================================
-
-	Creating a Living Style Guide with Sass and Vanilla JavaScript
-	--------------------------------------------------------------
-
-	https://app.pluralsight.com/library/courses/creating-living-style-guide-sass-vanilla-javascript/table-of-contents
-
-
-Building blocks of Design
-
-Creating a lightweight style guide
-
-Using globals 
-
-Biulding Components 
-
-Adding stateful styles
-
-
-What is a style guide?
------------------------
-
-Book that documents design in code.
-Goto document for globals and components.
-
-
-
-Custom vs. style guide generators
-
-
-	No JS libs or server-side deps 	| 	usually require SS or f/e deps
-	Highly customizable             |   Highly opinionated by design
-	Document code as you see fit	  |   document code to fit the style guide
-
-
-
-Style Guide Fundamentals
--------------------------
-
-	Analyze design
-	Identify patterns and collections of objects
-	Globals like colors and spacing
-	HTML elements should be easily identifiable as shared styles
-	Components
-	States
-
-
-
-
-Style Guide for Adopt-a-Tree
------------------------------
-
-
-
-	Style Guilde: Patterns
-
-
-globals 									HTML Elements 									Components
-
- Logos 										Typography (headings)						Banner
- colors                                                   Progress Bars
- Icons   								  Buttons													Styled List
-
- Grids 																										Carousels
- Media Queries																						Cards
- Spacing																									Content Block
- Alignment								Forms    												Avatars
- 																													Tabs
-
-
-Organize colors by
-------------------
-
-Brand
-	hyphenated names 
-	prefixed by brand prefix
-
-Warm colors
-Cool colors
-Gray colors
-Social Media
-State (error, disabled, warning .. )
-
-	brand-1-blue
-	brand-1-primary
-
-	gray-cement
-	red-cherry
-
-	color-link
-	color-font
-
-
 
 
 

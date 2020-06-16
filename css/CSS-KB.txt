@@ -717,3 +717,62 @@ fade-in and fade-out
 
 
 ================================================================================
+
+	CSS Units
+	**********
+
+
+CSS has several different units for expressing a length.
+
+Many CSS properties take "length" values, such as width, margin, padding, font-size, etc.
+
+Length is a number followed by a length unit, such as 10px, 2em, etc.
+
+
+Absolute lengths
+-----------------
+
+cm
+mm
+px - pixels
+pt - poits
+pc - picas
+
+
+
+Relative lengths
+----------------
+
+
+em	Relative to the font-size of the element (2em means 2 times the size of the current font)	
+ex	Relative to the x-height of the current font (rarely used)	
+ch	Relative to the width of the "0" (zero)	
+rem	Relative to font-size of the root element	
+vw	Relative to 1% of the width of the viewport*	
+vh	Relative to 1% of the height of the viewport*	
+vmin	Relative to 1% of viewport's* smaller dimension	
+vmax	Relative to 1% of viewport's* larger dimension	
+%		Relative to the parent element
+
+================================================================================
+
+	em units in CSS
+	***************
+
+em
+
+	the em unit is the height of the font in nominal points or inches. 
+	The actual, physical height of any given portion of the font depends on 
+	the user-defined DPI setting, current element font-size, and the particular font being used.
+
+The rem unit in CSS always inherits its value from the base font size setting on the root element of the document, 
+irrespective of the computed font size. 
+
+In HTML, the root element is always the html element. 
+So you could use rems, but this would mean you’ll have to control 
+all components on the page using the font size on that element. 
+It could work on certain projects, but I think this technique works best 
+when focusing the resizability on an isolated component, rather than the whole document.
+
+
+================================================================================

@@ -62,19 +62,224 @@ and _colors.scss would be imported.
 	Import
 	*******
 
+
+	At-Rules
+	********
+
+https://sass-lang.com/documentation/at-rules
+
+@use 
+	loads mixins, functions, and variables from other Sass stylesheets, and combines CSS from multiple stylesheets together.
+
+@forward 
+	loads a Sass stylesheet and makes its mixins, functions, and variables available when your stylesheet is loaded with the @use rule.
+
+@import 
+	extends the CSS at-rule to load styles, mixins, functions, and variables from other stylesheets.
+
+@mixin and @include 
+	makes it easy to re-use chunks of styles.
+
+@function 
+	defines custom functions that can be used in SassScript expressions.
+
+@extend 
+	allows selectors to inherit styles from one another.
+
+@at-root 
+	puts styles within it at the root of the CSS document.
+
+@error 
+	causes compilation to fail with an error message.
+
+@warn 
+	prints a warning without stopping compilation entirely.
+
+@debug 
+	prints a message for debugging purposes.
+
+@if
+@for
+@each
+
+	Flow control rules like @if, @each, @for, and @while control whether or how many times styles are emitted.
+
+
+
+
 	Mixins
 	******
+
+Mixins are reusable chunks of code that are included, similar to calling a function, instead of copy/pasted.
+
+Mixins have some nice features:
+
+* Arguments just like functions.
+* Arguments can have default values and optional values.
+* Named arguments allow us to use optional and default arguments when the mixin is included.
+* Variable arguments allow us to have a dynamic number of arguments when the mixin is included.
+* The @content directive allow us to add additional styles when the mixin is included.
+
+default argument value
+-----------------------
+
+	@mixin my-mixin($base-color: #abc123, $mix-color: #efg456) { ... }
+
+if we want to use default values, we don't pass any arguments:
+
+	.wolverine { @include my-mixin; }
+
+and if you want to provide your own values:
+
+	.rogue { @include my-mixin(#aaa222, #bbb333); }
+
+
+	
+
+example
+-------
+
+<div class="wolverine">
+	<img src="images/wolverine-small.gif">
+	<p class="wolverine-text">Wolverine</p>
+</div>
+
+.wolverine {
+	text-align: center;
+	background-image: linear-gradient($light-color, $base-color, $dark-color);
+
+	&:hover { backgroun-image: linear-gradient($clc, $cbc, $cdc); }
+	$:hover &-text { color: transparentize(mix($base-color, #fffaa6, 25%), .2); }
+
+	&-text {
+		...
+	}
+
+	img {
+		...
+	}
+}
+
+TO USE a mixin, create one 
+
+	@mixin make-character {
+		
+	}
+
+	.character {
+		. . ,
+	}
+
+then import and use:
+
+	.wolverine { @include make-character; }
+	.rogue { @include make-character; }
+
+and then add new characters to HTML:
+
+	<div class="rogue character">
+		<img src="images/rogue-small.gif">
+		<p class="rogue-text">Rogue</p>
+	</div>
+
+
 
 	Extend/Inheritance
 	******************
 
+
+
+
 	Operators
 	*********
+
+
+
+	Functions
+	*********
+
+	http://sass-lang.com/documentation/Sass/Script/Functions.html
+
+
+	$light-color: lighten($base-color, 20%);
+	$dark-color: darken($base-color, 20%);
+
+mix colors
+
+	color: mix($base-color, yellow, 25%);  // default is 50%
+
+	transparentize( . . . ); // decreases the opacity
+
+
 
 ================================================================================
 
 	Using
 	******
+
+
+
+
+
+================================================================================
+
+	Nesting
+	*******
+
+Basic nesting 
+
+.parent {
+  .child {}
+}
+
+compiles to
+
+.parent .child {}
+
+You can nest as deep as you like, but it's a good practice to keep it only 1-2 levels deep.
+
+	==> TOO MUCH specificity is brittle
+
+
+& = parent selector
+-------------------
+
+this comes in handy when you're nesting and you want to create a more specific
+selector, like an element that has *both* of two classes like so:
+
+	.some-class.another-class { }
+
+
+	.some-class {
+		&.another-class {}
+	}
+
+Or, think of it as shorthand
+
+.parent {
+	& .child {}
+}
+
+compiles to
+
+	.parent .child {}
+
+
+Using & with pseudo classes:
+-----------------------------
+
+.button {
+  &:visited { }
+  &:hover { }
+  &:active { }
+}
+
+compiles to
+
+.button:visited { }
+.button:hover { }
+.button:active { }
+
 
 
 
@@ -162,6 +367,36 @@ styles.min.css.map
 
 
    $ npm run process-styles
+
+================================================================================
+
+
+	Sass maps
+	*********
+
+holds a colletion of key-value pairs
+
+$map: (
+	"key1":value1,
+	"key2":value2
+);
+
+@each loop can generate multiple classes from a Sass map
+
+
+	$colors: (
+		"green": #3ABB8D,
+		"blue": #313C5A
+	);
+
+	@each $name, $value in $colors {
+		.#{$name} {
+			color: $value;
+		}
+	}
+
+
+
 
 ================================================================================
 
@@ -284,6 +519,194 @@ package.json
     "node-sass": "^4.14.1"
   }
 }
+
+
+
+
+================================================================================
+
+
+	Creating a Living Style Guide with Sass and Vanilla JavaScript
+	--------------------------------------------------------------
+
+	https://app.pluralsight.com/library/courses/creating-living-style-guide-sass-vanilla-javascript/table-of-contents
+
+
+Building blocks of Design
+
+Creating a lightweight style guide
+
+Using globals 
+
+Biulding Components 
+
+Adding stateful styles
+
+
+What is a style guide?
+-----------------------
+
+Book that documents design in code.
+Goto document for globals and components.
+
+
+
+Custom vs. style guide generators
+
+
+	No JS libs or server-side deps 	| 	usually require SS or f/e deps
+	Highly customizable             |   Highly opinionated by design
+	Document code as you see fit	  |   document code to fit the style guide
+
+
+
+Style Guide Fundamentals
+-------------------------
+
+	Analyze design
+	Identify patterns and collections of objects
+	Globals like colors and spacing
+	HTML elements should be easily identifiable as shared styles
+	Components
+	States
+
+
+
+
+Style Guide for Adopt-a-Tree
+-----------------------------
+
+
+
+	Style Guilde: Patterns
+
+
+globals 									HTML Elements 									Components
+
+ Logos 										Typography (headings)						Banner
+ colors                                                   Progress Bars
+ Icons   								  Buttons													Styled List
+
+ Grids 																										Carousels
+ Media Queries																						Cards
+ Spacing																									Content Block
+ Alignment								Forms    												Avatars
+ 																													Tabs
+
+
+Organize colors by
+------------------
+
+Brand
+	hyphenated names 
+	prefixed by brand prefix
+
+Warm colors
+Cool colors
+Gray colors
+Social Media
+State (error, disabled, warning .. )
+
+	brand-1-blue
+	brand-1-primary
+
+	gray-cement
+	red-cherry
+
+	color-link
+	color-font
+
+
+
+Globals Styles
+---------------
+
+Colors
+Spacing
+Media queries and grids
+Alighnment
+Icons
+Typography helpers
+
+
+Practices and Conventions
+--------------------------
+
+use 2 spaces for indentation
+
+link parent and children with common word
+
+	<ul class="list-block"
+		<li class="list-each"
+
+use single hyphen with the exception of modifier classes
+
+	class="list-block list-block--profile "
+
+
+Spacing
+----------------------
+
+white space or negative space allows the page to breathe
+and sets visual boundaries for elements and components
+
+
+Grid Anatomy
+--------------
+
+Grid starts with a container which provides horizontal padding and 
+maximum width.
+
+Row uses a flex box and negative margins for allignment and offsetting column gutters.
+Column use horizontal padding as gutters
+
+
+<div class="container">
+	<div class="row flex flex-wrap">
+		<div class="col col-12 col-6-sm col-3-lg">
+
+		</div>
+		<div class="col col-12 col-6-sm col-3-lg">
+
+		</div>
+	</div>
+</div>
+
+
+Container mixin has two parameters to set the container width and the size of the gutters:
+
+@mixin container ($max-width: $media-lg, $grid-gutter: $grid-gutter) {
+  @if $max-width {
+    max-width: $max-width;
+  }
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $spacing-2;
+  padding-right: $spacing-2;
+}
+
+
+Icons
+-----------------------------
+
+Logo
+
+Arrows
+
+Tree Planting
+
+App
+
+
+
+HTML Elements
+-----------------------------
+
+Layout
+Typography
+Forms
+Media & Embeds
+Tables
 
 
 
