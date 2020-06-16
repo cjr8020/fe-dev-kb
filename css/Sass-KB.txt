@@ -43,8 +43,71 @@ http://sass-lang.com/guide
 	Variables
 	*********
 
+
+================================================================================
+
 	Nesting
 	*******
+
+Basic nesting 
+
+.parent {
+  .child {}
+}
+
+compiles to
+
+.parent .child {}
+
+You can nest as deep as you like, but it's a good practice to keep it only 1-2 levels deep.
+
+	==> TOO MUCH specificity is brittle
+
+
+& = parent selector
+-------------------
+
+this comes in handy when you're nesting and you want to create a more specific
+selector, like an element that has *both* of two classes like so:
+
+	.some-class.another-class { }
+
+
+	.some-class {
+		&.another-class {}
+	}
+
+Or, think of it as shorthand
+
+.parent {
+	& .child {}
+}
+
+compiles to
+
+	.parent .child {}
+
+
+Using & with pseudo classes:
+-----------------------------
+
+.button {
+  &:visited { }
+  &:hover { }
+  &:active { }
+}
+
+compiles to
+
+.button:visited { }
+.button:hover { }
+.button:active { }
+
+
+
+
+================================================================================
+
 
 	Partials
 	*********
@@ -134,7 +197,30 @@ and if you want to provide your own values:
 	.rogue { @include my-mixin(#aaa222, #bbb333); }
 
 
-	
+optional arguments
+------------------
+
+		@mixin my-mixin($base-color: #abc123, $mix-color: #efg456, $border: null) { ... }
+
+when we use both, default arguments and optional arguments, 
+then we need to use named arguments when importing the mixin
+
+
+	.wolverine { @include my-mixin($border: 5x); }
+
+with named arguments, the order of arguments doesn't matter.
+
+
+variable arguments
+------------------
+
+	@mixing make-transitions(transitions...) { transitions: $transitions; }
+
+
+content directive
+-----------------
+
+
 
 example
 -------
@@ -187,6 +273,8 @@ and then add new characters to HTML:
 	Extend/Inheritance
 	******************
 
+@extend directive
+
 
 
 
@@ -194,9 +282,37 @@ and then add new characters to HTML:
 	*********
 
 
+	Directives
+	**********
+
+@for  conrol directive
+-----------------------
+
+	@for $i from 1 through 10 {
+		$vlaue: .5 * $i;
+		$has-decimal: floor($value) != $value; // floor rounds it down
+
+		.mt-#($has-decimal) {
+			margin-top: #{$value}rem;
+		}
+	}
+
+
+@each control directive
+-----------------------
+
+https://egghead.io/lessons/css-loop-over-data-with-the-scss-each-control-directive
+
+
 
 	Functions
 	*********
+
+Write custom functions with @function directive
+
+@function
+----------
+
 
 	http://sass-lang.com/documentation/Sass/Script/Functions.html
 
@@ -223,69 +339,7 @@ mix colors
 
 ================================================================================
 
-	Nesting
-	*******
 
-Basic nesting 
-
-.parent {
-  .child {}
-}
-
-compiles to
-
-.parent .child {}
-
-You can nest as deep as you like, but it's a good practice to keep it only 1-2 levels deep.
-
-	==> TOO MUCH specificity is brittle
-
-
-& = parent selector
--------------------
-
-this comes in handy when you're nesting and you want to create a more specific
-selector, like an element that has *both* of two classes like so:
-
-	.some-class.another-class { }
-
-
-	.some-class {
-		&.another-class {}
-	}
-
-Or, think of it as shorthand
-
-.parent {
-	& .child {}
-}
-
-compiles to
-
-	.parent .child {}
-
-
-Using & with pseudo classes:
------------------------------
-
-.button {
-  &:visited { }
-  &:hover { }
-  &:active { }
-}
-
-compiles to
-
-.button:visited { }
-.button:hover { }
-.button:active { }
-
-
-
-
-
-
-================================================================================
 
 	libSass
 	*******			

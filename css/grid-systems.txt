@@ -1,0 +1,98 @@
+	
+	*****************
+
+		Grid Systems
+
+	*****************
+
+
+================================================================================
+
+8pt Grid System
+***************
+
+https://medium.com/swlh/the-comprehensive-8pt-grid-guide-aa16ff402179
+
+https://spec.fm/specifics/8-pt-grid
+
+
+what's a point
+---------------
+
+A point (pt) is a measurement of space that is dependent on screen resolution. The simplest explanation is that at a “1x” resolution (or @1x), 1pt = 1px.
+
+At a “2x” resolution (@2x), 1pt = 4px because resolution doubles on both the X and Y axes making it 2px wide by 2px tall.
+
+At a “3x” resolution (@3x), 1pt = 9px (3px x 3px) and so on.
+
+
+
+
+@1x
+Please note that everything here is designed “@1x”. Assets for @2x, @3x, and all other variations can more easily be derived from @1x assets than from designs created at a multiple thereof.
+
+For example, to get clean assets from an @2x design to an @3x design (assuming an even-number line thickness), you’d need to scale the artwork to 50% of its original size (down to @1x) and then scale the resulting artwork to 300%.
+
+@1x designs on the other hand can easily be scaled cleanly to any integer multiple - @2x, @3x, @4x, etc.
+
+It’s possible to add more detail to icons and fine assets by working at each individual resolution, but the opportunities to do so are relatively uncommon. In most cases, it’s ideal to work @1x for speed and convenience’s sake.
+
+
+
+Using the pixel grid
+
+Every UI element you create should be aligned to the pixel grid. This is a concept known as pixel-fitting and it ensures that all of your elements appear crisp and well-defined on a user’s device.
+
+Text is somewhat of an outlier here as the unique metrics that allow your eyes to read letters clearly require a little bit of the anti-aliasing that makes other shapes blurry. So, don’t worry about every point of your letters aligning to the pixel grid.
+
+
+
+The 8-Point Grid
+****************
+
+
+
+
+
+The basic principle
+-------------------
+
+Use multiples of 8 to define dimensions, padding, and margin of both block and inline elements.
+
+
+Why 8
+
+Several reasons, the first being that it scales perfectly in all the different screen displays (including android’s @0.75 and @1.5).
+
+
+Base unit			x0.75								x1								x1.5
+
+
+8px						6px									8px								12px
+
+5px						3.75px							5px								7.5px
+
+The second reason, well, Apple and Google advise so, albeit without stating too many reasons why.
+
+The third reason — it’s a good basic unit to work with. the numbers 4 and 8 are easily multiplied, they provide flexible and consistent, yet distinct enough, steps between them.
+
+
+	8	16	 24		32		48			64				80
+
+
+
+Typography
+----------
+
+https://gridlover.net/
+
+font sizes vs line height
+
+
+While font sizes may vary and stray from the 8 multiplication, it’s important the line height will not. 
+
+The Paragraph font size can be 15 pixels for example, but the line height should be a multiplication of 8, so 24px is an acceptable value.
+
+
+
+================================================================================
