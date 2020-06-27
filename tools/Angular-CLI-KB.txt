@@ -1442,3 +1442,84 @@ Finally: `ng serve`
 
 
 ================================================================================
+
+  ECMAScript fetch() issue
+  "crossOrigin": "use-credentials"
+
+
+
+ECMAScript modules in browsers
+https://jakearchibald.com/2017/es-modules-in-browsers/
+
+browsers FETCH scripts
+
+Most CORS-based APIs will send credentials (cookies etc) if the request is to the same origin, but for a while fetch() and module scripts were exceptions. However, that all changed, and now fetch() and module scripts behave the same as other CORS-based APIs.
+
+However, that means you'll encounter three exciting varieties of browser support:
+
+  1. Old versions of browsers that, against the spec at the time, sent credentials by to same-origin URLs by default.
+
+  2. Browsers that followed the spec at the time, and did not send credentials to same-origin URLs by default.
+
+  3. New browsers that follow the new spec, and send credentials to same-origin URLs by default.
+
+
+If you hit this issue, you can add the crossorigin attribute, which will add credentials to same-origin requests, but not cross-origin request, in any browser that follows the old spec. It doesn't do anything if the browser follows the new spec, so it's safe to use.
+
+
+  <!-- Fetched with credentials (cookies etc) -->
+  <script src="1.js"></script>
+
+  <!-- Fetched with credentials, except in old browsers that follow the old spec -->
+  <script type="module" src="1.mjs"></script>
+
+  <!-- Fetched with credentials, in browsers that follow the old & new spec -->
+  <script type="module" crossorigin src="1.mjs"></script>
+
+  <!-- Fetched without credentials -->
+  <script type="module" crossorigin src="https://other-origin/1.mjs"></script>
+
+  <!-- Fetched with credentials-->
+  <script type="module" crossorigin="use-credentials" src="https://other-origin/1.mjs"></script>
+
+
+To address with Angular CLI
+------------------------------
+
+Add to the "build" architect or use
+
+  $ ng build --prod --aot --cross-origin=use-credentials
+
+
+https://github.com/angular/angular-cli/issues/15125
+
+Add crossorigin="use-credentials" in javascript module to allow credentials.
+In safari credentials are not send by default in a javascript module, so if the access to your webapp is protected with credentials in the backend, the module will not be loaded
+  
+
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            . . .
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              . . .
+              "crossOrigin": "use-credentials",
+              "budgets": [
+              . . .
+            }
+          }
+        },
+
+
+
+
+================================================================================

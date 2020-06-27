@@ -15,6 +15,13 @@ https://medium.com/swlh/the-comprehensive-8pt-grid-guide-aa16ff402179
 
 https://spec.fm/specifics/8-pt-grid
 
+https://www.designsystems.com/space-grids-and-layouts/
+
+https://builttoadapt.io/intro-to-the-8-point-grid-system-d2573cde8632
+
+How to customize Bootstrap to work with 8-point grid system
+https://uxplanet.org/how-to-customize-bootstrap-b8078a011203
+
 
 what's a point
 ---------------
