@@ -1,22 +1,19 @@
 
 @@@@@@@@@@@@@@@@@@
 
-Bootstrap
+    Bootstrap
 
 @@@@@@@@@@@@@@@@@@
 
-currently v3.3.4
 
-Twitter's Bootstrap library is the most popular responsive design framework.
+4 principles of Graphic Design
 
-Based on mobile-first design strategy.
+C - Contrast
+A - Alignment
+R - Repetition
+P - Proximity
 
-    MOBILE FIRST
 
-
-jQuery required
----------------
-Please note that all JavaScript plugins require jQuery to be included, as shown in the starter template. Consult our bower.json to see which versions of jQuery are supported.
 
 
 ================================================================================

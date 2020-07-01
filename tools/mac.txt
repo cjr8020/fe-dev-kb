@@ -110,6 +110,11 @@ cmd-;
 Intellij IDEA shortcuts
 -----------------------
 
+new file
+
+command + 1			shift focus to project view (arrow down/up to folder)
+ctrl + return 	new dialog
+
 ctrl-opt-space  code completion assist
 
 ctrl-n 	
