@@ -143,6 +143,8 @@ aside
 section
 -------
 
+  is a structural HTML element used to group together related elements.
+
   the HTML <section> element represents a standalone section of functionality 
   contained within an HTML document, typically with a heading.
 

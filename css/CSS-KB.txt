@@ -458,6 +458,23 @@ whereas in the 2nd example, animation starts when the CSS state is .my-class:hov
 	Media Queries
 	*************
 
+@media rule introduced in CSS2 made it possible to define different style 
+rules for different media types.
+
+in CSS3, media queries look for the capability of the device rather than it's type.
+
+	Can be used to check many things:
+		- width and height of the viewport
+		- width and height of the device
+		- orientation (portrait or landscape)
+		- resolution
+
+
+	@media not|only mediatype and (expressions) {
+	  CSS-Code;
+	}
+
+
 CSS3 media queries consist of
  
 - optional, media type
@@ -791,6 +808,68 @@ Browser Support
 	Chrome 61+
 
 Can you build your layout without the CSS grid?
+
+
+
+
+================================================================================
+
+	id your body 
+	************
+
+Give an ID to your body element for greater control and specificity
+
+https://css-tricks.com/id-your-body-for-greater-css-control-and-specificity/
+
+Let’s say you want to change the color of your links on just your contact page to red. They are blue on every other page, but it just makes sense for them to be red on your contact page (for some reason).
+
+
+	</head>
+
+	<body id="contact-page">
+
+
+Now for our example of making all links on the contact page red instead of blue, just use some CSS like this:
+
+	a { 
+	color: blue; 
+	}
+
+	#contact-page a {
+	   color: red;
+	}
+
+Using body id with navigation
+------------------------------
+
+
+Add a class to the body of each page representing the nav tab:
+
+	<body class="home">
+
+Or if you're on the contact page:
+
+	<body class="contact">
+
+
+#sub-header ul li:hover,
+body.home li.home,
+body.contact li.contact { background-color: #000;}
+
+#sub-header ul li:hover a,
+body.home li.home a,
+body.contact li.contact a { color: #fff; }
+
+
+apply class names to your list items:
+
+<ul>
+  <li class="home"><a href="index.php">Home</a></li>
+  <li class="contact"><a href="contact.php">Contact Us</a></li>
+  <li class="about"><a href="about.php">About Us</a></li>
+</ul>
+
+whenever you're on the body.home page, your li.home a link will have default styling indicating it is the current page.
 
 
 

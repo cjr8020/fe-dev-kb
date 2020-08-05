@@ -17,6 +17,18 @@ P - Proximity
 
 
 ================================================================================
+
+Resources:
+
+Bootstrap with NPM and Webpack
+
+https://medium.com/@sreejithezhakkad/how-to-start-a-web-app-project-using-bootstrap-with-npm-webpack-185e510a782e
+
+
+
+
+
+================================================================================
   Responsive Patterns
   *******************
 
@@ -151,73 +163,161 @@ Row
 
 
 
-Visual break points
--------------------
+Visual break points Bootstrap 4
+--------------------------------
 
     same principle: MOBILE FIRST
 
   There are four visual break points:
 
-    extra-small devices (phones)    xs        <768px (less then iPad)
-    small devices (tablets)         sm        >=768px
-    medium devices (desktops)       md        >=992px
-    large devices (desktops)        lg        >=1200px
+    extra-small devices (phones)    xs        575.98px 
+    small                           sm        >=576px
+    medium                          md        >=768px
+    large                           lg        >=992px
+    extra-large                     xl        >=1200px
 
   These break points will be activated when the viewport reaches the width 
   indicated in pixels.
 
 
-  E.g., "sm" will be activated when the viewport is between 768 and 992 px.
 
-  example: .col-sm-8
+=============================================================================
 
-          xs    - on xs devices the element will take the whole width
-        +----+
-        | sm |  - on sm|md|lg, the element will take 8 columns
-        | md |
-        | lg |
-        +----+
+  Spacing
+  *******
 
-  If we assign .col-sm-8 to a visual DOM element, it is going to take 8 grid
-  columns on small devices and everything larger.  But for extra-small devices, 
-  this class does not take effect, and the DOM element will take the whole 
-  width.
+  Margins and Padding
+  *******************
 
-  example: .col-xs-4
+Use the `margin` and `padding` spacing utilities to control how 
+elements and components are spaced and sized.
 
-        +----+
-        | xs |  - because the class is assigned to the smallest size
-        | sm |  - the element will take 8 columns on ALL devices
-        | md |
-        | lg |
-        +----+
+  Margin sizes
 
-  because it is the smallest size, the DOM element will take up 
-  4 columns on ALL device sizes.
+Bootstrap 4 includes a 5-level scale for spacing utlities based on a 
+1 rem value default $spacer  variable.
 
-  example: .col-sm-4 and .col-lg-2
+  $spacer = the default is the same as the font size
 
+but you can set it in the SASS map.
 
-          xs    - on xs devices the element will take the whole width
-        +----+
-        | sm |  - on sm|md, the element will take 4 columns
-        | md |
-        +----+
-        | lg |  - on lg, the element will take 2 columns
-        +----+
+0 = 0
+1 = .25  or 25% of $spacer size
+2 = .5   or 50% 
+3 = 1    or 100%
+4 = 1.5
+5 = 3    or 300%
 
-    a DOM element is assigned both of these classes:
-    at XS size, the element will take up full width of the screen.
-    at SM and MD size, the element will be allocated 4 columns
-    but when you get to large, the elements will get only 2 columns
+property  (m?-?) in Bootstrap class names
+
+  m - for classes that set margin
+
+  p - for classes that set padding
 
 
+sides  (?t-?) in Bootstrap class names
+
+  t - for classes that set margin-top or padding-top
+  b - for classes that set margin-bottom or padding-bottom
+  l - for classes that set margin-left or padding-left
+  r - for classes that set margin-right or padding-right
+  x - for classes that set both *-left and *-right
+  y - for classes that set both *-top and *-bottom
+
+  blank 
+    - for classes that set a margin or padding on all 4 sides of the element
+
+Examples:
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+.ml-1 {
+  margin-left: ($spacer * .25) !important;
+}
+
+
+.px-2 {
+  padding-left: ($spacer * .5) !important;
+  padding-right: ($spacer * .5) !important;
+}
+
+.p-3 {
+  padding: $spacer !important;
+}
+
+---------------------------------------------------------------
+
+  Flexbox
+  *******
+
+https://getbootstrap.com/docs/4.0/utilities/flex/#enable-flex-behaviors
+  
+
+Most of our components are built with flexbox enabled.
+
+Apply display utilities to create a flexbox container and transform direct children elements into flex items.
+
+
+Responsive variations also exist for .d-flex and .d-inline-flex.
+
+.d-flex
+.d-inline-flex
+.d-sm-flex
+.d-sm-inline-flex
+.d-md-flex
+.d-md-inline-flex
+.d-lg-flex
+.d-lg-inline-flex
+.d-xl-flex
+.d-xl-inline-flex
+
+Direction
+---------
+
+Use .flex-row to set a horizontal direction (the browser default), or .flex-row-reverse to start the horizontal direction from the opposite side.
+
+Use .flex-column to set a vertical direction, or .flex-column-reverse to start the vertical direction from the opposite side.
+
+Justify
+--------
+
+Use justify-content utilities on flexbox containers to change the alignment of flex items on the main axis (the x-axis to start, y-axis if flex-direction: column). Choose from start (browser default), end, center, between, or around.
+
+Align
+--------
+
+Use align-items utilities on flexbox containers to change the alignment of flex items on the cross axis (the y-axis to start, x-axis if flex-direction: column). Choose from start, end, center, baseline, or stretch (browser default).
+
+
+<style>
+  div{
+    border: 1px solid green;
+  }
+  section{
+    background: #f1f1f1;
+    height: 200px;
+  }
+</style>
+
+<aside class="container">
+
+  <section class="d-flex flex-row-reverse">
+    <div class="p-4">One</div>
+    <div class="p-4">Two</div>
+    <div class="p-4">Three</div>
+  </section>
+</aside>
+
+flex-row
+flex-row-reverse
 
 
 
-================================================================================
+=============================================================================
 
-Bootstrap 3 Containers
+Bootstrap  Containers
 **********************
 
 bootstrap provides fixed- and fluid-width containers.

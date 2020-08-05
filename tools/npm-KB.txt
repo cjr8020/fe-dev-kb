@@ -837,7 +837,7 @@ package linking is a two-step process
  Now, `cd` to the "consumer" project:
 
  	$ cd /home/user/projects/ng-comp-lib-consumer
- 	$ nm link ng-comp-lib
+ 	$ npm link ng-comp-lib
 
  This will create a link in this project'c `node_modules`:
 

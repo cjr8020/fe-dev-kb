@@ -115,6 +115,8 @@ new file
 command + 1			shift focus to project view (arrow down/up to folder)
 ctrl + return 	new dialog
 
+
+
 ctrl-opt-space  code completion assist
 
 ctrl-n 	
@@ -128,6 +130,25 @@ cmd-sh-N 				open file
 sh-cmd-enter			complete construct
 
 sh-ctrl					find in Path
+
+
+multiple cursor
+---------------
+https://medium.com/better-programming/multi-cursors-intellij-shortcuts-to-boost-your-typing-speed-4b8901e4a9b9
+
+  create multiple selections 
+  										hold alt and drag
+	add/remove select 	alt-shift-mouseclick
+
+	similar to Find, select occurences
+
+		select next 		 ctrl-G
+		select all 			 ctrl-cmd-G
+		unselect previous  shift-ctrl-G
+
+	expand/shrink selection
+										atl-up/down 
+
 
 ================================================================================
 

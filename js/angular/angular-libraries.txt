@@ -6,6 +6,95 @@
 
 ================================================================================
 
+  Testing Angular Library in Development
+  **************************************
+
+https://willtaylor.blog/complete-guide-to-angular-libraries/
+
+During development the best way to consume our library is using npm link. This will allow us to symlink from a directory in our consuming application’s node modules folder to the compiled application in the library’s dist folder.
+
+
+
+
+    package linking is a two-step process
+
+    1. `npm link` in a package folder will create a symlink in the global folder
+
+        {prefix}/lib/node_modules/<package>
+
+      that links to the package where the `npm link` command was executed.
+
+      it will also link any bins in the package to 
+
+        {prefix}/bin/{bin}
+
+    2. in some other location, `npm link package-name` will create a symbolic link
+       from globally installed "package-name" to "node_modules/" of the current 
+       folder.
+
+       note: "package-name" is taken from `package.json`, not from directory name.
+
+
+     Example:
+
+      $ cd src/app/component-library
+
+     This is the directory where your index.ts for your library lives.
+
+      $ sudo npm link           # create a global link
+
+     The above creates a link:
+
+     /usr/local/lib/node_modules/ng-comp-lib -> /home/user/projects/ng-comp-lib/src/app/component-library
+
+     Now, `cd` to the "consumer" project:
+
+      $ cd /home/user/projects/ng-comp-lib-consumer
+      $ npm link ng-comp-lib
+
+     This will create a link in this project'c `node_modules`:
+
+      npm link ng-comp-lib
+      npm info it worked if it ends with ok
+      npm info using npm@5.6.0
+      npm info using node@v8.9.4
+      npm info build /home/user/projects/ng-comp-lib-consumer/node_modules/ng-comp-lib
+      
+      /home/user/projects/ng-comp-lib-consumer/node_modules/ng-comp-lib -> /usr/local/lib/node_modules/ng-comp-lib -> /home/user/projects/ng-comp-lib/src/app/component-library
+      npm info ok 
+
+
+
+     Note: the link should be to the package name, not the directory name
+     for that package.
+
+     You can shortcut the two steps in one:
+
+      $ cd ~/projects/node-bloggy     # go into the dir of your main project
+      $ sudo npm link ../node-redis   # link the dir of your dependency
+
+     The second line is equivalent of doing:
+
+      $ (cd ../node-redis; sudo npm link)
+      $ sudo npm link node-redis
+
+     That is it first creates a global link, and then links the global installation 
+     target into your projects `node_modules` folder.
+
+
+
+
+
+
+If we now run the library with the watch flag, and at the same time run ng serve in another terminal window.
+
+  ng build --project=example-component-library
+  ng serve
+
+This will allow us to develop an application and (one or more) linked libraries simultaneously, and see the app recompile with each modification to the library’s source code.
+
+================================================================================
+
 	ng6 libraries
 	*************
 
