@@ -119,6 +119,9 @@ ctrl + return 	new dialog
 
 ctrl-opt-space  code completion assist
 
+
+opt-cmd-j				surround with tag
+
 ctrl-n 	
 	(same as alt-insert) new class | file | etc .. 
 

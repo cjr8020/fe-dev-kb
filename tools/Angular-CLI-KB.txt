@@ -1523,3 +1523,19 @@ In safari credentials are not send by default in a javascript module, so if the 
 
 
 ================================================================================
+
+  fileReplacement file replacement with CSS or SCSS files
+  ********************************************************
+
+https://github.com/angular/angular-cli/issues/11451
+
+https://stackoverflow.com/questions/54724272/how-to-replace-scss-files-with-angular-cli
+
+older:
+https://joeydigital.net/cms_wp/2018/08/13/how-to-create-an-environment-variable-for-css-image-paths-in-angular/
+
+
+
+
+
+================================================================================

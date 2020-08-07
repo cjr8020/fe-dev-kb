@@ -3318,6 +3318,8 @@ and JokeListComponent
 ng-content
 -----------------
 
+Content Projection
+
 when we add 
 
   <ng-content></ng-content>
