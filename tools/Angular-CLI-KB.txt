@@ -362,7 +362,7 @@ note: make sure NOT to include "service" into <service-name> - it will be added.
 create config service
 ---------------------
 $ mkdir src/app/shared
-craiskin@xubi-one:~/ws/acme/iam/iam-demo-ng2-product-app $ ng g s shared/Config
+blah@xubi-one:~/ws/acme/iam/iam-demo-ng2-product-app $ ng g s shared/Config
 installing service
   create src/app/shared/config.service.spec.ts
   create src/app/shared/config.service.ts
@@ -1536,6 +1536,34 @@ https://joeydigital.net/cms_wp/2018/08/13/how-to-create-an-environment-variable-
 
 
 
+
+
+================================================================================
+
+  trouble shooting architect ng serve issues
+  ******************************************
+
+$ ng serve
+
+See "/private/var/folders/27/2jbp9frn6nx15ccc_j968_yc8w_5fs/T/ng-JR0R6W/angular-errors.log" for further details.
+
+[error] Error: Project does not exist.
+    at WorkspaceNodeModulesArchitectHost.findProjectTarget (/Users/blah/ws/standard/rnd/ng/angular-latest/node_modules/@angular-devkit/architect/node/node-modules-architect-host.js:123:19)
+    at WorkspaceNodeModulesArchitectHost.getOptionsForTarget (/Users/blah/ws/standard/rnd/ng/angular-latest/node_modules/@angular-devkit/architect/node/node-modules-architect-host.js:74:33)
+    at core_1.experimental.jobs.createJobHandler.name (/Users/blah/ws/standard/rnd/ng/angular-latest/node_modules/@angular-devkit/architect/src/architect.js:172:21)
+
+edit node_modules/@angular-devkit/architect/node/node-modules-architect-host.js
+
+to display `target.project`
+
+
+    findProjectTarget(target) {
+        const projectDefinition = this._workspace.projects.get(target.project);
+        if (!projectDefinition) {
+            throw new Error('Project does not exist. ' + target.project);
+        }
+        return projectDefinition.targets.get(target.target);
+    }
 
 
 ================================================================================
