@@ -1567,3 +1567,119 @@ to display `target.project`
 
 
 ================================================================================
+
+  fileReplacement with css scss
+  *****************************
+
+https://github.com/angular/angular-cli/issues/11451
+https://stackoverflow.com/questions/54724272/how-to-replace-scss-files-with-angular-cli#:~:text=1%20Answer&text=Angular.io%20states%20that%3A,possible%20to%20replace%20SCSS%20files.
+
+
+
+But there is a workaround:
+You can use different configurations in angular.json to achieve the same goal - replacing a SCSS file.
+
+src/
+    scss/
+        default/
+            _scss-config.scss
+        special/
+             _scss-config.scss
+
+
+
+src/scss/default/scss-config.scss
+
+body { background-color: blue; }
+
+src/scss/special/scss-config.scss
+
+body { background-color: red; }
+
+
+angular.json
+
+<!-- language: lang-json -->
+
+{
+  [...]
+  "architect": {
+    "build": {
+      "options": {
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "src/scss/default"
+          ]
+        }
+      },
+      "configurations": {
+        "default": {
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "src/scss/default/"
+            ]
+          }
+        },
+        "special": {
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "src/scss/special/"
+            ]
+          }
+        }
+      }      
+    },
+    "serve": {
+      "configurations": {
+        "default": {
+          "browserTarget": "angular-scss-replacement:build:default"
+        },
+        "special": {
+          "browserTarget": "angular-scss-replacement:build:special"
+        }
+      }
+    }     
+    [...]      
+  }
+}
+
+
+style.scss or component.scss
+
+@import 'scss-config';
+
+/* use your SCSS variables and stuff as you normally would */
+
+
+Note that you mustn't include the _ (underscore) from the filename in the import statement
+(for more details read the Partials section)
+
+
+
+How to use it:
+
+
+// 'ng serve'-command uses default configuration as defined in angular.json > build 
+ng serve
+
+// default config creates blue background
+ng serve --configuration=default
+
+
+// specail config create red background
+ng serve -c=special
+
+
+
+(This solution is from the thread mentioned above - thx to richardtreier)
+
+Drawbacks of this approach:
+
+* It forces you to have a specific folder structure to separate your different SCSS configurations
+
+* It might force you to move those folders out of your normal folder structure.
+For example, "includePaths": ["src/scss"] won't work with the folder structure mentioned above, since the SCSS configs can't be loaded separately.
+
+
+
+================================================================================
