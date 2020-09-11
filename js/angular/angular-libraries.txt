@@ -95,6 +95,27 @@ This will allow us to develop an application and (one or more) linked libraries 
 
 ================================================================================
 
+  create lib with ng 10
+  *********************
+
+Create empty workspace 
+
+  $ ng new sfg-ng-components --createApplication=false
+
+Create library
+
+  $ ng generate library ng-components
+
+
+Create application
+
+  $ ng g application sfg-kitchen-sink --style=scss --routing=true
+
+
+
+
+================================================================================
+
 	ng6 libraries
 	*************
 

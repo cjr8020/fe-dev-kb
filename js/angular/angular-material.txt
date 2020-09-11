@@ -17,6 +17,120 @@ this adds
 
 
 
+Configure animations
+--------------------
+
+should be done by the CLI.
+
+@NgModule({
+  imports: [BrowserAnimationsModule],
+})
+
+export class AppModule { }
+
+
+Import the Angular Material component modules
+---------------------------------------------
+
+Imports the Angular Material component modules which you need in App.
+
+
+Gesture Support
+----------------
+
+
+Some components (mat-slide-toggle, mat-slider, matTooltip) rely on HammerJS for gestures.
+
+In order to urge the complete feature-set of those elements, HammerJS should be loaded into the appliance.
+
+ npm install hammerjs --save
+Complete installing HammerJS then import it on ‘main.ts’ file
+
+import 'hammerjs';
+
+================================================================================
+
+  add Bootstrap Reboot to Angular Material project
+  ------------------------------------------------
+
+https://www.amadousall.com/the-good-parts-of-bootstrap-4-you-are-missing-in-your-angular-material-projects/
+
+
+add bootstrap
+
+  npm install bootstrap --save
+
+import the Reboot Sass file into our global stylesheet src/styles.scss
+
+// Imports functions, variables, and mixins that are needed by other Bootstrap files
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+// Import Bootstrap Reboot
+@import "~bootstrap/scss/reboot";
+
+
+
+Unfortunately it has introduced some styles that we do not want:
+
+an outline when focus is set on buttons,
+blue colored, and underlined button-links on hover,
+blue links (blue is the primary color in Bootstrap)
+
+To fix these issues, we create two Sass partials that we import in styles.scss:
+
+src/_variables.scss: we import it before any Bootstrap import.
+src/_reset.scss: we import it after all our Bootsrap imports
+
+@import "variables";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/reboot";
+@import "reset";
+
+
+
+_variables.scss
+
+
+The _variables.scss Sass partial allows us to customize Bootstrap - more precisely, the parts of Bootstrap that we will be using. That's why we added it before any Bootstrap import. This makes Bootstrap use our values instead of its default values. Those defaults are defined in ~bootstrap/scss/variables . For instance, $link-color: theme-color("primary") !default;.
+
+Here is the content of the _variables.scss partial:
+
+$link-color: #3f51b5;
+$link-hover-color: currentColor;
+$link-hover-decoration: none;
+$label-margin-bottom: 0;
+
+
+We set our links color to our primary color (#3f51b5) (we could have used our secondary color, if we wanted) as per the Material Design specification. We also set text-decoration: none; for hovered links.
+
+
+_reset.scss
+
+
+
+The _reset.scss Sass partial allows us to override some of the Bootstrap styles we don't want. That's why we added it after all Bootstrap imports.
+
+* {
+  &:active,
+  :focus {
+    outline: none !important;  // 1
+  }
+}
+
+a:not(.mat-button):not(.mat-raised-button):not(.mat-fab):not(.mat-mini-fab):not([mat-list-item]) {
+    color: #3f51b5; // 2
+  }
+Remove the blue outline on links, and buttons when they are active; or the focus is set on them.
+Use our primary color for all links that are not Angular Material elements. Those have one of the following classes: .mat-button, mat-raised-button, mat-fab-button, mat-list-item, etc.
+
+
+
+
+
+
 ================================================================================
 
 	<mat-button-toggle>

@@ -183,6 +183,33 @@ Visual break points Bootstrap 4
 
 =============================================================================
 
+  CSS reset
+  *********
+
+CSS reset should be in the foundation of your stylesheets.
+If you don’t define all the default CSS parameters in your style sheet, the browser will use its default parameters instead.
+
+Russ Weakley pointed out three major concerns with resetting your CSS:
+
+1. Every element that is "zeroed" must then be redefined. This can cause an increase in CSS file size.
+
+2. CSS reset stylesheets can present issues if you remove the default behavior for an element and then forget to restyle it.
+
+3. Some reset stylesheets can be harmful to users who rely on keyboards for navigation.
+
+In Bootstrap 4, this is `Normalize.css` and is called Boostrap Reboot.
+
+
+  Boodstrap Reboot
+  ----------------
+
+Reboot, a collection of element-specific CSS changes in a single file, kickstart Bootstrap to provide an elegant, consistent, and simple baseline to build upon.
+
+
+
+
+=============================================================================
+
   Spacing
   *******
 
