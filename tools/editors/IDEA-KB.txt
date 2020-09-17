@@ -399,4 +399,19 @@ Choose entities
 Choose a data source, package and the schemas, click OK and Yes in the pop up. 
 You should now have some some nice entity objects with basic mapping annotations!
 
+
+
+================================================================================
+
+    Intellij IDEA cannot resolve SCSS imports
+    *****************************************
+
+right-click a directory that is a PARENT of directories from which you import. So if your imports look like:
+
+@import "base/colors";
+
+then you need to do that for the parent of base. Then, choose "Mark directory as" -> "Resource root".
+
+
+
 ================================================================================

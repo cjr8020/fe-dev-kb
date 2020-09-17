@@ -100,7 +100,7 @@ This will allow us to develop an application and (one or more) linked libraries 
 
 Create empty workspace 
 
-  $ ng new sfg-ng-components --createApplication=false
+  $ ng new blah-ng-components --createApplication=false
 
 Create library
 
@@ -109,7 +109,13 @@ Create library
 
 Create application
 
-  $ ng g application sfg-kitchen-sink --style=scss --routing=true
+  $ ng g application  blah-kitchen-sink --style=scss --routing=true --prefix=demo
+
+
+Setup remote
+
+  $ git remote add origin https://github.company.com/DEV/blah-ng-components.git
+  
 
 
 
