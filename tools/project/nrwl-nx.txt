@@ -18,6 +18,8 @@ Resources:
 	nx workshop
 		https://github.com/alex-okrushko/ngrx-nx-workshop
 
+  ^^^^^^^^^^
+
 	nx vs lerna
 		https://blog.nrwl.io/why-you-should-switch-from-lerna-to-nx-463bcaf6821
 

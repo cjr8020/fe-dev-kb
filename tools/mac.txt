@@ -487,6 +487,10 @@ com.apple.quarantine
 
 macOS High Sierra
 
+	$ lsof -nP -iTCP:4200 | grep LISTEN
+
+or
+
 	$ lsof -nP -i4TCP:$PORT | grep -i listen
 
 on older

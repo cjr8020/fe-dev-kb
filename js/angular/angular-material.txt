@@ -246,3 +246,39 @@ export class ButtonToggleExclusiveExample {
 
 
 ================================================================================
+
+  Custom Theme
+  ************
+
+A custom theme is created by composing multiple palettes:
+
+
+  primary palette
+
+    most widely used colors across all screens and components
+
+
+  accent palette
+
+    colors used for the floating action buttons and interactive elements
+
+
+  warn palette
+
+    colors used to convey error state
+
+
+  foreground palette
+
+    text and icon colors
+
+
+  background palette
+
+    colors used for element backgrounds
+
+
+
+
+
+================================================================================

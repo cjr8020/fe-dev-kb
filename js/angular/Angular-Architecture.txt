@@ -6,7 +6,63 @@
 	*****************************
 
 
-================================================================================
+==============================================================================
+
+https://www.angulararchitects.io/aktuelles/the-new-treeshakable-providers-api-in-angular/
+
+
+The new Treeshakable Providers API in Angular
+---------------------------------------------
+
+angular service modules
+-----------------------
+https://stackoverflow.com/questions/57289971/are-angular-service-modules-still-required
+
+A service module would be required if you are using lazy loaded modules which have specific services only provided inside that module.
+
+You can't provide a service into the same module where components of that module get the service injected.
+
+So assume you have a MyFeatureModule
+
+  @NgModule({
+    imports:      [ ],
+    providers:    [ ],
+    declarations: [ MyFeatureComponent ],
+    exports:      [ ],
+  })
+  export class MyFeatureModule { }
+
+
+and you have a service which contains logic only for your feature, then you cannot do the following:
+
+  Injectable({ providedIn: MyFeatureModule})
+  export class MyFeatureService {}
+
+
+You would get a cycle!
+
+To resolve the issue you need to create a specific service module and import that module into the feature module:
+
+  @NgModule({
+    imports:      [ ],
+    providers:    [ ],
+    declarations: [ ],
+    exports:      [ ],
+  })
+  export class MyFeatureServiceModule { }
+  Injectable({ providedIn: MyFeatureServiceModule})
+  export class MyFeatureService {}
+  @NgModule({
+    imports:      [ MyFeatureServiceModule ],
+    providers:    [ ],
+    declarations: [ MyFeatureComponent ],
+    exports:      [ ],
+  })
+  export class MyFeatureModule { }
+
+
+
+==============================================================================
 
   Component
 
