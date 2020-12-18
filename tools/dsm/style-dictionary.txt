@@ -102,6 +102,18 @@ and build
 
 ================================================================================
 
+config.json
+***********
+
+default is root of the project
+you can change that with 
+
+	--config 
+
+
+
+================================================================================
+
 
 	Style Properties
 	****************
@@ -231,6 +243,34 @@ time
 │   │   │   ├── button.json
 │   │   │   ├── ...
 │   │   │   ├── typography.json
+
+
+
+
+
+================================================================================
+
+	aliasing
+	********
+
+https://amzn.github.io/style-dictionary/#/properties
+
+
+Attribute reference / alias
+You can reference (alias) existing values by using the dot-notation object path (the fully articulated property name) in brackets. Note that this only applies to values; referencing a non-value property will cause unexpected results in your output.
+
+{
+  "size": {
+    "font": {
+      "small" : { "value": "10" },
+      "medium": { "value": "16" },
+      "large" : { "value": "24" },
+      "base"  : { "value": "{size.font.medium.value}" }
+    }
+  }
+}
+
+https://github.com/amzn/style-dictionary/tree/master/examples/advanced/referencing_aliasing
 
 
 

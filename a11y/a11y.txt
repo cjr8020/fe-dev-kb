@@ -1,0 +1,528 @@
+
+
+
+color contrast ratio
+
+WCAG 2.1 requires a 3:1 minimum ratio
+
+Use a color contrast analyzer, such as Level Access’s Color Contrast Checker, to review the contrast ratio between a component’s colors.
+
+
+Autocomplete
+
+
+apply the autocomplete attribute with the proper name value to that field (i.e. autocomplete=”family-name”) to support personalization. This applies only to fields that apply to the user, in which basic information is being supplied.
+
+<form action="/action_page.php" autocomplete="on">
+ First name:<input type="text"autocomplete="given-name" name="fname"><br>
+ Last name: <input type="text" autocomplete="family-name" name="lname"><br>
+ E-mail: <input type="email" name="email" autocomplete="off"><br>
+<input type="submit">
+</form>
+
+
+Keyboard shortcuts
+
+f your product uses shortcut keys, make sure that these keys can be turned off or remapped by the user. At the coding level, think about what you might want to do in order to restrict shortcut availability to specific fields and specific sections.
+
+
+Content on Hover or Focus
+
+ensure that a user is able to move their mouse from the trigger onto the content without it disappearing. If there’s too much of a gap between the trigger and the content, it may just disappear. The key solution in this case is to implement the escape key on popup content to allow it to be dismissed with the keyboard without moving the focus or moving your mouse off of it.
+
+Content Reflow
+
+Users must be able to enlarge text on a page without having horizontal scrolling. This is a departure from WCAG 2.0 which allowed for horizontal scrolling, but with the numerous screen sizes and responsive breakpoints available today, it’s increasingly important for content to reflow.  At the design phase, ensure that you’re supporting either a responsive breakpoint or a fluid site. Content should be responsive or fluid down to the original iPhone screen size of  320 CSS pixels.
+
+Text Spacing
+
+Since this WCAG 2.1 success criteria specifies the minimum spacing for line height, paragraphs, letters and words (1.5 times the font size, 2 times the font size, 0.12 times the font size and 0.16 times the font size, respectively), we simply want to ensure that no loss of content or functionality occurs when setting spacing to the minimum values. This can be achieved easily using a favlet or a custom style sheet. From a design perspective, ensure that content is designed so that there’s a little bit of padding and spacing margins between items on the page. When coding, make sure that containers do have some room to expand without causing overlap or cutoff.
+
+
+Mobile - Fixed Device
+
+Viewing content should not be restricted to a single display orientation, unless a single display orientation is essential (i.e. an image of a check, where the layout and positioning of different fields is informational and important). At the design phase, consider how the product will appear to the user at both the portrait and landscape orientations.
+
+
+In terms of motion actuation, designers need to ensure that functionality that can be operated by device motion or user motion can also be operated by user interface components. For example, if I’m able to activate a feature on an app by shaking my smartphone up and down, I should also be able to perform the same action through a control on the interface. You’ll always want to make sure that the motion controls can be turned off, so that users do not accidentally trigger them. 
+
+
+Pointer Gestures and Cancellation
+
+"Oops, I didn't mean to hit 'Cancel'. I'm just gonna slide my finger away and pretend it never happened..."
+
+In terms of gestures, make sure that all operations use simple gestures that require only a simple touch. This means that from a design perspective, think about how to include simple alternatives to complicated gestures. Consider the example below of a topomap from USGS, where a number of gestures can be performed to zoom in, zoom out, and pan the map. Simply by providing buttons that can be activated with a single touch or click to zoom or pan, this app allows for multiple techniques to complete the same action that is more accessible overall.
+
+For gestures cancellation, there are several things to consider to ensure that this works well for users. Essentially, we want to ensure that nothing activates on the initial touch or the down click. Developers need to ensure that at least one of the following is true:
+
+The down-event of the pointer is not used to execute any part of the function;
+Completion of the function is on the up-event, and a mechanism is available to abort the function before completion or to undo the function after completion;
+The up-event reverses any outcome of the preceding down-event.
+Exceptions to this rule exist when completing the function on the down-event is essential.
+
+
+Status messages - Submit Confirmations
+
+Developers must ensure that status messages. Status messages include search results loading on the same page, errors rendering inline, or a confirmation message for a successful form submission. Generally, a developer should apply ARIA roles or aria-live properties appropriately. This solution applies only to content implemented using markup languages. For example, when a status advises the user on the success or results of an action, using ARIA role=status in combination with some success feedback would be necessary. Similarly, the use of ARIA-live may be appropriate to inform the user of the existence of dynamic content.
+
+	ARIA role=status
+
+
+
+
+Testing Tools
+--------------------------------
+
+Windows Software/Flash/Java SWT
+Inspect
+AccEvent
+Java Swing/AWT Software
+Java Ferret
+Java Monkey
+Web
+AMP Automatic tests
+AMP Toolbar for Firefox/Browser developer toolbar
+Inspect and AccEvent for content that uses ARIA
+Hardware
+Spring scale, audio meter, etc.
+Mobile web
+Adobe Edge Inspect
+Safari Developer Tools
+Mobile apps
+VoiceOver on iOS
+TalkBack on Android
+Document tools
+Office Document checkers (e.g. Accessibility checker in Word)
+PDF documents (e.g. Adobe Acrobat Accessibility Checker, PAC 2.0, PDDOMViewer)
+Manual inspection of document
+Support Services
+Website: same tools used to evaluate website
+Tools such as TTY, relay, of Video chat/relay used by people who are Deaf or hard of hearing.
+All
+Color contrast analyzer
+Manual inspection – e.g. use of keyboard, visual inspection of color, focus, etc.
+
+
+AT Simulators and Favlets (web)
+AT simulators
+Fangs for Firefox
+Favlets
+Bookmarked or Favorite JavaScript code that executes on the page to run tests, annotate elements, or filter the page
+
+Keyboard Testing
+One of the most important testing tools is the keyboard. Keyboard access or keyboard simulation is available to the majority of assistive technologies, alternative input devices, or accessible directly by the user. E.g. Speech recognition users can voice keyboard commands, on-screen keyboard can be used by people using head pointers; Test for keyboard-only access, traps, and avoid the mouse; Keyboard-only access requires proper visual indication of focus. Focus is the location where input or commands are sent.
+
+
+Testing for Color 
+There are several options to test for the use of color on pages
+
+Make sure color is not the only visual means of communicating information; Test by looking for colors and then look for other identifiers such as bolding, underline, patterns, text, etc. A grayscale preview tool may assist in the testing process; A Favlet/Bookmarklet may be used to provide this grayscale for web; The Color Contrast Analyser can apply a grayscale filter to a screenshot of the app.
+
+
+Testing Color
+Make sure color is textually or programmatically exposed by inspecting screen text and programmatically. Review DOM of HTML page (web), software with Inspect tool for accessibility properties and use AT when other methods are inconclusive.
+
+
+Testing Contrast 
+
+Contrast Analysis
+
+There are a few tools to check the contrast (lightness between text and the background). These tools allow you to specify a foreground and a background color and determine if they provide enough contrast when viewed by someone with decreased contrast perception.
+
+The visual presentation of text and images of text has to have a contrast ratio of at least 4.5:1, and for large text ( 18 pt. and larger; 14 pt. if bolded) a contrast ratio of 3:1. The exception is for text that is part of a logo or brand name. This has no minimum contrast requirement.
+
+
+Color Contrast Analyzer (Software)
+
+Select the eyedropper for the foreground, press escape
+Select the eyedropper for the background, pres escape
+Verify the contrast ratio and compliance
+If you know the color values Online AMP Contrast Checker
+
+PDF Testing
+Adobe Acrobat XI Pro
+Accessibility checker built-in 32 checks
+Manual inspection
+View > Reflow option
+Edit > Preferences > Accessibility > Replace Colors
+Tags tree – inspect order, structure and alt text
+TouchUp reading/Order Panel – inspect order, structure, and alt text
+Page panel – inspect page labels and specify page order
+Forms panel – tab order, tooltips, and values for form fields
+
+Native Mobile Apps
+Accessibility Inspector XCode (iOS) (Requires code access)
+Simulate VoiceOver interaction to display accessibility information about focused accessible control in an app. Lint – Eclipse (Android) (Requires code access). It runs checks on code looking for missing properties such as contentDescription checkboxes and images.
+
+
+Mobile Web
+
+Some mobile apps have embedded web content (e.g. PhoneGap); If the code can be obtained it should be tested as web content; If not, the app should be tested as a native app.
+
+When code is not available use screen reader as testing tool in apps such as VoiceOver on IOS and Talkback on Android. Compare the announced information with the expected information and expected order of control properties. Change any state or trigger dynamic content as verified changes are announced by the screen reader.
+
+For mobile web content that opens in a mobile browser use Adobe Edge Inspect to inspect the mobile DOM on your pc via Chrome and to transfer screenshots from the device to pc. For Safari Developer Tools use to inspect the mobile DOM on Mac via Safari.
+
+Assistive Technology Overview
+The device used by a person with a disability to perform a task that was otherwise difficult or not possible. For purposes of this course, focus on software and web access. They may be called adaptive technology. Often not standards based, but the goal is to help users accomplish tasks. They may be expensive and often third-party, open source, and included in platforms.
+
+Use as a testing tool and not a measure of compliance with differences and potential inaccuracy of results. So make sure it is configured correctly.
+
+
+Accessibility APIs and Assistive Technology
+Assistive technology relies on Applications Programming Interfaces (APIs) and defines communication method between software in different types of APIs on each platform.
+
+
+
+Accessibility APIs 
+Help AT interact with standard and custom user interface (UI) elements to Identify control information (name, role, value, state, etc.), Manipulate elements (activate a button, etc.) and Notify AT of changes (events, messages, etc.).
+
+
+AT work through accessibility APIs supported by browsers
+Internet Explorer (MSAA and UIA)
+Firefox MSAA/iAccessible2 with some UIA Express
+Chrome limited support for MSAA/iAccessible2
+Safari on Mac OS (Accessibility Protocol)
+AT access document object model (DOM) directly
+
+
+Screen Readers
+Overview
+Provides text-to-speech and/or Braille output of user interface
+
+Users
+People who are blind or visually impaired
+Operation
+Speech and optionally refreshable Braille support
+Keyboard
+Examples
+JAWS for Windows
+NVDA (Windows)
+Window-Eyes (Windows)
+VoiceOver (iOS and Mac OS)
+TalkBack (Android)
+
+Functional Testing
+Functional testing with a screen reader is aimed at making sure the user can:
+Navigate to and locate items
+Verify information such as error messages, labels, and instructions
+Enter data
+Read content and have the content provided in a meaningful way
+4 principles of WCAG apply
+
+Perceivable: is the information available
+Operable: can you operate it with a screen reader
+Understandable: can you understand what is needed to use app
+Robust: can it be used by different AT and browsers
+
+
+Screen Magnification
+Overview
+Magnifies screen contents
+
+
+
+Users
+Visually impaired (low vision)
+Aging population
+
+Examples
+ZoomText (Windows)
+MAGic (Windows)
+Zoom (iOS and Mac OS)
+Magnification (Android)
+Operation
+On-screen magnification
+May offer basic screen reading capabilities through speech
+Keyboard and Mouse
+
+
+It generally replaces what is on-screen with magnified view of a portion of the screen. Magnification levels from 1.2x to 16x typically supported E.g. 2x (200% magnification) displays the screen is four equal parts. The user can scroll around the screen with the mouse or keyboard to see all of the actual screen in the magnified view. Other options are available to only show the magnified areas on a line or in a lens such as full screen, lens, or partial screen magnification.
+
+
+Features
+May include limited screen reader functionality to supplement magnification. Image and font smoothing functions are provided to render images easier to see. They offer color replacement, removal and manipulation to enhance image contrast. The cursor and pointer enhancement and focus tracking (e.g. moves the magnified area to the control that has focus/input).
+
+
+Speech Recognition
+Overview
+Allow for control and dictation via speech.
+
+
+Examples
+Dragon Naturally Speaking
+Windows Speech Recognition
+Mac OS Speech Recognition
+
+Users
+Motor disabilities
+
+Operation
+Microphone
+
+Features
+Translates spoken words into text (dictation)
+User voices commands to activate or interact with controls
+Strives for direct voice access to controls by name or role
+Can voice keyboard and mouse commands
+Allow for advanced mouse actions like drag and drop
+May include text-to-speech options
+Works in browser as well as popular applications
+
+Testing
+Test for the following (in order) for non-input navigation and interaction
+Direct voice commands (“Click Search”)
+Generalized commands such as click link, or click button
+Voiced keyboard commands (Press tab, press CTRL+A)
+
+
+
+Introduction to Web Accessibility
+**********************************
+
+Use of Before After Pseudo Classes for Non-Decorative Content
+-----------------------------------------------------------
+
+Avoid use of the before, after, pseudo classes for non-decorative content. They are used often to add content or images to an existing element. Common uses include:
+
+Add characters, such as comma, carets, asterisk
+List item bullets
+Decorative background images before or after text, such as a phone number next to the telephone number
+
+
+Reading Order
+------------
+
+Ensure the reading order of content and elements are correct when viewed without style sheets.
+
+Reading Order is based on order within the HTML content. Users with Assistive Technologies interact following the HTML order, not the CSS Order. Dynamic content is often rendered at the end of the HTML code using CSS to lay out the content visually on the page. This can be an issue for users of Assistive Technologies.
+
+Implementation Techniques
+Create DOM order of content in the intended reading order. Match elements which appear in source code with logical reading order when style sheets are disabled. Allow users to override style sheets.
+
+
+Resized Text
+-------------
+
+Ensure text can be resized. Users may use the zoom feature in web browsers to enlarge text. If using fixed sizes, content and other elements may, not scale correctly or at all, or get cut off at lower resolutions, causing users to have to scroll horizontally across the page.
+
+Implementation Techniques
+Do not specify font size using Absolute dimensions. Convert these to relative units - em units, percentages, or keywords. Leave percentage units at defaults whenever possible. Define frame spacing using relative sizes. Percentages should be used for iframes width and heights and frameset's col and row attributes. The “*” value of the col and row attribute on Framesets can also be used.
+
+For element sizing, any size declarations provided for any portion of the box model applies. As an alternative, provide users the option of choosing between style sheets that accommodate different font sizes up to 200%.
+
+
+Background Image Equivalents
+----------------------------
+
+Ensure there are equivalents for background images that convey meaning.
+
+Background images allow developers to minimize working directly into the HTML. However, background images that convey meaning may be lost for those with assistive technologies. Providing off screen text will not suffice as the text is not shown to users with these assistive technologies.
+
+The alternative for the background image must be accessible to users of assistive technology, and visually accessible to users with low vision who cannot view background images but that may not be using assistive technology. It is best to avoid the use of CSS background images that convey meaning or sensory experience.
+
+
+Implementation Techniques
+Alternative text should be provided on-screen, as hidden text, or by using a standard inline img with equivalent alternative text in addition to the background image. Consider a sprite-based implementation as an alternative to changing the rendering of every background image to a standard inline img. A user setting that would swap out the use of background images for inline images can also be used. The above would be implemented using a link in the page header. If this setting is implemented, it should persist across the site using cookies.
+
+Keyboard Access
+
+Provide keyboard access to all actions:
+
+A keyboard event handler is a function that responds to a user input event, such as a mouse click or key press. Event handlers that rely  solely on mouse-related events, such as onMouseOver, cannot be triggered by users who do not use a mouse. Device independent event handlers, where supported by the assistive technology, can also be used to meet this best practice.
+
+Implementation Techniques
+Alternatives to device dependent event handlers:
+
+Use device independent event handlers. Some situations require dual event handlers, such as onclick and onkeyup.
+
+Event Handler	Alternative
+OnClick	OnKeyPress
+OnMouseDown	OnKeyDown
+OnMouseUp	OnKeyUp
+OnMouseOver	OnFocus
+OnMouseOut	OnBlur
+OnDblClick	OnKeyDown
+
+Design Patterns
+
+
+There are expected keyboard behaviors associated with a specific type of control. This is very important to screen reader and keyboard-only users.
+
+Example 1: If a role of radio button is used, up and down arrows should move to and select the different options in the radio button group.
+Example 2: If a role of checkbox is used, the spacebar should toggle its state between "checked" and "unchecked."
+Example 3: If the role of page tab is used, then the user should be able to move between tabs using the arrow keys and activate tabs by pressing enter.
+
+Implementation Techniques
+Follow design patterns for keyboard accessibility. Ensure each component of an outline or tree node is provided in a single link that is keyboard accessible. All node components in one link per node must be keyboard accessible. Users must be able to use standard keyboard navigation, such as arrow keys to navigate through radio buttons, or left and right arrow keys to expand and collapse tree nodes or menus. If non-standard methods are used, developers must provide navigational instructions.
+
+
+
+Keyboard Traps
+
+When a keyboard accessible element gets focus, users must be able to use the keyboard to move away from it. When focus cannot be moved from the control, users that rely on the keyboard may be stuck and may not be able to use the application.
+
+Implementation Techniques
+Users must be able to move away from the component using the keyboard. Allow the Tab and Shift+Tab keys to move focus from controls whenever possible. Advise users how to move away from a keyboard accessible component if Tab and Shift+Tab cannot be used.
+
+
+
+Keyboard Shortcuts
+
+Shortcut keystrokes are combinations of keystrokes that perform an action, such as Control+Shift+P - Play. Access keys are hot keys that are pressed in conjunction with a browser specified modifier key to move focus, such as accesskey="s" – (Alt+G) in IE to focus a search field. Shortcuts may provide the only means of keyboard access but generally should only provide redundant access.
+
+Conflicts with browsers and AT are common. Keyboard shortcuts must be documented.
+
+Implementation Techniques
+Use caution when implementing keyboard shortcuts. Access keys may conflict with the browser, OS, or Assistive Technology Device. Only provide access keys for frequently used functions and key navigational elements. Provide the same access key for links that are repeated across pages such as main navigation links.
+
+
+
+Forced Focus Changes
+
+Avoid forced focus changes that are not initiated by the user.
+
+Typically, users expect focus to be shifted when the Tab key, Shift+Tab keys, Enter key, arrow keys or the Spacebar is pressed on a user actionable control. When focus is moved without user interaction, users may be unaware the focus changed, or the user may need to press many keystrokes to return focus to its prior location.
+
+Implementation Techniques
+Make sure forced focus changes, such as an onChange or onfocus event, are not used to change context. This use of onchange is mostly associated with the select (drop-down / listbox) form control type, but could be utilized with checkboxes, radio buttons, text input fields, etc. Developers can implement a form button that allows the user to trigger the form update event. Developers can also use the onBlur event which will be fired when the user tabs out of the field to trigger focus changes and onMouseDown event which should trigger the change for mouse users.
+
+
+Revealed Content Receives Focus
+
+Ensure revealed content receives focus.
+
+When activating elements to open or display content, users expect the focus to be directed at the new content. Common examples: expanded content, alerts, new table rows, additional form fields, etc. If focus is not moved to the new content, users may miss critical alerts or other important pieces of information, or will have to read through entire page to find new content.
+
+Note: For focus as it related to dialog boxes – please refer to the dialog box module of this course.
+
+
+Programmatic Focus
+
+Provide programmatic focus to composite controls.
+
+Composite controls contain children elements that also receive keyboard and programmatic focus. This includes:
+
+ARIA Comboboxes
+ARIA Editable Grids
+ARIA Listboxes
+Menus and MenuBars
+Page Tabs
+Trees and TreeGrids
+ToolBars
+
+Implementation Techniques
+There are two ways to expose programmatic focus in composite controls:
+
+Set focus on the Widget child nodes individually.
+Set a 
+
+tabindex =-1 
+on each child item that should receive focus
+
+Allow the arrow keys to move focus between each child item
+Use JavaScript focus() method to set focus to selected child element
+E.g. in a ARIA listbox, focus the currently selected element with 
+role=”option”
+Set focus to the Widget container, and use the aria-activedescendant attribute. Set a tabindex of -1 on each child item that can receive focus. Set the aria-activedescendant to dynamically point to the ID of the selected child node. Allow the arrow keys to move focus between each child item.
+
+
+
+
+Embedded Objects
+
+
+
+
+
+=============================================================
+
+a11y requirements
+-----------------
+
+should live in 1 of 3 places:
+
+- definition of done
+- 
+
+=============================================================
+
+Modal a11y Requirements
+***********************
+
+when modal launches, the modal dialog should receive focus
+error message shojld be programmatically tied to the field 
+with `aria-labelledby`
+modal title should accurately reflect the dialog's content
+all text should have sufficient contrast
+
+
+
+=============================================================
+
+	ARIA
+
+aria-hidden
+
+	to hide duplicate indications to users
+
+if element should be hidden to all users, use 
+
+	display:none
+
+
+
+
+
+=============================================================
+
+	Use HTML 5 over other means first
+	*********************************
+
+Semantic elements to group content
+
+	Lists <ol> <ul>  <dl>
+
+
+	Text <p>
+
+	Quotes <blockquote>
+
+
+	Anything  <div>
+
+		but doesn't convey any info
+
+
+Text level elements
+
+
+	inline text elements
+
+		<a>  must have valid href to receive keyboard focus
+
+
+Sectioning Elements
+
+	<header>
+	<main>
+	<articles>
+	<footer>
+
+<nav> and <aside>
+
+	<nav> to id nav menues
+
+<article>
+	only use it as an article
+	for a news article or blog
+
+<section>
+	distinct sections of a document
+
+
+
+
+
+
+=============================================================

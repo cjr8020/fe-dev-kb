@@ -1,16 +1,33 @@
 
 
+================================================================================
 
-favicon.ico
------------
-  Failed to load resource: the server repsonded with a status of 404 (Not Found)
-  http://127.0.0.1:32423/favicon.ico
+  HTML5 Structuring
+  *****************
 
-To prevent loading of favicon.. as in test environment..
 
-  If you need your document to validate against HTML5 use this instead:
+Basic sesctions of a doc
 
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">  
+  header
+  nav bar
+  main content
+  sidebar
+  footer
+
+Elements
+
+<header>
+<nav>
+<main>
+  <article>
+  <section>
+  <div>
+
+<aside>   
+  sidebar
+  often placed inside <main>
+
+<footer>
 
 
 ================================================================================
