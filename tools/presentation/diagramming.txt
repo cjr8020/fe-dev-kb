@@ -1,0 +1,32 @@
+
+*******************
+
+	    modeling
+
+*******************
+
+
+================================================================================
+
+draw.io in Confluence 
+*********************
+
+
+linking content in draw.io on Confluence
+----------------------------------------
+https://drawio-app.com/linking-content-in-draw-io-diagrams/
+
+
+options are available in order to link content to shapes within your draw.io diagrams in Confluence?
+
+
+In diagram editor:
+
+1. dbl-click the diagram on your confluence page to open it in editor
+2. r-click the shape you want to create a link for it.
+3. In the menu, select Edit Link.
+
+
+
+
+================================================================================

@@ -126,6 +126,33 @@ and _colors.scss would be imported.
 	*******
 
 
+SCSS imports are just like CSS imports but more powerful.
+
+
+Normal CSS imports
+-------------------
+@import url();
+
+@import "http://"
+
+@import "filename.css";
+
+@import "style-screen" screen;
+
+
+
+mixin to import google font
+----------------------------
+
+
+$mixin google-font($font) {
+	$font: unquote($font);
+	@import url(https://fonts.googleapis.com/css?family=${font});
+}
+
+mote: interpolation can only be used with CSS imports.
+
+
 	At-Rules
 	********
 
@@ -483,33 +510,6 @@ and create the link:
 	symbolic link created for foundation <<===>> ..\..\app\bower_components\foundation\scss\foundation
 
 
-================================================================================	
-
-	Error: `libsass` bindings not found
-	***********************************
-
-
-C:\ws\0git\cjr8020\iskill-angular>grunt serve
-Loading "sass.js" tasks...ERROR
->> Error: `libsass` bindings not found. Try reinstalling `node-sass`?
-Warning: Task "sass" not found. Use --force to continue.
-
-Aborted due to warnings.
-
-https://github.com/yeoman/generator-webapp/issues/538
-
-A:
-	
-	You probably updated the Node version since you last installed your deps, so libsass was built with the old version. Try rm -r node_modules and npm install.
-R:
-	Here is the steps:
-		1. Used the code rm -r node_modules and npm install and run "grunt serve". It still has error: Local Npm module "grunt-sass" not found. Is it installed 
-		2. So I tried npm install grunt-sass and it works.
-
-
-> npm install grunt-sass 
-
-	worked for me as well..
 
 
 ================================================================================
@@ -766,3 +766,35 @@ Tables
 
 
 ================================================================================
+
+	Browser-specific directives
+	***************************
+
+IE6 example
+
+
+@mixin apply-to-ie6 {
+	* html {
+		@content;
+	}
+}
+
+
+@include apply-to-ie-6 {
+	body {
+		font-size: 125%;
+	}
+}
+
+
+resulting CSS
+--------------
+
+* html body {
+	font-size: 125%; 
+}
+
+
+================================================================================
+
+

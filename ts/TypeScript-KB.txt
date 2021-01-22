@@ -2809,6 +2809,26 @@ Option:
 
 ==============================================================================
 
+  cannot find name require
+  ************************
+
+TS 2
+
+npm install @types/node --save-dev
+
+tsconfig.json
+
+compiler options
+
+...
+"types": [ "node" ],
+"typeRoots": [ "../node_modules/@types" ]
+...
+
+
+
+==============================================================================
+
 
 
 

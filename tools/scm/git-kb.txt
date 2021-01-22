@@ -1378,4 +1378,68 @@ To remove a submodule called mymodule you need to:
 
 ================================================================================
 
+	porcelain
+	*********
+
+output is meant to be parseable
+
+git status --porcelain
+git push --porcelain
+git blame --porcelain
+
+
+================================================================================
+
+	git status in script
+	********************
+
+if [ $(git status --porcelain | wc -l) -eq "0" ]; then
+  echo "  🟢 Git repo is clean."
+else
+  echo "  🔴 Git repo dirty. Quit."
+  exit 1
+fi
+
+cd /git/directory
+if [[ `git status --porcelain` ]]; then
+  # Changes
+else
+  # No changes
+fi
+
+
+if git diff-index --quiet HEAD --; then
+    # No changes
+else
+    # Changes
+fi
+
+
+================================================================================
+
+	detect changes in directory
+	***************************
+
+$ git diff --quiet HEAD $REF -- $DIR || echo changed
+
+Note that git diff --quiet will exit 1 when there are changes. 
+
+At first I though it was confusing, but it makes sense if you think “if no changes = exit 0, otherwise = exit 1”.
+
+
+You can also do that comparing with the previous tag, for example:
+
+git diff --quiet HEAD "$(git describe --tags --abbrev=0 HEAD)" -- foo || echo changed
+
+
+You can use this to “deploy only changed folders” or “lint only changed files” or whatever else you can come up with.
+
+
+
+
+
+================================================================================
+
+
+
 	

@@ -136,6 +136,56 @@ user-scalable=no
 
 
 ================================================================================
+
+  Media Queries in Bootstrap 4
+  ****************************
+
+Breakpoints with Media Queries
+------------------------------
+
+Breakpoint is a method where we define the 
+  max or min width of the viewport of screen 
+  that triggers the change of CSS properties.
+
+
+In Bootstrap, any viewport less than 768px (xtra small devices),
+no media queries are quired - this is the default in Bootstrap.
+
+
+/* Small devices (tablets or large size smart phone of size 768px and up) */ 
+@media (min-width: @screen-sm-min) { ... } 
+
+/* Medium devices (desktops, laptops of size 992px and up) */ 
+@media (min-width: @screen-md-min) { ... } 
+
+/* Large devices (large desktops, screens of size 1200px and up) */ 
+@media (min-width: @screen-lg-min) { ... }
+
+
+Bootstrap V4 with Sass
+------------------------
+
+/* Breakpoint for extra-small viewport */ 
+@include media-breakpoint-up(xs) { ... }
+/* Breakpoint for small viewport */ 
+@include media-breakpoint-up(sm) { ... }
+/* Breakpoint for medium viewport */ 
+@include media-breakpoint-up(md) { ... }
+/* Breakpoint for large viewport */ 
+@include media-breakpoint-up(lg) { ... }
+/* Breakpoint for extra-large viewport */ 
+@include media-breakpoint-up(xl) { ... }
+
+// Usage in example for medium viewport:
+@include media-breakpoint-up(md) {
+  .utility-class {
+    background-color: green; 
+  }
+}
+
+
+
+================================================================================
   Bootstrap Grid Classes
   **********************
 

@@ -7,6 +7,28 @@
 
 ================================================================================
 
+	npm outdated
+
+$ npm outdated
+
+$ npm ls
+
+$ npm-check-updates
+
+
+difference between npm `install` and `update`
+----------------------------------------------
+
+npm install ignores an already-installed module with fuzzy versioning whereas npm update updates it.
+
+Also, devDependencies are handled differently:
+
+npm install installs or updates devDependencies unless the --production flag is added.
+npm update will ignore devDependencies unless the -- dev flag is added.
+
+
+================================================================================
+
 	Getting NPM
 	************
 
