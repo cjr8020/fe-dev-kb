@@ -1485,8 +1485,44 @@ http://reactivex.io/documentation/operators.html#tree
 
 
 
+
+
 Observable Operators
 =====================================================
+
+
+
+map operator
+------------
+
+
+  throwing error within map operator
+  -----------------------------------           
+
+
+Just throw the error inside the map() operator. All callbacks in RxJS are wrapped with try-catch blocks so it'll be caught and then sent as an error notification.
+
+This means you don't return anything and just throw the error:
+
+map(res => { 
+  if (res.bearerToken) {
+    return this.saveJwt(res.bearerToken); 
+  } else {
+    throw new Error('Valid token not returned');
+  }
+})
+
+
+
+
+filter operator
+---------------
+
+
+.filter((val) => !isSomething(val) && !isBetterThings(val))
+
+
+
 
 
 tap()

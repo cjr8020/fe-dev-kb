@@ -4045,7 +4045,7 @@ After:
 
 ================================================================================
 
-  expportAs
+  exportAs
   *********
 
 We know that @Component decorator functions take object, and this object contains a lot of properties. 
@@ -4068,6 +4068,161 @@ and help users migrate without breaking changes.
   
 
 This component can then be imported as AppComponent, ParentComponent or RootComponent.
+
+================================================================================
+
+  HTTP Operations  HttpClient
+  ***************************
+
+
+https://www.telerik.com/blogs/a-practical-guide-to-angular-handling-http-operations
+
+
+set up data
+
+  src/api/expenses.json
+
+angular.json
+
+  "assets": ["src/favicon.ico", "src/assets", "src/api"],
+
+so that `expenses.json` is served by the dev server when you start the app.
+
+  http://localhost:4200/api/
+
+
+HttpClient
+----------
+
+Angular provides the HttpClient service as a way to communicate
+with remote servers over HTTP.
+
+It provides a simple-to-use API for working with HTTP and relies on the
+XMLHttpRequest API.  It gives you the ability to 
+
+  intercept the request and response
+  work with Observable APIs
+  used typed request and response objects
+  retry failed requests
+  test code dependent on HTTP
+
+app.module.ts
+
+  
+  import { HttpClientModule } from "@angular/common/http";
+
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+
+
+RxJS
+-----
+
+  the pipe() method is used to compose observable operators
+
+  operatators are methods on observables to transform the source observable.
+
+
+catchError()
+
+throwError()
+
+
+
+
+book.service.ts
+----------------
+
+    getBooks(): Observable<Book[]> {
+        return this.http
+                .get(this.booksApiUrl)
+                .pipe(
+                    catchError(error => {
+                        let errorMsg: string;
+                        if (error.error instanceof ErrorEvent) {
+                            this.errorMsg = `Error: ${error.error.message}`;
+                        } else {
+                            this.errorMsg = this.getServerErrorMessage(error);
+                        }
+
+                        return throwError(errorMsg);
+                    })
+                );
+    }
+
+    private getServerErrorMessage(error: HttpErrorResponse): string {
+        switch (error.status) {
+            case 404: {
+                return `Not Found: ${error.message}`;
+            }
+            case 403: {
+                return `Access Denied: ${error.message}`;
+            }
+            case 500: {
+                return `Internal Server Error: ${error.message}`;
+            }
+            default: {
+                return `Unknown Server Error: ${error.message}`;
+            }
+
+        }
+    }
+
+component
+---------
+
+    constructor(private booksService: BooksService) {
+        this.books$ =
+            this.booksService
+                .getBooks()
+                .pipe(
+                    catchError(error => {
+                        this.errorMsg = error.message;
+                        return of([]);
+                    })
+                );
+    }
+
+
+handleError method in service
+------------------------------
+
+
+export class ApiService {
+
+  private SERVER = "http://server.com/api/products";
+
+  constructor(private httpClient: HttpClient) { }
+
+  handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
+  }
+
+  public fetchData(){
+    return this.httpClient.get(this.SERVER);
+  }
+}
+
+
+apply handleError() using catchError() 
+--------------------------------------
+
+  public fetchData(){
+    return this.httpClient
+      .get(this.SERVER)
+      .pipe(
+        catchError(this.handleError));
+  }
+
+
 
 ================================================================================
 

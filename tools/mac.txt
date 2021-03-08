@@ -152,6 +152,16 @@ https://medium.com/better-programming/multi-cursors-intellij-shortcuts-to-boost-
 	expand/shrink selection
 										atl-up/down 
 
+multiple carets
+---------------
+https://stackoverflow.com/questions/1262737/intellij-idea-way-of-editing-multiple-lines
+
+on mac
+select/highlight something - like a braket
+ctrl-G to select one at a time 
+ctrl-cmd-G  to select all
+sh-ctrl-G  unselect previous
+
 
 ================================================================================
 

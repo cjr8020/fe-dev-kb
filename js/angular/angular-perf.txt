@@ -6,6 +6,43 @@
 	************************
 
 
+AOT Compilation
+***************
+
+	$ ng build --prod --aot=true 
+
+
+When you build your Angular application, it uses Just in Time Compilation (JIT) by default. 
+
+This means that your Angular application is compiled inside the browser at runtime. As you can imagine this can be slow.
+
+
+To take your build optimization a level further, you can build your Angular production code using Ahead of Time Compilation (AOT). With AOT, your Angular application is compiled at build-time, that is before it gets to the browser. Here are some reasons why you should use AOT.
+
+- faster rendering
+- smaller app size
+- better code quality
+- secure and robust since templates are not eval'ed dynamically
+
+One disadvantage is that CI/CD may take longer.
+
+
+Angular build-optimizer
+************************
+
+
+The build optimizer removes Angular specific decorators, constructor parameters and makes it easier for code minifiers to remove unused code.
+
+
+$ ng build --prod --aot=true --buildOptimizer=true 
+
+
+NOTE: ONLY WORKS ON AOT COMPILED CODE
+
+
+
+
+
 webpack-bundle-analyzer
 ************************
 

@@ -6,17 +6,20 @@
 	************************
 
 
+$ npm uninstall -g @angular/cli
+$ npm install -g @angular/cli@latest
+
+$ ng update @angular/cli @angular/core
+
+$ ng update @angular/material
+
+
+
 ================================================================================
 
-Upgrading to Angular 6
+Upgrading to Angular
 ***********************	
 
-
-Node version 8.9+ or newer
-
-e.g.:
-node: 10.8.0
-npm : 6.2.0
 
 
 angular/cli

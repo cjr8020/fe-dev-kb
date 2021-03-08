@@ -198,154 +198,164 @@ template:
   ********************************
 
 
-import {inject, TestBed} from '@angular/core/testing';
-import {DataService} from './data.service';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Post} from './post.model';
+Using HttpClientTestingModule and HttpTestingController
+--------------------------------------------------------
 
-describe('DataService', () => {
+service
+--------------
 
-  beforeEach( () => {
-    TestBed.configureTestingModule(({
-      providers: [DataService],
-      imports: [HttpClientTestingModule]
-    }));
-  });
+export interface Dog {
+  message: string;
+  status: string;
+}
 
-  /**
-   * Ensures that httpMock expectations are met.
-   */
-  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    httpMock.verify();
-  }));
+@Injectable({
+  providedIn: 'root'
+})
+export class DogService {
 
+  constructor(private httpClient: HttpClient) { }
 
-  it(
-    'should be created',
-    inject([DataService], (dataService: DataService) => {
-      expect(dataService).toBeTruthy();
-    })
-  );
+  randomDog(): Observable<Dog> {
+    return this.httpClient.get<Dog>(`https://dog.ceo/api/breeds/image/random`);
+  }
 
+}
 
-  it('should be able to retrieve posts from API via GET',
-    inject([HttpTestingController, DataService],
-      (httpMock: HttpTestingController, service: DataService) => {
+test
+------------
 
-        // prepare dummy data
-        const dummyPosts: Post[] = [
-          {
-            id: 1,
-            userId: '1',
-            body: 'Http Client',
-            title: 'Testing Angular Service'
-          },
-          {
-            id: 2,
-            userId: '2',
-            body: 'Hello World',
-            title: 'Testing Angular Services'
-          }];
+export const mockDog: Dog = {
+  message: 'https://images.dog.ceo/breeds/hound-basset/n02088238_9815.jpg',
+  status: 'success'
+};
 
-        // call the service
-        service.getPostData().subscribe(posts => {
-          expect(posts.length).toBe(2);
-          expect(posts).toEqual(dummyPosts);
-        });
-
-        // set expectations for the HttpClient mock
-        const request = httpMock.expectOne(`${service.ROOT_URL}/posts`);
-        expect(request.request.method).toBe('GET');
-
-        // finally, set the fake data to be returned by the mock.
-        request.flush(dummyPosts);
-      })
-  );
-
-});
-
-
-
-with fakeAsync 
--------------------------
-
-import {fakeAsync, inject, TestBed, tick} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Post} from './post.model';
-import {DataService} from './data.service';
-
-describe('DataService', () => {
+describe('DogService', () => {
+  let httpTestingController: HttpTestingController;
+  let service: DogService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
-      providers: [ DataService ]
+      providers: [
+        DogService
+      ],
+      imports: [
+        HttpClientTestingModule
+      ]
     });
+    httpTestingController = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(DogService);
   });
 
-  it(
-    'should be created',
-    inject([DataService], (dataService: DataService) => {
-      expect(dataService).toBeTruthy();
-    })
-  );
-
-  it(
-    'should be able to retrieve posts from API via GET',
-    fakeAsync(
-      inject(
-        [DataService, HttpTestingController],
-        (dataService: DataService, httpMock: HttpTestingController) => {
-
-          // set up
-          let response = null;
-          const url = `${dataService.ROOT_URL}/posts`;
-          const dummyPosts: Post[] = [
-            {
-              id: 1,
-              userId: '1',
-              body: 'Http Client',
-              title: 'Testing Angular Service'
-            },
-            {
-              id: 2,
-              userId: '2',
-              body: 'Hello World',
-              title: 'Testing Angular Services'
-            }];
-
-          dataService.getPostData().subscribe(
-            (posts: Post[]) => {
-              response = posts;
-            },
-            (error: any) => {}
-          );
-
-          const requestMapper = httpMock.expectOne(url);
-          requestMapper.flush(dummyPosts);
-
-          tick();
-
-          expect(requestMapper.request.method).toBe('GET');
-
-          expect(response.length).toBe(2);
-          expect(response).toEqual(dummyPosts);
-        }
-      )
-    )
-  );
+  afterEach(() => {
+    httpTestingController.verify();
+  });
 
 
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('random should provide data', () => {
+    service.randomDog().subscribe((dog: Dog) => {
+      expect(dog).not.toBe(null);
+      expect(JSON.stringify(dog)).toEqual(JSON.stringify(mockDog));
+    });
+
+    // make the call
+    httpTestingController
+      .expectOne(`https://dog.ceo/api/breeds/image/random`)
+      .flush(mockDog, {status: 200, statusText: 'OK'});
+  });
 });
 
 
+You can also simplify URL matching in `expectOne(...)` by returning `true`:
+
+    // make the call
+    httpTestingController
+      .expectOne(() => true)
+      .flush(mockDog);
 
 
-unit testing 204 response
---------------------------
 
 
-  request.flush('', { status: 204, statusText: 'No Data' });
+
+custom HttpInterceptor
+-----------------------
+
+
+
+@Injectable()
+export class HttpRequestInterceptorMock implements HttpInterceptor {
+  constructor(private injector: Injector) {}
+
+  intercept(request: HttpRequest<any>, next: HttpHandler):
+    Observable<HttpEvent<any>> {
+    if (request.url && request.url
+      .indexOf(`https://dog.ceo/api/breeds/image/random`) > -1) {
+      return of(new HttpResponse({ status: 200, body: helloDog }));
+    }
+
+    return next.handle(request);
+  }
+}
+
+
+export const helloDog: Dog = {
+  message: 'hello',
+  status: 'success'
+};
+
+describe('DogService with Http Interceptor', () => {
+  let service: DogService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        DogService,
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: HttpRequestInterceptorMock,
+          multi: true
+        }
+      ],
+      imports: [
+        HttpClientTestingModule
+      ]
+    });
+    service = TestBed.inject(DogService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('random should provide data', () => {
+    service.randomDog().subscribe((dog: Dog) => {
+      expect(dog).not.toBe(null);
+      expect(JSON.stringify(dog)).toEqual(JSON.stringify(helloDog));
+    });
+
+  });
+});
+
+
+another example
+
+...
+@Injectable()
+class BackendInterceptor implements HttpInterceptor {
+ constructor(private injector: Injector) {}
+ intercept(request: HttpRequest, next: HttpHandler): Observable<HttpEvent<any>> {
+     if(request.method === "GET" && request.url === "http://localhost:4200/users") {
+          return of(new HttpResponse({ status: 200, body: usersData }));
+     }
+     next.handle(request)
+ }
+}
+
+
 
 
 ================================================================================

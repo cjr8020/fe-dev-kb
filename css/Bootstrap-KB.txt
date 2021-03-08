@@ -29,6 +29,73 @@ https://medium.com/@sreejithezhakkad/how-to-start-a-web-app-project-using-bootst
 
 
 ================================================================================
+
+  Bootstrap Theming
+  *****************
+
+https://getbootstrap.com/docs/4.0/getting-started/theming/
+https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss
+
+https://uxplanet.org/how-to-customize-bootstrap-b8078a011203
+
+Whenever possible, avoid modifying Bootstrap’s core files. For Sass, that means creating your own stylesheet that imports Bootstrap so you can modify and extend it. Assuming you’re using a package manager like npm, you’ll have a file structure that looks like this:
+
+your-project/
+├── scss
+│   └── custom.scss
+└── node_modules/
+    └── bootstrap
+        ├── js
+        └── scss
+
+
+importing
+================================
+
+In your custom.scss, you’ll import Bootstrap’s source Sass files. You have two options: include all of Bootstrap, or pick the parts you need. We encourage the latter, though be aware there are some requirements and dependencies across our components. You also will need to include some JavaScript for our plugins.
+
+
+custom.scss
+------------
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// Required
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+
+// Optional
+@import "node_modules/bootstrap/scss/reboot";
+@import "node_modules/bootstrap/scss/type";
+@import "node_modules/bootstrap/scss/images";
+@import "node_modules/bootstrap/scss/code";
+@import "node_modules/bootstrap/scss/grid";
+
+
+
+
+
+
+================================================================================
+
+  Bootstrap Gutters
+  *****************
+
+Gutters are the gaps between column content, created by horizontal padding. 
+
+We set 
+
+  padding-right
+  padding-left 
+
+on each column, and use negative margin to offset that 
+at the start and end of each row to align content.
+
+
+
+================================================================================
   Responsive Patterns
   *******************
 

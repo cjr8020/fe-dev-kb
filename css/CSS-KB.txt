@@ -845,11 +845,32 @@ em
 The rem unit in CSS always inherits its value from the base font size setting on the root element of the document, 
 irrespective of the computed font size. 
 
+	https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
+
+	rem values are relative to the root html element, not the parent element. In other words, it lets you specify a font size in a relative fashion without being affected by the size of the parent, thereby eliminating compounding.
+
+
+use `rem` for Global sizing - use `em` for Local sizing
+--------------------------------------------------------
+
+https://css-tricks.com/rem-global-em-local/
+
+
+
+
 In HTML, the root element is always the html element. 
 So you could use rems, but this would mean you’ll have to control 
 all components on the page using the font size on that element. 
 It could work on certain projects, but I think this technique works best 
 when focusing the resizability on an isolated component, rather than the whole document.
+
+
+If you want your `rem` value to be set to 16px, you set your html `font-size` to 16px
+as your base font-size and then use `rem` for the rest
+
+html { font-size: 16px; }
+
+** Be careful with this. If you set the font-size property on the html tag (such as html {font-size:10px;), it will disable the browser override for font size.
 
 
 ================================================================================
