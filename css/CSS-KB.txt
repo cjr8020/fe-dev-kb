@@ -5,6 +5,55 @@
 @@@@@@@@@@@@@@@@@@@
 
 
+================================================================================
+
+	Debug
+
+
+border: 2px solid red;
+
+================================================================================
+
+	asterisk (*) selector
+	----------------------
+
+	wildcard selector - it will select all elements within that portion of the 
+	DOM.
+	e.g. 
+	this will apply margin to every element on the entire page 
+
+	* {
+		margin: 10px;
+	}
+
+	or within sub-selections
+	this will add a margin to all elements within a paragraph tag:
+
+	p * {
+		margin: 10px;
+	}
+
+
+
+	adjacent (+) plus sign sibling selector
+	---------------------------------------
+
+
+what does the "+" (plus sign) CSS selector mean?
+
+	- adjacent sibling selector
+
+	e.g.  here, applies only to paragraphs directly following another paragraph
+
+		p + p  {
+			/* some declarations */
+		}
+
+
+
+================================================================================
+
+
 Applied to a tag. E.g.:
 
 	div { color: red; }

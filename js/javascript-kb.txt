@@ -4,6 +4,46 @@
 
 ===============================================================================
 
+	console API
+	***********
+
+https://levelup.gitconnected.com/moving-beyond-console-log-8-console-methods-you-should-use-when-debugging-javascript-and-node-25f6ac840ada
+
+
+console.assert
+
+console.count
+console.countReset
+
+console.group
+console.groupEnd
+
+console.table  - useful way to describe object or array content.
+
+console.time
+console.timeEnd
+
+	BEFORE
+
+		const start = Date.now();
+		// do something
+
+		const diff = Date.now() - start;
+		console.log("Time execution: " + diff + ' ms');
+
+	AFTER
+
+		console.time('START');
+		for (let i = 0; i < 1000000; i++) {
+			// do something
+		}
+
+		console.timeEnd('END');
+
+
+
+===============================================================================
+
 
 Javascript destructuring
 ------------------------

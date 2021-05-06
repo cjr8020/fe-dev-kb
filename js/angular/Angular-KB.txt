@@ -2167,90 +2167,29 @@ ngModel
 
 ngClass
 
-  source: https://coryrylan.com/blog/introduction-to-angular-2-ngclass-and-ngstyle
 
-  creating dynamic styles for your application
-  ngClass helps us handle dynamic CSS and CSS classes with the new template syntax
+ngClass provides several ways to add classes conditionally
 
-    ex: chaning <div> color property
+type one
 
-      pure JavaScript:
+  [class.my-class]="step === 'step1'"
 
-        let myDiv = document.getElementById('my-div');
-        myDiv.style.color = 'orange';  // update 
+type two
 
-    out of the box, angular 2 provides primitives using [property] syntax
-    to manipulate elements attributes:
+    [ngClass]="{'my-class': step === 'step1'}"
 
-      <div [style.color]="'orange'">
-        style using property syntax - this text is orange
-      </div>
+  and multiple option:
 
-  we can also using angular2 [property] syntax to assign CSS class to element:
-
-    .blue { color: blue; }
-
-    <div [className]="'blue'">CSS class using property syntax - this text is blue</div>
+    [ngClass]="{'my-class': step === 'step1', 'my-class2':step === 'step2' }"
 
 
-  manipulating <div> styles with ngStyle and angular2 component properties:
+type three
 
-    app.component.css:
-    ------------------
+    [ngClass]="{1:'my-class1',2:'my-class2',3:'my-class4'}[step]"
 
-    .show-class {
-      visibility: visible;
-    }
+type four
 
-    .hide-class {
-      visibility: hidden;
-    }
-
-
-    app.component.ts:
-    -----------------
-    export class AppComponent {
-
-      ngStyleDivColor: string;
-      ngStyleDivFontSize: number;
-      spanDisplayedText: string;
-      spanDisplayedTextVisible: boolean;
-
-      constructor() {
-        this.ngStyleDivColor = 'pink';
-        this.ngStyleDivFontSize = 16;
-        this.spanDisplayedText = 'show-class';
-        this.spanDisplayedTextVisible = true;
-      }
-
-      toggle() {
-        this.spanDisplayedTextVisible = !this.spanDisplayedTextVisible;
-        this.spanDisplayedText = this.spanDisplayedTextVisible ? 
-          'show-class' :
-          'hide-class';
-          
-      }
-    }
-
-    app.component.html:
-    -------------------
-
-    <h2>ngStyle</h2>
-
-    <input [(ngModel)]="ngStyleDivColor" />
-    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize + 1">+</button>
-    <button (click)="ngStyleDivFontSize = ngStyleDivFontSize - 1">-</button>
-
-    <div 
-        id="using-ngStyle" 
-        [ngStyle]="{'color': ngStyleDivColor, 'font-size': ngStyleDivFontSize + 'px', 'font-weight': 'bold'}">
-      div style configured with ngStyle
-    </div>
-
-    <hr>
-
-    <span id="this-span" [ngClass]="spanDisplayedText">toggled with ngClass</span>
-    <button (click)="toggle()">Toggle</button>
+    [ngClass]="(step=='step1')?'my-class1':'my-class2'"
 
 
 
@@ -2366,6 +2305,29 @@ with else
       <br>
       <div *ngIf="show; else elseBlock">Text to Show</div>
       <ng-template #elseBlock>Alternate text while primary is hidden</ng-template>
+
+
+    <div *ngIf="isValid;else other_content">
+    content here ...
+    </div>
+
+    <ng-template #other_content>other content here...</ng-template>
+
+ also `then else`:
+
+
+  <div *ngIf="isValid;then content else other_content">here is ignored</div>    
+  <ng-template #content>content here...</ng-template>
+  <ng-template #other_content>other content here...</ng-template>
+
+
+or `then` alone:
+
+  <div *ngIf="isValid;then content"></div>    
+  <ng-template #content>content here...</ng-template>
+
+
+
 
 with async
 
@@ -2487,200 +2449,6 @@ Custom Attribute directives
     prefer using these to the 'host' property of the @Directive and @Component decorators
 
     
-
-================================================================================
-
-  HTTP Services
-  *************
-
-The HttpModule is not a core Angular module.
-It's Angular's optional approach to web access and it exists in a separate 
-add-on module called @angular/http.
-
-app.module.ts:
-
-import { HttpModule }   from '@angular/http';
-
-@NgModule({
-  imports: [
-    HttpModule
-  ],
-})
-export class AppModule { }
-
-Angular team recommends registering application-wide services in the root 
-'AppModule' providers.
-
-
-================================================================================
-
-  Mocking HTTP Services with angular-in-memory-web-api
-  ****************************************************
-
-https://github.com/angular/in-memory-web-api
-http://www.thoughtdelimited.org/thoughts/post.cfm/adding-the-in-memory-web-api-to-an-systemjs-based-angular-cli-application
-
-in-memory web API is not part of the Angular core.
-it is an optional service in its own "angular-in-memory-web-api" library installed 
-with npm via package.json
-
-Find out the latest version of 'angular-in-memory-web-api' available:
-
- $ npm view angular-in-memory-web-api versions
- 
-[ '0.1.0',
-  '0.1.1',
-  '0.1.2',
-  '0.1.3',
-  '0.1.4',
-  '0.1.5',
-  '0.1.6',
-  '0.1.7',
-  '0.1.8',
-  '0.1.9',
-  '0.1.10',
-  '0.1.11',
-  '0.1.12',
-  '0.1.13',
-  '0.1.14',
-  '0.1.15',
-  '0.1.16',
-  '0.1.17' ]
-
-
-$ npm install angular-in-memory-web-api --save
-
-  "dependencies": {
-    "@angular/common": "2.2.1",
-    "@angular/compiler": "2.2.1",
-    "@angular/core": "2.2.1",
-    "@angular/forms": "2.2.1",
-    "@angular/http": "2.2.1",
-    "@angular/platform-browser": "2.2.1",
-    "@angular/platform-browser-dynamic": "2.2.1",
-    "@angular/router": "3.2.1",
-    "angular-in-memory-web-api": "^0.1.17",
-
-
-
-in-memory-data.service.ts
--------------------------
-
-
-
-Learn more about In-Memory Web API
-----------------------------------
-https://angular.io/docs/ts/latest/guide/server-communication.html#!#in-mem-web-api
-
-If the app only needs to retrieve data, you could get heroes from a heroes.json:
-
-{
-  "data": [
-    { "id": 1, "name": "Windstorm" },
-    { "id": 2, "name": "Bombasto" },
-    { "id": 3, "name": "Magneta" },
-    { "id": 4, "name": "Tornado" }
-  ]
-}
-
-
-You wrap the heroes array in an object with a 'data' property for the same reason
-that a data server does - to mitigate the security risk posed by top-level 
-JSON arrays.
-
-You'd set the endpoint to the JSON file like this:
-
-  private heroesUrl = 'app/heroes.json'; // URL to JSON file
-
-
-The GET heroes scenario would work, but you can't save changes to a JSON file.
-
-The in-mem web API gets its data from a custom application class with a createDb() 
-method that returns a map whose keys are collection names and whose values are
-arrays of objects in those collections.
-
-
-in-mem-data.service.ts
------------------------
-
-  import { Injectable } from '@angular/core';
-  import { InMemoryDbService } from 'angular-in-memory-web-api';
-
-  @Injectable()
-  export class InMemoryDataService implements InMemoryDbService{
-
-    constructor() { }
-
-    createDb() {
-      let heroes = [
-        { id: 11, name: 'Mr. Nice' },
-        { id: 12, name: 'Narco' },
-        { id: 13, name: 'Bombasto' },
-        { id: 14, name: 'Celeritas' },
-        { id: 15, name: 'Magneta' },
-        { id: 16, name: 'RubberMan' },
-        { id: 17, name: 'Dynama' },
-        { id: 18, name: 'Dr IQ' },
-        { id: 19, name: 'Magma' },
-        { id: 20, name: 'Tornado' }
-      ];
-      return {heroes};  // NOTE: curly braces!
-    }
-
-  }
-
-
-Ensure that the HeroService endpoint refers to the web API
-
-hero.service.ts
----------------
-
-  private heroesUrl = 'api/heroes';   // URI to web api
-
-
-Finally, redirect client HTTP requests to the in-memory web API by adding the
-InMemoryWebApiModule to the AppModule.imports list, and call its forRoot() 
-configuration method:
-
-    InMemoryWebApiModule.forRoot(InMemoryDataService)
-
-How This Works
-==============
-
-Angular's http service delegates the client/server communication tasks to a 
-helper service called XHRBackend.
-
-Using standard Angular provider registration techniques, the InMemoryWebApiModule
-replaces XHRBackend service with its own in-memory alternative.
-
-The forRoot() method initializes the in-mem web API with the seed data from the 
-mock hero dataset.
-
-    NOTE: 
-    
-    1. the "forRoot" method name is a strong reminder that you should 
-    only call the InMemoryWebApiModule ONCE while setting the metadata for the 
-    root AppModule
-
-    2. Import the InMemoryWebApiModule AFTER the HttpModule to ensure that
-    the XHRBackend provider of the InMemoryWebApiModule supersedes all others.
-
-      import { HttpModule }           from '@angular/http';
-      import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-
-
-Passthru to a live XHRBackend
------------------------------
-
-If an existing running remote server should handle requests for collections
-that not in the in-memory database, set 
-
-  Config.passThruUknownUrl: true
-
-This service will forward unrecognized requests via a base version of the 
-Angular XHRBackend.
-
-
 
 
 ================================================================================
@@ -3980,247 +3748,238 @@ BehaviorSubject Observables onDestroy:
 
 ================================================================================
 
-  Does Service need a Subject or its variants?
-  ********************************************
-
-NO: 
-
-  - if notifications are not required
-  - if notifiations are for bound properties, you don't need Subject
+  Template Syntax
+  ***************
 
 
-YES:
+# - variable declaration
 
-  - if you need notifications
-  - if notifications are more than just changes to bound properties
+() - event binding
 
+[] - property binding
 
-  Which Subject to use?
-  ---------------------
+[()] - two-way property binding
 
-Subject:
+{{ }} - interpolation
 
-  - if requires no initial value
-  - broadcasts items as they are pushed
-
-BehaviorSubject:
-
-  - if you want an initial value
-  - if subscriber requires the most recent value on subscription, and then 
-    broadcast items as they are pushed.
-
-Other variants can provide ALL previous values.
-
-================================================================================
-
-  Angular 8 / 9 Migration @ViewChild
-  ***********************************
-
-https://angular.io/guide/static-query-migration
-
-In preparation for this change, in version 8, we are migrating all applications and libraries to explicitly specify the resolution strategy for @ViewChild and @ContentChild queries.
-
-Specifically, this migration adds an explicit "static" flag that dictates when that query's results should be assigned. Adding this flag will ensure your code works the same way when upgrading to version 9.
+* - structural directives
 
 
-Before:
 
-  // query results sometimes available in `ngOnInit`, 
-  // sometimes in `ngAfterViewInit` (based on template)
-  @ViewChild('foo') foo: ElementRef;
+Template Variables
+-------------------
+
+help you use data from one part of a template in another part of the template.
+
+With template variables, you can perform tasks like respond to user input
+or fine tune your application's forms.
+
+A template variable can refer to 
+
+- a DOM element within a template
+- a directive
+- an element
+- TemplateRef
+- web commponent
 
 
-After:
+Syntax:
 
-  // query results available in ngOnInit
-  @ViewChild('foo', {static: true}) foo: ElementRef;
+  <input #phone placeholder="phone number" />
 
-  OR
+here #phone declares a `phone` variable on an `<input>` element.
+you can now refer to a template variable anywhere in the component's template.
+Here, a `<button>` further down the template refers to the `phone` var
 
-  // query results available in ngAfterViewInit
-  @ViewChild('foo', {static: false}) foo: ElementRef;
+<button (click)="callPhone(phone.value)">Call</button>
 
 
 
 
 ================================================================================
 
-  exportAs
-  *********
+File Upload
+***********
 
-We know that @Component decorator functions take object, and this object contains a lot of properties. 
-So in this article we will learn about Exportas properties which is Inherited from Directive decorator .
+https://blog.angular-university.io/angular-file-upload/
 
-From Angular 5 you can export components and directives with different multiple names. 
-Exporting a component with multiple names can help you get a more readable code 
-and help users migrate without breaking changes.
+https://dzone.com/articles/how-to-implement-file-upload-in-angular
+
+https://nils-mehlhorn.de/posts/angular-file-upload-progress
+
+https://blog.jscrambler.com/implementing-file-upload-using-node-and-angular/
+
+https://stackoverflow.com/questions/49798649/angular-2-9-mobile-camera-capture
+
+https://medium.com/@tarekabdelkhalek/how-to-create-a-drag-and-drop-file-uploading-in-angular-78d9eba0b854
+
+https://www.npmjs.com/package/ngx-file-drop
 
 
-
-  import { Component } from '@angular/core';
-  @Component({
-     selector: 'app-component',
-     templateUrl: '<p>Hello world!</p>',
-     exportAs: 'ParentComponent, RootComponent'
-  })
-  export class AppComponent {}
-
-  
-
-This component can then be imported as AppComponent, ParentComponent or RootComponent.
 
 ================================================================================
-
-  HTTP Operations  HttpClient
-  ***************************
-
-
-https://www.telerik.com/blogs/a-practical-guide-to-angular-handling-http-operations
-
-
-set up data
-
-  src/api/expenses.json
-
-angular.json
-
-  "assets": ["src/favicon.ico", "src/assets", "src/api"],
-
-so that `expenses.json` is served by the dev server when you start the app.
-
-  http://localhost:4200/api/
-
 
 HttpClient
-----------
+***********
 
-Angular provides the HttpClient service as a way to communicate
-with remote servers over HTTP.
-
-It provides a simple-to-use API for working with HTTP and relies on the
-XMLHttpRequest API.  It gives you the ability to 
-
-  intercept the request and response
-  work with Observable APIs
-  used typed request and response objects
-  retry failed requests
-  test code dependent on HTTP
-
-app.module.ts
-
-  
-  import { HttpClientModule } from "@angular/common/http";
-
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+Before you can use HttpClient, you need to import the Angular HttpClientModule. 
+Most apps do so in the root AppModule.
 
 
-RxJS
------
+  @NgModule({
+    imports: [
+      BrowserModule,
+      // import HttpClientModule after BrowserModule.
+      HttpClientModule,
+    ],
+    declarations: [
+      AppComponent,
+    ],
+    bootstrap: [ AppComponent ]
+  })
+  export class AppModule {}
 
-  the pipe() method is used to compose observable operators
 
-  operatators are methods on observables to transform the source observable.
-
-
-catchError()
-
-throwError()
+You can then inject the HttpClient service as a dependency of an application class, as shown in the following ConfigService example.
 
 
-
-
-book.service.ts
-----------------
-
-    getBooks(): Observable<Book[]> {
-        return this.http
-                .get(this.booksApiUrl)
-                .pipe(
-                    catchError(error => {
-                        let errorMsg: string;
-                        if (error.error instanceof ErrorEvent) {
-                            this.errorMsg = `Error: ${error.error.message}`;
-                        } else {
-                            this.errorMsg = this.getServerErrorMessage(error);
-                        }
-
-                        return throwError(errorMsg);
-                    })
-                );
-    }
-
-    private getServerErrorMessage(error: HttpErrorResponse): string {
-        switch (error.status) {
-            case 404: {
-                return `Not Found: ${error.message}`;
-            }
-            case 403: {
-                return `Access Denied: ${error.message}`;
-            }
-            case 500: {
-                return `Internal Server Error: ${error.message}`;
-            }
-            default: {
-                return `Unknown Server Error: ${error.message}`;
-            }
-
-        }
-    }
-
-component
----------
-
-    constructor(private booksService: BooksService) {
-        this.books$ =
-            this.booksService
-                .getBooks()
-                .pipe(
-                    catchError(error => {
-                        this.errorMsg = error.message;
-                        return of([]);
-                    })
-                );
+    @Injectable()
+    export class ConfigService {
+      constructor(private http: HttpClient) { }
     }
 
 
-handleError method in service
-------------------------------
+
+Always subscribe!
+*****************
+
+An HttpClient method does not begin its HTTP request until you call subscribe() on the observable returned by that method. This is true for all HttpClient methods.
+
+The AsyncPipe subscribes (and unsubscribes) for you automatically.
 
 
-export class ApiService {
+In fact, each subscribe() initiates a separate, independent execution of the observable. Subscribing twice results in two HTTP requests.
 
-  private SERVER = "http://server.com/api/products";
+  const req = http.get<Heroes>('/api/heroes');
+  // 0 requests made - .subscribe() not called.
+  req.subscribe();
+  // 1 request made.
+  req.subscribe();
+  // 2 requests made.
 
-  constructor(private httpClient: HttpClient) { }
 
-  handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unknown error!';
-    if (error.error instanceof ErrorEvent) {
-      // Client-side errors
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Server-side errors
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    window.alert(errorMessage);
-    return throwError(errorMessage);
-  }
+Requesting a typed response
+---------------------------
 
-  public fetchData(){
-    return this.httpClient.get(this.SERVER);
-  }
+getConfig() {
+  // now returns an Observable of Config
+  return this.http.get<Config>(this.configUrl);
 }
 
 
-apply handleError() using catchError() 
---------------------------------------
 
-  public fetchData(){
-    return this.httpClient
-      .get(this.SERVER)
-      .pipe(
-        catchError(this.handleError));
+Making  a POST request
+------------------------
+
+/** POST: add a new hero to the database */
+addHero(hero: Hero): Observable<Hero> {
+  return this.http.post<Hero>(this.heroesUrl, hero, httpOptions)
+    .pipe(
+      catchError(this.handleError('addHero', hero))
+    );
+}
+
+
+Tracking and showing request progress
+*************************************
+
+SOURCE: https://angular.io/guide/http#listening-to-progress-events
+
+
+Sometimes applications transfer large amounts of data and those transfers can take a long time. File uploads are a typical example. You can give the users a better experience by providing feedback on the progress of such transfers.
+
+
+
+
+Listening to progress events
+=============================
+
+
+
+
+
+When using HttpClient.request() with an HTTP method, configure the method with observe: 'events' to see all events, including the progress of transfers.
+
+
+  NOTE: Tip: Every progress event triggers change detection, so only turn them on if you need to report progress in the UI.
+
+
+To make a request with progress events enabled:
+-----------------------------------------------
+
+1. create an Instance of HttpRequest with the `reportProgress` option set `true` 
+to enable tracking of progress events
+
+
+  const req = new HttpRequest('POST', '/upload/file', file, {
+    reportProgress: true
+  });
+
+2. Pass this request object to the HttpClient.request() method which returns
+   an Observable of `HttpEvents`  
+
+
+  // The `HttpClient.request` API produces a raw event stream
+  // which includes start (sent), progress, and response events.
+
+  return this.http
+  .request(req)
+  .pipe(
+    map(event => this.getEventMessage(event, file)),
+    tap(message => this.showProgress(message)),
+    last(), // return last (completed) message to caller
+    catchError(this.handleError(file))
+  );
+
+
+HttpClient  HttpEventType
+
+
+  enum HttpEventType {
+    Sent                  // request was SENT over the wire  
+    UploadProgress        // an upload progress even was received
+    ResponseHeader        
+    DownloadProgress      // a download progress event was received
+    Response              // full response header received - file uplaoded
+    User                  // a custom event from interceptor or backend.
   }
+
+
+  getEventMessage method
+  ----------------------
+
+
+  /** Return distinct message for sent, upload progress, & response events */
+
+  private getEventMessage(event: HttpEvent<any>, file: File) {
+    switch (event.type) {
+
+      case HttpEventType.Sent:
+        return `Uploading file "${file.name}" of size ${file.size}.`;
+
+      case HttpEventType.UploadProgress:
+        // Compute and show the % done:
+        const percentDone = Math.round(100 * event.loaded / event.total);
+        return `File "${file.name}" is ${percentDone}% uploaded.`;
+
+      case HttpEventType.Response:
+        return `File "${file.name}" was completely uploaded!`;
+
+      default:
+        return `File "${file.name}" surprising upload event: ${event.type}.`;
+    }
+}
+
 
 
 

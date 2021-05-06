@@ -1,0 +1,169 @@
+azure
+
+
+cloud computing advantages
+
+- reliability
+- scalability
+- elasticity
+- agility
+- geo-distribution
+- distaster recovery
+
+Cloud service models
+
+	IaaS
+		infra as a service
+		This cloud service model is the closest to managing physical servers. A cloud provider keeps the hardware up to date, but operating system maintenance and network configuration is left to the cloud tenant. 
+
+	PaaS
+		platform as a service
+		This cloud service model is a managed hosting environment. The cloud provider manages the virtual machines and networking resources, and the cloud tenant deploys their applications into the managed hosting environment. 
+
+
+	SaaS
+		Software as a service
+		In this cloud service model, the cloud provider manages all aspects of the application environment, such as virtual machines, networking resources, data storage, and applications. The cloud tenant only needs to provide their data to the application managed by the cloud provider.
+
+
+Serveless computing
+
+	Overlapping with PaaS, serverless computing enables developers to build applications faster by eliminating the need for them to manage infrastructure. With serverless applications, the cloud service provider automatically provisions, scales, and manages the infrastructure required to run the code.
+
+	The serverless name comes from the fact that the tasks associated with infrastructure provisioning and management are invisible to the developer. 
+
+Public cloud
+
+	services offered over public internet.
+
+Private cloud
+
+	computing resources are for exclusive use of one
+	org.
+
+Hybrid
+
+	combines public and private clouds but allowing
+	data and applications to be shared between them.
+
+
+
+Azure offers
+
+	continuous innovation
+
+	you have choices
+
+	operate hybrid seamlessly 
+
+	get security backed by a team of experts.
+
+
+
+Azure Marketplace
+
+	helps connect users with Microsoft partners, independent software vendors, and startups that are offering their solutions and services, which are optimized to run on Azure. Azure Marketplace customers can find, try, purchase, and provision applications and services from hundreds of leading service providers. All solutions and services are certified to run on Azure.
+
+
+================================================================================
+
+	Services
+	********
+
+Azure provides more than 100 services.
+
+10 main categories:
+
+	Compute
+
+		Azure VMs and their scale sets
+		Kubernetes service
+		Service Fabric
+		Container Instances 
+		Azure Functions - event-driven, serverless compute services
+
+	Networking 
+
+		Virtual Network
+		LB
+		GWY
+		VPN GWY
+		DNS
+		CDN
+		DDoS protection
+		Traffic Manager
+		Express Route (high-bandwidth dedicated sec conn)
+		Network Watcher
+		Firewall
+		Vitual WAN - creates a unified WAN connecting local and remote sites.
+
+
+	Storage 
+
+		Blob Storage - very large objects storage, e.g. video or bitmaps
+		File Storage - file server
+		Queue Storage - for queueing and delivering messages between apps
+		Table Storage 
+									- non-relational structured data (NoSQL) 
+									  providing key/attribute store
+
+
+	Mobile
+
+		you can create b/e services for iOS, Android and Windows apps 
+
+			offline data sync
+			connectivity to on-prem data
+			bcast push notifications
+			autoscaling to match business needs.
+
+
+
+	Databases
+			Cosmos DB
+			SQL DB
+			MySQL
+			PostgreSQL
+			SQL Server on Azure VMs
+			Synapse Analytics
+			DB Migration Services
+			Cache for Redis
+			MariaDB
+
+
+
+	Web
+			Azure App Service - cloud-based apps
+			Notification Hubs - push notification
+			API Management - publish APIs
+			Cognitive Search - fully managed Search as a Service
+			SignalR Service - real-time web 
+
+
+
+	IoT
+			IoT central 
+			Azure IoT Hub - messaging hub
+			IoT Edge - data analysis models can be pushed onto IoT devices.
+
+
+	Big Data (OSS cluster services)
+			Azure Synapse Analytics
+			Azure HD insight  - managed Hadoop clusters
+			Azire Databricks - Apache Spark-based analytics service
+
+	AI
+			Machine Learning (ML) Service
+			ML Studio
+			Knowledge mapping
+			Bing Search
+			Natural Language Processing
+			
+
+	DevOps
+
+
+
+
+
+================================================================================

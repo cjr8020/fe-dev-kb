@@ -287,6 +287,15 @@ catchError operator
         );
 
 
+      this.product$ = this.productService.getProducts()
+        .pipe(
+          catchError(err => {
+            this.errorMessage = err;
+            return ???;
+          })
+        );
+
+
 throwError
 
   is a creation function
@@ -1349,14 +1358,94 @@ merge
 
 
 
+reduce
+------
+
+Array.reduce function
+  that allows you to reduce the value of an array
+
+    e.g 
+        var sum = [0, 1, 2, 3].reduce(
+          function(acc, val) {
+            acc + val
+          }, 0);
+        )
+
+
+RxJS reduce
+
+  reduce((total, currVal) => {}, 0)  // start with 0 bc there is no total.
+
+
+    of(1, 2, 3, 4, 5)
+    .pipe(
+      tap(item => console.log(`reduce example: ${item}`)),
+      reduce((total, currVal) => {
+        return total + currVal;
+      }, 0),
+      tap(item => console.log(`item after reduce ${item}`)) // shows 15
+    )
+    .subscribe(console.log);  // shows 15
+
+
 scan
 ----
 
-  accumulates itesm in a stream
+  scan is almost like reduce 
 
-    scan( (acc, curr) => acc + curr)
+    use it when you want in-between totals.
 
-  used to totalling amounts
+  only difference - it emits the total after EVERY processing step.
+
+
+    /**
+     * RxJS scan example
+     */
+    of(1, 2, 3, 4, 5)
+    .pipe(
+      tap(item => console.log(`scan example: ${item}`)),
+      scan((total, currVal) => {
+        return total + currVal;
+      }, 0),
+      tap(item => console.log(`item after scan ${item}`))
+    )
+    .subscribe(console.log);
+
+
+
+distinctUntilChanged
+--------------------
+
+distinctUntilChanged(compare: function): Observable
+
+
+  returns an Observable that emits all items emitted by the source Observable
+  that are distinct by comparison with the previous item.
+
+    of(1, 1, 2, 2, 3, 3, 3, 4)
+    .pipe(
+      distinctUntilChanged(),
+      tap(item => console.log(`distinctUntilChanged: ${item}`))
+    )
+    .subscribe();
+
+with a comparison function
+
+  (prev, curr) => prev.name === curr.name
+
+    from([
+      { name: 'Brian' },
+      { name: 'Brian' },
+      { name: 'Joe' },
+      { name: 'Joe' },
+      { name: 'Sue' },
+      { name: 'Brian' }
+    ])
+    .pipe(
+      distinctUntilChanged( (prev, curr) => prev.name === curr.name)
+    )
+    .subscribe(console.log);
+
 
 
 merge + scan to react to an add() action
