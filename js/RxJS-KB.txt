@@ -1860,23 +1860,51 @@ defaultIfEmpty
 
 
 
-empty
+EMPTY constant
+--------------------------------------------------------------------------
+
+import { EMPTY } from 'rxjs'
+return EMPTY; 
+
+
+
+Just one thing to keep in mind, EMPTY completes the observable, so it won't trigger next in your stream, but only completes. So if you have, for instance, tap, they might not get trigger as you wish (see an example below).
+
+Whereas of({}) creates an Observable and emits next with a value of {} and then it completes the Observable.
+
+
+console.log(`EMPTY constant example`);
+EMPTY.pipe(
+  tap( () => console.warn('i will not reach here, as i am complete'))
+).subscribe();
+
+console.log(`of({}) creates Observable, emits next with value of {} and completes.`);
+of({}).pipe(
+  tap(() => console.warn('i WILL reach here and complete'))
+).subscribe();
+
+
+
+empty function
 ---------------------------------------------------------------------------
 
 returns empty Observable
 
-  import 'rxjs/add/operator/empty';
 
-  Observable.empty();
+import {from, Observable, of, EMPTY} from 'rxjs';
+import {delay, filter, map, take, tap} from 'rxjs/operators';
+import {empty} from 'rxjs/internal/Observer';
 
-  note: 
 
-    same as     Observable.of();
+There's now an EMPTY constant and an empty function.
 
-    ForkJoin will short-circuit if any of the sub-observables return 
-    empty observable, i.e.
-      Observable.empty()
-      Observable.of() 
+  import { Observable, empty, of } from 'rxjs';
+
+  var delay = empty().pipe(delay(1000));     
+  var delay2 = EMPTY.pipe(delay(1000));
+
+
+  Observable.empty() doesn't exist anymore.
 
 
 
@@ -2053,6 +2081,35 @@ catch() operator
             return Observable.throw(error.statusTest);
           })
 
+
+
+
+
+================================================================================
+
+
+debounceTime(..) operator
+-------------------------
+
+This operator is popular in scenarios such as type-ahead where the rate of user input must be controlled!
+
+// RxJS v6+
+import { fromEvent } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
+
+// elem ref
+const searchBox = document.getElementById('search');
+
+// streams
+const keyup$ = fromEvent(searchBox, 'keyup');
+
+// wait .5s between keyups to emit current value
+keyup$
+  .pipe(
+    map((i: any) => i.currentTarget.value),
+    debounceTime(500)
+  )
+  .subscribe(console.log);
 
 
 

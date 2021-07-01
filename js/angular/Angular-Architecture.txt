@@ -73,91 +73,180 @@ To resolve the issue you need to create a specific service module and import tha
 Parent and Child components can communicate with each other via Inputs and
 Outputs.
 
-This is how parent (app.component) could use a chiild component (product-list.component)
-to display a list of components and accept an input (products) and emit an 
-output ($event)
 
-<product-list
-  
-    @Input  <---------- coming from parent property "products"
+<parent-component>
+  <child-component></child-component>
+</parent-component>
 
-  [procuctList]="products"
+The <parent-component> serves as the context for the <child-component>.
 
+@Input() and @Output() give a child component a way to communicate with its parent component. 
 
-    @Output ----------> $event going out to parent method productWasSelected()
+@Input() allows a parent component to update data in the child component. 
 
-
-  (onProductSelected)="productWasSelected($event)">
-
-</products-list>
+Conversely, @Output() allows the child to send data to a parent component.
 
 
-using built-in events
---------------------------------------
+Sending data to Child
+----------------------
 
-@Component({
-  selector: 'button-clicked',
-  template: `
-    {{ value }}
-    <button (click)="increase()">Increase</button>
-    <button (click)="decrease()">Decrease</button>
-  `
-})
-export class ButtonClickedComponent {
-  value: number;
+The @Input() decorator in a child component or directive signifies that 
+the property can receive its value from its parent component.
 
-  constructor() {
-    this.value = 1;
+
+  configure child
+
+  export class ChildComponent {
+    @Input() item = '';  // decorate property with @Input()
   }
 
-  increase(): number {
-    this.value = this.value + 1;
-    return this.value;
+  <p>
+    Today's item; {{item}}
+  </p>
+
+
+  Configure parent
+
+  In the parent's template:
+
+    <child [item]="currentItem"></child>
+
+  In parent's class
+
+  export class Parent {
+
   }
 
-  decrease(): number {
-    this.value = this.value -1;
-    return this.value;
+
+    <child [item]="currentItem"></child>
+
+The target in the square brackets, [], is the property you decorate with @Input() in the child component. 
+
+
+Sending data to Parent
+----------------------
+
+@Output() marks a property in a child component as a doorway through which data can travel from the child to the parent.
+
+The CHILD uses the @Output() property to raise an event to notiy the parent of the change.
+To raise an event, an @Output() must have the type of EventEmitter.
+
+
+  Configure Child
+
+here, you have an <input> where a user can enter a value and click a <button>
+that raises an event.
+
+The EventEmitter then relays the data to the parent component.
+
+
+  @Output() newItemEvent = new EventEmitter<string>();
+
+  addNewItem(value: string) {
+    this.newItemEvent.emit(value);
   }
-}
+
+child's template
+
+  <label for="item-input">Add an item:</label>
+  <input type="text" id="item-input" #newItem>
+  <button (click)="addNewItem(newItem.value)">Add to parent's list</button>
 
 
-To emit a custom event
---------------------------------------
+  Configure Parent
 
-Custom event emitter component:
 
-  @Component({
-    selector: 'custom-event',
-    template: `
-      <button (click)="liked()">Like it?</button>
-    `
-  })
-  export class CustomEventComponent {
-    @Output() meLikey: EventEmitter<string>;
 
-    constructor() {
-      this.meLikey = new EventEmitter<string>();
-    }
+<child (newItemEvent)="addItem($event)"></child>
 
-    liked(): void {
-      this.meLikey.emit('i like it a lot');
-    }
+
+  addItem(newItem: string) {
+    this.items.push(newItem);  // adds new item coming from the child
   }
 
-Parent comp consuming the event emitted by its child:
 
 
-<div>
-  <custom-event
-    (meLikey)="somebodyLikedSomething($event)"
-    ></custom-event>
-</div>
+Using both @Input and @Output() together
+-----------------------------------------
 
 
-  somebodyLikedSomething(message: string) {
-    console.log(`ok say it: ${message}`);
-  }
+<child [item]="currentItem" (deleteRequest)="crossOffItem($event)"></child>
+
+
+The child selector is <child> with item and deleteRequest being @Input() and @Output() properties in the child component class. 
+
+The property currentItem and the method crossOffItem() are both in the parent component class.
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+
+  @ViewChild
+  **********************
+
+https://blog.angular-university.io/angular-viewchild/
+
+
+Sometimes, a component needs references to the multiple elements that it contains inside
+its template, in order to mediate their interaction.
+
+
+If that's the case, then we can obtain references to those template elements and have them injected into the AppComponent class by querying the template: that's what @ViewChild is for.
+
+Let's say that AppComponent needs a reference to the <color-sample> component that it uses inside its template, in order to call a method directly on it.
+
+
+Here, we inject a reference to <color-sample> instance named #primaryColorSample:
+
+  @ViewChild('primaryColorSample')
+  primarySampleComponent: ColorSampleComponent;
+
+
+this variable is not immediately available - angular will fill this property AFTER
+view initialization is complete.
+
+
+  ngAfterViewInit() {
+    console.log('Values on ngAfterViewInit():');
+    console.log("primaryColorSample:", this.primarySampleComponent);
+  }  
+
+
+SCOPE:  only the template of the component itself.
+
+
+create a reference to an HTML tag
+----------------------------------
+
+<h2 #title>Choose Brand Colors:</h2>
+
+  @ViewChild('title')
+  title: ElementRef;
+
+
+
+when injecting a reference applied to a component, we get back the component instance
+
+when injecting a reference to a plain HTML element, we get back the corresponding wrapped DOM element
+
+
+
+@ViewChild options argument
+----------------------------
+
+  @ViewChild('primaryColorSample', {read: ElementRef})
+  sample: ElementRef;
+
+we are passing a second argument containing a configuration object with the read property set to ElementRef.
+
 
 
 
@@ -1499,6 +1588,79 @@ fullName property is recalculated only when the component's
       console.log('Mouse was moved');
     }
   }
+
+
+================================================================================
+
+
+  Angular Route Resolver
+  **********************
+
+
+https://www.digitalocean.com/community/tutorials/angular-route-resolvers
+
+Generate resolver:
+
+./node_modules/@angular/cli/bin/ng generate resolver news
+
+
+implementation:
+
+  must have resolve() method
+
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class NewsResolver implements Resolve<Observable<string>> {
+    resolve(): Observable<string> {
+      return of('Route!').pipe(delay(2000));
+    }
+  }
+
+  whatever is returned from that method will be the resolved data.
+  this examples returns an Observable that wraps a string after a delay of 2 seconds.
+
+set up routing
+app-routing.module.ts
+
+  { path: 'news', component: NewsComponent, resolve: {message: NewsResolver}},
+
+
+To access the resolved data in the component
+
+  whatever property you have configured in your routing - "message" in this case
+
+you can access in your component via
+
+  {{ data.message }}
+
+if you change to   resolve: {newsData: NewsResolver}, then you'll need to access via
+
+  {{ data.newsData}}
+
+Dealing with Errors in the Resolver
+-----------------------------------
+
+One option: catch and deal with the error in the resolver using RxJS  catchError()
+
+  resolve(): Observable<any> {
+    return this.newsService.getTopPosts().pipe(catchError(() => {
+      return of('data not available at this time');
+    }));
+  }
+
+Or, you could return EMPTY
+
+  resolve(): Observable<any> {
+    return this.newsService.getTopPosts().pipe(catchError(() => {
+      this.router.navigate(['/']);
+      return EMPTY;
+    }));
+  }
+
+In case there's an error retrieving data from the API.
+
 
 
 ================================================================================

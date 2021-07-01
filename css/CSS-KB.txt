@@ -50,6 +50,42 @@ what does the "+" (plus sign) CSS selector mean?
 		}
 
 
+	 tilde (~)  Subsequent-sibling Combinator
+	 ----------------------------------------
+
+	 separates two compound selectors
+
+	 the elements represented by the two sequences share the same parent 
+	 in the doc tree.
+
+
+	 the first selector precedes (but not necessarily immediately)
+	 the element that is represented by the 2nd selector.
+
+	 In other words
+
+	 	it selects all sibiling elements of a specified element.
+
+
+	 	.a ~ .b {
+  		background-color: powderblue;
+		}
+
+
+		<ul>
+		  <li class="b">1st</li>
+		  <li class="a">2nd</li>
+		  <li>3rd</li>
+		  <li class="b">4th</li>
+		  <li class="b">5th</li>
+		</ul>
+
+		.a ~ .b matches  the 4th and 5th list item because they
+
+		are .b elements
+		are siblings of .a
+		appear after .a in HTML source order
+
 
 ================================================================================
 

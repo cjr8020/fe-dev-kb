@@ -10,20 +10,49 @@ cloud computing advantages
 - geo-distribution
 - distaster recovery
 
+Cloud computing is a consumption-based model
+	end-users pay for the resources they use
+	Benefits of this model:
+	- no upfront costs
+	- no need to purchase and manage costly infra 
+	- ability to pay for add'l resources when needed
+	- ability to stop paying for resources that are no longer needed.
+
+
+Capital expenses vs  Operating Expenses
+
+	CapEx - infrastructure -> assets,  are depreciated and amortized 
+		requires significant up-front costs
+
+	OpEx - cloud services no assets to amortize. 
+
+
 Cloud service models
 
 	IaaS
 		infra as a service
 		This cloud service model is the closest to managing physical servers. A cloud provider keeps the hardware up to date, but operating system maintenance and network configuration is left to the cloud tenant. 
 
+		Most flexible bc you configure and manage the h/w running your apps.
+
 	PaaS
 		platform as a service
 		This cloud service model is a managed hosting environment. The cloud provider manages the virtual machines and networking resources, and the cloud tenant deploys their applications into the managed hosting environment. 
+
+		Produuctivity: users can focus on app dev only, bc the cloud provider handles all platform
+		management.
+
+		Disadvantage: platform limitations.  Evaluate those limitations.
 
 
 	SaaS
 		Software as a service
 		In this cloud service model, the cloud provider manages all aspects of the application environment, such as virtual machines, networking resources, data storage, and applications. The cloud tenant only needs to provide their data to the application managed by the cloud provider.
+
+		Disadvantage:
+			software limitations
+				bc you're using as-is software, you don't have direct control of features.
+				consider software limitations.
 
 
 Serveless computing
@@ -158,12 +187,427 @@ Azure provides more than 100 services.
 			Knowledge mapping
 			Bing Search
 			Natural Language Processing
-			
+
 
 	DevOps
+
+================================================================================
+
+	Azure Account
+
+		free account
+			12 months
+			credit to spend for the first 30 days
+			access to more than 25 products
+
+
+	Subscriptions and Management Groups
+	-----------------------------------
+
+
+
+	Resources, Resource Groups and Azure Resource Manager
+
+
+	Resources
+		instances of services you create
+
+	Reousrce groups
+		resources are combined into resource groups which act as a logical container
+		into which Azure resources like web apps, databases, and storage accounts 
+		are deployed and managed.
+
+
+	Subscriptions
+		a subscription groups together user accounts and the resources
+		that have been created by those user accounts.
+
+		For each subscription, there are limits or quotas on the amount of resources
+		that you can create and use.
+
+	Management Groups
+		help you manage access, policy and compliance for multiple subs.
+		all subs in a management group automatically inherit the conditions applied
+		to the management group.
+
+		You can apply policies to a management group that limits the regions 
+		available for VM creation.
+
+
+
+	Resource Manager
+
+		is the deployment and management service for Azure.
+		A management layer that enables you to create, update, and delete
+		resources in your Azure account.
+
+		You use management features like access control, locks and tags to secure
+		and organize your resources after deployment.
+
+		When a user sends a request from any of the Azure tools, APIs or SDKs,
+		Resource Manager receives the request.
+		It auth and authz the request.
+
+		Benefits of RM:
+			- declarative templates instead of scripts
+			- manage resources as a group
+			- consistency in deployment
+			- ability to define dependencies between resources
+			- ability to apply RBAC to all services
+			- ability to apply tags to resources
+			- ability to view costs for a group of resources.
+
+
+
+	Account and Multiple Subs
+
+	An Account can have one or multiple subs that have different billing models.
+	You can use subscriptions to define boundaries around Azure products, services
+	and resources.  
+
+	Two types of sub boundaries:
+
+		billing boundary
+			this sub type determines how an Azure account is billed for using Azure.
+			Azure generates separate billing reports and invoices for each sub.
+
+		access control boundary
+			applies access-mgmt policies at the sub level, 
+			you can create separate subs to reflect diff org structures.
+			e.g. one sub for your production workloads
+			and another for your dev/test workloads
+
+		Multiple subscriptions can be organized into Invoice sections.
+		Each invoice seciton is a line item on the invoice.
+		e.g. charges by Dept. or Project
+
+
+	Billing
+	-------------
+
+	Billing Account
+
+
+		Billing Profile
+		Billing Profile
+
+			Invoice Section
+			Invoice Section
+				Subscription
+				Subscription
+
+
+	Regions
+
+		a geographical area on the planet that contains at least one, but potentially
+		multiple datacenters that are nearby and networked together with a low-latency
+		network.
+
+		Regions give you flexibility to bring applications closer to your users.
+
+		West US
+		Canada Central
+		West Europe
+		Australia East
+		Japan West
+
+		Special:
+
+		US DoD Central
+		US Gov Virginia
+		US Gov Iowa
+
+		China East
+		China North
+
+	Region Pairs
+
+		each region is always paired with another region within the same geography
+		at least 300 miles away.  This allwos for the replication of resoures
+		across a geography that helps reduce the likelihood of interruptions.
+		If a region in a pair was affected by a natural disaster, services would
+		automatically failover to the other region.
+
+
+	Availability Zones
+
+		Physically separate datacenters within an Azure Region
+
+
+What8ver!
+
+
+================================================================================
+
+
+	create a website exercise
+
+	first thing you do is create a resource group
+	choose a location
+
+
+
+================================================================================
+
+	Azure Functions
+
+two implementations of serverless compute:
+
+- Azure functions 
+	
+		can execute code in almost any modern language
+		can be stateful (Durable Functions) or stateless
+
+
+- Azure Logic Apps
+		execute workflows built from predefined logic blocks
+
+		are Stateful
+
+		are designed in a web-based designer 
+		can execute logic triggered by Azure services without writing any code
+
+		every logic app workflow starts with a trigger 
+		which fires when a specific event happens
+		
+		When the trigger fires, the Logic App engine creates a logic app instance
+		taht runs the actions in the workflow.  
+
+		These actions can also include data conversions and flows controls, 
+		such as conditional statements, switch statemetns, loops and branching.
+
+		You can create logic app workflows by using a visual designer on the Azure Portal
+		or in Visual Studio.  Workflows are persisted as a JSON file with a known
+		workflow schema.
+
+		more 200 diff connectors and processing blocks 
+
+		these are the most popular enterprise apps
+
+		you can build custom connectors, and you can link connectors and blocks together.
+
+		Azure Visual Designer - ideal for a business analyst role.
+
+
+
 
 
 
 
 
 ================================================================================
+
+Windows Virtual Desktop
+
+	 is an Azure service
+
+
+
+
+================================================================================
+
+	Azure Storage
+
+	- Disk Storage  for applications
+  - File Storage  (shared FS)
+  - Table storage (kv pairs)  NoSQL store
+  - Queue Storage (messaging)
+
+	- Clob Storage
+	- Blob Storage
+
+Storage Tiers
+ - hot  (data accessed frequently)
+ - cool (stored for 30 days)
+ - archive (180 days)
+
+To begin using Azure Storage, you first create an Azure Storage account.
+A storage account provides a unique namespace for your Azure Storage data.
+
+	Disk storage
+	------------
+		provides disks for Azure VMs.
+		you can use standard SSD and HDD for less critical workloads, 
+		premium SSD disk for mission-critical production applications, 
+		ultra disks for data-intensive workloads e.g. SAP HANA, top-tier DBs.
+
+	Blob Storage
+	------------
+
+		object storage solution 
+		unstructured
+		can manage thousands of simult uploads, massive amounts of video 
+		constantly growing log files
+
+		ideal for 
+			serving images or docs directly to a browser
+			files for distributed access
+			streaming video and audio
+			data for backup and restore, DR, archiving
+			analysis data
+			up 8TB of VM data.
+
+	File Storage
+	------------
+
+		suitable for 
+			- file shares 
+			- store configuration files on a file share and access from VMs
+			- write data to a file, and process or analyze the data later.
+
+	Blob Storage
+	------------
+
+		to manage costs, it's helpful to organize data based on attributes
+		like frequency of access and planned retention period.
+
+			tiers:
+
+			hot access (can be set at the account level)
+			cool access ( ditto )
+			archive access  (isn't avail at the account level)
+
+		these tiers can be set at the blob level
+
+================================================================================
+
+	Azure Databases and Analytics service
+	--------------------------------------
+
+		SQL relational
+		NoSQL
+		in-memory
+
+
+		Azure Cosmos DB
+			globally distributed, multi-model database service.
+			you can elastically and independently scale thruput and storage
+			across any number of Azure regions worldwide
+
+			Stores data in atom-record-sequence (ARS) format.
+			The data is then abstracted and projected as an API.
+
+			Your choices are 
+				SQL
+				MongoDB
+				Cassandra, Tables and Gremlin
+
+			This means that as you migrate your company's DBs to Azure Cosmos DB,
+			your developers can stick with the API that they are the most comfortable with.
+
+
+		Azure SQL DB
+
+
+
+		Big Data and Analytics 
+
+			OSS cluster technologies to deal with large datasets
+
+			Azure Synapse Analytics
+				formerly Azure SQL Data Warehouse
+				limitless analytics service that brings together enterprise 
+				data warehousing and big data analytics.
+				You have a unified experience to ingest data for BI and machine learning needs
+
+			Azure HDInsight
+				managed, OSS analytics service for enterprises.
+				it's a cloud service that makes it easier, faster and more cost-effective 
+				to process massive amounts of data.
+
+				you can create cluster types like Apache Spark,  Apache Hadoop, Apache Kafka,
+				Apache HBase, and Apache Storm
+
+			Azure Databricks
+
+				unlock insights from all your data and build artificial intelligence solutions.
+				Apache Spark
+				Supports
+					Python
+					Scala
+					R
+					Java 
+					SQL
+
+			Azure Data Lake Analytics
+
+				on-demand analytics job service that simplifies big data.
+
+
+
+
+
+
+================================================================================
+
+	Azure IoT
+
+		- Azure IoT Hub
+
+			supports from device to cloud, and cloud to device.
+
+			when IoT hub receives messages from a device, it can route that message to other Azure services
+
+			cloud-to-device perspective -  IoT Hub allows for Command and Control
+
+
+		- Azure IoT Central
+
+			builds on top of IoT Hub by 
+
+			adding a dashboard that allows you to connect, monitor, and manage your IoT devices.
+
+		- Azure Sphere
+
+				end-to-end
+				encompasses everything from the hardware to the OS on the device.
+
+				1. micro-controller unit (MCU)
+				2. customized Linux OS - handles communication with the security service
+				3. Azure Sphere Security Service, aka  AS3
+
+
+		IoT Service Selection criteria
+
+			is it critical to ensure the device is not compromised?
+
+				yes:  Azure Sphere
+
+			do i need a dashboard?
+
+				yes:  IoT Central
+
+
+
+================================================================================
+
+	AI
+
+Artificial Intelligence (AI) is a category of computing that adapts and improves its decision-making ability over time based on its successes and failures. 
+
+There are two basic approaches to AI. 
+
+The first is to employ a deep learning system that's modeled on the neural network of the human mind, enabling it to discover, learn, and grow through experience.
+
+The second approach is machine learning, a data science technique that uses existing data to train a model, test it, and then apply the model to new data to forecast future behaviors, outcomes, and trends.
+
+Three product offerings from Microsoft
+
+1. Azure Machine Learning
+
+2. Azure Cognitive Services
+
+3. Azure Bot Service
+
+
+
+
+================================================================================
+================================================================================
+
+
+
+
+
+
+

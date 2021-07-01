@@ -359,3 +359,56 @@ create an app with
 
 
 ===============================================================================
+
+	Serving PDF with node expressjs
+	*******************************
+
+https://stackoverflow.com/questions/31105846/how-to-send-a-pdf-file-from-node-express-app-to-the-browser
+
+
+You have to pipe from Readable Stream to Writable stream not the other way around:
+
+	var file = fs.createReadStream('./public/modules/datacollectors/output.pdf');
+	var stat = fs.statSync('./public/modules/datacollectors/output.pdf');
+	res.setHeader('Content-Length', stat.size);
+	res.setHeader('Content-Type', 'application/pdf');
+	res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+	file.pipe(res);
+
+
+
+or
+
+After testing your code in Chrome, it immediately starts the download of the PDF file. But if you want to display the content of the PDF file you could try below:
+
+	var data =fs.readFileSync('./public/modules/datacollectors/output.pdf');
+	res.contentType("application/pdf");
+	res.send(data);
+
+This should directly send PDF content into the browser.
+
+===============================================================================
+
+	reading relative paths with fs.readFileSync
+	-----------------------
+
+
+how to use fs.readFileSync to give you a relative path to your asset.
+
+this works fine
+
+	import fs from 'fs';
+
+	const logo = fs.readFileSync('/assets/img/logo.svg');
+
+when the `assets` folder is in the root of the project.
+
+To work with relative path
+
+
+	import fs from 'fs';
+	import path from 'path';
+
+	const logo = fs.readFileSync(path.resolve(__dirname, './assets/img/logo.svg'));
+
+===============================================================================

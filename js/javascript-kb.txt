@@ -4,6 +4,19 @@
 
 ===============================================================================
 
+	Tests
+	***********
+
+Empty object
+-----------------------
+
+var obj = {};
+return Object.keys(obj).length; //returns 0 if empty or an integer > 0 if non-empty
+
+
+
+===============================================================================
+
 	console API
 	***********
 
@@ -340,6 +353,67 @@ dynamically:
 		// returns the value of the property whose name is provided dynamically
 		return obj[propertyName]; 
 	}
+
+
+===============================================================================
+
+	Comparing numbers with Number
+	*****************************
+
+var fn = 20;
+var sn = 20;
+
+alert(Number(fn) === Number(sn));
+
+
+===============================================================================
+
+	Object.values()
+	***************
+
+returns an array of a given object's own enumerable property values, 
+in the same order that is provided by a for...in loop.
+
+const object1 = {
+  a: 'somestring',
+  b: 42,
+  c: false
+};
+
+console.log(Object.values(object1));
+// expected output: Array ["somestring", 42, false]
+
+
+
+===============================================================================
+
+
+===============================================================================
+
+	reading relative paths with fs.readFileSync
+	-----------------------
+
+
+how to use fs.readFileSync to give you a relative path to your asset.
+
+this works fine
+
+	import fs from 'fs';
+
+	const logo = fs.readFileSync('/assets/img/logo.svg');
+
+when the `assets` folder is in the root of the project.
+
+To work with relative path
+
+
+	import fs from 'fs';
+	import path from 'path';
+
+	const logo = fs.readFileSync(path.resolve(__dirname, './assets/img/logo.svg'));
+
+===============================================================================
+
 
 
 ===============================================================================

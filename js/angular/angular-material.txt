@@ -420,3 +420,448 @@ injectable:
 
 ================================================================================
 
+  mat-radio-button
+
+
+::ng-deep .custom-radio-button-error .mat-radio-outer-circle{
+  border-color: rgb(255, 49, 49); /* default outer ring color */
+}
+
+::ng-deep .custom-radio-button-error .mat-radio-label-content {
+  color: red; /* label color */
+}
+
+
+
+
+
+
+::ng-deep .mat-radio-inner-circle {
+  background-color: #3f51b5;
+}
+
+/deep/ .mat-radio-ripple .mat-ripple-element {
+  background-color: rgba(#3f51b5, 0.26);
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+  background-color: blue !important;
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+  background-color: blue!important;   /*inner circle color change*/
+}
+
+::ng-deep.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color:blue!important; /*outer ring color change*/
+}
+
+
+
+================================================================================
+
+  mat-table
+  *********
+
+1. add <table mat-table>  component to template and pass in data.
+
+simplest way is to pass in a data array to the tables's `dataSource` input.
+
+<table mat-table [dataSource]="myDataArray">
+  ...
+</table>
+
+the table is optimized for performance - it will not automatically check for 
+changes to the data array.
+
+instead, when the data changes, you can trigger an update to the table's
+rendered rows by calling it's 
+
+  renderRows() 
+
+method.
+
+2. define the column templates  
+
+matColumnDef
+--------------
+
+Each column definition should be given a unique name and contain the content
+for its header and row cells.
+
+  `matColumnDef` directive uniquely identifies a given column with a key.
+
+
+matHeaderCellRef
+----------------
+
+matHeaderCellDef
+matCellDef
+----------------
+
+    <ng-container matColumnDef="score">
+      <th mat-header-cell *matHeaderCellDef> Score </th>
+      <td mat-cell *matCellDef="let user"> {{user.score}} </td>
+    </ng-container>
+
+
+3. Define your row templates
+
+finally, once you've defined your columns, you need to tell the table which 
+columns will be rendered in the header and data rows.
+
+Create a variable in your component that contains the list of the columns 
+you want to render:
+
+  columnsToDisplay = [ 'userName', 'age' ];
+
+
+mat-header-row
+mat-row
+--------------------
+  applies some minimum Material styling
+
+
+matHeaderRowDef
+matRowDef
+---------------
+  identifies a configuration element for the table header row,
+  but does not apply any styling
+
+
+
+Then, add `mat-header-row` and `mat-row`  to the content of your `mat-table`
+and provide your column list as inputs 
+
+
+<tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+<tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+
+The list of columns provided to the rows can be in any order, not necessarily
+the order in which you wrote the column definitions.
+
+By changing your column list provided to the rows, you can easily re-order
+and include/exclude columns dynamically.
+
+
+Sourtable Table Headers
+matSort and mat-sort-header
+---------------------------
+
+https://stackoverflow.com/questions/46743115/default-sorting-in-angular-material-sort-header
+
+add `matSort` directive to `mat-table`
+
+
+<mat-table  ....
+    matSort matSortActive="seqNo" matSortDirection="asc" matSortDisableClear>
+
+
+matSortActive
+  when the data is passed to the data table, it is usually already sorted.
+  this directive allows us to inform the data table that the data is already sorted
+  by the "seqNo" column, so the "seqNo" column sorting icon will be displayed
+  as an UPwards arrow.
+
+matSortDirection
+  this is a companion directive to `matSortActive`
+  it specifies the driection of the initial sort.
+  In this case, the data is initially sorted by the `seqNo` column in "asc" order
+  so the header will adapt the sorting icon accordingly.
+
+matSortDisableClear
+  To prevent the user from clearing the sort state from an already sorted column, 
+  set matSortDisableClear to true on the matSort to affect all headers, 
+
+  or set disableClear to true on a specific header.
+
+
+The above is the SORT Configuration for the whole data table.
+But we also need to identify exactly WHAT table headers are sortable!
+
+mat-sort-header
+----------------
+
+use `mat-sort-header` directive to annotate which column is sortable
+
+   <ng-container matColumnDef="seqNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>#</mat-header-cell>
+        <mat-cell *matCellDef="let lesson">{{lesson.seqNo}}</mat-cell>
+    </ng-container>
+
+
+
+
+Advanced data sources
+*********************
+
+  The simplest way to provide data to your table is by passing a data array.
+
+  More complex use cases may be using Observable streams, or
+
+  encapsulate your data source logic into a DataSource class.
+
+
+Observable stream that emits the data array to be rendered each time it is changed.
+
+
+DataSource
+
+  is meant to serve as a place to encapsulate any sorting, filtering, pagination, 
+  and data retrieval logic specific to the application.
+
+
+  It is a class that has a minimum the following methods:
+
+    connect()
+    disconnect()
+
+  Material provides a ready-made  DataSource class -  MatTableDataSource
+
+  you may want to create your own custom DataSource class for more complex
+  use cases.
+
+  You can extend the abstract DataSource class and implement your own
+  connect() and disconnect()
+
+  or 
+
+  MyCustomDataSource  extends SomeOtherBaseClass implements DataSource
+
+
+MatTableDataSource
+------------------
+
+  designed for filtering, sorting and pagination of a `client-side` data array.
+
+  when you have those functions done on the backend, you will need to provide
+  your own reactive DataSource
+
+
+
+Styling Rows 
+------------------------
+
+applies style defined in  $headerColor  to  `mat-header-cell`
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef [style.background-color]="headerColor"> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+
+
+  Styling Columns
+--------------------------
+
+Each table cell has an automatically generated class based on which column 
+it appears in.
+
+in the format of    `mat-column-NAME`
+
+
+Column Width
+---------------------
+
+using `mat-column-NAME` convention
+
+https://fireflysemantics.medium.com/making-the-angular-material-data-table-rows-fit-content-f227f4d9355e
+
+
+.mat-footer-row,
+.mat-header-row,
+.mat-row {
+  display: inline-flex;
+  min-width: 100%;
+}
+
+.mat-column-position {
+  flex: 0 0 10%;
+}
+.mat-column-name {
+  flex: 0 0 30%;
+}
+.mat-column-weight {
+  flex: 0 0 30%;
+}
+.mat-column-symbol {
+  flex: 0 0 30%;
+}
+
+
+
+
+Apply style to table row
+-------------------------
+
+row template
+
+ <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+ <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': isOdd(row.position) }"></tr>
+
+scss
+
+  ::ng-deep .highlight{
+    background: lightgray;
+  }
+
+
+
+Row Templates
+-------------------------
+
+Event handlers and property binding on the row tempalates will be applied
+to each row rendered by the table.
+
+E.g.    adding a (click) handler to the row template will cause each 
+individual row to call the handler when clicked.
+
+
+
+
+Custom DataSource
+*************************************
+
+
+connect() method
+
+  This method will be called ONCE by the Data Table at table bootstrap time. 
+
+
+  The Data Table expects this method to return an Observable, and the values of that observable contain the data that the Data Table needs to display.
+
+  As the user clicks on the paginator and changes to a new page,
+  this observable will emit a new value with the lessons page.
+
+  This method will be implemented using a BehaviorSubject.
+  It will return data  as Observable.
+
+    return this.lessonsSubject.asObservable();
+
+  BehaviorSubject means the subscribers will always get its latest emitted value
+  or initial value, even if they subscribed late (after the value was emitted)
+
+  BehaviorSubject is perfect for writing code that works independently of the order
+  of operations.
+
+
+
+================================================================================
+
+  how to center mat-spinner
+  **************************
+
+By default progress spinner will be displayed at the top-left corner of the webpage.
+
+
+To center the progress spinner, set the margin of mat-spinner element to “0 auto”
+
+  <mat-spinner style="margin:0 auto;"></mat-spinner>
+
+The above code will center mat-spinner horizontally.
+
+
+
+
+To center it in the middle of the page
+--------------------------------------
+
+In some cases, we will display a progress spinner overlay over an HTML element or entire DOM.
+
+Follow the below steps to display mat-spinner, overlay over entire webpage.
+
+1. First center the mat-spinner in the middle of the webpage.
+2. Place it inside an overlay div element
+
+https://www.angularjswiki.com/angular/creating-progress-spinner-in-angular/
+
+================================================================================
+
+  mat-paginator  
+  --------------
+
+Angular Material Pagination Datasource by Nils Mehlhorn
+https://medium.com/angular-in-depth/angular-material-pagination-datasource-73080d3457fe
+
+https://material.angular.io/components/paginator/overview
+
+
+Each paginator instance requires:
+
+  - the number of items per page ( defautl 50 )
+  - the total number of items being paged
+
+
+Get rid of the spinner for now 
+
+
+      <div *ngIf="dataSource.loading$ | async; then loadingProgressTemplate else elementTableTemplate"></div>
+
+      <ng-template #loadingProgressTemplate>
+        <div>
+          <mat-spinner style="margin:0 auto;"></mat-spinner>
+        </div>
+      </ng-template>
+
+      <ng-template #elementTableTemplate>
+      </ng-template>
+
+
+================================================================================
+
+  mat-input-container
+  ********************
+
+seems to be replaced with `mat-form-field`
+
+
+================================================================================
+
+  mat-form-field
+  **************
+
+https://material.angular.io/components/form-field/overview
+
+a wrapper component to apply common Text field styles like underline,
+floating label, and hint messages.
+
+"form field"  - the wrapper component
+"form field control" - input, text area, or select that <mat-form-field> is wrapping.
+
+
+
+================================================================================
+
+  mat-tab
+  ********
+
+Lazy Loading and routing
+------------------------
+
+https://medium.com/nerd-for-tech/implement-lazy-loading-with-mat-tabs-in-angular-2d291f5f5315
+
+
+overriding label color for a particular tab
+--------------------------------------------
+
+
+https://stackoverflow.com/questions/62810892/overwriting-css-for-angular-mat-tab
+
+You can use the component tag label,
+
+ app-component-name .mat-tab-label {
+    min-width: 25px !important;
+    padding: 5px;
+    background-color: transparent;
+    color: white;
+    opacity: 1 !important;
+    font-weight: 700;
+}
+
+Or add a class to the tab
+
+
+
+================================================================================
+

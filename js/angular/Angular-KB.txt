@@ -3986,6 +3986,92 @@ HttpClient  HttpEventType
 ================================================================================
 
 
+  Custom Property Binding using @Input Decorator
+  **********************************************
+
+
+https://www.netjstech.com/2020/04/angular-custom-property-binding-using-input-decorator.html
+
+
+
+
+================================================================================
+
+::ng-deep
+
+  DEPRECATED but no replacement announced.
+    https://stackoverflow.com/questions/49859784/ng-deep-going-to-be-deprecated-any-alternatives
+
+  this is a shadow-piercing descendant combinator
+  to force a style down thru the child environment tree into all
+  the child component views.
+
+  works to any depth of nested components, and it applies to both the view
+  children and content children of the component.
+
+e.g.
+
+  Parent Content
+
+    <app-child></app-child>
+
+
+  parent.component.css
+
+    ::ng-deep h3 {
+      font-style: italic;
+    }
+
+
+
+
+  and it's aliases 
+
+    /deep/
+    >>>
+
+  use it with emulated view encapsulation.
+
+  Emulated is the default and most commonly used View Encapsulation.
+
+
+  Alternatives
+
+    One alternative that can work is to include the css styles in your 
+    global styles.scss file 
+
+    e.g. say you want to add a style to the 
+
+      <div class="mat-form-field-flex"> 
+
+    element that gets generated under a <mat-form-field>, 
+
+    you could use ::ng-deep likewise:
+
+    your.component.scss
+
+      ::ng-deep mat-form-field.mat-form-field div.mat-form-field-flex {
+        padding: 0 0 0 .75em;
+      }
+
+    so, instead, you can change 
+
+    styles.scss
+
+    mat-form-field.mat-form-field  div.mat-form-field-flex {
+      padding: 0 0 0 .75em;
+    }
+
+
+================================================================================
+
+
+
+
+
+================================================================================
+
+
 
 
 
