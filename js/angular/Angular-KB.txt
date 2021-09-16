@@ -35,6 +35,13 @@ You launch the app by bootstrapping the root module
 Routing
 -------
 
+
+  Good tutorial for nested  3-level routing 
+  https://www.freakyjolly.com/angular-nested-routing-with-multiple-routeroutlet-using-loadchildren-having-own-router-modules-example-application/
+
+  
+
+
   Routing is another name for navigation.
   The router is the mechanism for navigating from view to view.
   Routes tell the router which views to display when a user clicks a link
@@ -351,132 +358,7 @@ RouterLinkActive binding
     </nav>  
 
 
-  the template expression on the right of the (=) contains a space-delimited
-  string of CSS classes that the Router will add when this link is active 
-  (and remove when inactive).
 
-  cascades down through each level of the route tree, so parent and child router
-  links can be active at the same time.
-
-  Can also set the directive to a string of classes:
-
-    [routerLinkActive]="'active fluffy'"
-
-  or bind it to a component property that returns such a string.
-
-
-
-
-
-
-    ActivatedRoute
-    **************
-
-ActivatedRoute is a service provided to each route component that contains 
-route specific information such as:
-
-  - route parameters
-  - static data
-  - resolve data
-  - global query params
-  - the global fragment
-
-The route path and parameters are available through an injected router service
-called ActivatedRoute:
-
-  url
-    an Observable of the route path(s) represented as an array of strings 
-    for each part of the route path
-
-  data
-
-  paramMap
-    an Observable that contains a map of the required and optional parameters
-
-  queryMapParam
-    an Observable that contains a amp of the query parameters available to 
-    all routes.
-
-  fragement
-  outlet
-  routeConfig
-  parent
-  firstChild
-  children
-
-
-  Reading path parameters
-  -----------------------
-
-
-  use ngOnInit() {.. }
-
-
-  /heroes/hero-detail;code=ADADA
-
-  paramMap
-
-    constructor(private route: ActivatedRoute) {
-      console.log('HeroDetailComponent: call me "/heroes/hero-detail"');
-      this.route.paramMap.subscribe(
-        params => {
-          console.log('constructor code=', params.get('code'));
-        }
-      );
-    }
-
-
-  Query parameters
-  ----------------
-
-  /heroes/hero-detail?code=ADADA
-
-
-  Use ngOnInit() - angular guide shows that
-
-  constructor(private route: ActivatedRoute) {
-    console.log('HeroDetailComponent: call me "/heroes/hero-detail"');
-    this.route.queryParamMap.subscribe(
-      params => {
-        console.log('constructor code=', params.get('code'));
-      }
-    );
-  }
-
-
-  ngOnInit() {
-    this.route.queryParamMap
-      .subscribe( (queryParams: ParamMap) => {
-        console.log('ngOnInit: code=', queryParams.get('code'));
-    });
-  }
-
-
-  Passing Static Data
-  --------------------
-
-    const appRoutes: Routes = [
-      { path: 'crisis-center', component: CrisisListComponent },
-      { path: 'hero/:id',      component: HeroDetailComponent },
-      {
-        path: 'heroes',        component: HeroListComponent,
-                               data: { title: 'Heroes List' }
-      },
-      { path: '',              redirectTo: '/heroes', pathMatch: 'full' },
-      { path: '**',           component: PageNotFoundComponent }
-    ];  
-
-
-    The 'data' property in the third route is a place to store arbitrary
-    data associated with this specific route.  
-    This property is accessible with each activated route.
-    You can use 'data' property to store such items as 
-      page titles
-      breadcrumb text
-      and other STATIC data
-
-  Passing Dynamica Data
-  ----------------------
 
 
 
@@ -4066,7 +3948,210 @@ e.g.
 ================================================================================
 
 
+PDF Viewing 
+************
 
+PSPDFKit for Web.
+https://pspdfkit.com/blog/2018/open-pdf-in-your-web-app/
+
+
+Displaying PDF files in your angular app
+ngx-extended-pdf-viewer
+https://www.beyondjava.net/ngx-extended-pdf-viewer
+
+
+
+
+================================================================================
+
+  ExpressionChangedAfterItHasBeenCheckedError
+  --------------------------------------------
+
+  Expression has changed after it was checked
+
+https://blog.angular-university.io/angular-debugging/
+
+most likely happen in lines containing BehaviorSubject and  async
+
+
+     <div class="px-5" *ngIf="(fileUpload.status$ | async) as status">
+
+
+This is because the value of status$ changes while the view is being constructed.
+
+The solution is to allow Angular build the viewer BEFORE updating the model.
+
+Possible solutions:
+
+1. move all intialization into  `ngOnInit()`  method
+
+2. introduce  delay(0) which will push the update into the next JavaScrtip VM cycle.
+
+
+  private uploadFile(): void {
+    this.uploadStatus$ = this.fileUploadService.upload(
+      this.file,
+      this.uploadEndpointUrl,
+      this.referenceId
+    )
+    .pipe(
+      delay(0), // addresses ExpressionChangedAfterItHasBeenCheckedError <======
+      tap(status => {
+        this.statusSubject.next(status);
+        this.statusChange.next(status);
+      })  // Update the status output
+    );
+  }
+
+
+
+
+
+
+================================================================================
+
+  HttpClient
+  **********
+
+getAllBooks(): Observable<Book[]> {
+  return this.http.get<Book[]>('/api/books');
+}
+
+this.dataService.getAllBooks()
+  .subscribe(
+    (data: Book[]) => this.allBooks = data,
+    (err: any) => console.log(err),
+    () => console.log('All done getting books')
+  );
+
+
+
+================================================================================
+
+  HTTP Interceptors
+  *****************
+
+http://jpapa.me/ng-http-int
+http://jpapa.me/code-int
+
+
+@Injectable()
+export class AuthInterceptor implements jhttpInterceptor {
+  
+  intercept(req: JHttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+    const modifiedRequest = req.clone();
+    // change modifiedRequest
+    return next.handle(modifiedRequest)
+      .pipe(
+        .tap(event => {
+          if (event instanceof HttpResponse) {
+            // modify the HttpResponse here
+          }
+        })
+      );
+  }
+}
+
+NOTE: we do NOT provide interceptors in the ROOT.
+
+we provide in the same NG Module where the HTTP client is imported.
+
+we modify the clone of the original request - it is immutable - we create a clone of it.
+
+
+ORDER is important with Interceptors
+------------------------------------
+
+1. Interceptors are optional dependencies of HttpClient
+2. you must provide them in the same injector that provides HttpClient
+3. Barrels (index.ts) are helpful to export and organize interceptors
+4. Interceptors fire one at a time, in the order they are provided
+
+
+interceptors/index.ts
+----------------------
+
+export const httpInterceptorProviders = [
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: CSRFInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: BusyInterceptor, multi: true },
+
+];
+
+
+app.module.ts
+-------------
+
+@NgModule({
+  // ... 
+  imports: [
+    BrowserModule,
+    HttpClientModule
+  ],
+  providers: [
+    httpInterceptorProviders
+  ]
+})
+export class AppModule {}
+
+
+
+
+Interceptor to check responses
+-------------------------------
+
+@Injectable
+export class LogHttpInterceptor implements HttpInterceptor {
+  
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+    const started = Date.now();
+    this.logRequest(req);
+    return next.handle(req).pipe(
+      tap(event) => this.logResponse(event, req, started));
+    );
+  }
+}
+
+
+
+HttpContext and HttpContextToken
+----------------------------------
+
+context object being passed to the interceptor allowing you to more precisely 
+configure the interceptor behavior.
+
+It is not passed along with the actuall HTTP request.
+
+Usage:
+
+// in interceptor
+export const OPTION_1 = new HttpContextToken<number>(() => 42); // default token value
+
+// in the service
+let my_context: HttpContext = new HttpContext();
+my_context.set(OPTION_1, 13);
+
+this.http.get('/api/books', {
+  context: my_context
+});  // <-- passing the context object
+
+
+// in interceptor
+
+let first_option: number = req.context.get<number>(OPTION_1);
+
+
+
+
+
+================================================================================
+
+  Adding Access Token with the Authentication Interceptor
+  *******************************************************
+
+https://code-maze.com/secure-angular-calls-to-webapi-using-access-token/
 
 
 ================================================================================

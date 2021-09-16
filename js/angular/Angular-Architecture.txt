@@ -64,6 +64,238 @@ To resolve the issue you need to create a specific service module and import tha
 
 ==============================================================================
 
+  Angular Routing Best Practices
+  ******************************
+
+https://wesleygrimes.com/angular/2019/02/24/angular-routing-best-practices-for-enterprise-applications.html
+
+
+==============================================================================
+
+  Angular Service Injectables  Service Singleton
+  **********************************************
+
+The most important thing to understand here — adding any Injectable (or InjectionToken) to the @NgModule.providers list for any Eager and Lazy module pair will duplicate such Injectable!
+
+So, first step is not to add services that should be singletons to @NgModule.providers list of any module.
+
+
+Angular will create new instances for any of InjectionToken or Injectable in cases of using:
+
+lazy loaded modules
+child injector modules
+
+https://angular.io/guide/ngmodule-faq#why-is-a-service-provided-in-a-lazy-loaded-module-visible-only-to-that-module
+
+Q: Why is a service provided in a lazy-loaded module visible only to that module?
+A: Unlike providers of the modules loaded at launch, providers of lazy-loaded modules are module-scoped.
+
+Q: What if two modules provide the same service?
+A: When two imported modules, loaded at the same time, list a provider with the same token, the second module's provider "wins". That's because both providers are added to the same injector.
+
+
+Q: How do I restrict service scope to a module?
+
+A: Load the module lazily if you can. Angular gives a lazy-loaded module its own child injector. The module's providers are visible only within the component tree created with this injector.
+
+If you must load the module eagerly, when the application starts, provide the service in a component instead.
+
+
+
+Making sure you have a Singleton
+--------------------------------
+
+
+The most important thing to understand here — adding any Injectable (or InjectionToken) to the @NgModule.providers list for any Eager and Lazy module pair will duplicate such Injectable!
+
+
+==>  So, 
+  
+  first step is not to add services that should be singletons to @NgModule.providers list of any module.
+
+You should choose which strategy to use, because there are two with its’ pros and cons:
+
+static forRoot() @NgModule method
+@Injectable({ providedIn: ‘root’ })
+
+
+  forRoot()
+  *********
+
+forRoot method is a kind of agreement/convention between Angular developers to call this method in the root module only (AppModule for example), so any service will be provided only once.
+
+For this technique you should create module and implement static forRoot(): ModuleWithProviders method.
+
+
+
+  @NgModule({
+    imports: [CommonModule]
+  })
+  export class SettingsModule {
+    public static forRoot(): ModuleWithProviders {
+      return {
+        ngModule: SettingsModule,
+        providers: [SettingsService]
+      };
+    }
+  }
+
+
+  providedIn: 'root'
+  ******************
+
+
+When you mark Injectable as provided in root, Angular resolver will know that such Injectable, used in lazy module, was added to the root module, and will look for it in the root injector, not newly created lazy loaded module injector (default behavior).
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MySingletonService {
+  . . .
+}
+
+
+
+
+
+Q: What if I use forRoot in combination with providedIn: 'root'?
+A: There is no differences between using: forRoot or providedIn or forRoot+providedIn. Service will be created only once.
+
+
+What if I use forRoot and providers list?
+Service will be duplicated.
+
+What if I use providedIn and providers list?
+Service will be duplicated.
+
+
+
+Root Injector Guard
+---------------------------
+
+
+https://angular.io/guide/singleton-services
+
+To guard against a lazy loaded module re-importing GreetingModule, add the following GreetingModule constructor.
+
+src/app/greeting/greeting.module.ts
+content_copy
+constructor(@Optional() @SkipSelf() parentModule?: GreetingModule) {
+  if (parentModule) {
+    throw new Error(
+      'GreetingModule is already loaded. Import it in the AppModule only');
+  }
+}
+
+
+
+https://indepth.dev/posts/1148/how-to-avoid-angular-injectable-instances-duplication
+
+
+The singleton guard
+You can easily get to know if somebody created the second instance of your service.
+
+<>
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GuardedSingletonService {
+    constructor(@Optional() @SkipSelf() parent?: GuardedSingletonService) {
+      if (parent) {
+        throw Error(
+          `[GuardedSingletonService]: trying to create multiple instances,
+          but this service should be a singleton.`
+        );
+      }
+    }
+  }
+
+
+Throws error if instance already exits
+
+
+OR 
+
+The guard can be implemented as a base class:
+
+
+The singleton guard
+You can easily get to know if somebody created the second instance of your service.
+
+><
+export class RootInjectorGuard {
+  constructor(type: Type<any>) {
+    const parent = inject(type, InjectFlags.Optional | InjectFlags.SkipSelf);
+
+    if (parent) {
+      throw Error(`[${type}]: trying to create multiple instances,
+      but this service should be a singleton.`);
+    }
+  }
+}
+
+
+Usage:
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MySingletonService extends RootInjectorGuard {
+  constructor() {
+    super(MySingletonService);
+  }
+}
+
+
+
+
+
+  /**
+   * IdleTimeoutControllerService constructor.
+   * @param injectedConfig config
+   * @param logoutUrl logout URL
+   * @param _idle idle
+   * @param _dialog dialog
+   * @param authService auth service implementation
+   * @param parent This helps us look for circular dependencies.
+   * The constructor tells Angular to inject IdleTimeoutControllerService into itself.
+   * The injection would be circular if Angular looked for this service in the current
+   * injector, but the @SkipSerf() decorator means "look for it an ancestor injector,
+   * above me in the injector hierarchy".
+   * If 'parent' - another instance is found - you get an error.
+   * @Optional() decorator means not finding 'parent' is OK - we have a singleton.
+   */
+  constructor(@Inject('idleTimeoutConfiguration') injectedConfig: IdleTimeoutConfiguration,
+              @Inject('logoutUrl') logoutUrl: string,
+              private _idle: Idle,
+              private _dialog: MatDialog,
+              private authService: AuthenticationService,
+              @Optional() @SkipSelf() parent?: IdleTimeoutControllerService) {
+
+    this._logoutUrl = logoutUrl;
+    this._config = this.validateConfiguration(injectedConfig);
+    this.initializeIdleTimeout(this._config);
+    this.subscribeToIdleTimeoutValues();
+    this._idle.watch();
+    this._isEnabled = true;
+
+    if (parent) {
+      throw Error(
+        `[IdleTimeoutControllerService]: trying to create multiple instances,
+        but this service should be a singleton.`
+      );
+    }
+  }
+
+
+
+
+
+
+==============================================================================
+
   Component
 
   @Input

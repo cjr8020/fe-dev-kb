@@ -14,6 +14,21 @@ border: 2px solid red;
 
 ================================================================================
 
+	use `inset` shorthand
+	---------------------
+
+insert in CSS is a useful shorthand for the four properties:
+
+	top, left, right, bottom
+
+div{
+  position: absolute;
+  inset: 0;  // all four have the same value
+}
+
+
+================================================================================
+
 	asterisk (*) selector
 	----------------------
 

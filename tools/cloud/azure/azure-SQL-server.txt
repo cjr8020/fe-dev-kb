@@ -1,0 +1,22 @@
+
+
+
+
+
+
+=========================================================================
+
+Quickstart: Create an Azure SQL Database single database
+----------------------------------------
+
+https://docs.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?tabs=azure-portal
+
+
+Sample DB query
+
+SELECT TOP 20 pc.Name as CategoryName, p.name as ProductName
+FROM SalesLT.ProductCategory pc
+JOIN SalesLT.Product p
+ON pc.productcategoryid = p.productcategoryid;
+
+=========================================================================

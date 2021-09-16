@@ -53,6 +53,48 @@ it is not called during tests.
 
 ================================================================================
 
+jasmine.createSpyObj with properties
+************************************
+
+https://stackoverflow.com/questions/64560390/jasmine-createspyobj-with-properties
+
+let fakeValue = true;
+const serviceSpy= jasmine.createSpyObj('MyService', ['method'], {'property': fakeValue});
+
+The problem here is that it's a one-time set at creation. If I want to change the expected value in the test, it does not work.
+
+
+A:
+
+You can create a spy object with several properties on it quickly by passing an array or hash of properties as a third argument to createSpyObj. In this case you won’t have a reference to the created spies, so if you need to change their spy strategies later, you will have to use the Object.getOwnPropertyDescriptor approach.
+
+  it("creates a spy object with properties", function() {
+    let obj = createSpyObj("myObject", {}, { x: 3, y: 4 });
+    expect(obj.x).toEqual(3);
+
+    Object.getOwnPropertyDescriptor(obj, "x").get.and.returnValue(7);
+    expect(obj.x).toEqual(7);
+  });
+
+
+A:
+
+I just added a function so I could do:
+
+spyPropertyGetter(spy, 'propName').and.returnValue(...)
+
+Which is defined as:
+
+function spyPropertyGetter<T, K extends keyof T>(
+  spyObj: jasmine.SpyObj<T>,
+  propName: K
+): jasmine.Spy<() => T[K]> {
+  return Object.getOwnPropertyDescriptor(spyObj, propName)?.get as jasmine.Spy<() => T[K]>;
+}
+
+
+================================================================================
+
   mock REST API backend
   *********************
 

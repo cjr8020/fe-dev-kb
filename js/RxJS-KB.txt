@@ -240,6 +240,12 @@ these are equivalent:
   Error Handling
   --------------
 
+catchError 
+
+docs:
+https://blog.angular-university.io/rxjs-error-handling/
+
+
 Two common strategies:
 
   Catch and Replace
@@ -258,8 +264,6 @@ Two common strategies:
 
     catches the error, does something useful, 
     and rethrows an error Observable
-
-
 
 
 

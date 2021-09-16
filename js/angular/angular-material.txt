@@ -747,6 +747,42 @@ connect() method
 
 
 
+
+
+mat-table elevation
+----------------------
+
+https://stackoverflow.com/questions/54626039/how-to-change-elvation-of-a-row-in-mat-table
+https://stackblitz.com/edit/angular-ecrvzg?embed=1&file=app/table-basic-example.css
+
+
+
+
+row box shadow
+--------------
+https://stackoverflow.com/questions/57524201/need-box-shadow-for-mat-row-angular
+https://stackblitz.com/edit/angular-rows-with-boxshadow
+
+
+
+================================================================================
+
+  mat-elevation helpers
+  ---------------------
+
+The core-theme Sass mixin, described in the [theming guide][], emits CSS classes for applying elevation. These classes follow the pattern 
+
+mat-elevation-z#, 
+
+where # is the elevation number you want, from 0 to 24. 
+
+These predefined classes use the CSS box-shadow settings defined by the Material Design specification.
+
+You can dynamically change elevation on an element by swapping elevation CSS classes.
+
+<div [class.mat-elevation-z2]="!isActive" [class.mat-elevation-z8]="isActive"></div>
+
+
 ================================================================================
 
   how to center mat-spinner
@@ -775,6 +811,8 @@ Follow the below steps to display mat-spinner, overlay over entire webpage.
 2. Place it inside an overlay div element
 
 https://www.angularjswiki.com/angular/creating-progress-spinner-in-angular/
+
+
 
 ================================================================================
 

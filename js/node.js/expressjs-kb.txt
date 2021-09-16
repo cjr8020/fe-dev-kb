@@ -17,6 +17,178 @@ create an app
 
 ===============================================================================
 
+	express-fileupload
+	******************
+
+https://www.npmjs.com/package/express-fileupload
+https://github.com/richardgirges/express-fileupload/tree/master/example#multi-file-upload
+
+https://www.bezkoder.com/node-js-express-file-upload/
+
+Basic File Upload
+-----------------
+
+Your HTML file upload form:
+
+<html>
+  <body>
+    <form ref='uploadForm' 
+      id='uploadForm' 
+      action='http://localhost:8000/upload' 
+      method='post' 
+      encType="multipart/form-data">
+        <input type="file" name="sampleFile" />
+        <input type='submit' value='Upload!' />
+    </form>     
+  </body>
+</html>
+
+
+const express = require('express');
+const fileUpload = require('express-fileupload');
+const app = express();
+
+// default options
+app.use(fileUpload());
+
+app.post('/upload', function(req, res) {
+  let sampleFile;
+  let uploadPath;
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  sampleFile = req.files.sampleFile;
+  uploadPath = __dirname + '/somewhere/on/your/server/' + sampleFile.name;
+
+  // Use the mv() method to place the file somewhere on your server
+  sampleFile.mv(uploadPath, function(err) {
+    if (err)
+      return res.status(500).send(err);
+
+    res.send('File uploaded!');
+  });
+});
+
+
+
+Multi-File Upload
+-----------------
+
+express-fileupload supports multiple file uploads at the same time.
+
+Let's say you have three files in your form, each of the inputs with the name my_profile_pic, my_pet, and my_cover_photo:
+
+<input type="file" name="my_profile_pic" />
+<input type="file" name="my_pet" />
+<input type="file" name="my_cover_photo" />
+
+
+These uploaded files would be accessible like so:
+
+app.post('/upload', function(req, res) {
+  // Uploaded files:
+  console.log(req.files.my_profile_pic.name);
+  console.log(req.files.my_pet.name);
+  console.log(req.files.my_cover_photo.name);
+});
+
+
+Get file list as Array and  number of file sent for upload
+-----------------------------------------------------------
+
+
+If you want to retrieve filenames from the req.files, you could just map that over it like that:
+
+var filenames = req.files.map(function(file) {
+  return file.filename; // or file.originalname
+});
+
+
+or 
+
+    console.log(`===> Files received ${Object.keys(req.files).length}`);
+    console.log(`===> File list ${Object.keys(req.files)}`);
+
+
+
+
+how do i access the other text input fields of the form
+--------------------------------------------------------
+
+
+client 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Testing upload</title>
+</head>
+<body>
+    <form action="/some" method="post" enctype="multipart/form-data">
+        <input type="text" name="firstName"> <br>
+        <input type="text" name="lastName"> <br>
+        <input type="file" name="pho" > <br>
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>
+
+
+
+server
+
+
+const express = require("express");
+const expressFileUpload = require("express-fileupload");
+
+const app = express();
+const port = 8585;
+
+app.use(express.static("./public"));
+
+app.post("/some", expressFileUpload(), async function (req, res) {
+    await req.files["pho"].mv("./files/some.png");
+    res.end("End.");
+});
+
+app.listen(port, () => {
+    console.log(`Listening at port ${port}`);
+});
+
+
+
+
+How to give name to a Blob uploaded as FormData a filename
+----------------------------------------------------------
+
+Use:
+https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+
+	form.append("blob", blob, filename);
+
+// Turns out getAsFile will return a blob, not a file
+var blob = event.clipboardData.items[0].getAsFile(), 
+    form = new FormData(),
+    request = new XMLHttpRequest();
+form.append("blob",blob,"blob"); // <-=====X
+request.open(
+            "POST",
+            "/upload",
+            true
+        );
+request.send(form);
+
+
+
+===============================================================================
+
 	Basic routing
 	*************
 

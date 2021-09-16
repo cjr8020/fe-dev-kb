@@ -4,6 +4,49 @@
 
 ===============================================================================
 
+How to give name to a Blob uploaded as FormData a filename
+----------------------------------------------------------
+
+Use:
+https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+
+	form.append("blob", blob, filename);
+
+// Turns out getAsFile will return a blob, not a file
+var blob = event.clipboardData.items[0].getAsFile(), 
+    form = new FormData(),
+    request = new XMLHttpRequest();
+form.append("blob",blob,"blob"); // <-=====X
+request.open(
+            "POST",
+            "/upload",
+            true
+        );
+request.send(form);
+
+
+===============================================================================
+
+	Generic Object in javascript
+	****************************
+
+Instead of Object, use the non-primitive object type (added in TypeScript 2.2).
+
+
+let myVariable: object = { fun: 1 };
+
+
+this does not work eg: const me: object = {}; me.fun = 1 Will throw an error. 
+Property 'fun' does not exist on type 'object'.
+
+
+But you can do 
+
+	let myVariable: object = { fun: 1 };
+
+
+===============================================================================
+
 	Tests
 	***********
 
@@ -14,6 +57,46 @@ var obj = {};
 return Object.keys(obj).length; //returns 0 if empty or an integer > 0 if non-empty
 
 
+
+===============================================================================
+
+	Detect Internet Speed
+	---------------------
+
+You can easily detect internet speed in JavaScript by using the navigator object.
+
+navigator.connection.downlink;
+10.55
+
+
+===============================================================================
+
+	prevent user from pasting text
+	------------------------------
+
+you can easily do that in JavaScript using a paste event listener
+
+	<input type="text"></input>
+	<script>
+	//selecting the input.
+	  const input = document.querySelector('input');
+	  
+	//prevent the user to paste text by using the paste eventListener.
+	  input.addEventListener("paste", function(e){
+	    e.preventDefault()
+	  })
+	  
+	</script>
+
+
+
+===============================================================================
+
+	vibrate your phone
+	------------------
+
+//vibrating the device for 500 milliseconds
+window.navigator.vibrate(500);
 
 ===============================================================================
 
