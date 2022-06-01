@@ -1,0 +1,12 @@
+tag
+-----
+
+https://design4users.com/ux-design-glossary-navigation-elements-icons-search-tags/
+
+Tags are actually pieces of metadata that provide quick access to specific categories of content so they support navigation with the additional way of content classification. Moreover, tags are often the elements that users create by themselves comparing to the names of categories that are fixed by the website and can’t be changed by users.
+
+
+Tags are widely used on the platforms based on user-generated content: when you upload the photo to the stock, post on the social networks or write on the blog, you can mark your content with the particular keywords which will then unite all the pieces of content marked with the tag. 
+
+
+

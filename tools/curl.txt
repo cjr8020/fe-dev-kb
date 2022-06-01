@@ -1,0 +1,23 @@
+curl
+
+
+view headers only
+------------------
+
+
+curl -v -s http://awesome-site.com 1> /dev/null
+
+(you need the -s to stop curl from "helpfully" printing progress bars as well)
+
+
+
+testing CORS headers with curl
+-------------------------------
+
+https://reqbin.com/req/c-taimahsa/curl-cors-request
+
+
+curl -v -s -H "Origin: https://example.reqbin.com"  https://reqbin.com/echo 1 > /dev/null
+
+
+< Access-Control-Allow-Origin: https://example.reqbin.com

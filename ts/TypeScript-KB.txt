@@ -632,6 +632,13 @@ Coercing
 
 
 
+non-null assertion operator
+-----------------------------
+
+
+A new ! post-fix expression operator may be used to assert that its operand is non-null and non-undefined in contexts where the type checker is unable to conclude that fact. 
+
+Specifically, the operation x! produces a value of the type of x with null and undefined excluded. Similar to type assertions of the forms <T>x and x as T, the ! non-null assertion operator is simply removed in the emitted JavaScript code.
 
 
 
@@ -1252,12 +1259,94 @@ Default parameter for object parameter type:
 Spread Operator
 ---------------
   (...)
-  turns iterable values into arguments, 
-  e.g. turns an array into a list an argument list:
 
-    > Math.max(-1, 5, 11, 3)
-    or
-    > Math.max(...[-1, 5, 11, 3]); 
+  Useful when we want to:
+
+  - create a copy of an object
+  - extend an object via copy with additional properties
+  - destruct an array and pass it as parameters
+  - avoid same definition
+
+1. creating a copy of an object
+
+    Spread operator copies top-level properties/values.
+    If the object has an object as one of its properties, its value is just a reference.
+
+
+
+      const obj = {
+        foo: 123,
+        hoge: 44,
+        name: "obj-name",
+      };
+      console.log(obj);
+      // { foo: 123, hoge: 44, name: 'obj-name' }
+      const spread = { ...obj };
+      console.log(spread);
+      // { foo: 123, hoge: 44, name: 'obj-name' }
+      console.log(`original === spread: ${obj === spread}`);
+      // original === spread: false
+
+2. Extend object using the spread operator with additional properties and changed values
+
+
+    const obj = {
+        foo: 123,
+        hoge: 44,
+        name: "obj-name",
+    };
+
+    const newObj = { ...obj, added: "HEY" };
+    console.log(newObj);
+    // { foo: 123, hoge: 44, name: 'obj-name', added: 'HEY' }
+
+    const updatedObj = { ...obj, foo: "Updated foo" };
+    console.log(updatedObj);
+    // { foo: 'Updated foo', hoge: 44, name: 'obj-name' }
+
+
+3. passing values from array
+
+
+    const array = ["Hey", "Ho", "Hello"];
+    const array2 = ["Boo", "Yeah", "Oops"];
+    console.log([array, ...array2]);
+    // [ [ 'Hey', 'Ho', 'Hello' ], 'Boo', 'Yeah', 'Oops' ]
+    console.log([...array, ...array2]);
+    // [ 'Hey', 'Ho', 'Hello', 'Boo', 'Yeah', 'Oops' ]
+
+The following return the same result
+
+    array = [...array, ...array2, ...array3]
+    array.concat(array2, array3)
+    array = [array, array2, array3].flat()
+
+
+4. Rest parameters - use spread operator for function arguments 
+
+
+If we don’t know how many arguments are specified in a function we can use these three dots … . 
+The argument must be an array in this case.
+
+
+    function doSomething(...args: string[]) {
+        args.forEach((value: string, index: number) => {
+            console.log(`${index}:${value}`);
+        });
+    }
+    const strs = "HELLO";
+    const array = ["chair", "desk", "smartphone"];
+    doSomething(...strs);
+    // 0:H
+    // 1:E
+    // 2:L
+    // 3:L
+    // 4:O
+    doSomething(...array);
+    // 0:chair
+    // 1:desk
+    // 2:smartphone
+
 
 
 Rest (of the) Parameters
@@ -1495,6 +1584,36 @@ To fix the example above, add a couple of interfaces to make types clearer:
 
 Arrow Functions
 ----------------
+
+Arrow functions allow us to write shorter function syntax.
+
+BEFORE:
+
+  hello = function() {
+    return "Hello World!";
+  }
+
+with ARROW function:
+
+  hello = () => {
+    return "Hello World!";
+  }
+
+It gets shorter =>  If the function has only one statement, and the statement returns a value,
+you can remove the brackets and the return word:
+
+  hello = () => "hello world"; // This works only if the function has only one statement.
+
+
+If you have params, you can pass them inside the parens:
+
+  hello = (val) => "Hello " val;
+
+If you have one param, you can skip the parens:
+
+  hello = val => "Hello " val;
+
+
 
 Basic Syntax:
 

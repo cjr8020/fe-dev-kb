@@ -2,6 +2,33 @@
 
 ================================================================================
 
+  Semantic HTML
+  -------------
+
+Semantic elements = elements with a meaning.
+
+Examples of non-semantic elements: <div> and <span> - Tells nothing about its content.
+
+Semantic elements in HTML
+
+<article>
+<aside>
+<details>
+<figcaption>
+<figure>
+<footer>
+<header>
+<main>
+<mark>
+<nav>
+<section>
+<summary>
+<time>
+
+
+
+================================================================================
+
   HTML5 Structuring
   *****************
 
@@ -161,6 +188,9 @@ section
 -------
 
   is a structural HTML element used to group together related elements.
+
+  A section is a thematic grouping of content, typically with a heading.
+  A web page could normally be split into sections for introduction, content, and contact information.
 
   the HTML <section> element represents a standalone section of functionality 
   contained within an HTML document, typically with a heading.
@@ -456,6 +486,48 @@ All of the above urls are available over https too. Just change http to https in
 Additionally, the slightly shorter hostname i3.ytimg.com works in place of img.youtube.com in the example urls above.
 
 Alternatively, you can use the YouTube Data API (v3) to get thumbnail images.
+
+
+=================================================================  
+
+open link in new tab
+--------------------
+
+
+To create a new link 
+
+<p>Check out <a href="https://www.freecodecamp.org/">freeCodeCamp</a>.</p>
+
+To open link in a new tab
+
+<p>Check out <a href="https://www.freecodecamp.org/" target="_blank" rel="noopener noreferrer">freeCodeCamp</a>.</p>
+
+
+Setting it to noopener noreferrer is to prevent a type of phishing known as tabnabbing.
+
+Tabnabbing, sometimes called reverse tabnabbing, is an exploit that uses the browser's default behavior with target="_blank" to gain partial access to your page through the window.object API.
+
+With tabnabbing, a page that you link to could cause your page to redirect to a fake login page. This would be hard for most users to notice because the focus would be on the tab that just opened – not the original tab with your page.
+
+Then when a person switches back to the tab with your page, they would see the fake login page instead and might enter their login details.
+
+
+
+
+=================================================================  
+
+  Encode Decode Unicode Entities
+
+
+https://www.online-toolz.com/tools/text-unicode-entities-convertor.php 
+
+=================================================================  
+
+  Special Characters in HTML
+  ---------------------------
+
+©  Copyright Sign
+https://www.toptal.com/designers/htmlarrows/symbols/copyright-sign/
 
 
 =================================================================  

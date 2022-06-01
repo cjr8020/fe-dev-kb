@@ -1,0 +1,61 @@
+
+
+
+Publish an Angular Application to Azure static web apps with Azure Devops
+****************************
+
+https://nicolgit.github.io/how-deploy-angular-app-to-azure-appservice-running-linux-from-github/
+https://sajeetharan.com/2021/04/02/azure-static-web-apps-with-azure-devops/
+
+
+$ ng new .. 
+
+
+
+Step 2 : Import your static web application to Azure Devops repository
+----------------------------------------------------------------------
+
+
+$ git remote add origin https://Standard-Insurance@dev.azure.com/Standard-Insurance/Arch-Eng-Discovery-POC/_git/hello-ng-v13
+
+$ git push -u origin --all
+
+
+
+
+Step 3 : Create a static web app on Azure
+
+Create an App Service plan and App Service running Linux and node.js
+---------------------------------------------------------------------
+
+a resource group
+an App Service plan
+an App Service
+
+
+app name
+Publish:  Docker Container
+OS:  Linux
+Region: 
+
+App Service Plan
+
+================================================================================
+
+Per my experience, maybe you miss any dependencies required in your PHP scripts. You can login the KUDU console site of your web app to check the application's completeness. The URL of Kudu console site should be https://<your_site_name>.scm.azurewebsites.net.
+
+================================================================================
+
+
+Angular SPA,  CORS and Azure APIM with Function backend
+********************************************************
+
+https://kvaes.wordpress.com/2018/04/04/when-your-single-page-app-needs-cors-and-meets-azure-api-management-with-a-function-backend/
+
+
+3 Ways to Fix the CORS Error — and How the Access-Control-Allow-Origin Header Works
+https://medium.com/@dtkatz/3-ways-to-fix-the-cors-error-and-how-access-control-allow-origin-works-d97d55946d9
+
+
+
+================================================================================

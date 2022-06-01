@@ -106,3 +106,35 @@ The Paragraph font size can be 15 pixels for example, but the line height should
 
 
 ================================================================================
+
+Grid for layout, Flexbox for components
+https://ishadeed.com/article/grid-layout-flexbox-components/
+
+
+There is no direct way to decide between CSS grid and flexbox. 
+Adding on that, there is no correct or incorrect way to use them. 
+This article is a kind of guide that recommends using a technique for a specific use-case. 
+
+
+How To Decide Which To Use
+---------------------------
+
+Here are some initial kick-off questions that I ask myself when choosing between them:
+
+How the component child items are displayed? Inline or as columns and rows?
+How the component is expected to work on various screen sizes?
+
+
+Probably flexbox:
+
+Most of the time, if the component you are viewing has all of its child items displayed inline, then most probably flexbox is the best solution here. 
+
+
+Probably CSS grid
+
+However, if you see columns and rows, then CSS grid is the solution for your case
+
+
+
+
+================================================================================

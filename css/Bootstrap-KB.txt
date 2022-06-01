@@ -6,6 +6,12 @@
 @@@@@@@@@@@@@@@@@@
 
 
+Resources:
+
+https://startbootstrap.com/template/sb-admin
+
+
+
 4 principles of Graphic Design
 
 C - Contrast
@@ -26,6 +32,62 @@ https://medium.com/@sreejithezhakkad/how-to-start-a-web-app-project-using-bootst
 
 
 
+
+
+================================================================================
+
+  Bootstrap Containers 
+  --------------------
+
+container
+container-fluid
+container-sm md lg etc.. 
+
+
+  Rows
+
+class="row"
+
+rows will stack
+
+
+  col
+
+col-
+col-sm
+col-md
+etc.. 
+
+
+<div class="row">
+  <div class="col-md-8 col-sm-4">
+    Hello, I want 8 columns please!
+  </div>
+  <div class="col-md-4  col-sm-8">
+    I'll take 4 if that's OK...
+  </div>
+</div>
+
+example: the first col will take 8  and the 2nd - 4 
+but only until  'md' breakpoint.
+
+after that the default will apply - all element will be placed in 1 column.
+
+
+<div class="row">
+  <div class="col-sm-2">
+    Element 1 of 3 (row 4)
+  </div>
+  <div class="col-sm-7">
+    Element 2 of 3 (row 4)
+  </div>
+  <div class="col-sm-3">
+    Element 3 of 3 (row 4)
+  </div>
+</div>
+
+this arrangement above will be applied starting with sm breakpoint
+but everything below will cause the elements to stack
 
 
 ================================================================================
@@ -391,6 +453,22 @@ Examples:
   padding: $spacer !important;
 }
 
+.my-5 {
+  // sets margins (m),  *-top and *-bottom (y),  size 5  = $spacer * 3
+}
+
+
+Where size is one of:
+
+0 - for classes that eliminate the margin or padding by setting it to 0
+1 - (by default) for classes that set the margin or padding to $spacer * .25
+2 - (by default) for classes that set the margin or padding to $spacer * .5
+3 - (by default) for classes that set the margin or padding to $spacer
+4 - (by default) for classes that set the margin or padding to $spacer * 1.5
+5 - (by default) for classes that set the margin or padding to $spacer * 3
+auto - for classes that set the margin to auto
+
+
 ---------------------------------------------------------------
 
   Flexbox
@@ -624,6 +702,47 @@ d) reorder columns starting with "sm" and up using push/pull classes:
 <section class="col-sm-8    col-sm-push-2">
 <aside   class="col-sm-2    col-sm-pull-8">
 <aside   class="col-sm-2>
+
+
+==========================================================================================
+
+  flex-*-column
+  flex-*-row
+
+
+
+      <div class="container mt-3">
+        <h2>Example</h2>
+        <p>Default </p>
+        <div class="d-flex flex-column mb-3">
+          <div class="p-2 bg-primary">One</div>
+          <div class="p-2 bg-secondary">Two</div>
+          <div class="p-2 bg-info">Three</div>
+        </div>
+
+        <p>Flex on different screen size (Small)</p>
+        <div class="d-flex flex-sm-column mb-3">
+          <div class="p-2 bg-warning">One</div>
+          <div class="p-2 bg-danger">Two</div>
+          <div class="p-2 bg-secondary">Three</div>
+        </div>
+
+        <p>Flex on different screen size (Medium)</p>
+        <div class="d-flex flex-md-column mb-3">
+          <div class="p-2 bg-warning">One</div>
+          <div class="p-2 bg-danger">Two</div>
+          <div class="p-2 bg-secondary">Three</div>
+        </div>
+
+        <p>Flex on different screen size (Large)</p>
+        <div class="d-flex flex-lg-column mb-3">
+          <div class="p-2 bg-primary">One</div>
+          <div class="p-2 bg-secondary">Two</div>
+          <div class="p-2 bg-danger">Three</div>
+        </div>
+
+      </div>  
+
 
 
 ==========================================================================================

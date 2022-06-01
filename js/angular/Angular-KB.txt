@@ -465,6 +465,26 @@ Angular modules and JavaScript modules
     a user clicks to choose a hero from that list.
 
 
+
+Component properties
+====================
+
+host
+----
+  adds class to host tag
+
+  @Component({
+    host: {
+      'class': 'myclass1 myclass2 myclass3' 
+    }
+  })
+  export class MyTagComponent {}
+
+  View code:  <mytag></mytag>
+
+  Result:  <mytag class="myclass1 myclass2 myclass3"></mytag>
+
+
 3. Templates
 ----------------------------------------
 
@@ -823,6 +843,19 @@ Type
   1. structural
   2. attribute
 
+
+Directives do not require a view.  They should be responsible for rendering 
+logic: adding/removing elements and adding custom behavior to DOM elements or components.
+
+
+Properties of Directives
+------------------------
+
+
+[host] - adds classes to host tag
+
+
+
   structural directives
   ...................................
 
@@ -1028,6 +1061,9 @@ Type
 
 
 
+
+
+
 7. Services
 ----------------------------------------
 
@@ -1195,6 +1231,10 @@ Angular ships with several pipes and we can write out own.
   Async Pipe
   ----------
 
+reactive templates with Async Pipe
+https://blog.angular-university.io/angular-reactive-templates/
+
+
 Usage:
 
   <div>{{ observableTime | async }}</div>
@@ -1246,6 +1286,43 @@ Purpose:
         <div *ngSwitchDefault>Showing Default Data</div>
 
       </div>
+
+
+  Access array elements in async pipe
+  ------------------------------------
+
+https://stackoverflow.com/questions/42614267/access-first-item-of-array-using-async-pipe-in-angular-2
+
+I was able to access the Observable's first member by using angular's async pipe.
+
+ypurComponent.html
+
+(yourObservable | async | slice :0:1)
+
+Q: How to access the first item of an array when using async pipe?
+
+  <nav-tabs
+     [tabs]="(pageTabs$ | async)"
+     [activeTab]="(pageTabs$ | async)[0]">
+  </nav-tabs>
+
+I've tried (pageTabs$ | async)[0] but it didn't work.
+
+Found an even easier way of doing it (without creating a custom pipe): add a map to the observable.
+
+component.ts
+
+  this.activeTab$ = this.pageTabs$.map(x => x[0]);
+
+component.html
+
+  <nav-tabs
+     [tabs]="(pageTabs$ | async)"
+     [activeTab]="(activeTab$ | async)">
+  </nav-tabs>
+
+
+
 
 
 Providers
@@ -1772,7 +1849,16 @@ ngOnInit
   available.
 
 
+ngDoCheck()
 
+  detect and act upon changes that Angular cannot or won't detect on its own.
+  Called immediatly after
+
+    ngOnChanges() on every change detection run, 
+
+  and immediately after 
+
+    ngOnInit() on the first run
 
 
 ==============================================================================
@@ -2048,9 +2134,26 @@ ngModel
 
 
 ngClass
+----------------------------------------------------------
+
 
 
 ngClass provides several ways to add classes conditionally
+
+
+<div [ngClass]="{ 'classname' : condition }"></div>
+
+
+    [ngClass]="{
+      'sfg-tooltip-content__wrapper--large': tooltipDescription.length > 55,
+      'sfg-tooltip-content__wrapper--base': tooltipMode === 'base',
+      'sfg-tooltip-content__wrapper--brand': tooltipMode === 'brand',
+      'sfg-tooltip-content__wrapper--good': tooltipMode === 'good',
+      'sfg-tooltip-content__wrapper--warning': tooltipMode === 'warning',
+      'sfg-tooltip-content__wrapper--bad': tooltipMode === 'bad'
+    }"
+
+
 
 type one
 
@@ -2333,6 +2436,24 @@ Custom Attribute directives
     
 
 
+use @HostBinding to set class on host component
+-----------------------------------------------
+
+
+  @HostBinding('class.left-bar') leftBarClass = true;
+  
+or
+
+  @HostBinding('class') leftBarClass = 'left-bar';
+
+
+use of 
+
+  host: { 'class': 'left-bar' },
+
+is discouraged
+
+
 ================================================================================
 
   Applications Styles
@@ -2556,6 +2677,32 @@ with
              *ngIf="products$ | async as products">
 
 
+
+
+================================================================================
+
+  Wait for subscribe to finish before returning data
+  --------------------------------------------------
+
+asynchronous function in a service returns an Observable - does not subscribe.
+
+  public getUser(): Observable<User> {
+      return this.http.get<User>(environment.apiRoot + '/me');
+  }
+
+in the outer scope, in your component - you subscribe
+
+  this.userService.getUser().subscribe(user => {
+      console.log(user)
+  });
+
+Better yet, in your component, create an Observable variable
+
+  this.user$ = this.userService.getUser();
+
+and use async pipe in your template which will subscribe / unsubscribe for you
+
+  <span>Hello, my name is {{user$ | async}}!</span>
 
 
 ================================================================================
@@ -2998,6 +3145,307 @@ and the JokeListComponent template to this
 
 This is called CONTENT PROJECTION -> we project content from 
 the PARENT component to the CHILD component.
+
+
+
+multi-slot content projection
+-----------------------------
+
+https://stackoverflow.com/questions/52638718/multiple-ng-content
+
+
+
+A component can have multiple slots. 
+Each slot can specify a CSS selector that determines which content goes into that slot. 
+
+you must specify where you want the projected content to appear. 
+You accomplish this task by using the select attribute of <ng-content>.
+
+1. create a component
+2. in the template of your component, add an `<ng-content>` element where you 
+   want the projected content to appear
+
+3. add a "select" attribute to the `<ng-content>` elements.
+
+NOTE: If your component includes an <ng-content> element without a select attribute, 
+that instance receives all projected components that do not match any of the other <ng-content> elements.
+
+
+
+Examples:
+
+https://angular.io/guide/content-projection#multi-slot-content-projection
+
+
+@Component({
+  selector: 'app-zippy-multislot',
+  template: `
+    <h2>Multi-slot content projection</h2>
+
+    Default:
+    <ng-content></ng-content>
+
+    Question:
+    <ng-content select="[question]"></ng-content>
+  `
+})
+
+
+app.component.html:
+------------------
+
+<app-zippy-multislot>
+  <p question>
+    Is content projection cool?
+  </p>
+  <p>Let's learn about content projection!</p>
+</app-zippy-multislot>
+
+
+
+https://stackoverflow.com/questions/52638718/multiple-ng-content
+
+You could add dummy attributes header and body as opposed to template references (#header, #body).
+And transclude using ng-content with select attribute like select="[header]".
+
+
+app.comp.html
+
+<app-child>
+    <div header >This should be rendered in header selection of ng-content</div>
+    <div body >This should be rendered in body selection of ng-content</div>
+</app-child>
+
+
+child.comp.html
+
+<div class="header-css-class">
+    <ng-content select="[header]"></ng-content>
+</div>
+<div class="body-css-class">
+    <ng-content select="[body]"></ng-content>
+</div>
+
+
+slot="start"
+slot="end"
+
+
+
+
+================================================================================
+
+  detecting whether <ng-content> is empty
+  ---------------------------------------
+
+
+using :empty
+
+https://stackoverflow.com/questions/35107211/how-to-check-whether-ng-content-is-empty-in-angular-2-till-now
+
+
+<div class="wrapper">
+    <ng-content select="my-component"></ng-content>
+</div>
+<div class="default">
+    This shows something default.
+</div>
+
+
+CSS
+
+.wrapper:not(:empty) + .default {
+    display: none;
+}
+
+
+be aware: 
+
+Be aware of, that having at least one whitespace is considered to not beeing empty. Angular removes whitespace, but just in case if it is not:
+
+<div class="wrapper"><!--
+    --><ng-content select="my-component"></ng-content><!--
+--></div>
+
+or
+
+<div class="wrapper"><ng-content select="my-component"></ng-content></div>
+
+
+================================================================================
+
+
+  ng-template
+  ------------
+
+
+4 ways we can access ng-template
+
+
+1.  ngIf
+---------
+
+<ng-container *ngIf="showPrimary; then primary else secondary">
+</ng-container>
+
+<ng-template #primary>
+  <div>
+    <button class="btn btn-primary">Primary</button>
+  </div>
+</ng-template>
+
+<ng-template #secondary>
+  <div>
+    <button class="btn btn-secondary">Secondary</button>
+  </div>
+</ng-template>
+
+
+
+2. using directive ng-template-outlet
+-------------------------------------
+
+<ng-container
+  *ngTemplateOutlet="primary; context: {
+    text: 'Primary',
+    theme1: 'btn-primary'
+  }"
+>
+</ng-container>
+
+
+<ng-template #primary let-text="text" let-theme="theme1">
+  <div>
+    <button
+      class="btn btn-primary"
+      [ngClass]="theme"
+    >{{text}}</button>
+  </div>
+</ng-template>
+
+
+================================================================================
+
+3. @ViewChild and ViewContainerRef  
+--------------------------------------
+
+
+https://blog.angular-university.io/angular-viewchild/
+
+The Angular @ViewChild decorator is one of the first decorators that you will run into while learning Angular, 
+as it's also one of the most commonly used decorators.
+
+
+When do we need the @ViewChild decorator?
+-----------------------------------------
+
+in Angular we define a component template by combining plain HTML elements with other Angular components.
+as an example
+
+    <h2>Choose Brand Colors:</h2>
+
+    <color-sample [color]="primary" #primaryColorSample>
+    </color-sample>
+
+    <mat-input-container>
+      <mat-label>Primary Color</mat-label>
+      <input matInput #primaryInput [(colorPicker)]="primary" [(ngModel)]="primary"/>
+    </mat-input-container>
+
+this template includes
+   - plain HTML elms like <h2> and <div>
+   - custom app components like <color-sample>
+   - 3rd-party (colo-picker)
+   - multiple Angujar components
+
+Many times we can coordinate these mutliple components and HTML elements directly 
+in the template by using template references like #primaryinput or #primaryColorSample
+without using the `AppComponent` class.
+
+But not always - sometimes, the `AppComponent` might need references to the multiple 
+elements that it contains inside the template, in order to mediate the interaction.
+
+We can obtain references to those template elements and have them injected into the 
+AppComponent class by querying the template: THAT'S WHAT @ViewChild is FOR.
+
+
+Using @ViewChild to inject a reference to a component
+-----------------------------------------------------
+
+Let's say that AppComponent needs a reference to the <color-sample> component
+that is used inside its template, in order to call a method directly on it.
+
+In that case, we can inject a reference to <color-sample> instance named 
+#primaryColorSample by using @ViewChild:
+
+
+  @ViewChild(ColorSampleComponent)
+  primarySampleComponent: ColorSampleComponent;
+
+
+
+When are variables injected via @ViewChild available?
+-----------------------------------------------------
+
+The AfterViewInit Lifecycle Hook
+--------------------------------
+
+The value of this injected member variable is not immediately available at component construction time!
+
+If we want to write component initialization code that uses the references injected by @ViewChild, we need to do it inside the AfterViewInit lifecycle hook.
+
+
+
+  @ViewChild(ColorSampleComponent)
+  primarySampleComponent: ColorSampleComponent;
+
+  ngAfterViewInit() {
+    console.log('Values on ngAfterViewInit():');
+    console.log("primaryColorSample:", this.primarySampleComponent);
+  }  
+
+
+
+What is the scope of @ViewChild template queries?
+using @ViewChild to inject a component
+how to use @ViewChild to inject a plain HTML element
+using @ViewChild to inject the plain HTML element of a component
+how to use @ViewChild to inject one of the multiple directives applied to a single element or component
+
+
+
+<ng-container #placeholder>
+
+</ng-container>
+
+  @ViewChild('placeholder', { read: ViewContainerRef, static: true }, )
+  public container!: ViewContainerRef;
+  @ViewChild('primary', { static: true })
+  public primary!: TemplateRef<any>;
+
+  ngAfterViewInit(): void {
+    this.container.createEmbeddedView(
+      this.primary,
+      {
+        text: 'Primary',
+        them1: 'btn-primary'
+      },);
+  }
+
+
+  ERROR: Expression Changed After It Has Been Checked
+
+  this is because the context (text and theme) are being set AFTER view initialization.
+
+  add "static" option so ViewChild is available during ngOnInit()
+
+  and move createEmbeddedView to ngOnInit
+
+
+
+
+4. 
+---------------------------------------
 
 
 ================================================================================
@@ -4152,6 +4600,192 @@ let first_option: number = req.context.get<number>(OPTION_1);
   *******************************************************
 
 https://code-maze.com/secure-angular-calls-to-webapi-using-access-token/
+
+
+================================================================================
+
+Packaging fonts and avoiding duplicate fonts
+---------------------------------------------
+
+https://github.com/angular/angular-cli/issues/6599
+
+
+================================================================================
+
+  Copy to clipboard
+  *****************
+
+
+https://zeroesandones.medium.com/how-to-copy-text-to-clipboard-in-angular-e99c0feda501
+
+
+================================================================================
+
+  @Input with a finite list of items
+  -----------------------------------
+
+@Input() tooltipMode: 'base' | 'brand' | 'good' | 'warning' | 'bad';
+
+
+================================================================================
+
+
+validating  making @Input() directive required
+----------------------------------------------
+
+https://stackoverflow.com/questions/35528395/make-directive-input-required
+
+
+in ngOnInit()
+--------------
+
+export class MyComponent implements OnInit, OnChanges {
+    @Input() a:number; // Make this a required attribute. Throw an exception if it doesnt exist
+    @Input() b:number;
+
+    constructor(){
+    }
+
+    ngOnInit() {
+       this.checkRequiredFields(this.a);
+    }
+
+    ngOnChanges(changes) {
+       this.checkRequiredFields(this.a);
+    }
+
+    checkRequiredFields(input) {
+       if(input === null) {
+          throw new Error("Attribute 'a' is required");
+       }
+    }
+}
+
+
+angular selector 
+----------------
+
+Component({
+  selector: 'my-dir[a]', // <-- use attribute selector along with tag to ensure both tag name and attribute are used to "select" element by Angular in DOM
+});
+export class MyComponent {
+  @Input() a: number;
+}
+
+The bummer is that the error message the developer will receive is "my-dir is not a known element", which isn't super clear.
+
+
+
+decorator
+------------
+
+
+
+
+
+
+================================================================================
+
+  Truncate string in Angular
+  --------------------------
+
+https://stackoverflow.com/questions/44669340/how-to-truncate-text-in-angular2
+
+  {{str | slice:0:6}}
+
+
+Custom pipe
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+ name: 'truncate'
+})
+
+export class TruncatePipe implements PipeTransform {
+
+transform(value: string, args: any[]): string {
+    const limit = args.length > 0 ? parseInt(args[0], 10) : 20;
+    const trail = args.length > 1 ? args[1] : '...';
+    return value.length > limit ? value.substring(0, limit) + trail : value;
+   }
+}
+
+{{ str | truncate:[20] }} // or 
+{{ str | truncate:[20, '...'] }} // or
+
+
+@NgModule({
+  declarations: [
+    TruncatePipe
+  ]
+})
+export class AppModule {}
+
+
+================================================================================
+
+
+viewProviders
+-------------
+
+https://www.tektutorialshub.com/angular/viewproviders-in-angular/
+
+https://debugmode.net/2020/06/24/when-to-use-viewproviders-in-angular-simplified/
+
+Great for developing library components
+
+
+The viewProviders property allows us to make providers available only for the component’s view.
+
+When we want to use a class in our component that is defined outside the @Component () decorator function, then, first of all, we need to inject this class into our component, and we can achieve this with the help of the "viewProvider" property of a component.
+
+Use the following code in app.component.ts file.
+
+
+
+import { Component, Injectable } from '@angular/core';
+
+class MyProvider {
+  constructor() {
+    console.log("provider property");
+  }
+  VarMyProvider = "VarMyProvider";
+}
+
+class MyProvider1 {
+  VarMyProvider1 = "VarMyProvider1";
+  constructor() {
+  }
+  getString(name) {
+    console.log("provider property1" + name);
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  viewProviders: [MyProvider, MyProvider1]
+})
+export class AppComponent {
+  constructor(public obj: MyProvider, public obj1: MyProvider1) {
+    obj1.getString(" SahosoftTutorials.com");
+    console.log(obj.VarMyProvider);
+    console.log(obj1.VarMyProvider1);
+  }
+
+  title = 'app';
+}
+
+In this, we have created two classes, like : "MyProvider" and "MyProvider1". If we want to use these classes in our component, first inject the name of your class in the Provider.
+
+viewProviders:[MyProvider, MyProvider1]  
+
+Then, create an object into the constructor.
+
+constructor(public obj:MyProvider, public obj1:MyProvider1)
 
 
 ================================================================================

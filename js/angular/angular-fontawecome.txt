@@ -1,0 +1,165 @@
+*************************
+
+	angular-fontawecome
+
+**************************	
+
+
+This is the list of icons that the design spec references.
+
+default prefixes:
+
+far - Regular Icons
+fas - Solid Icons
+fal - Light Icons
+fab - Brand Icons
+
+
+
+NOTE: this syntax is only for the "library" approach
+
+<fa-icon [icon]="['fas', 'bell']"></fa-icon>
+<fa-icon [icon]="['far', 'bell']"></fa-icon>
+
+
+
+
+
+
+Usage
+------
+
+Approaches
+-----------
+There are two approaches for using angular-fontawesome. 
+
+Explicit Reference
+Icon Library
+
+
+
+Explicit Reference
+===================
+
+The explicit reference approach involves explicitly importing the icon definition from the npm package, assigning it to the component's property and then binding this property to the icon input of the fa-icon component.
+
+	import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+	faCoffee = faCoffee;
+
+
+	<div style="text-align:center">
+	  <fa-icon [icon]="faCoffee"></fa-icon>
+	</div>
+
+
+
+Icon Library
+============
+
+
+The icon library approach provides convenient usage in the templates, but the icons have to be managed separately from the components. This has long-term maintenance implications, specifically, this means that there is no easy way to tell if any given icon is in use. Therefore, if someone accidentally removes an icon from the icon library, the application will build just fine, but the component that needs this icon will break at runtime.
+
+
+
+Brand Icons
+============
+
+$ yarn add @fortawesome/free-brands-svg-icons
+import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+
+
+Same Icon from Multiple Styles
+===============================
+
+To use the same icon from the multiple styles you'll need to use import aliases to avoid the name conflicts:
+
+
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    // Add multiple icons to the library
+    library.addIcons(fasStar, farStar);
+  }
+}
+
+
+<fa-icon [icon]="['fas', 'star']"></fa-icon>
+<fa-icon [icon]="['far', 'star']"></fa-icon>
+
+
+Size
+=======
+
+<fa-icon [icon]="['fas', 'coffee']" size="xs"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" size="lg"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" size="6x"></fa-icon>
+
+Fixed Width
+============
+
+<fa-icon [icon]="['fas', 'coffee']" [fixedWidth]="true"></fa-icon>
+
+
+Rotate
+======
+
+<fa-icon [icon]="['fas', 'coffee']" rotate="90"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" rotate="180"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" rotate="270"></fa-icon>
+
+
+Flip
+=====
+
+<fa-icon [icon]="['fas', 'coffee']" flip="horizontal"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" flip="vertical"></fa-icon>
+<fa-icon [icon]="['fas', 'coffee']" flip="both"></fa-icon>
+
+
+Animations
+===========
+
+<fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+<fa-icon [icon]="['fas', 'spinner']" [pulse]="true"></fa-icon>
+
+
+
+
+Using same icon from multiple styles
+=====================================
+
+https://www.angularjswiki.com/angular/how-to-use-font-awesome-icons-in-angular-applications/
+
+
+
+To use same icon from multiple styles, we have to import icons using alias names as shown below.
+
+
+	Library approach
+	----------------
+
+
+import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+import { faBell as fasBell } from '@fortawesome/free-solid-svg-icons';
+
+library.add(farBell, fasBell);
+Now we can use bell icon in our component file as shown below
+
+<fa-icon [icon]="['fas', 'bell']"></fa-icon>
+<fa-icon [icon]="['far', 'bell']"></fa-icon>
+
+
+	Explicit approach
+	-----------------
+
+import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+import { faBell as fasBell } from '@fortawesome/free-solid-svg-icons';
+
+
+  public readonly fasBell: IconDefinition = fasBell;
+  public readonly farBell: IconDefinition = farBell;
+
+
+<div style="text-align:center">
+  <fa-icon [icon]="fasBell"></fa-icon>
+  <fa-icon [icon]="farBell"></fa-icon>
+</div> 

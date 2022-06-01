@@ -107,6 +107,15 @@ cmd-;
 
 
 --------------------------------------------------------------------------------
+
+	large dummy file generator
+	--------------------------
+
+$ mkfile <size>G your-file-name.ext
+$ mkfile --help
+
+
+--------------------------------------------------------------------------------
 Intellij IDEA shortcuts
 -----------------------
 
@@ -561,6 +570,41 @@ $ sudo ifconfig en0 lladdr 64:5a:ed:ea:9e:c2
 
 you should now be prompted ...
 
+
+================================================================================
+
+
+SSH key
+--------
+
+$ ssh-keygen
+
+
+view your SSH keys on Mac
+-------------------------
+
+$ cat ~/.ssh/id_rsa.pub
+
+
+Import your key via Settings into FileZilla
+--------------------------------------------
+
+1. In FileZilla → Settings..., select Connection → SFTP
+2. Press the Add key file... button
+3. Press Command-Shift-G to bring up a path selection window and type "~/.ssh"
+4. Select the "id_rsa" key file and click Open (this imports the key)
+5. Click OK to close the Settings dialog
+
+
+
+================================================================================
+
+kill process on port on mac
+----------------------------
+
+$ lsof -i :4200
+$ ps -ef | grep i <name>
+$ kill -9 <PID>
 
 ================================================================================
 

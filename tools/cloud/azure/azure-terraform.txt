@@ -1,0 +1,504 @@
+
+What is Terraform
+*****************
+
+Infrastructure as code
+
+That means declaring infrastructure components in configuration files that are then used by Terraform to provision, adjust and tear down infrastructure in various cloud providers.
+
+Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services. Terraform codifies cloud APIs into declarative configuration files.
+
+
+================================================================================
+
+Terraform Basics
+****************
+
+
+terraform block
+-----------------
+
+terraform {
+	required_providers {
+		azurerm = {
+			source = "hashicorp/azurerm"
+			version = "2.91.0"
+		}
+	}
+	required_version = ">= 0.14"
+}
+
+provider "azurerm" {
+	# Configuration options
+}
+
+
+Terraform released breaking changes between 0.12, 0.13, 0.14
+Terraform providers versioning follows semantic versioning
+
+
+provider configuration
+----------------------
+
+
+provider "azurerm" {
+	# Configuration options
+	subscription_id = "0000--0---"
+	tenant_id       = "11111-11111-11111-11111"
+}
+
+provider "azurerm" {
+	# Configuration options
+	alias           = "tenant2"
+	subscription_id = "0000--0---"
+	tenant_id       = "2222-2222-22222-2222"
+}
+
+
+terraform provisioners
+----------------------
+- local 
+- remote 
+
+use provisioners as last resort when all other options aren't possible
+
+what you should use 
+
+	cloud init
+
+cloud init  (custom_data  in  azurerm_linux_virtual_machine)
+
+	will run after the VM will launch for the first time
+
+================================================================================
+
+
+	Terraform CLI
+	*************
+
+terraform fmt
+		format the *.tf files
+		should do before committing 
+
+terraform taint
+
+terraform import
+terraform workspace
+terraform state
+
+
+================================================================================
+
+	terraform workflow
+	*******************
+
+
+Write ->  Plan  ->  Apply 
+
+terraform init
+terrafrom fmt             // format for consistency
+terraform validate
+terraform plan planfile
+terraform apply planfile (-auto-approve)
+
+or simply
+
+terraform validate
+terraform apply
+
+
+Inspect your state
+------------------
+
+terraform show
+
+
+
+================================================================================
+
+Inpsect your state
+------------------
+
+When you apply your configuration, Terraform writes data into a file called terraform.tfstate. This file contains the IDs and properties of the resources Terraform created so that it can manage or destroy those resources going forward. Your state file contains all of the data in your configuration and could also contain sensitive values in plaintext, so do not share it or check it in to source control.
+
+For teams or larger projects, consider storing your state remotely.
+
+> terrafrom show
+
+To review the information in your state file, use the state command
+
+
+> terraform state
+
+If you have a long state file, you can see a list of the resources you created with Terraform by using the list subcommand
+
+> terraform state list
+
+
+
+
+================================================================================
+
+Terraform on Azure
+*******************
+
+
+
+$ brew install terraform
+$ terraform
+
+
+https://terraform.io
+
+
+updating terraform
+------------------
+
+$ brew upgrade terraform
+
+
+installing multiple versions
+-----------------------------
+https://blog.gruntwork.io/installing-multiple-versions-of-terraform-with-homebrew-899f6d124ff9
+
+
+Resource Manager
+Virtual Networks
+Azure VMs
+Network Security Groups and Application Security Groups
+Availability
+(Auto) Scaling and Load Balancing
+
+
+Resource Manager
+----------------
+ 
+
+
+================================================================================
+
+Azure Client
+-------------
+https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos
+
+$ brew update && brew install azure-cli
+
+
+Using
+
+$ az login
+
+	that will launch the browser window to select your login
+
+	and leave  Azure CLI help window
+
+	https://docs.microsoft.com/en-us/cli/azure/
+
+
+================================================================================
+
+	Terrafrom HCL
+	-------------
+
+$ terraform version
+
+Terraform v1.1.2
+on darwin_amd64
+
+Your version of Terraform is out of date! The latest version
+is 1.1.3. You can update by downloading from https://www.terraform.io/downloads.html
+
+
+
+variables
+**********
+
+
+difference between variable.tf and variables.tfvars
+----------------------------------------------------
+
+https://amazicworld.com/difference-between-variable-tf-and-variable-tfvars-in-terraform/
+
+Variables are defined in 
+
+	variables.tf         //  *.tf files declare that the variable exists 
+	terrafrom.tfvars     //  variables.tfvars define variables
+
+
+Declare a variable 
+-------------------
+
+Declaring a variable in programming means that you are declaring your intention to create the thing, or declaring that it has been created in another file. It does not hold a value yet, but it does exist.
+
+
+variable “myvar {
+	Type = string
+	Description = “a variable to create a string to configure some stuff”
+}
+
+
+Defining a variable
+--------------------
+
+myvar = "this is a string with some useful stuff"
+
+
+
+Declare and Define a variable
+------------------------------
+
+To complicate matters you can declare and define at the same time by giving your declaration a default value.
+
+Variable “my_var {
+	Type = string
+	Description = “a variable to create a string to configure some stuff”
+	Default = “this is a string to configure some stuff”
+}
+
+
+variable.tfvar vs. variable.tf
+-------------------------------
+
+
+variables.tf 
+
+		- here, you define the variables that must have values in order for your Terraform code to validate and run. You can also define default values for your variables in this file. Note that you don't need to define all of your variables in a file named variables.tf - they can be defined anywhere, but this practice is encouraged for organizational purposes.
+
+
+terraform.tfvars 
+
+		- this file contains one or more variablename=variablevalue pairs. When Terraform loads this file, it looks for any variables in your Terraform with the name variablename and sets their value to be variablevalue. You can't define new variables here, and can only set the values of existing ones defined in variables.tf.
+
+however what complicates matters is that people have used tfvars files in modules and tf files in the root module.
+
+
+Child modules and hierarchy of processing
+------------------------------------------
+
+
+However the difference really starts be become apparent when you are dealing with child modules in your code as a *.tfvar file ONLY applies to root module variables; 
+
+however, any defaults set in a variable will also apply to child modules.
+
+
+Consider this example…
+
+Sport
+├── Football
+│   ├── America
+│   │   └── terraform.tfvars
+│   └── terraform.tfvars
+
+
+If we have the variable myvar = “football” defined in sport/football/terraform.tfvars and myvar = “soccer” defined in sport/football/America/terraform.tfvars, normally you would expect that the value of the myvar variable to set to “soccer”. But this is not the case it is set to “football”, which incidentally is correct (both for the sport and for the variable), as child module .tfvar files are treated as optional and root tfvars required and authoritative. If you need to change the variable from “football” to “soccer” the you would add that variable to a .tf file in the folder that the module runs.
+
+According to the terraform documentation on input variables, Terraform loads variables in the following order, with later sources taking precedence over earlier ones:
+
+Environment variables
+The tfvarsfile, if present.
+The tfvars.jsonfile, if present.
+Any *.auto.tfvars or *.auto.tfvars.json files, processed in lexical order of their filenames.
+Any -var and -var-file options on the command line, in order they are provided. (This includes variables set by a Terraform Cloud workspace.)
+
+
+Wait a minute there is no mention of .tf file declaration in there, this is because variables declared in .tf files are concatenated into a single entity consisting of your variables.tf your main.tf and your output.tf files before being processed by terraform. Hence this declaration have highest precedence in order of application.
+
+================================================================================
+
+
+variable "myvar" {
+  type = string
+  default = "hello terraform"
+}
+
+variable "mymap" {
+  type = map(string)
+  default = {
+    mykey = "my value"
+  }
+}
+
+variable "mylist" {
+  type = list
+  default = [1,2,3]
+}
+
+
+no quotes around type
+
+$ terrraform console
+
+> var.myvar
+> "${var.myvar}"
+
+> var.mymap
+
+> var.mymap["mykey"]
+
+> "${var.mymap["mykey"]}"
+
+
+> var.mylist
+
+> var.mylist[0]
+1
+
+> element(var.mylist, 1)    // first element with element function
+2
+
+> slice(var.mylist, 0, 2)
+1,
+2
+
+Variable Types
+---------------
+
+primitive
+..........
+
+string
+number
+bool
+
+complex types
+..............
+
+list(type)														// always ordered
+set(type) 														// like a list, no order, and only unique elements
+map(type)
+Object({<attr_name> = <type>, ...  }) // like a map, but each element can have different type
+tuple([<type>, ...])                  // like list, but each element can have a different type
+
+
+
+Terraform Commands
+-------------------
+
+terraform apply
+
+	this will read your *.tf files and apply the terraform coede to the cloud provider
+	that you have configured
+
+	"yes" to apply or use "-auto-approve"
+
+
+terraform plan
+
+	to see what changes you're about to make
+
+
+terraform init
+
+	to add a new module, a provider, or
+	the first time you want to use terraform within a project directory
+
+
+terraform destroy
+
+	to remove all the infrastructure you've created when you finish a demo, f.e.
+
+
+terrafrom help
+
+
+
+
+terraform providers
+--------------------
+
+provider "aws" {
+	
+}
+
+
+resource "aws_instance" "example" {
+	ami 				  = var.AMIS[var.AWS_REGION]
+	instance_type = "t2.micro"
+}
+
+
+variables definition file
+-------------------------
+
+variables.tfvars
+
+
+
+================================================================================
+
+
+First steps in Azure 
+---------------------
+
+
+In this demo
+
+Azure Resource Group
+
+	 logical container that holds Azure resources like network, VMs and DBs
+
+
+Azure Virtual Network
+		has private address space, created in a specific Azure Region
+
+
+VM
+	
+Disk for VM storage
+
+
+Network Interface  with private and public IP address
+	
+	attached to this network interface
+
+		- Network Security Group to allow SSH Access to our VM
+		- public IP address
+
+
+variables
+---------
+
+variable "location" {
+  type    = string
+  default = "westeurope"
+}
+variable "prefix" {
+  type    = string
+  default = "demo"
+}
+
+variable "ssh-source-address" {
+  type    = string
+  default = "*"
+}
+
+
+
+main.tf
+--------
+
+provider "azurerm" {
+  features {}
+}
+
+# Create a resource group
+resource "azurerm_resource_group" "demo" {
+  name     = "first-steps-demo"
+  location = var.location
+}
+
+
+
+
+
+
+
+
+
+
+================================================================================
+
+
+
+
+================================================================================

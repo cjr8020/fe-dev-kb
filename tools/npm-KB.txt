@@ -63,6 +63,12 @@ if a newer minor `npm` version is available:
 	$ sudo npm install -g npm
 
 
+or specific version of npm
+
+	$ npm install -g npm@x.x
+
+
+
 	configuring
 	***********
 
@@ -80,37 +86,30 @@ To list config:
 
 
 
-	Windows
-	-------
+==============================================================================
 
-One windows, download the latest MSI and run.
+	npmrc
+	*****
 
-program 'node' is currently not installed
------------------------------------------
-$ node -v
-The program 'node' is currently not installed. You can install it by typing:
-sudo apt install nodejs-legacy
+https://www.npmjs.com/package/npmrc
 
 
-To upgrade npm on Windows
-----------------------------------
+Installing 
+----------
 
-Download and run node installer.
+$ npm install - g npmrc
 
-Use npm-windows-upgrade to update npm:
 
-First, ensure that you can execute scripts on your system by running the following command from an elevated PowerShell. To run PowerShell as Administrator, click Start, search for PowerShell, right-click PowerShell and select Run as Administrator.
+Activate
+---------
 
-> Set-ExecutionPolicy Unrestricted -Scope CurrentUser -Force
+$ npmrc  // creates ~/.npmrcs/  directory and copies your current ~/.npmrc as `default` profile.
 
-Then, to install and use this upgrade tool, run (also from elevated PowerShell):
 
-> npm install --global --production npm-windows-upgrade
-> npm-windows-upgrade
+Creating new profile
+---------------------
 
-NOTE: the elevated PowerShell may not have 'npm-windows-upgrade' in its path, so:
-
-> C:\Users\<user>\AppData\Roaming\npm\npm-windows-upgrade
+$ npmrc -c newprofile
 
 
 ==============================================================================
@@ -966,6 +965,80 @@ Therefore, when you publish a new prerelease version:
 you will also need to change the dependency declaration to
 
 	"^1.0.1-SNAPSHOT"
+
+==============================================================================
+
+	npm tags
+
+	https://dev.to/andywer/how-to-use-npm-tags-4lla
+
+	When we run 
+
+
+
+$ npm install <package>
+
+latest tag is used implicitly to resolve the right version number.
+
+By the same token, when we run 
+
+$ npm publish
+a npm tag is either created or updated, and it defaults to latest unless explicitly state something otherwise.
+
+
+using npm tags
+
+
+with the help of npm tags, we can share different versions of our library 
+
+For production application builds, we would advise DEV teams to use 
+
+
+$ npm install <package-name>@stable
+
+and of course, they can always install a specific version of our library if they know it.. 
+however they can find out but simply running
+
+
+$ npm show <package-name>
+
+to obtain information on stable , latest and next versions available.
+
+Beta developers/tester would run
+
+
+
+$ npm install <package-name>@next
+to obtain the latest  “BETA” release, or 
+
+
+ $ npm install <package-name>@latest
+
+to obtain the latest “BETA”  SNAPSHOT version.
+
+
+==============================================================================
+
+	NPM paralell task but wait until resource is available
+-------------------------------------------------------
+
+
+https://stackoverflow.com/questions/46609152/npm-run-parallel-task-but-wait-until-resource-is-available-to-run-second-task
+
+
+"scripts": {
+    "start": "concurrently -k -n \"DB,API,WEB\" -c \"blue,magenta,yellow\" \"npm run start-db\" \"npm run start-api\" \"npm run start-web\"",
+    "start-db": "myDbServerCmd",
+    "start-api": "wait-on tcp:27017 && myApiServerCmd",
+    "start-web": "myFrontServerCmd",
+}
+
+
+https://github.com/open-cli-tools/concurrently
+
+https://github.com/jeffbski/wait-on
+
+
 
 ==============================================================================
 

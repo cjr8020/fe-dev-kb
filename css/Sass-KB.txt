@@ -20,6 +20,20 @@ Resources:
 
 ================================================================================
 
+	Placeholder selector
+	********************
+
+% percentage sign Sass operator
+-------------------------------
+
+They are very similar to class selectors, but instead of using a period (.) at the start, the percent character (%) is used. Placeholder selectors have the additional property that they will not show up in the generated CSS, only the selectors that extend them will be included in the output.
+
+
+
+
+
+================================================================================
+
 
 stylesheets are getting larger, more complex and harder to maintain.
 This is where a preprocessor can help...
@@ -64,7 +78,15 @@ You can nest as deep as you like, but it's a good practice to keep it only 1-2 l
 	==> TOO MUCH specificity is brittle
 
 
-& = parent selector
+================================================================================
+
+The Sass Ampersand
+*******************
+
+https://css-tricks.com/the-sass-ampersand/`
+
+
+& = parent selector  (Sass Ampersand)
 -------------------
 
 this comes in handy when you're nesting and you want to create a more specific
@@ -86,6 +108,8 @@ Or, think of it as shorthand
 compiles to
 
 	.parent .child {}
+
+
 
 
 Using & with pseudo classes:
@@ -455,12 +479,23 @@ styles.min.css.map
 	Sass maps
 	*********
 
+https://sass-lang.com/documentation/values/maps#do-something-for-every-pair
+	
+
 holds a colletion of key-value pairs
 
 $map: (
 	"key1":value1,
 	"key2":value2
 );
+
+
+NOTE: USE quoted strings for map keys.
+
+
+@each  rule
+--------------------------------
+
 
 @each loop can generate multiple classes from a Sass map
 
@@ -476,6 +511,29 @@ $map: (
 		}
 	}
 
+
+
+
+================================================================================
+
+	@debug
+	-------
+
+@debug <expression>  - prints the value of that expression.
+
+f.e.  
+
+
+@mixin inset-divider-offset($offset, $padding) {
+  $divider-offset: (2 * $padding) + $offset;
+  @debug "divider offset: #{$divider-offset}";
+
+  margin-left: $divider-offset;
+  width: calc(100% - #{$divider-offset});
+}
+
+
+test.scss:3 Debug: divider offset: 132px
 
 
 
@@ -793,6 +851,112 @@ resulting CSS
 * html body {
 	font-size: 125%; 
 }
+
+
+================================================================================
+
+	media-breakpoint
+	-----------------
+
+
+// Media of at least the minimum breakpoint width. No query for the smallest breakpoint.
+// Makes the @content apply to the given breakpoint and wider.
+@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+
+
+h1 {
+  font-size: $text-size-large;
+  margin-bottom: $sfg-h1-base-margin-bottom;
+
+  @include media-breakpoint-up(lg) {
+    font-size: $text-size-xxlarge;
+    margin-bottom: $sfg-h1-large-margin-bottom;
+  }
+}
+
+
+  .mat-form-field-infix {
+    padding: 0.5em 0;
+    //background-color: lightgray;
+    border-top: 0;
+
+    @include media-breakpoint-up('md') {
+      padding: 0.5em 0;
+      border-top: 0.825em solid transparent;
+      background-color: unset;
+    }
+  }
+
+
+
+================================================================================
+
+partials/_shadows.scss
+-----------------------
+
+@import '../modules/shadows';
+
+@each $type, $style in $shadow-class-map {
+  .sfg-shadow-#{$type} {
+    box-shadow: $style;
+    -webkit-box-shadow: $style;
+    -moz-box-shadow: $style;
+  }
+}
+
+
+$shadow-class-map: (
+  'active': $shadow-active,
+  'card': $shadow-card,
+  'drag': $shadow-drag,
+  'dropdown': $shadow-dropdown,
+  'modal': $shadow-modal
+);
+
+
+$shadow-active: 0 5px 24px 0 rgba(80,80,80,0.50);
+$shadow-card: 0 5px 24px 0 rgba(80,80,80,0.30);
+$shadow-default: 0 5px 24px 0 rgba(80,80,80,0.30);
+$shadow-drag: 0 5px 24px 0 rgba(80,80,80,0.10);
+$shadow-dropdown: 0 5px 24px 0 rgba(80,80,80,0.30);
+$shadow-micro: 0 0 6px 0 rgba(80,80,80,0.30);
+$shadow-modal: 0 5px 24px 0 rgba(80,80,80,0.30);
+
+
+
+.sfg-shadow-card {
+    box-shadow: 0 5px 24px 0 rgba(80, 80, 80, 0.3);
+    -webkit-box-shadow: 0 5px 24px 0 rgba(80, 80, 80, 0.3);
+    -moz-box-shadow: 0 5px 24px 0 rgba(80, 80, 80, 0.3);
+}
+
+
+$shadow-lock: 2px 0 6px 0 rgba(80,80,80,0.30);
+
+
+15px 0 15px -15px rgba(80,80,80,0.3)
+-15px 0 15px -15px rgba(80,80,80,0.3)
+
+box-shadow: inset 2px 0 6px -6px rgba(80,80,80,0.3);
+box-shadow: inset -2px 0 6px -6px rgba(80,80,80,0.3);
+
+================================================================================
+
+	Unit Testign SASS
+	*****************
+
+https://www.educative.io/blog/sass-tutorial-unit-testing-with-sass-true#what
+
 
 
 ================================================================================

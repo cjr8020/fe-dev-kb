@@ -5,6 +5,229 @@
 
 	********************
 
+Resources: 
+Hamburger menu
+https://thesoftwayfarecoder.com/hamburger-menu-using-angular-material/
+
+
+Tooltip with Angular CDK
+-------------------------
+
+https://indepth.dev/posts/1146/tooltip-with-angular-cdk
+
+
+
+
+================================================================================
+
+
+Wrapping Angular Material button in custom Angular component 
+------------------------------------------------------------
+
+Part 1
+https://dev.to/this-is-angular/wrapping-angular-material-button-in-custom-angular-component-part-1-1ph1
+Part 2
+https://dev.to/this-is-angular/wrapping-angular-material-button-in-custom-angular-component-part-2-3oml
+
+
+When you want to build your own Design System on top of Angular Material (or pretty much any other 3rd party component library), you have a couple of options:
+
+1. Build a custom Angular Material theme and use the components as they are described in the documentation.
+
+2. Build a custom Angular Material theme and build your own component library on top of Angular Material by wrapping their components in your own components.
+
+
+ngComponentOutlet
+
+  this directive provides a declarative approach for dynamic component creation.
+
+================================================================================
+
+
+Material sidenav
+-------------------
+
+==>  https://zoaibkhan.com/blog/create-a-responsive-sidebar-menu-with-angular-material/
+
+https://careydevelopment.us/blog/how-to-add-a-responsive-sidebar-navigation-menu-to-your-angular-app
+https://github.com/thisiszoaib/angular-responsive-sidebar
+
+
+
+https://github.com/thisiszoaib/angular-responsive-sidebar
+
+
+1.  
+
+ng new angular-responsive-sidebar
+ng add @angular/material
+
+2. import 
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+
+
+3. Add toolbar and sidebar
+
+
+
+<mat-toolbar>
+
+Responsive side navigation
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="content mat-elevation-z8">
+            Main content here!
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+mat-sidenav-container
+---------------------
+
+has
+
+  mat-sidenav
+
+    is your sidebar menu
+
+
+  mat-sidenav-content
+
+    main content of your app
+
+
+
+4. add menu items
+
+
+  <mat-sidenav class="mat-elevation-z8">
+
+    <button mat-button class="menu-button" routerLink="/home">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </button>
+    <button mat-button class="menu-button" routerLink="/profile">
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
+    </button>
+    <button mat-button class="menu-button" routerLink="/about">
+      <mat-icon>info</mat-icon>
+      <span>About</span>
+    </button>
+
+    </mat-sidenav>
+
+
+
+5. Making the sidebar responsive
+
+
+To make the sidebar responsive, the material sidenav component provides us with a property called mode. 
+For large screen sizes, we want the mode to be "side". 
+This means that the sidenav will always remain visible and our main content displayed with it.
+
+The other mode is "over". We’ll need this when we want the sidebar to be hidden normally, but only appear over the content when we want to navigate to some other section.
+
+So all we need is a way to switch between these modes when the screen size changes. Fortunately, we can detect screen size changes with the Angular CDK layout package and its BreakpointObserver service.
+
+
+export class AppComponent {
+  @ViewChild(MatSidenav)
+ sidenav!: MatSidenav;
+
+  constructor(private observer: BreakpointObserver) {}
+
+  ngAfterViewInit() {
+    this.observer.observe(['(max-width: 800px)']).subscribe((res) => {
+      if (res.matches) {
+        this.sidenav.mode = 'over';
+        this.sidenav.close();
+      } else {
+        this.sidenav.mode = 'side';
+        this.sidenav.open();
+      }
+    });
+  }
+}
+
+
+First, we have a few ViewChild decorator at the very top to get the MatSidenva
+component reference in our code.  Then, we include the BreakpointObserver service.
+
+We're using the "observe" method of the BreakpointObserver which can take in any 
+number of points.  If anby of them matches or changes state (i.e. stops matching),
+all subscriptions to the method are notified.
+
+In our case, we’re using 800px as our breakpoint. This means if it matches, 
+we’ve to switch to the "over" mode for our sidebar and close it. And vice versa, if it doesn’t match.
+
+  NOTE: Remember to keep the subscription in the ngAfterViewInit lifecycle method, 
+  so that we’re assured we have the sidenav initialized before calling it!
+
+
+6.  Adding the sidebar menu toggle button (Hamburger) for smaller screens
+
+
+while the sidebar navigation menu hides on smaller screens, 
+we have no way for it to show itself when we need it. 
+We need a menu toggle button allow opening and closing of the menu on smaller screens! 
+
+
+    <mat-toolbar class="mat-elevation-z8">
+        <button mat-icon-button *ngIf="sidenav.mode === 'over'" (click)="sidenav.toggle()">
+            <mat-icon *ngIf="!sidenav.opened">
+                menu
+            </mat-icon>
+            <mat-icon *ngIf="sidenav.opened">
+                close
+            </mat-icon>
+        </button>
+        Responsive side navigation
+    </mat-toolbar>
+
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+    ...
+    </mat-sidenav>
+
+
+We’ve added a template variable for the sidenav component using the #sidenav="matSidenav" syntax. 
+This is basically doing the same thing as we did with the ViewChild decorator before, 
+but this makes the reference available in the template.
+
+
+For the toggle button, we’re using a material icon button. We’ve added an *ngIf directive to it so that it only shows when the sidenav has the over mode, which will happen on smaller screens. The button’s click event simply calls the toggle function of the sidenav component.
+
+Lastly, we add some additional *ngIf directives to check whether the sidenav is open or not and show a different icon so it’s visually clear to the user.
+
+
+
+
+
+================================================================================
+
+
 Installation
 -------------
 
@@ -900,6 +1123,232 @@ You can use the component tag label,
 Or add a class to the tab
 
 
+
+================================================================================
+
+  mat-progress-bar custom theme
+  -----------------------------
+
+Got the idea from 
+https://stackoverflow.com/questions/48869915/angular-material-progressbar-custom-color
+
+
+$height: 8px;
+
+mat-progress-bar.mat-progress-bar {
+  height: $height;
+
+  // background for the progress bar
+  &.mat-accent .mat-progress-bar-buffer {
+    background: $color-base-subdued-1;
+  }
+
+  // fill indicating progress
+  &.mat-accent .mat-progress-bar-fill::after {
+    background-color: $color-brand-default;
+  }
+}
+
+...........................................
+
+another option
+
+https://newbedev.com/angular-material-progressbar-custom-color
+
+
+mat-progress-bar .mat-progress-bar-buffer {
+  background: #E4E8EB;
+}
+
+
+<mat-progress-bar  mode="determinate" value="{{progress}}"></mat-progress-bar>
+
+
+
+@Component({
+  selector: '...',
+  templateUrl: '...',
+  styleUrls: ['...'],
+  encapsulation: ViewEncapsulation.None,
+})
+
+
+
+.audio-progress-bar {
+  &.mat-progress-bar {
+    height: 10px;
+  }
+
+  .mat-progress-bar-fill::after {
+    background-color: #37474f;
+  }
+
+  .mat-progress-bar-buffer {
+    background-color: #90a4ae;
+  }
+
+  /* remove animation and the dots*/ 
+  .mat-progress-bar-background {
+    animation: none;
+    background-color: #eceff1;
+    fill: #eceff1;
+  }
+}
+
+
+<mat-progress-bar
+  class="audio-progress-bar"
+  mode="buffer"
+></mat-progress-bar>
+
+
+
+--------------------
+
+.green-progress .mat-progress-bar-fill::after {
+    background-color: green !important;
+}
+
+
+<mat-progress-bar class="green-progress" mode="indeterminate"></mat-progress-bar>
+
+
+================================================================================
+
+Creating Custom Overlay OverlayContainter
+------------------------------------------
+
+https://stackoverflow.com/questions/63579801/how-do-i-create-a-custom-overlay-container-for-angular-material
+
+https://github.com/angular/components/issues/7349#issuecomment-337513040
+
+
+https://stackoverflow.com/questions/67556161/angular-cdk-injecting-the-custom-overlay-container-class-into-a-component-crea
+
+
+
+
+================================================================================
+
+Angular Material CDK
+*********************
+
+
+Overlay module
+--------------------
+
+
+An overlay requires 3 things:
+
+1. a template - to render the contents of the overlay on the screen
+2. an origin  - the location where to render the overlay
+3. a condition - to decide whether to show the overlay or not
+
+
+Example 1: dropdown, and the trigger will be a button click
+
+
+
+
+template with  a button
+- - - - - - - - - - - - 
+
+define the button as the origin and connect it to the template.
+the template is also marked as cdkConnectedOverlay so that the CDK knows that this template will be an overlay
+
+
+<button
+  cdkOverlayOrigin
+  *trigger="cdkOverlayOrigin"
+>
+   Open/close overlay
+</button>
+<div>This content will be under the overlay</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+>
+   <ul class="example-overlay">
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li>Item 3</li>
+   </ul>
+</ng-template>
+
+
+
+
+================================================================================
+
+ErrorStateMatcher
+
+https://www.youtube.com/watch?v=yWw7CYFIDVw
+
+
+https://material.angular.io/components/input/overview
+
+import {Component} from '@angular/core';
+import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {ErrorStateMatcher} from '@angular/material/core';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+/** @title Input with a custom ErrorStateMatcher */
+@Component({
+  selector: 'input-error-state-matcher-example',
+  templateUrl: './input-error-state-matcher-example.html',
+  styleUrls: ['./input-error-state-matcher-example.css'],
+})
+export class InputErrorStateMatcherExample {
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+
+  matcher = new MyErrorStateMatcher();
+}
+================================================================================
+
+  Material password field with Visibility toggle
+  ------------------------------------------------
+
+https://fireflysemantics.medium.com/angular-material-password-field-with-visibilitytoggle-d5342f97afbe
+
+
+https://nitishkaushik.com/show-hide-password-in-angular-with-angular-material/
+
+
+================================================================================
+
+  Angular material extensions  password strength
+  ----------------------------------------------
+  https://github.com/angular-material-extensions/password-strength
+
+https://github.com/angular-material-extensions/password-strength
+
+
+<mat-form-field appearance="outline" style="width: 100%" [color]="passwordComponent.color">
+  <mat-label>Password</mat-label>
+  <!-- HERE DOWN :D-->
+  <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
+  <!-- THERE ABOVE ;)-->
+  <input matInput #password
+         [type]="toggle.type"
+         required
+         placeholder="Password">
+  <mat-hint align="end" aria-live="polite">
+    {{password.value.length}} / 25
+  </mat-hint>
+</mat-form-field>
+
+<mat-password-strength #passwordComponent
+                                   (onStrengthChanged)="onStrengthChanged($event)"
+                                   [password]="password.value">
+</mat-password-strength>
 
 ================================================================================
 

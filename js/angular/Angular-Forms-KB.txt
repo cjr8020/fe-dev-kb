@@ -1,30 +1,17 @@
 
-Every form-intensive application has to provide answers for the following problems:
-
-1. how to keep track of the global form state
-2. know which parts of the form are valid and which are still invalid
-3. properly displaying error messages to the user so that the user knows what to do to make the form valid
-
-
-
-
 	Angular Forms
  	*************
 
-Angular offers two form-building technologies: reactive and template-driven.
-both belong to the `@angular/forms` library and share a common set of form
-control classes.
 
-But the diverge in philosophy, programming style and technique.
 
-They also have their own modules: ReactiveFormsModule and FormsModule.
+According to angular 6+,
+- valid: This property returns true if the element’s contents are valid and false otherwise.
+- invalid: This property returns true if the element’s contents are invalid and false otherwise.
+= pristine: This property returns true if the element’s contents have not been changed.
+- dirty: This property returns true if the element’s contents have been changed.
+- untouched: This property returns true if the user has not visited the element.
+- touched: This property returns true if the user has visited the element.
 
-	which is better?
-	------------------
-
-they are two architectural paradigms with their own strengths and weaknesses.
-choose the approach that works best.
-and you may decide to use both in the same application.
 
 ================================================================================
 
@@ -150,6 +137,14 @@ While this means less code in component class, template-driven forms are asynchr
   Custom validator functions
   **************************
 
+https://www.positronx.io/custom-validators-angular-reactive-forms/
+https://www.digitalocean.com/community/tutorials/angular-reactive-forms-custom-validator
+https://www.digitalocean.com/community/tutorials/angular-custom-validation
+
+https://indepth.dev/posts/1319/the-best-way-to-implement-custom-validators
+https://blog.angular-university.io/angular-custom-validators/
+
+
 Custom validator is nothing but a function:
 
   function classValidator(control: AbstractControl): {[key: string] : boolean} | null {
@@ -197,6 +192,7 @@ On the template:
   <span *ngIf="customerForm.get('age').errors?.ageValidator">Only for age group 20 to 70</span>
 
 
+
 ================================================================================
 
   watching for form changes
@@ -239,3 +235,1137 @@ DefaultValueAccessor
 			<input type="text" name="searchQuery" ngModel>
 
 ================================================================================
+
+
+
+Property 'customerForm' has no initializer and is not definitely assigned in the constructor.
+
+12   customerForm: FormGroup;
+     ~~~~~~~~~~~~
+
+
+apply the best practice of initializing the properties, either inline or in the constructor
+disable the strictPropertyInitialization flag in your tsconfig file (not recommended)
+
+
+
+Add ! to aware this is not initialized:
+formGroup!: FormGroup;
+
+or
+
+Add |undefined as additional type :
+formGroup: FormGroup | undefined
+
+
+
+Shouldn't the FormGroup be initialised on ngOnInit?
+---------------------------------------------------
+
+It doesn't have to be; I find it simplest to initialize most things directly on the class like this:
+
+export class ContactComponent implements OnInit { 
+
+  form = this.formBuilder.group({ 
+    email: ['', [Validators.required, Validators.email]],
+    name:  ['', [Validators.required, Validators.maxLength(40)]],
+  });
+
+  constructor(private formBuilder: FormBuilder) { }
+
+}
+
+
+This works fine with strictPropertyInitialization.
+
+The exception is when initializing something that requires data from the DOM (@Input, @ViewChild, etc) Since those things get initialized in the various Lifecycle Hooks as described in this answer:
+
+  @Input() → ngOnInit
+  @ViewChild() → ngAfterViewInit
+  @ContentChildren() → ngAfterContentInit
+
+
+Initializing something that depends on say, an @Input(), would be done in the corresponding lifecycle hook, ngOnInit, however, this does not appease the strict rule, so the Definite Assignment Assertion Operator ! is needed.
+
+
+export class ContactComponent implements OnInit { 
+  @Input() input!: number;
+
+  inputDoubled!: number;
+  
+  form = this.formBuilder.group({ 
+    email: ['', [Validators.required, Validators.email]],
+    name:  ['', [Validators.required, Validators.maxLength(40)]],
+  });
+
+  constructor(private formBuilder: FormBuilder) { }
+
+  ngOnInit() {
+    this.inputDoubled = this.input * 2;
+  }
+}
+
+
+
+
+================================================================================
+
+
+To update input elements on the form
+------------------------------------
+
+FormGroup  
+
+setValue    for the entire set
+patchValue  for a subset
+
+
+  populateTestData(): void {
+    this.customerForm.patchValue({
+      firstName: 'Jack',
+      lastName: 'Harkness',
+      sendCatalog: false
+    });
+  }
+
+
+
+
+================================================================================
+
+
+updateOn option 
+------------------
+
+
+https://indepth.dev/posts/1311/the-update-on-option-in-angular-forms
+
+
+The validation of user inputs plays a crucial role when dealing with forms. 
+
+It prevents the user from submitting incomplete or invalid data. 
+
+This ensures they don't get frustrated by having to submit the same invalid form over and over. 
+
+
+By default, on every keystroke, the values of our form controls are updated. 
+These validator functions then get executed. This may not be always desirable. 
+Sometimes we want a finer-grained control over the moment when value updates and validators are triggered. 
+
+This is where Angular forms' updateOn option comes into play.
+
+Angular Form Model
+------------------
+
+The form model is the data structure used by Angular to represent an HTML form. 
+This is what does the glue between the form elements in the HTML and Angular. 
+
+To create this form model, 
+Angular gives us three building blocks that are used by both template-driven and reactive forms:
+
+The FormControl class: tracks the state of an individual input element.
+The FormGroup class: tracks the state of a related group of form controls.
+The FormArray class: tracks state of an array of related FormControls and FormGroups.
+
+
+So, a form model is composed of instances of FormControl, FormGroup and FormArray classes.
+
+Using a signup form as an example:
+
+FormGroup -> 'signUpFormGroup'
+  FormControl -> 'fullName'
+  FormControl -> 'email'
+
+
+ FormControl,  FormGroup, and FormArray are all concrete instances of AbstractControl
+
+
+ The problem we're trying to solve with updateOn option
+ ------------------------------------------------------
+
+As you can see, on every keystroke, the state of our form model is updated. 
+This corresponds to the input event on the DOM <input/> element being emitted. 
+This DOM input event is what triggers FormControl updates. 
+The validator functions get executed and the error messages are updated immediately. 
+
+So, by default, the validator functions get invoked too often.
+
+
+The updateOn option allows us to set the update strategy of our form controls by choosing which DOM event trigger updates. The possible values for the updateOn property are:
+
+change, the default: corresponds to the DOM input event of the <input/> element;
+blur: corresponds to the DOM blur event of the <input/> element;
+submit: corresponds to the DOM submit event on the parent form.
+
+
+The updateOn option on a FormControl
+-------------------------------------
+
+
+To set the updateOn option on a FormControl instance, 
+we use the long form of its constructor's second parameter which is of type AbstractControlOptions:
+
+
+interface AbstractControlOptions {
+    validators?: ValidatorFn | ValidatorFn[] | null;
+    asyncValidators?: AsyncValidatorFn | AsyncValidatorFn[] | null;
+    updateOn?: 'change' | 'blur' | 'submit';
+}
+
+
+Changing the update strategy to 'blur'
+
+	updating the <input/> element won't trigger any validation messages 
+	until the blur event occurs on the <input/> element i.e., when it loses the focus. 
+	This minimizes the number of times our validation functions are executed.
+
+
+Changing the update strategy to 'submit'
+
+	Now, neither the input event nor the blur even on the  <input/> element will trigger any validation messages. 
+	The FormControl will update itself only when the parent form is submitted.
+
+
+
+Setting updateOn option on a FormGroup or FormArray
+----------------------------------------------------
+
+
+FormGroup and FormArray are subclasses of AbstractControl. 
+Therefore, they also support the updateOn option. 
+If you set the updateOn property of a FormGroup or a FormArray, 
+that value will be used as the default value for the updateOn property on all its child controls. 
+
+But, if a child control explicitly sets its own value for the updateOn option, 
+that explicit value will take precedence.
+
+
+signUpFormGroup = new FormGroup(
+  {
+    fullName: new FormControl('', {
+      updateOn: 'blur'
+    }),
+    email: new FormControl('')
+  },
+  { updateOn: 'submit' }
+);
+
+
+We use updateOn: 'submit' on the FormGroup level and updateOn: 'blur' on the fullName FormControl. 
+With this, the fullName control will update only when the corresponding input loses focus. 
+For the  email control, the updates only happen when the parent form is submitted.
+
+
+*******
+
+It's important to note that the updateOn property has no impact on when the FormGroup or FormArray updates happen. 
+It only affects the child controls. 
+For example, if the update strategy of  FormGroup or FormArray is set to 'blur', 
+and its children use the 'change' update strategy, 
+the FormGroup or FormArray will still update on 'change' with its children.
+
+******
+
+
+Setting the updateOn option using the FormBuilder API
+-----------------------------------------------------
+
+signUpFormGroup = this.fb.group(
+  {
+    fullName: this.fb.control('', {updateOn: 'blur'}),
+    email: this.fb.control('')
+  },
+  {updateOn: 'submit'}
+);
+
+
+Dynamically changing the value of the updateOn option
+-----------------------------------------------------
+
+Angular doesn't provide a way to set the updateOn option after the form controls has been created. 
+
+With reactive forms,  the only way to set the updateOn option is in the constructor of the FormControl, FormGroup, or FormArray classes.
+
+
+
+Thanks to the updateOn option we can use less aggressive update strategies in our Angular forms. This little option can have a huge positive impact in the performance of your Angular applications.
+
+
+
+================================================================================
+
+
+DefaultValueAccessor
+--------------------
+
+The default ControlValueAccessor for writing a value and listening to changes on input elements. 
+
+The accessor is used by the FormControlDirective, FormControlName, and NgModel directives.
+
+ngDefaultControl
+----------------
+
+const firstNameControl = new FormControl();
+
+<input type="text" [formControl]="firstNameControl">
+
+This value accessor is used by default for <input type="text"> and <textarea> elements, 
+
+but you could also use it for custom components that have similar behavior and do not require special processing. 
+
+In order to attach the default value accessor to a custom element, add the ngDefaultControl attribute as shown below.
+
+
+ngDefaultControl
+----------------
+
+<custom-input-component 
+	ngDefaultControl 
+	[formControl]="firstNameControl"
+>
+</custom-input-component>
+
+
+================================================================================
+
+
+ControlValueAccessor
+---------------------
+
+Defines an interface that acts as a bridge between the Angular forms API and a native element in the DOM.
+
+
+interface ControlValueAccessor {
+  writeValue(obj: any): void
+  registerOnChange(fn: any): void
+  registerOnTouched(fn: any): void
+  setDisabledState(isDisabled: boolean)?: void   <-- this method is optional.
+}
+
+
+NOTE:  ngDefaultCongtrol <-- should be used with custom elements
+
+https://stackoverflow.com/questions/46465891/what-is-ngdefaultcontrol-in-angular
+
+ERROR Error: No value accessor for form control with unspecified name attribute
+
+Means: you lost 'name' attribute to the element -> so add ngDefaultControl
+
+
+What does it mean?
+
+It means that we can apply this attribute to element(like polymer component) that doesn't have its own value accessor. So this element will take behaviour from DefaultValueAccessor and we can use this element with angular forms.
+
+Otherwise you have to provide your own implementation of ControlValueAccessor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+https://javascript.plainenglish.io/angular-custom-form-controls-with-control-value-accessor-90869cdf100c
+
+
+all those methods are meant to be called only by the Forms module at runtime, and they are meant to facilitate communication between our form control and the parent form.
+
+
+writeValue:  Forms module writes a value into a form control using this method.
+
+registerOnChange: 
+
+		If a form value changes due to user input, we need to report the value back to the parent form. 
+		This is done by calling a callback, 
+		that was initially registered with the control using the registerOnChange method.
+
+registerOnTouched: 
+
+		When the user first interacts with the form control, the control is considered to have the status touched, which is useful for styling. In order to report to the parent form that the control was touched, we need to use a callback registered using the registerOnToched method.
+
+
+setDisabledState: 
+
+		form controls can be enabled and disabled using the Forms API. 
+		This state can be transmitted to the form control via the setDisabledState method.
+
+
+
+
+Implementation of writeValue
+-----------------------------
+
+https://javascript.plainenglish.io/angular-custom-form-controls-with-control-value-accessor-90869cdf100c
+
+This method is used in the Angular forms module whenever the parent component needs to set the value to the child control. We can do it as shown below.
+
+
+  /**
+   * This method is used in the Angular forms whenever the parent
+   * component needs to set the value to the child control.
+   * @param obj
+   */
+  writeValue(obj: any): void {
+    this.counter = obj;
+  }
+
+
+
+Implementation of registerOnChange
+-----------------------------------
+
+https://javascript.plainenglish.io/angular-custom-form-controls-with-control-value-accessor-90869cdf100c
+
+Using the writeValue method, the parent component can set the value to the child control. But the critical situation is, when the counter value change by incrementing or decrementing, parent component need to aware of it to grab the changing values.
+
+There, the child component can notify the parent about that new value using a callback function. For this purpose, the parent component needs to register the callback function using the registerOnChange method as below.
+
+
+  /**
+   * The callback function to register on UI change.
+   * we declare the onChange variable as a function,
+   * and initially set an empty body.
+   * This way if the program calls this function before registerOnChange call
+   * is made, it won't complain.
+   */
+  onChange: any = (counter: any) => {};
+
+  /**
+   * This method enables the parent component to be aware
+   * of the change occurring in this form control.
+   * So we can notify the parent about any changes.
+   * When the registerOnChange call is made, the
+   * @param fn
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+
+  When the registerOnChange method is called, the changed value will save into a onChange variable. In this implementation, we have declared the onChange variable as a function and initially, it has an empty body. This way, if the program for some reason calls the function before the registerOnChange call was made, it won't run into any errors.
+
+When we increment or decrement the counter value, then we can notify the parent component by calling the callback function as below.
+
+
+  /**
+   * When the counter value is incremented, we also notify the parent form
+   * by calling the callback function the Form will store in `onChange` variable
+   * when calling `registerOnChange(fn)` method.
+   */
+  onAdd() {
+    this.counter += this.increment;
+    this.onChange(this.counter);
+  }
+
+  /**
+   * When the counter value is decremented, we also notify the parent form
+   * by calling the callback function the Form will store in `onChange` variable
+   * when calling `registerOnChange(fn)` method.
+   */
+  onRemove() {
+    this.counter -= this.increment;
+    this.onChange(this.counter);
+  }
+
+
+  Implementation of registerOnTouched
+  -----------------------------------
+
+https://javascript.plainenglish.io/angular-custom-form-controls-with-control-value-accessor-90869cdf100c
+
+
+
+When the form is initialized, form controls are considered to be in the untouched status and the ng-untouched CSS class is applied to the form group and also to each of its individual child controls.
+
+In the previous topics, we set and grab the value changes to the parent component. Also, we need to notify the form control has been touched by the user to the parent component. Therefore, we use the registerOnTouched method.
+
+If the user does interact with the form control, then that implies the ng-touched CSS class is going to be applied to the form control.
+
+First of all, we need to register the callback function as the previous function as below.
+
+  touched = false;
+  disabled = false;
+
+
+  onAdd() {
+    this.markAsTouched();
+    this.counter += this.increment;
+    this.onChange(this.counter);
+  }
+
+
+  /**
+   * Declare a variable to store the callback function for onTouched
+   * It will be set by the parent form when it calls `registerOnTouched(fn)`.
+   * We give it an empty body to initialize.
+   */
+  onTouched: any = () => {};
+
+  /**
+   * This method will notify the parent callback function that
+   * this form control has been touched.
+   */
+  markAsTouched() {
+    if (!this.touched) {
+      this.onTouched();
+      this.touched = true;
+    }
+  }
+
+  /**
+   * We need to notify the Form that the form control has been touched
+   * by the user.  If the user does interact with the form control,
+   * then the `ng-touched` CSS class is going to be applied to the form control.
+   *
+   * Here we register the callback function.
+   * @param fn
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+
+
+
+
+Implementation of setDisabledState
+----------------------------------
+
+We can use setDisabledState method to disable or enable the child form control. 
+There we initialize a disable variable as false and change the value of it by calling the setDisabledState method.
+
+  touched = false;
+  disabled = false;
+
+  /**
+   * This is an OPTIONAL function to disable/enable the child form control.
+   * @param isDisabled
+   */
+  setDisabledState(isDisabled: boolean) {
+    this.disabled = isDisabled;
+  }
+
+
+
+Configure ControlValueAccessor Interface
+----------------------------------------
+
+This is the main step of this implementation, which is to register the custom counter component as a known value accessor in the dependency injection system using the ControlValueAccessor Interface.
+
+Register the custom form control as a KNOWN value accessor in the DI system
+
+
+	@Component({
+	  selector: 'custom-counter',
+	  template: 'ccustom-counter.component.html',
+	  styleUrls: ["custom-counter.component.scss"],
+	  providers: [
+	    {
+	      provide: NG_VALUE_ACCESSOR,
+	      multi:true,
+	      useExisting: CustomCounterComponent
+	    }
+	  ]
+	})
+	export class CustomCounterComponent implements ControlValueAccessor {
+
+	}
+
+"multi" means this dependency takes a list of values
+
+As the configurations, 
+we provide NG_VALUE_ACCESSOR to register this component by adding to the list of known value accessors. 
+Notice the multi flag set to true, this means that this dependency provides a list of values, and not only one value.
+
+
+Now our custom component is now capable of setting the value of a property in a form. 
+
+Also our the component is now capable of participating in the form validation process 
+with the in-built required and min, max validators.
+
+
+Configure custom validation on custom form control
+--------------------------------------------------
+
+Validator interface
+---------
+
+validate() 
+
+	this method is used to validate the current value of the form control.
+	is called whenever a new value is reported to the parent form.
+	returns null if no errors are found
+
+
+
+registerOnValidatorChange()
+
+	this method will register a callback that will allow us to trigger the validation
+	of the custom control on demand.
+
+	we don't need to trigger this method whenever new value is input to the control
+	but it is required if the form will decide to recall validations
+
+
+
+
+
+
+================================================================================
+
+Angular ControlValueAccessor and markAsTouched
+----------------------------------------------
+
+https://stackoverflow.com/questions/61566769/angular-controlvalueaccessor-and-markastouched
+
+
+Q: I have a custom control by implementing the ControlValueAccessor interface
+	 In all my submit buttons when the form is not valid, 
+	 I call formGroup.markAllAsTouched because all the angular material fields become in red. In this way the user can better understand which controls are not valid.
+
+	 I need to implement the same behavior with my custom control. How to do that?
+
+A:
+
+There is no built-in functionality for propagating touched status to inner FormControl of custom control.
+
+Your simple option would be checking status in ngDoCheck and once custom control becomes touched update status for inner FormControl:
+
+ngDoCheck() {
+  if (this.formControl.touched) {
+    return;
+  }
+  if (this.controlDir.control.touched) {
+    this.formControl.markAsTouched();
+  }
+}
+
+
+https://stackblitz.com/edit/angular-ptb82y?file=src%2Fapp%2Fmy-custom-control.component.ts
+
+
+
+Personally, I don't like such kind of implementations with ControlValueAccessor. I would rather use the same FormControl. 
+
+This can be done by adding viewProviders with ControlValueAccessor provider to your custom control:
+
+
+@Component({
+  selector: 'my-custom-control',
+  template: `
+    <mat-form-field id="userType">
+      <mat-label>My Custom Component</mat-label>
+      <mat-select [formControlName]="controlName" (blur)="onTouched()">
+        <mat-option *ngFor="let current of userTypes" [value]="current.id">{{current.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  `,
+   viewProviders: [{
+    provide: ControlContainer,
+    useFactory: (container: ControlContainer) => container,
+    deps: [[new SkipSelf(), ControlContainer]],
+ }]
+})
+export class MyCustomControl {
+  @Input() controlName: string;
+
+  userTypes: LookupModel[] = [
+      new LookupModel(1, 'first'),
+      new LookupModel(2, 'second')
+  ];
+}
+
+
+parent html
+------------
+
+<form [formGroup]="form">
+  <my-custom-control controlName="userTypeCustomControl"></my-custom-control>
+
+
+================================================================================
+
+How do I know when custom form control is marked as pristine in Angular?
+
+https://stackoverflow.com/questions/44730711/how-do-i-know-when-custom-form-control-is-marked-as-pristine-in-angular
+
+
+Watching for changes with ngDoCheck
+
+
+  ngDoCheck(): void {
+    if (this.pristine !== this.control.pristine) {
+      this.pristine = this.control.pristine;
+      if (this.pristine) {
+        console.log('Marked as pristine!');
+      }
+    }
+  }
+
+
+================================================================================
+
+	ControlValueAccessor
+	ngDoCheck
+	controlCongtainer
+
+Working with complex forms
+
+
+https://timdeschryver.dev/blog/working-with-angular-forms-in-an-enterprise-environment#input-form-fields
+
+
+
+
+================================================================================
+
+	Form Validation on Submit
+	-------------------------
+
+https://loiane.com/2017/08/angular-reactive-forms-trigger-validation-on-submit/
+
+
+
+
+
+================================================================================
+
+
+	Forwarding formControlName to inner component with Angular Reactive Forms
+	-------------------------------------------------------------------------
+
+https://stackoverflow.com/questions/52893088/forwarding-formcontrolname-to-inner-component-in-angular-with-reactive-forms
+
+
+Your inner component can take @Input controlName but it won't work out of the box:
+
+	Error: formControlName must be used with a parent formGroup directive.
+
+In order to tie your control with parent FormGroup you can define viewProvider as follows:
+
+import { Component, Input, OnInit} from '@angular/core';
+...
+import { ControlContainer, FormGroupDirective } from '@angular/forms';
+
+@Component({
+  ...
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useExisting: FormGroupDirective
+    }
+  ]
+})
+export class DateWrapperComponent implements OnInit {
+    @Input() controlName: string;
+}
+
+https://stackblitz.com/edit/ng-tie-reactive-forms-throgh-wrapper-andd8w?file=src/app/date-wrapper/date-wrapper.component.ts
+
+
+In case you don't know which exactly directive is provided as a ControlContainer(FormGroupDirective, FormGroupName or FormArrayName) you can use more generic approach:
+
+viewProviders: [
+  {
+    provide: ControlContainer,
+    useFactory: (container: ControlContainer) => container,
+    deps: [[new SkipSelf(), ControlContainer]]
+  }
+]	
+
+
+================================================================================
+
+
+What is NgControl
+-----------------
+
+A base class that all FormControl-based directives extend. 
+
+It binds a FormControl object to a DOM element.
+
+
+Angular Directives that interact with the Angular Form Controls
+---------------------------------------------------------------
+
+NgModel (Template Driven Forms)
+
+	<input [(ngModel)]="value" appValidationBorder>
+
+
+FormControlName (Reactive Forms)
+
+	<input formControlName="value" appValidationBorder>
+
+
+FormControlDirective (Reactive Forms)
+
+	<Input [formControl]="value" appValidationBorder>
+
+
+They are all provided as 'NgControl'
+
+
+
+										NgControl
+
+
+	NgModel			  FormControlDirective	 FormControlName
+
+	provided as    provided as           provided as
+  NgControl      NgControl             NgControl
+
+
+This means we can inject the NgControl, and the Angular DI Framework will 
+provide us the closest form control directive.
+
+We also make sure to limit the injection with the @Self decorator.
+
+
+constructor(@Self() ngControl: NgControl) {}
+
+
+By using NgControl we get access to properties like control value, validation status, errors and more.
+
+
+
+
+================================================================================
+
+
+	ControlContainer
+	----------------
+
+
+A base class for directives that contain multiple registered instances of NgControl. 
+Only used by the forms module.
+
+https://jenniferwadella.com/blog/angular-control-container
+
+
+We can use the ControlContainer to access FormControls, FormGroups, and FormArrays and manage a main form chunked across components.
+
+
+Suppose we have a FormGroup "sampleForm" in our Component.
+
+	public sampleForm: FormGroup;
+
+and we have a custom component - AppAddress
+
+  <form [formGroup]="sampleForm">
+    <div class="form-group">
+      <label for="name">First Name</label>
+      <input name="first_name" formControlName="first_name" />
+    </div>
+    <div class="form-group">
+      <label for="name">Last Name</label>
+      <input name="last_name" formControlName="last_name" />
+    </div>
+    <div class="form-group">
+      <label for="name">Email Address</label>
+      <input name="email" formControlName="email" />
+    </div>
+    <app-address></app-address>
+  </form>
+
+
+Inside our reusable Address component, we can access the "sampleForm" by injecting
+the ControlContainer class in our Constructor - this will return the parent
+FormGroupDirective and allow us to access that control.
+
+From there, we can use the "formControlName" fo our FormControls as expected.
+
+
+address.component.ts
+--------------------
+
+export class AddressComponent implements OnInit {
+  public ogFormGroup;
+  constructor(public controlContainer: ControlContainer) {
+  }
+
+  ngOnInit() {
+    this.ogFormGroup = this.controlContainer.control;
+  }
+
+}
+
+
+  <form  *ngIf="ogFormGroup" [formGroup]="ogFormGroup">
+    <h5>Address:</h5>
+    <div class="form-group">
+      <label for="name">Street Name</label>
+      <input formControlName="street" />
+    </div>
+    <div class="form-group">
+      <label for="name">City</label>
+      <input formControlName="city" />
+    </div>
+    <div class="form-group">
+      <label for="name">State</label>
+      <input formControlName="state" />
+    </div>
+    <div class="form-group">
+      <label for="name">Zip</label>
+      <input formControlName="zip" />
+    </div>
+  </form>
+
+
+In the child component we access the parent formDirective through the ControlContainer class and bind it to a new form directive in our component and include the formControls we want to present to the user.
+
+
+How to forward formControlName to inner component with ReactiveForms
+---------------------------------------------------------------------
+
+https://stackoverflow.com/questions/52893088/forwarding-formcontrolname-to-inner-component-in-angular-with-reactive-forms
+
+
+<form [formGroup]="form">
+    <ext-some-input formControlName="name">
+</form>
+
+<ext-some-input>  is a wrapper 
+
+<some-input>  is encapsulated, has own API and supports reactive forms.
+
+		<some-input formControlName="_???_"></some-input>
+
+
+Question: how to forward formControlName to inner SomeInput component?
+
+Answer:  
+
+
+	Your inner component can take @Input controlName but it won't work out of the box.
+	You get an error:
+
+		Error: formControlName must be used with a parent formGroup directive.
+
+
+In order to tie your control with parent FormGroup you can define viewProvider as follows:
+	
+	import { Component, Input, OnInit} from '@angular/core';
+	...
+	import { ControlContainer, FormGroupDirective } from '@angular/forms';
+
+	@Component({
+	  ...
+	  viewProviders: [
+	    {
+	      provide: ControlContainer,
+	      useExisting: FormGroupDirective
+	    }
+	  ]
+	})
+	export class DateWrapperComponent implements OnInit {
+	    @Input() controlName: string;
+	}
+
+
+In case you don't know which exactly directive is provided as a ControlContainer
+(FormGroupDirective, FormGroupName or FormArrayName) you can use a more generic
+approach:
+
+
+	viewProviders: [
+	  {
+	    provide: ControlContainer,
+	    useFactory: (container: ControlContainer) => container,
+	    deps: [[new SkipSelf(), ControlContainer]]
+	  }
+	]
+
+
+
+================================================================================
+
+"$event.target.value" throws error in template
+-----------------------------------------------
+https://angular.io/guide/template-typecheck#troubleshooting-template-errors
+
+$event.target.value unresolved variable value
+
+
+With strict mode, you might encounter template errors that didn't arise in either of the previous modes.
+
+Use the $any() type-cast function in certain contexts to opt out of type-checking for a part of the expression
+
+
+<input
+	(input)="onChange($any($event).target.value)"
+/>
+
+
+
+
+================================================================================
+
+
+	Implement Custom Input Component
+	--------------------------------
+
+https://stackoverflow.com/questions/56979532/angular-reactive-forms-best-way-to-implement-input-components-wrappers
+https://ritchiejacobs.be/angular-custom-form-component
+https://stackblitz.com/edit/angular-reactive-form-component?file=src%2Fapp%2Fapp.component.ts
+
+1. Create Custom Input Component and hook up ControlValueAccessor
+
+
+ng g c  custom-input
+
+
+@Component({
+  selector: 'custom-input',
+  templateUrl: './custom-input.component.html',
+  styleUrls: ['./custom-input.component.css']
+})
+export class CustomInputComponent implements ControlValueAccessor {
+  constructor() {}
+
+  writeValue() {}
+
+  registerOnChange() {}
+
+  registerOnTouched() {}
+}
+
+
+Inside the constructor we inject NgControl to bind the FormControl object to the DOM element:
+
+
+constructor(
+  @Self()
+  @Optional()
+  private ngControl: NgControl
+) {
+  if (this.ngControl) {
+    this.ngControl.valueAccessor = this;
+  }
+}
+
+
+Note that we add two decorators to the dependency:
+
+@Self(): We want to retrieve the dependency only from the local injector, not from the parent or ancestors.
+@Optional(): We want to be able to use the component without a form, so we mark the dependency as optional.
+
+
+			NOTE:  so you can either inject NgControl like above in the constructor or  like this 
+			by declaring NG_VALUE_ACCESSOR in the providers array.
+
+
+					@Component({
+					  selector: 'custom-input',
+					  templateUrl: './custom-input.component.html',
+					  styleUrls: ['./custom-input.component.scss'],
+					  providers: [
+					    {
+					      provide: NG_VALUE_ACCESSOR,
+					      useExisting: forwardRef( () => CustomInputComponent),
+					      multi: true
+					    }
+					  ]
+					})
+					export class CustomInputComponent implements ControlValueAccessor {			
+
+
+
+2. Writing form values to the view
+
+We have now created a connection between the FormControl and the custom component. But this is not yet reflected in the template of our component.
+
+
+The forms API will call the writeValue() method every time the form model is updated (for example by using setValue()). So we use this hook to update the input value property:
+
+
+<input ... [value]="value" ... />
+
+
+3. configured setDisabled()
+
+The same needs to be done for the disabled state. 
+The forms API will trigger the setDisabledState() method when the control status changes.
+
+	@Input() disabled: boolean;
+
+	setDisabledState(isDisabled: boolean): void {
+	  this.disabled = isDisabled;
+	}
+
+	<input ... [disabled]="disabled" ... />
+
+
+4. Updating the form with view changes
+
+
+We need to inform the model whe the view is updated.
+
+To do this, we will have to add the registerOnChange method.
+Inside this method we store a callback fucntion as an internal method.
+This callback fuction will be used by the Forms API to update the form model 
+when values are updated in the view.
+
+
+
+	private onChange() {}
+
+	registerOnChange(fn: any): void {
+	  this.onChange = fn;
+	}
+
+
+	<input
+	  ...
+	  (input)="onChange($event.target.value)"
+	  ...
+	/>
+
+
+5. Configure on 'blur'
+
+
+If your form is configured to update on blur instead of the default change you will have to add the registerOnTouched method as well:
+
+
+
+registerOnChange(fn: any): void {
+  this.onChange = fn;
+}
+
+registerOnTouched(fn: any): void {
+  this.onTouched = fn;
+}
+
+private onChange() {}
+private onTouched() {}
+
+
+<input
+  ...
+  (input)="onChange($any($event).target.value)"
+  (blur)="onTouched()"
+  ...
+/>
+
+
+NOTE: 
+
+	when using <input type="text">  the (change) even will only be fired when 
+	the element loses focus.  
+
+	The (input) even is fired instantly when the value changes.
+
+	MAKE sure to check what even is best to be used if you're using a different element.
+
+================================================================================
+
+	Angular FormGroup reset() does not reset validators
+	***************************************************
+
+
+There's an open issue mat-form-field does not remove mat-form-field-invalid class on FormGroup reset
+https://github.com/angular/components/issues/4190
+
+
+
+================================================================================
+
+

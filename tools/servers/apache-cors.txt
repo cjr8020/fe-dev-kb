@@ -1,0 +1,22 @@
+Apache CORS
+***********
+
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(www\.)?(domain1.example|domain2.example)$" AccessControlAllowOrigin=$0$1
+    Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header set Access-Control-Allow-Credentials true
+</IfModule>
+
+
+
+
+# ----------------------------------------------------------------------
+# Allow loading of external fonts
+# ----------------------------------------------------------------------
+<FilesMatch "\.(ttf|otf|eot|woff|woff2|sfnt|svg)$">
+    <IfModule mod_headers.c>
+        SetEnvIf Origin "http(s)?://(.+\.)?(google.com|staging.google.com|development.google.com|otherdomain.example|dev02.otherdomain.example)$" AccessControlAllowOrigin=$0
+        Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+        Header merge Vary Origin
+    </IfModule>
+</FilesMatch>

@@ -1,6 +1,64 @@
 
 
 
+================================================================================
+
+aXe
+---
+
+cmd - opt - i
+
+DevTools > Inspect > axe DevTools
+
+
+
+================================================================================
+
+
+Rule: aria-hidden elements do not contain focusable elements
+-------------------------------------------------------------
+
+https://dequeuniversity.com/rules/axe/4.3/aria-hidden-focus
+
+The following examples PASS the aria-hidden="true" elements do not contain focusable elements rule:
+
+
+Content not focusable by default.
+
+  <p aria-hidden="true">Some text</p>
+
+
+Content hidden through CSS.
+
+
+  <div aria-hidden="true">
+      <a href="/" style="display:none">Link</a>
+  </div>  
+
+
+Content made unfocusable through tabindex.
+
+  <div aria-hidden="true">
+    <button tabindex="-1">Some button</button>
+  </div>
+
+
+Content made unfocusable through disabled.
+
+
+  <input disabled aria-hidden="true" />
+
+
+
+
+
+================================================================================
+
+
+
+
+
+
 color contrast ratio
 
 WCAG 2.1 requires a 3:1 minimum ratio

@@ -5,7 +5,94 @@
 
 ***********
 
+Resources: 
+
+
+Learn Box Alignment 
+https://ishadeed.com/article/learn-box-alignment/
+
+
+Grid for layout, Flexbox for components
+https://ishadeed.com/article/grid-layout-flexbox-components/
+
+
+Webpage Layout Examples With Flexbox
+https://medium.com/@merveyuksek/webpage-layout-examples-with-flexbox-88287f010a08
+
+
+CSS Flexbox Tutorial – How to Build a Fixed Side and Bottom Navbar
+https://www.freecodecamp.org/news/fixed-side-and-bottom-navbar-with-css-flexbox/
+
+
 Since flexbox is a whole module and not a single property, it involves a lot of things including its whole set of properties. Some of them are meant to be set on the container (parent element, known as “flex container”) whereas the others are meant to be set on the children (said “flex items”).
+
+
+
+
+================================================================================
+
+
+	Flexbox use cases
+	------------------
+
+Don't need complex grid systems.
+
+In the past, to position two elements side by side on the page, you would have to
+float them, set width, and then clear the floats.
+
+With flexbox, you just set  `flex: 1`
+
+
+
+
+
+	Holy Grail Layout 
+	=================
+
+
+		header
+
+nav    main content      sidebar
+
+		footer
+
+
+
+	<body>
+        
+        <header class="page-header">
+            <h1>Header</h1>
+        </header>
+            
+        <main class="page-content">
+            <nav class="content-navigation">
+                <h1>Navigation</h1>
+            </nav>
+            <article class="content-article">
+                <h1>Main Content</h1>
+            </article>
+            <aside class="content-sidebar">
+                <h1>Sidebar</h1>
+            </aside>
+        </main>
+        
+        <footer class="page-footer">
+            <h1>Footer</h1>
+        </footer>
+            
+			
+	</body>
+
+
+	
+
+
+
+================================================================================
+
+
+
+
 
 
 flexbox layout
@@ -45,6 +132,9 @@ Parent (flex container) properties:
 	- align-content
 
 
+Flex Items
+-----------------
+
 
 
 
@@ -53,37 +143,108 @@ display
 --------------------------
 
 
-	.file-upload-with-progress-container {
-	  margin: 1rem;
-	  display: flex;
-	  justify-content: center;
-	}
+.flex-container {
+	display: inline-flex;
+	flex-direction: row;
+	border: solid 4px #000;
+}
+
 
 
 flex-direction
 -------------------------- 
 
 
+	flex-direction: row;  // default
+	flex-direction: row-reverse;  
+	flex-direction: column; top to bottom
+	flex-direction: column-reverse;
+
+
+
 flex-wrap
 -------------------------- 
+
+
+	flex-wrap: nowrap;
+	/*flex-wrap: wrap;*/
+	/*flex-wrap: wrap-reverse;*/
+
 
 
 flex-flow
 -------------------------- 
 
+	this combines direction and wrap
+
+flex-flow: row wrap;
+flex-flow: row-reverse wrap-reverse;
+
+
+================================================================================
+
+
+Alignment
+*********
+
+can be applied to all items.
+
+	justify-content
+	align-items
+	align-content
+
+or to individual items
+
+	align-self
+
 
 justify-content
 -------------------------- 
+
+	allows us to align flex items along the main axis
+
+	justify-content: flex-start;  /* default */
+								   flex-end
+								   space-around
+								   center
+
+
 
 
 align-items
 -------------------------- 
 
+	aligns flex items along the cross axis
+		align-items: stretch;  /* default */
+								 flex-start;
+								 flex-end;
+								 center
+								 baseline
+
 
 align-content
 --------------------------
 
+	when we have items that wrap onto multiple lines, 
+	we can align lines in a flex container along the cross axis
 
+		align-content: stretch;  /* default */
+		               center
+
+
+
+gap 
+--------------------
+
+	gap: 2em;		              
+
+
+
+
+Making Flex Items Grow/Shrink to the available space
+====================================================
+
+flex-grow  controls how much this item will flex relative to other items
 
 
 
@@ -92,9 +253,93 @@ align-content
 
 		- order
 		- flex-grow
+
+			flex-grow: 1;  // items will grow to the avialable space equally
+			flex-grow: 4;  // flex item will grow 4x to the avialable space 
+			               // while others will grow to a factor of 1x 
+
 		- flex-shrink
+
+				opposite of flex-grow
+
+				flex-shrink: 2; // item will shrink 2x relative to other items with 1x shrink 
+				flex-shrink: 0; // item will not shrink while others do
+
 		- flex-basis
+
+				sets the initial size of the items before the extra space is distributed
+				it is very similar to width property
+
+				flex-basis: 10em; // sets the width of this flex item to 10em  
+				                  // while others have a setting of auto
+
+
 		- flex
+
+				https://developer.mozilla.org/en-US/docs/Web/CSS/flex
+
+
+				flex property allows the shorthand version of these properties
+
+				flex: flex-grow flex-shrink flex-basis;
+				flex: 0 1 auto;  // items will not grow since flex-grow is 0
+
+
+				flex-grow: 1  /* default */
+				flex-shrink: 1  /* default */
+				flex-basis: 0 /* default */
+
+				for most purposes, authors should set `flex` to "auto" "initial" or "none"
+				or a positive unitless number
+
+
+				Explaining flex: 0.5
+				------------------------
+
+					this means:
+
+						flex-grow: 0.5
+						flex-shrink: 1
+						flex-basis: 0
+
+					flex-grow of 0.5 	
+						=> 
+						"consume half of the available space in the container relative to the flex-grow factor of its siblings"
+
+
+			One-value syntax: 
+			------------------
+			the value must be one of:
+			
+			a <number>: In this case it is interpreted as flex: <number> 1 0; the flex-shrink value is assumed to be 1 and the 
+			flex-basis value is assumed to be 0.
+			
+			a <width>: In this case it is interpreted as flex: 1 1 <width>; the flex-grow value is assumed to be 1 and the flex-shrink value is assumed to be 1.
+			
+			one of the keywords: none, auto, or initial.				
+
+
+				/* One value, unitless number: flex-grow
+				flex-basis is then equal to 0. */
+				flex: 2;
+
+
+				/* One value, width/height: flex-basis */
+				flex: 10em;
+				flex: 30%;
+				flex: min-content;
+
+				/* Two values: flex-grow | flex-basis */
+				flex: 1 30px;
+
+				/* Two values: flex-grow | flex-shrink */
+				flex: 2 2;
+
+				/* Three values: flex-grow | flex-shrink | flex-basis */
+				flex: 2 2 10%;
+
+
+
 		- align-self
 
 
@@ -102,6 +347,24 @@ align-content
 
 order
 ------------------
+
+Display order - you can change the order in which flex items are displayed within your container
+
+	by default, the display order matches the source order within the document.
+
+	To change that, you can place your items in a different ordinal group.
+	By default, all flex items are placed into the ordinal group with the order of 0.
+
+
+.flex-item-01 {
+	background-color: #A62E5C;
+  order: 1;  // <-- moves this item into it's own group and places it at the end.
+}
+
+
+order -1;  moves items to the beginning of the container.
+
+
 
 
 flex-grow
@@ -251,6 +514,159 @@ If you need to support flex wrapping, you can use a wrapper element:
 </div>
 
 
+
+
+================================================================================
+
+
+	Responsive Flexbox
+	------------------------
+
+
+https://www.freecodecamp.org/news/learn-flexbox-build-5-layouts/#setup
+	
+
+https://www.w3schools.com/css/css3_flexbox_responsive.asp	
+
+change 2-col layout for most screen sizes to a 1-col layout for small screen sizes
+
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Responsive layout - makes a one column layout instead of a two-column layout */
+@media (max-width: 576px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+
+Another way is to change the percentage of the flex property of the flex items to create different layouts for different screen sizes. 
+
+Note that we also have to include flex-wrap: wrap; on the flex container for this example to work:	
+
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-item-left {
+  flex: 50%;
+}
+
+.flex-item-right {
+  flex: 50%;
+}
+
+/* Responsive layout - makes a one column layout instead of a two-column layout */
+@media (max-width: 576px) {
+  .flex-item-right, .flex-item-left {
+    flex: 100%;
+  }
+}
+
+
+Must-Know CSS Flexbox Responsive Multi-Column Layout Explained
+--------------------------------------------------------------
+
+https://softauthor.com/css-flexbox-responsive-multi-column-layout/#:~:text=To%20change%20the%20row%20into,instead%20of%20beside%20each%20other.&text=That's%20it%20for%20mobile%20layout,the%20two%20columns%20looks%20great!
+
+
+
+================================================================================
+
+
+	Exercise Files
+	**************
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Modern Web Layout - Flexbox</title>
+		<link href="styles.css" rel="stylesheet">
+	</head>
+	<body>
+
+		<div class="flex-container">
+
+			<div class="flex-item">
+				<em>Flex Item</em>
+				<strong>01</strong>
+			</div>
+
+			<div class="flex-item">
+				<em>Flex Item</em>
+				<strong>02</strong>
+			</div>
+
+			<div class="flex-item">
+				<em>Flex Item</em>
+				<strong>03</strong>
+			</div>
+
+		</div>
+
+	</body>
+</html>
+
+
+
+
+body {
+	padding: 0;
+	margin: 0;
+	font-family: arial, sans-serif;
+}
+
+.flex-container {
+	display: inline-flex;
+	flex-direction: column-reverse;
+	border: solid 4px #000;
+}
+
+.flex-item {
+	color: #fff;
+	font-size: 1.2em;
+	padding: 1em;
+	text-align: center;
+}
+
+.flex-item:first-child {
+	background-color: #A62E5C;
+}
+
+.flex-item:nth-child(2) {
+	background-color: #9BC850;
+}
+
+.flex-item:nth-child(3) {
+	background-color: #675BA7;
+}
+
+.flex-item strong {
+	display: block;
+	font-size: 130%;
+}
+
+
+
+
+
+================================================================================
+
+Force flex item to span full row width
+https://stackoverflow.com/questions/48101046/force-flex-item-to-span-full-row-width
 
 
 ================================================================================

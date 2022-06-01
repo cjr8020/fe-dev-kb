@@ -4,6 +4,84 @@
 
 @@@@@@@@@@@@@@@@@@@
 
+Resources:
+
+BEM 101
+https://css-tricks.com/bem-101/
+
+http://getbem.com/naming/
+
+
+================================================================================
+
+
+BEM  Block, Element, Modifier methodology
+------------------------------------------
+
+https://css-tricks.com/bem-101/
+https://codepen.io/team/css-tricks/pen/LEvmNQ/226a65c8f7d64615aabd45048d1d3b6d
+
+
+/* Block component */
+.btn {}
+
+/* Element that depends upon the block */ 
+.btn__price {}
+
+/* Modifier that changes the style of the block */
+.btn--orange {} 
+.btn--big {}
+
+
+
+
+
+block
+	top-level abstraction of a new component
+
+.btn {}
+
+
+	this block should be thought of as a "parent".
+
+element
+
+	Child items, or elements, can be placed inside and these are denoted by 
+	two underscores following the name of the block
+
+.btn__price {}
+
+
+modifier
+
+	finally, modifiers can manipulate the block so that we can theme or style 
+	that particular component without inflicting changes on a completely unrelated module.
+
+	this is done with appending two hyphens to the name of the block
+
+.btn--orange {}
+
+
+
+https://medium.com/@dannyhuang_75970/what-is-bem-and-why-you-should-use-it-in-your-project-ab37c6d10b79#
+
+
+// SCSS
+.card {
+  &__image {}
+  &__description {}
+  &__button {
+    &--success{}
+    &--back{}
+  }
+}
+
+// CSS
+.card__image {}
+.card__description {}
+.card__button--success{}
+.card__button--back {}
+
 
 ================================================================================
 
@@ -11,6 +89,673 @@
 
 
 border: 2px solid red;
+
+================================================================================
+
+CSS reset
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+================================================================================
+
+	ordering
+	--------
+
+last rule wins
+
+
+	Specificity
+	-----------
+
+
+	Inheritance
+	-----------
+
+
+
+
+================================================================================
+
+CSS display property
+--------------------
+
+display: value; 
+
+where value is 
+
+inline 
+	Displays an element as an inline element (like <span>). 
+	Any height and width properties will have no effect
+
+block
+	Displays an element as a block element (like <p>). 
+	It starts on a new line, and takes up the whole width
+
+inline-block
+	Displays an element as an inline-level block container. 
+	The element itself is formatted as an inline element, but you can apply height and width values
+
+
+================================================================================
+
+CSS Grid
+********
+
+References:
+
+https://moderncss.dev/container-query-solutions-with-css-grid-and-flexbox/#solutions
+
+https://css-tricks.com/introduction-fr-css-unit/  
+
+
+fr  CSS length unit
+-------------------
+
+https://css-tricks.com/introduction-fr-css-unit/
+https://gridbyexample.com/video/series-the-fr-unit/
+
+benefits: more legible and maintainable code
+
+the `fr` unit is a fraction, can be used like any other CSS length, like  %,  px  or  em
+
+
+	.grid-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);  <-- fixes overflow
+		grid-column-gap: 10px;  
+	}
+
+1fr takes that 10px into account automatically and subtracts it from the total width available for each column.
+
+
+or in a different scenario:
+let’s say we want our navigation on the left followed by a twelve column grid
+
+
+without `fr` we have to perform the following caculation:
+
+	the width of each column = ((width of viewport - width of nav) / number of columns) * 1%
+
+but with `fr`
+
+	.grid {
+	  display: grid;
+	  grid-template-columns: 250px repeat(12, 1fr);
+	  grid-column-gap: 10px;
+	}
+
+
+What we’re doing here is setting a fixed width in pixels (250px) for the first column and then creating twelve separate columns which are set at one “fraction of the free space” (literally how the spec phrases it). 
+
+
+Main and Sidebar
+-----------------
+
+When you have a sidebar and Main, CSS grid is a perfect solution for building them.
+
+
+<div class="wrapper">
+  <aside>Sidebar</aside>
+  <main>Main</main>
+</div>
+
+
+@media (min-width: 800px) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-gap: 16px;
+  }
+
+  aside {
+    align-self: start;
+  }
+}
+
+
+Cards Grid
+-----------
+
+
+Grid Container contains Grid Items
+
+Grid Lines   column axis and row axis  =  Grid Tracks (aka grid rows or columns)
+
+Grid Cells is where grid lines intersect.
+
+
+Grid Areas
+	any prortion of the grid contained within 4 lines
+
+
+
+
+grid container
+---------------
+
+	display: grid;
+					 insline-grid;  // grid items will take only as much space as they require.
+
+
+	To define columns
+
+		grid-template-columns: width width width width width;
+
+	To define rows
+
+		grid-template-rows: height height height height height;
+
+
+or combine
+
+		grid:  column column / row row;
+
+
+use `repeat`:
+
+		grid-template-columns: repeat(4, 6em);
+
+
+
+Custom named grid lines and grid areas
+--------------------------------------------------------------------------------
+
+	grid-template-columns: [name1] [name2] [name3]; 
+
+	grid-template-rows: [name1] [name2] [name3];
+
+
+
+.grid-container {
+    display: grid;
+    height: calc(100vh - 2em);
+    grid-template-rows: 6em 1em 1fr;
+    grid-template-columns:
+      [main-content-start] 1fr
+      [main-content-end] 1em
+      [sidebar-start] 25%
+      [sidebar-end];
+}
+
+.grid-item-content {
+    background-color: #9BC850;
+    grid-row: 3 / 4;
+    grid-column: main-content-start / main-content-end;
+}
+
+.grid-item-sidebar {
+    background-color: #9BC850;
+    grid-row: 3 / 4;
+    grid-column: sidebar-start / sidebar-end;
+}
+
+.grid-item-header {
+    background-color: #A62E5C;
+    grid-row: 1 / 2;
+    grid-column: main-content-start / sidebar-end;
+}
+
+.grid-item {
+	color: #fff;
+    box-sizing: border-box;
+	font-size: 1.2em;
+	padding: 1em;
+    overflow: hidden;
+	text-align: center;
+}
+
+.grid-item strong {
+	display: block;
+	font-size: 130%;  
+}		
+
+
+
+Named Grid Areas
+--------------------------------------------------------------------------------
+
+.media-item-title {
+	grid-area: title;
+}
+
+
+.media-container {
+    display: grid;
+
+    grid: auto auto / 8em 1fr;
+    grid-template-areas:
+        "title title"        <--  we repeat the grid-area name twice for each column - so it spans
+        "thumbnail content";
+    gap: 1em;
+
+    grid: auto 1em auto / 8em 1.5em 1fr;
+    grid-template-areas:
+        "title title title"
+        ". . ."              <--  row for spacing
+        "thumbnail . content";
+}
+
+
+--------------------------------------------------------------------------------
+
+
+Placing Grid Items
+-------------------
+
+
+	grid-column-start
+	grid-column-end
+	grid-row-start
+	gird-row-end
+
+
+	.grid-item {
+		grid-column-start: 1; 
+		grid-column-end: 3;
+	}
+
+or to combine
+
+
+	grid-row: row-start / row-end;
+
+	grid-column:  column-start / column-end;
+
+
+or combine in `grid-area`
+
+
+	grid-area: row-start / column-start / row-end / column-end;
+
+
+you can also use `span`:
+
+
+	grid-column: 2 / span 2;
+	grid-row: 2 / span 1;
+
+
+
+
+Gap
+---------------
+
+	same as with flexbox
+
+
+	.grid-container {
+		display: grid;
+
+		/*gap: 1em;*/
+		row-gap: 1em;
+		column-gap: 1.5em;
+	}
+
+
+
+Auto features
+----------------------------
+
+.grid-container {
+	
+
+}
+
+Implicit grid lines are created when items are added beyond explicitly defined
+rows and columns
+
+
+
+Responsive CSS grid
+----------------------------
+
+https://css-tricks.com/look-ma-no-media-queries-responsive-layouts-using-css-grid/
+
+
+
+
+
+================================================================================
+================================================================================
+
+
+Combining CSS Grid And Flexbox
+------------------------------
+
+
+	A list of cards.
+	Grid is used to lay out the cards, and flexbox is used for the card component itself.
+
+
+	Here are the requirements for the layout:
+
+The height of the cards for each row should be equal
+The read more link should be positioned at the end of the card, no matter its height.
+The grid should use minmax() function
+
+
+<div class="wrapper">
+  <article class="card">
+    <img src="sunrise.jpg" alt="" />
+    <div class="card__content">
+      <h2><!-- Title --></h2>
+      <p><!-- Desc --></p>
+      <p class="card_link"><a href="#">Read more</a></p>
+    </div>
+  </article>
+</div>
+
+
+@media (min-width: 500px) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 16px;
+  }
+}
+
+.card {
+  display: flex; /* [1] */
+  flex-direction: column; /* [2] */
+}
+
+.card__content {
+  flex-grow: 1; /* [3] */
+  display: flex; /* [4] */
+  flex-direction: column;
+}
+
+.card__link {
+  margin-top: auto; /* [5] */
+}
+
+
+================================================================================
+
+line-height
+-----------
+
+The line-height CSS property sets the height of a line box. 
+It's commonly used to set the distance between lines of text. 
+
+On block-level elements, it specifies the minimum height of line boxes within the element. 
+
+On non-replaced inline elements, it specifies the height that is used to calculate line box height.
+(non-replaced is content in the document)
+
+On replaced inline elements, like buttons or other input element, line-height has no effect.
+
+
+
+[Replaced elements]
+https://developer.mozilla.org/en-US/docs/Web/CSS/Replaced_element
+According to W3C, an HTML replaced element is an element whose content is outside the scope of the CSS formatting model. An example is the HTML img element, whose content is replaced by the image that its src attribute designates.
+
+================================================================================
+
+	line-height /  font-size relationship
+	-------------------------------------
+
+font-size: 1em;
+line-height: 1.5em;
+
+em is a relative unit of measurement, based on the font size. When you increase the font size, you increase all the property values that are measured in em, such as your line-height here.
+
+
+================================================================================
+
+	Line height calculation
+  -----------------------
+
+ https://www.thejtsite.com/blog/single/how-to-calculate-relative-css-line-height
+
+So you just wrapped up your website design in Photoshop and you are ready to start developing the HTML and CSS. Once you get to styling the typography, you see in your PSD file you’ve used 16px as the font size for a paragraph, with 24px as the line-height. At this point, you have 2 options regarding setting the line-height. First, you can set the absolute line-height using the pixel value, or you can convert that to a relative value of the font size.
+
+
+Why Convert For Relative?
+The main reason you would want to convert the absolute value to a relative value is to give you more flexibility if you have to change the font size later, as the relative line-height value calculates based on the font size. If you make the font size smaller or larger, the line-height ratio follows along with that change.
+
+Absolute value shows “px” or “em” with the number used. For example, line-height: 24px;
+Relative value shows only the number. For example, line-height: 1.5;
+
+
+our line height calculation
+---------------------------
+
+base font size 16px $bootstrap-root-font-size: 16px;
+
+we apply $font-size-priority $text-size-priority: 1.1250em;
+
+we get 18 px
+
+multiply by $line-height-small: 1.25; // Used in heading, navigation, button
+
+and now we get the required line height 22.5 px
+
+
+.xyz-heading-card {
+		font-family: $sfg-font-family-decorative;
+		font-size: $text-size-priority;
+		line-height: $line-height-small;
+		color: $color-brand-strong;
+		margin-bottom: $sfg-heading-card-base-margin-bottom;
+
+	@include media-breakpoint-up(lg) {
+			font-size: $text-size-large;
+			margin-bottom: $sfg-heading-card-large-margin-bottom;
+	}
+}
+
+
+================================================================================
+
+	Selectors
+	---------
+
+Simple selectors (select elements based on name, id, class)
+Combinator selectors (select elements based on a specific relationship between them)
+Pseudo-class selectors (select elements based on a certain state)
+Pseudo-elements selectors (select and style a part of an element)
+Attribute selectors (select elements based on an attribute or attribute value)
+
+================================================================================
+
+	Simple Selectors
+	----------------
+
+element selector   body {}
+id selector        #menu {}
+class selector     .bookTitle {}
+
+
+dot selector
+-------------
+
+Dots separated by space - that's just a descendant combinator
+
+	.outside .inside
+
+means element with .inside class descended from an element with class .outside
+
+
+Two dotted selector without separation - elements with multiple classses
+
+	.name1.name2
+
+means element that has both class name1 and name2 eg: class="name1 name2"
+
+
+================================================================================
+
+	Attributes selector
+	-------------------
+
+The [attribute] selector is used to select elements with a specified attribute.
+
+img[alt=spacer] {
+	// selects img that have  alt="spacer" attribute
+}
+
+================================================================================
+
+	Pseudo-class selectors
+	----------------------
+
+A pseudo-class is used to define a special state of an element.
+For example, it can be used to:
+
+	Style an element when a user mouses over it
+	Style visited and unvisited links differently
+	Style an element when it gets focus
+
+
+selector:pseudo-class {
+	//	
+}
+
+e.g: 
+
+a:visited {
+	// visited link
+}
+
+a:link {
+	// unvisited link	
+}
+
+a:hover {
+	// mouse over link
+}
+
+
+examples
+-----------------
+https://www.w3schools.com/css/tryit.asp?filename=trycss_pseudo-class_hover_tooltip
+
+<head>
+<style>
+p {
+  display: none;
+  background-color: yellow;
+  padding: 20px;
+}
+
+div:hover p {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div>Hover over this div element to show the p element
+  <p>Tada! Here I am!</p>
+</div>
+
+
+
+
+:not()  negation pseudo class
+-----------------------------
+
+accepts a simple selector or a selector list as argument
+matches an element that is not represented by the argument.
+
+	<ul>
+	  <li></li>
+	  <li class="different"></li>
+	  <li></li>
+	</ul>
+
+	li:not(.different) {
+		font-zize: 3em;
+	}
+
+
+
+
+:empty pseudo class
+----------------------------------
+
+the :empty pseudo-class represents any element that has no children.
+children can be either element nodes or text (including whitespace).
+
+/* selects any <div> that contains no content */
+
+div:empty {
+	background: blah;
+}
+
+
+
+
+----------------------------------
+
+
+<ul>
+    <li class="one">one..</li>
+    <li class="two">two</li>
+    <li class="three">three</li>
+</ul>
+
+this will exclude "one", but color "two" and "three"
+
+ul li:not(.one) {
+    color:red;
+}
+
+
+this will exclude both "one" and "two"  but color "three"
+
+ul li:not(.one):not(.two) {
+    color:red;
+}	
+
+this does not work -> cannot use space because tg
+
+	ul li:not(.one) :not(.two) {
+	    color:red;
+	}
+
+
+Neither does this: (example)
+
+ul li:not(.one,.two) {
+    color:red;
+}	
+
+
+This doesn't work either because it essentially selects all elements because both selectors are not mutually exclusive.
+
+
+ul li:not(.one),
+ul li:not(.two) {
+    color:red;
+}
+
+
+----------------------------------
+
+
+This will put an outline around .sfg-radio-button .mat-radio-label when it is not disabled.
+
+
+<div class="sfg-radio-button cdk-keyboard-focused cdk-program-focused mat-radio-disabled">
+	<div class="mat-radio-label">
+    	<span>I'm span inside div</span>
+    </div>
+</div>
+
+
+.sfg-radio-button:not(.mat-radio-disabled) .mat-radio-label {
+      outline: solid 2px;
+      outline-color: blue;
+      outline-offset: 1px;
+}
+
+
 
 ================================================================================
 
@@ -47,6 +792,52 @@ div{
 	p * {
 		margin: 10px;
 	}
+
+================================================================================
+
+	Combinator Selectors
+	********************
+
+There are four different combinators in CSS:
+
+	descendant selector (space)
+	child selector (>)
+	adjacent sibling selector (+)
+	general sibling selector (~)
+
+
+
+	Descendant selector
+	-------------------
+
+Descendant =>  ANYWHERE nested within it in the DOM tree. Could be a direct child or 5 levels deep.
+
+A descendant selector in CSS is any selector with white space between two selectors
+without a combinator.
+
+NOTE: The descendant selector is the most expensive selector in CSS. 
+
+Examples:
+
+ul li {  }  -> any list item that is a descendant of ordered list
+header h2  {  }
+footer a  {  }
+.module div {  }
+#info-toggle span  {  }
+div dl dt a  {  }
+
+
+
+div p {
+	// applies to paragraphs that are descendants - are inside - div element
+}
+
+	Child selector
+	--------------
+
+div > p {
+	// not just a descendant, but direct child of 
+}
 
 
 
@@ -101,6 +892,67 @@ what does the "+" (plus sign) CSS selector mean?
 		are siblings of .a
 		appear after .a in HTML source order
 
+
+================================================================================
+
+	comma in CSS selectors
+	------------------------
+
+	th { color: red; }
+	td { color: red; }
+	p.red { color: red; }
+	div#firstred { color: red; } 
+
+With this syntax, you are saying that you want th tags, td tags, paragraph tags with the class red, and the div tag with the ID firstred all to have the style color red.
+
+Instead of writing 4 separate CSS selectors and 4 rules, you can combine all these styles into one rule property by separating the individual selectors with a comma.
+
+	th, td, p.red, div#firstred { color: red; } 
+
+The comma character basically acts as the word "or" inside the selector.
+
+Some people choose to make the CSS more legible by separating each selector on its own line, instead of writing it all on one line as above. 
+
+	th,
+	td,
+	p.red,
+	div#firstred {
+		color: red;
+	} 
+
+	.mat-radio-label, .sfg-radio-button {
+      outline: solid 2px;
+      outline-color: blue;
+      outline-offset: 1px;
+}
+
+
+// Top-level host container.
+.sfg-radio-button {
+  display: inline-block;
+  outline: 0;
+  padding: 1px;
+  outline: solid 2px;
+  outline-color: blue;
+  outline-offset: 1px;
+  &:not(.mat-radio-disabled) {
+      outline: solid 2px;
+      outline-color: blue;
+      outline-offset: 1px;
+    &.cdk-keyboard-focused > .mat-radio-label,
+    &.cdk-program-focused > .mat-radio-label {
+      outline: solid 2px;
+      outline-color: blue;
+      outline-offset: 1px;
+    }
+  }
+}
+
+.sfg-radio-button {
+  outline: solid 2px;
+  outline-color: blue;
+  outline-offset: 1px;
+}
 
 ================================================================================
 
@@ -313,10 +1165,316 @@ applies style to <a.active> elements inside <nav> elements
 	
 
 
+
+pseudo-class
+
+:last-of-type
+:first-of-type
+
+represents the last/first element of its type among a group of sibling elements
+
+/* 
+		Selects any <p> that is the last element
+    of its type among its siblings 
+ */
+p:last-of-type {
+  color: lime;
+}
+
+
+
+mat-button-toggle:first-of-type button.mat-button-toggle-button {
+    border-right-width: 1px;
+}
+
+mat-button-toggle:not(mat-button-toggle:first-of-type) button.mat-button-toggle-button {
+    border-left-width: 1px;
+}
+
+mat-button-toggle:not(mat-button-toggle:last-of-type) button.mat-button-toggle-button {
+    border-right-width: 1px;
+}
+
+mat-button-toggle:last-of-type button.mat-button-toggle-button {
+    border-left-width: 1px;
+}
+
+
+
+================================================================================
+
+	The Box Model
+	*************
+
+all elements produce boxes - div span image
+
+a div like any other element will produce a box.
+
+Three key box properties:
+
+- border  - not visible but you can control width style and color
+
+- padding - adds space between the border of the box and the content of the box
+
+			padding pushes content inward   --> 
+
+			padding-top
+			padding-right
+			padding-bottom
+			padding-left
+			padding: top right bottom left
+
+
+- margin  - space between border and any adjacent element
+
+			margin pushes content outward   <---
+
+
+border, padding and margin can be set differently for each side.. or 
+to the same values .. 
+
+
+
+NOTE: MARGINS collapse  when they overlap until the one of the margins touches the border
+of the other element.
+
+
+width
+height
+
+
+left property
+---------------------------------
+
+something {
+	left: 150px;
+}
+
+affects the horizontal positioin of a positioned element.
+if 
+	position: absolute
+	position: fixed
+		`left` sets the left edge of an element to a unit to the left of the left edge of the nearest ancestor
+
+
+Display and Visibility 
+---------------------------------
+
+Display:
+	- block   = block elements sit on top of each other by default
+	- inline  = inline elements only move downward when there isn't enough space
+	- none    = display of none removes that element
+	- inline-block 
+
+			= allows to set a width and height on an element
+			= top and bottom margins/paddings are respected (line  - they are not)
+
+	- flex 		= displays an element as a block-level flex container
+	- inline-flex
+					  = displays an element as an inline-level flex container
+
+
+
+
+Visibility
+	- hidden elements are not visible but reserve space
+
+
+
+  <ul>
+    <li>
+      <a href="#">CSS Spec</a>
+    </li>
+        <li>
+      <a href="#">CSS Zen Garden</a>
+    </li>
+        <li>
+      <a href="#">CSS Blueprint</a>
+    </li>
+        <li>
+      <a href="#">YUI</a>
+    </li>
+  </ul>
+
+
+ * {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  background-color: #cccccc;
+}
+
+ul {
+  background-color: #cccccc;
+  list-style-type: none;
+}
+
+ul li {
+  background-color: #cccc99;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+}
+
+================================================================================
+
+
+	box-sizing
+	**********
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing
+
+sets how the total with and height of an element is calculated.
+
+	content-box  (DEFAULT)
+	----------------------
+	gives you the default CSS box-sizing behavior.
+	The width and height include the content, but does not include the padding, border, or margin.
+	e.g  .box { width: 350px; border: 10px solid black; } renders 370px wide
+
+
+	border-box 
+	----------------------
+	the width and height include the content, padding, and border but NOT the margin.
+	
+	.box {width: 350px; border: 10px solid black;} renders a box that is 350px wide, 
+	with the area for content being 330px wide. 
+
+
+jsfiddle:  https://jsfiddle.net/********/r5wknefh/21/
+
+
+<head>
+  <title>Links</title>
+</head>
+
+<body>
+  
+  <div class="content-box">
+    content-box
+  </div>
+  
+  </div>
+  
+  <div class="border-box">
+    border-box
+  </div>
+  
+</body>
+
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  background: #efefef;
+  color: #333;
+  font-family: basic-sans, sans-serif;
+}
+
+.content-box {
+  box-sizing: content-box;
+  width: 500px;
+  padding: 25px;
+  border: 5px solid red;
+  background: #4dfff3;
+}
+
+.scale {
+  width: 500px;
+  height: 50px;
+  background: #615756;
+}
+
+.border-box {
+  box-sizing: border-box;
+  padding: 25px;
+  border: 5px solid red;
+  width: 500px;
+  background: #52ffb8;
+}
+
+
+
+
+Universal box sizing with Inheritance
+--------------------------------------
+
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+This reset gives you more flexibility than its predecessors — you can use content-box or padding-box (where supported) at will, without worrying about a universal selector overriding your CSS. 
+
+
+
+================================================================================
+
+::before / ::after
+-------------------
+
+The ::before and ::after pseudo-elements in CSS allows you to insert content onto a page without it needing to be in the HTML. While the end result is not actually in the DOM, it appears on the page as if it is, and would essentially be like this:
+
+div::before {
+  content: "before";
+}
+div::after {
+  content: "after";
+}
+
+
+<div>
+  before
+  <!-- Rest of stuff inside the div -->
+  after
+</div>
+
+
+================================================================================
+	
+	CSS overflow property
+	---------------------
+
+The overflow property specifies what should happen if content overflows an element's box.
+
+This property specifies whether to clip content or to add scrollbars when an element's content is too big to fit in a specified area.	
+
+Note: The overflow property only works for block elements with a specified height.
+
+
+	overflow: visible|hidden|scroll|auto|initial|inherit;
+
+
+visible:		The overflow is not clipped. It renders outside the element's box. This is default
+
+hidden:   	The overflow is clipped, and the rest of the content will be invisible
+
+scroll:			The overflow is clipped, but a scroll-bar is added to see the rest of the content
+
+auto:				If overflow is clipped, a scroll-bar should be added to see the rest of the content
+
+
+
+
 ================================================================================
 
 CSS style properties
-====================
+---------------------
 
 	Elements can be hidden from view by setting 'visibility:hidden' or 'display:none'
 	
@@ -381,6 +1539,21 @@ Using CSS for styling
 	
 	
 	
+=================================================================
+
+	border-collapse property
+	-------------------------
+
+The border-collapse property sets whether table borders should collapse into a single border or be separated as in standard HTML.
+
+border-collapse: separate|collapse|initial|inherit;
+
+separate	Borders are separated; each cell will display its own borders. This is default.
+
+collapse	Borders are collapsed into a single border when possible (border-spacing and empty-cells properties have no effect)
+
+
+
 =================================================================
 
 
@@ -488,6 +1661,9 @@ Property values:
 	animation
 	*********
 
+	CSS transitions and transforms
+	------------------------------
+
 achieved using two mechanisms:
 
 1. CSS transitions
@@ -499,66 +1675,177 @@ achieved using two mechanisms:
 	https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations
 
 
-transition 
+CSS transitions
+********************************
 
-	CSS start state
-	CSS end state
-	transition effect
+Without a transition, an element being transformed would change abruptly from one state to another. 
+By applying a transition you can control the change, making it smooth and gradual.
 
-	the effect is defined using the style property 'transition'
-	Here, the background color is changed from black to blue on hover with a transition effect defined by the 'transition' property.
 
-		.my-class {
-			-webkit-transition:0.5s linear all;
-			transition:0.5s linear all;
-			background:black;
-		}	
-		.my-class:hover {
-			background:blue;
-		}
+There are two properties that are required in order for the transition to take effect:
 
-	you're not limited to pseudo selector like hover..
+transition-property
+		specifies the CSS property where the transition will be applied.
+		e.g. to `background-color` or `transform` or  to `all` properties with `all`
 
-		.my-class.animate {
-			background:blue;
-		}
+transition-duration
+		(required)
+		specifies the time span of the transition in (sec or ms)
 
-	when you add 'animate' class to an HTML element which already has 'my-class', the background will change with the transition effect defined.
 
-animation
+Each transition property can be defined individually, but for cleaner and faster code, it’s recommended that you use the transition shorthand.
 
-	CSS start state	
-	keyframe configuration that defines the time duration of the animation 
+transition shorthand
+--------------------
 
-		.my-class {
-			background:black;
-		}
-		.my-class:hover {
-			background :blue;
-			animation:color 1s linear;
-			-webkit-animation: color 1s linear;
-		}
-		@keyframes color {
-			from {
-				background: black;
-			}
-			to {
-				background: blue;
-			}
-		}
+	div {
+	  transition: [property] [duration] [timing-function] [delay];
+	}
 
-The basic difference between transition and animation is that we do not need two CSS states defined in the case of animation.		
 
-In the first example, transition happens when the CSS on the element changes from .my-class to .my-class:hover
+	div {
+		transition-property: all;
+		transition-property: transform;
+	}
 
-whereas in the 2nd example, animation starts when the CSS state is .my-class:hover, so there is no end CSS concept with animation.
+
+transition-timing (optional)
+	(optional)
+	allows you to define the speed of the transition over the duration.
+	default tining is `ease` - starts out slow, quickly speeds up, and then slows down at the end.
+	other timing options are
+		linear
+		ease
+		ease-in
+		ease-out
+		ease-in-out
+
+
+transition-delay (optional)
+	allows you to specify when the transform will start. By default, the transition starts as soon as it is triggered (e.g., on mouse hover). However, if you want to transition to start after it is triggered you can use the transition delay property.
+
+
+
+CSS Transitions
+********************************
+
+how to make an element change from one state to another. 
+With the CSS transform property you can 
+	rotate, 
+	move, 
+	skew, and 
+	scale 
+
+Transforms are triggered when an element changes states, such as on mouse-hover or mouse-click.
+
+scale
+-----------
+	allows you to increase or decrease the size of an element.
+
+	div {
+	  transition: transform 1s;
+	}
+
+	div:hover {
+	  transform: scale(2);
+	}
+
+
+rotate
+-----------
+	rotates clockwise or counterclockwise by a specified number of degrees. A positive value, such as 90deg, rotates the element clockwise, while a negative value, such as -90deg, rotates it counterclockwise.
+
+
+	div {
+	  transition: transform 1s;
+	}
+
+	div:hover {
+	  transform: rotate(1080deg);
+	}	
+
+
+translate
+-------------
+	moves an element left/right and up/down. The movement is based on the parameters given for the X (horizontal) Y (vertical) axes.
+
+	div {
+	  transition: transform 1s;
+	}
+
+	div:hover {
+	  transform: translate(20px, 20px);
+	}
+
+
+skew
+------------
+	the element skews (or tilts) one direction or the other based on the values given for the X and Y axes.
+
+syntax:
+	div {
+	  transform: skewX(25deg);
+	  transform: skewY(10deg);
+	  transform: skew(25deg, 10deg);
+	}
+
+example:
+	div {
+	  transition: transform 1s;
+	}
+
+	div:hover {
+	  transform: skewX(-20px);
+	}
+
+transform-origin
+-----------------------
+
+The transform-origin property is separate from the transform property but works in tandem with it. It allows you to specify the location origin of the transform. By default, the origin is in the center of the element.
+
+
+
+
+opacity property
+-------------------------
+
+from 0.0 (fully transparent)
+to   1.0 (fully opaque)
 
 ================================================================================
 
 	Media Queries
 	*************
 
-Media Query is a CSS technique that was introduced in CSS3, which 
+
+min-width versus max-width
+--------------------------
+
+with min-width patterns, you're designing mobile-first. 
+
+With max-width patterns, you're design desktop-first.
+
+
+Going mobile-first with min-width, the default style is the mobile style. Queries after that then target progressively larger screens.
+
+
+body {
+    /* default styles here, 
+       targets mobile first */
+}
+
+@media screen and (min-width:480px) {
+    /* style changes when the screen gets larger */
+}
+
+@media screen and (min-width:800px) {
+        /* And even larger */
+ }
+
+
+
+@media query
+-------------
 
 
 allows application of the stylesheet properties on the web component based on the size of the viewport. 
@@ -590,22 +1877,7 @@ Syntax
 }
 
 
-CSS3 media queries consist of
- 
-- optional, media type
-- zero or more expressions that limit the style sheet's scope by using
-  media features like width, height and color
 
-The result of the query is true if the media type specified in the media query
-matches the type of device the document is being displayed on.
-
-<style>
-	@media (max-width: 600px) {
-		.facet-sidebar {
-			display: none;
-		}
-	}
-</style>
 
 
 Breakpoints with Media Queries
@@ -628,6 +1900,8 @@ no media queries are quired - this is the default in Bootstrap.
 
 /* Large devices (large desktops, screens of size 1200px and up) */ 
 @media (min-width: @screen-lg-min) { ... }
+
+
 
 
 Bootstrap V4 with Sass
@@ -895,6 +2169,27 @@ fade-in and fade-out
 
 ================================================================================
 
+	Outline
+	-------
+
+an outline is a line drawn outside the element's border.
+
+outline-style
+outline-color
+outline-width
+outline-offset
+outline
+
+
+Outline differs from borders! 
+-----------------------------
+1. Unlike border, the outline is drawn outside the element's border, and may overlap other content. 
+
+2. Also, the outline is NOT a part of the element's dimensions; the element's total width and height is not affected by the width of the outline.
+
+
+================================================================================
+
 	CSS Units
 	**********
 
@@ -1051,6 +2346,400 @@ apply class names to your list items:
 </ul>
 
 whenever you're on the body.home page, your li.home a link will have default styling indicating it is the current page.
+
+
+
+
+================================================================================
+
+	Don’t Base64 SVG
+	*****************
+
+	https://css-tricks.com/probably-dont-base64-svg/
+
+
+
+
+	div.mat-select-arrow-wrapper {
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+MkIxRUY1MzAtMDE1RS00RERCLTk4QTYtRUI1RDcwRDA5N0MyPC90aXRsZT4KICAgIDxnIGlkPSJJY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IkxhYmVscyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTkxMy4wMDAwMDAsIC04NTEuMDAwMDAwKSI+PC9nPgogICAgICAgIDxnIGlkPSJJY29uL0NoZXZyb24tRG93bi1MaWdodCI+CiAgICAgICAgICAgIDxyZWN0IGlkPSJSZWN0YW5nbGUiIGZpbGwtb3BhY2l0eT0iMCIgZmlsbD0iI0ZGRkZGRiIgeD0iMCIgeT0iMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48L3JlY3Q+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik03LjQ2ODg1Mzc0LDEyLjA4NzI4NzYgTDAuMjIwMjY5NDc5LDQuNzI2MjI1MzUgQy0wLjA3MzQyMzE1OTUsNC40MzI1MzI3MSAtMC4wNzM0MjMxNTk1LDMuOTU3NjI1NDYgMC4yMjAyNjk0NzksMy42NjM5MzI4MyBMMC42NjM5MzI4MjYsMy4yMjAyNjk0OCBDMC45NTc2MjU0NjQsMi45MjY1NzY4NCAxLjQzMjUzMjcxLDIuOTI2NTc2ODQgMS43MjYyMjUzNSwzLjIyMDI2OTQ4IEw4LDkuNjEyNzcwOTQgTDE0LjI3Mzc3NDcsMy4yMjY1MTgyNiBDMTQuNTY3NDY3MywyLjkzMjgyNTYyIDE1LjA0MjM3NDUsMi45MzI4MjU2MiAxNS4zMzYwNjcyLDMuMjI2NTE4MjYgTDE1Ljc3OTczMDUsMy42NzAxODE2MSBDMTYuMDczNDIzMiwzLjk2Mzg3NDI0IDE2LjA3MzQyMzIsNC40Mzg3ODE0OSAxNS43Nzk3MzA1LDQuNzMyNDc0MTMgTDguNTMxMTQ2MjYsMTIuMDkzNTM2NCBDOC4yMzc0NTM2MiwxMi4zODA5ODAzIDcuNzYyNTQ2MzgsMTIuMzgwOTgwMyA3LjQ2ODg1Mzc0LDEyLjA4NzI4NzYgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjNTA1MDUwIj48L3BhdGg+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+// Hide trigger arrow
+div.mat-select-arrow {
+  border: none;
+  height: 16px;
+  width: 16px;
+}
+
+
+================================================================================
+
+	Positioning
+	-----------
+
+https://css-tricks.com/absolute-relative-fixed-positioining-how-do-they-differ/
+
+
+.el {
+  position: static;
+  position: relative;
+  position: absolute;
+  position: fixed;
+  position: sticky;
+  position: inherit;
+}
+
+
+
+================================================================================
+
+	Image Positioning
+	------------------
+
+https://stackoverflow.com/questions/65983093/align-number-over-image-to-top-right-corner-or-on-the-top-of-image
+
+
+
+
+
+================================================================================
+
+	Box Shadow
+	-----------
+
+
+================================================================================
+
+
+Round the corners of outline property CSS
+-----------------------------------------
+
+https://stackoverflow.com/questions/31134743/round-the-corners-of-outline-property-css
+
+http://jsfiddle.net/6QUhf/141/
+
+
+<a href="#">2</a>
+
+I have added following css.
+
+a {
+  background: #999;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #fff;
+  display: inline-block;
+  line-height: 40px;
+  position: relative;
+  border: 2px solid #000;
+  text-align: center;
+}
+a:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  left: -10px;
+  right: -10px;
+  border-radius: 30px;
+  border: 2px solid #f00;
+}
+
+
+
+================================================================================
+
+	Change SVG Color on hover
+	--------------------------
+
+References:
+https://codepen.io/chriscoyier/embed/bJXNyy?height=300&theme-id=1&default-tab=css%2Cresult&user=chriscoyier&slug-hash=bJXNyy&pen-title=bJXNyy&name=cp_embed_1#result-box
+
+
+https://stackoverflow.com/questions/22252472/how-to-change-the-color-of-an-svg-element
+
+
+1. Add the SVG image using an <img> tag.
+
+	<img src="dotted-arrow.svg" class="filter-green"/>
+
+
+2. To filter to a specific color, use the following Codepen
+			
+	 to convert a hex color code to a CSS filter:
+
+For example, output for #00EE00 is
+
+	filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+
+3. Add the CSS filter into this class
+
+    .filter-green{
+        filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+    }
+
+
+Another filter generator:
+https://tests.christianoliff.com/hex-to-css-filter-generator/
+
+================================================================================
+
+	How to get/create SVG paths from SVG file
+	-----------------------------------------
+
+
+https://stackoverflow.com/questions/11529470/is-there-a-tool-to-create-svg-paths-from-an-svg-file
+
+Gimp can be used to convert SVGs with primitives (e.g. rects, circles, etc.) into a single path which can be used within HTML5.
+
+
+3. Import the SVG file into Gimp with File -> Open, and the following (or similar) dialog should show up:
+
+		Check both the Import Paths and Merge imported paths options
+
+4. Then go to Windows->Dockable Dialogues->Paths
+
+5. Right-click on the single path which says Imported Path and you should see the following dialog:
+
+6. Click Export Path... and save this text file to a location of your choice
+
+7. Locate and open up this file with a text editor of your choice e.g Notepad, TextEdit
+
+8. Copy the text within the <path d="copy this text here" />
+
+9. Since Gimp formats the text with lots of spaces, you may need to re-format it, by removing some of the spaces to paste it into your HTML in a single line
+
+
+
+================================================================================
+
+
+
+          <a tabindex="0"
+             class="shortcut-card-container d-inline-block"
+             href="#">
+            <span class="shortcut-card-inner-container">
+              <span class="shortcut-card-icon-container">
+<!--                <img-->
+<!--                  class="image-fluid"-->
+<!--                  src="assets/Icon-Decor_Compass.svg"-->
+<!--                  alt="Compass" />-->
+                <svg
+                     width="0.416666667in" height="0.416666667in"
+                     viewBox="0 0 50 50">
+                  <path
+                        d="M 19.74,28.10
+                           C 19.74,28.10 1.00,24.96 1.00,24.96
+                             1.00,24.96 19.74,21.81 19.74,21.81M 28.10,30.18
+                           C 28.10,30.18 24.96,48.92 24.96,48.92
+                             24.96,48.92 21.81,30.18 21.81,30.18M 30.18,21.81
+                           C 30.18,21.81 48.92,24.96 48.92,24.96
+                             48.92,24.96 30.18,28.10 30.18,28.10M 21.81,19.74
+                           C 21.81,19.74 24.96,1.00 24.96,1.00
+                             24.96,1.00 28.10,19.74 28.10,19.74M 15.58,34.33
+                           C 15.58,34.33 24.96,28.08 24.96,28.08
+                             24.96,28.08 34.33,34.33 34.33,34.33
+                             34.33,34.33 28.08,24.96 28.08,24.96
+                             28.08,24.96 34.33,15.58 34.33,15.58
+                             34.33,15.58 24.96,21.83 24.96,21.83
+                             24.96,21.83 15.58,15.58 15.58,15.58
+                             15.58,15.58 21.83,24.96 21.83,24.96
+                             21.83,24.96 15.58,34.33 15.58,34.33 Z
+                           M 48.92,24.96
+                           C 48.92,38.19 38.19,48.92 24.96,48.92
+                             11.73,48.92 1.00,38.19 1.00,24.96
+                             1.00,11.73 11.73,1.00 24.96,1.00
+                             38.19,1.00 48.92,11.73 48.92,24.96
+                             48.92,24.96 48.92,24.96 48.92,24.96 Z
+                           M 50.00,0.00
+                           C 50.00,0.00 50.00,50.00 50.00,50.00
+                             50.00,50.00 0.00,50.00 0.00,50.00
+                             0.00,50.00 0.00,0.00 0.00,0.00
+                             0.00,0.00 50.00,0.00 50.00,0.00 Z" />
+                </svg>
+              </span>
+              <span class="shortcut-card-link-text-container">
+                <span>Description</span>
+              </span>
+            </span>
+          </a>
+
+
+see "$ > svg" below
+
+
+
+a.shortcut-card-container {
+
+  &:focus {
+    // override global link behavior  see _links.scss
+    outline: none;
+
+    & .shortcut-card-inner-container {
+      color:            p.$color-brand-bright;
+      background-color: transparent;
+      border-color: p.$color-brand-neutral;
+    }
+  }
+
+  & .shortcut-card-inner-container {
+    display: flex;
+    flex-grow: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: p.$color-brand-default;
+    background-color: transparent;
+    padding: 4px 4px 4px 4px;
+
+    border: solid p.$border-weight-default transparent;
+    border-radius: p.$border-radius-default;
+
+    &:hover {
+      background-color: transparent;
+      filter: invert(51%) sepia(97%) saturate(7500%) hue-rotate(203deg) brightness(95%) contrast(94%);
+    }
+
+    & .shortcut-card-icon-container {
+      height: 40px;
+      width: 40px;
+      font-size: 40px;
+      line-height: 40px;
+      margin-bottom: 8px;
+
+      & > img {
+        width: 100%;
+        height: auto;
+      }
+      & > svg {
+        fill: none;
+        stroke: p.$color-brand-default;
+        stroke-width: 1;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    & .shortcut-card-link-text-container {
+      font-family: $sfg-font-family-default;
+      font-size: p.$text-size-small;
+      line-height: 21px;
+      text-align: center;
+    }
+
+  }
+}
+
+
+
+================================================================================
+
+Expansion Panel 
+----------------
+
+https://material.angular.io/components/expansion/overview
+
+https://stackblitz.com/edit/angular-expansion-panel-with-custom-header-icons
+
+
+
+Expand a card element on click
+https://dev.to/riyanagueco/expand-a-card-element-on-click-5268
+
+https://webdevtrick.com/bootstrap-expand-cards/
+================================================================================
+
+	lock footer to bottom of page / viewport
+	-----------------------------------------
+
+https://www.geeksforgeeks.org/how-to-create-footer-to-stay-at-the-bottom-of-a-web-page/
+
+================================================================================
+
+	auto size image to fit into parent container
+
+
+	object-fit property
+	---------------------------
+https://www.w3schools.com/css/css3_object-fit.asp
+
+The CSS object-fit property is used to specify how an <img> or <video> should be resized to fit its container.
+
+
+This property tells the content to fill the container in a variety of ways; such as "preserve that aspect ratio" or "stretch up and take up as much space as possible".
+
+
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+
+object-fit:  xxxxx
+
+
+fill 
+		- default
+		The image is resized to fill the given dimension. If necessary, the image will be stretched or squished to fit
+
+contain
+		The image keeps its aspect ratio, but is resized to fit within the given dimension
+
+cover
+		The image keeps its aspect ratio and fills the given dimension. The image will be clipped to fit
+		but doesn't look like it's resized.
+
+none - The image is not resized
+
+scale-down - the image is scaled down to the smallest version of none or contain		
+
+
+
+
+
+================================================================================
+
+	Icon control with Font Size
+	----------------------------
+
+https://css-tricks.com/control-icons-with-font-size/
+
+
+if you set an SVG to have a width and height of 1em then you can change the size of it with the font-size property.
+
+https://codepen.io/piccalilli/pen/WPqXYB?editors=1100
+
+body {
+  font-family: sans-serif;
+  font-size: 1.5rem;
+  height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+
+
+/* Because the icon's dimensions are set with ems, we can
+   affect it's size using font size */
+.fancy-link__icon {
+  font-size: 1.5em;
+}
+
+/* Set the width and height to be 1em, which
+   will be the font-size of its parent element */
+.icon {
+  width: 1em;
+  height: 1em;
+}	
+
 
 
 

@@ -1,0 +1,33 @@
+FileZilla 
+**********
+
+https://moss.sh/docs/ssh-and-sftp/set-up-sftp-in-filezilla-using-public-key-authentication/
+
+
+Click File → Site Manager
+Click New Site and give it the name of your site
+Fill out the following items:
+Protocol: SFTP – SSH File Transfer Protocol
+Host: Enter the IP address of the server that hosts your website.
+Port: leave it blank, it will use the default port (22)
+Logon Type: Key file
+Key file: Enter the path to your SSH private key file
+User: Enter the server user that runs the website.
+
+Keys format
+-----------
+One thing to consider is that FileZilla requires SSH keys to in PuTTY format (.ppk) instead of the common OpenSSH format. 
+
+
+Key Format
+-----------
+
+uses .PPK format
+https://stackoverflow.com/questions/3475069/use-ppk-file-in-mac-terminal-to-connect-to-remote-connection-over-ssh
+
+
+$ brew install putty
+
+$ puttygen -t rsa -b 4096 -o my-private-key.ppk
+
+$ puttygen my-private-key.ppk -O public-openssh -o my-public-key_rsa.pub

@@ -12,6 +12,27 @@ CTRL-SHIFT-I
 
 ================================================================================
 
+How do I freeze screen / pause animation
+----------------------------------------
+
+Select `Sources` right before triggering the animation
+
+Hit cmd + \  (ctrl + \)  or Fn-F8 
+
+
+Another option
+
+Run the following javascript in the console. This will break into the debugger in 5 seconds.
+
+setTimeout(function(){debugger;}, 5000)
+
+Go show your element (by hovering or however) and wait until Chrome breaks into the Debugger.
+
+Now click on the Elements tab in the Chrome Inspector, and you can look for your element there.
+You may also be able to click on the Find Element icon (looks like a magnifying glass) and Chrome will let you go and inspect and find your element on the page by right clicking on it, then choosing Inspect Element
+
+================================================================================
+
 	How do I display Angular $scope variable?
 	*****************************************
 

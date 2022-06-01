@@ -45,3 +45,253 @@ steps:
     publishRegistry: useFeed
     publishFeed: Arch-Eng-Discovery-POC/craiskin-artifacts-feed
   displayName: 'npm publish'
+
+
+
+================================================================================
+
+
+$(Build.ArtifactStagingDirectory)  /home/vsts/work/1/a
+
+  '/home/vsts/work/1/a' is empty. Nothing will be added to build artifact 'publish'.
+
+
+
+
+Azure direcrtory structure created by Azure DevOps tasks
+********************************************************
+
+https://dev.to/shleeen/understanding-the-directory-structure-created-by-azure-devops-tasks-1328
+
+
+/home/vsts/work          $(Agent.WorkFolder) 
+
+
+/a        workding directory for  agent a      
+
+/a/1/a    staging 
+          this is where VS Build build tasks are stored
+          Build.StagingDirectory, System.ArtifactsDirectory, Build.ArtifactStagingDirectory
+
+/a/1/b    output forlder for compiled binaries 
+
+          Build.BinariesDirectory
+
+/a/1/s    Source directory. This is the working directory and where your source code is stored.
+          Build.SourcesDirectory, 
+          System.DefaultWorkingDirectory
+
+
+
+
+================================================================================
+
+
+Azure Pipelines - Is there a way to view the folder structure
+=============================================================
+
+https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
+
+
+ou can use CMD task to call tree command in Microsoft-Hosted windows agent to get the folder structure.
+
+My script:
+
+
+echo "Structure of work folder of this pipeline:"
+tree $(Agent.WorkFolder)\1 /f
+
+echo "Build.ArtifactStagingDirectory:" 
+
+echo "$(Build.ArtifactStagingDirectory)"
+
+echo "Build.BinariesDirectory:" 
+
+echo "$(Build.BinariesDirectory)"
+
+echo "Build.SourcesDirectory:"
+
+echo "$(Build.SourcesDirectory)"
+
+
+Within your build definition, I recommend adding a Copy Files step that will copy your the build artifacts from your msbuild results to the Build's Artifact Staging Directory before you run the Publish Artifact step.
+
+https://stackoverflow.com/questions/41962843/how-to-access-artifacts-folder-after-build-in-tfs-online
+
+
+
+================================================================================
+
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+- task: npmAuthenticate@0
+  inputs:
+    workingFile: '.npmrc'
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+
+
+#
+#  Display different paths
+#
+
+# Command line
+# Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+- task: CmdLine@2
+  inputs:
+    script: 'echo "Structure of work folder of this pipeline:"'
+
+# Display  the entire $(Agent.WorkFolder) dir
+#- task: CmdLine@2
+#  inputs:
+#    script: 'tree $(Agent.WorkFolder)'
+
+# Display the structure of  $(Build.SourcesDirectory)
+- task: CmdLine@2
+  inputs:
+    script: 'tree $(Build.SourcesDirectory)'
+
+- task: CmdLine@2
+  inputs:
+    script: 'echo Build.SourcesDirectory: "$(Build.SourcesDirectory)"'
+
+- task: CmdLine@2
+  inputs:
+    script: 'echo Build.BinariesDirectory: "$(Build.BinariesDirectory)"'
+
+- task: CmdLine@2
+  inputs:
+    script: 'echo Build.ArtifactStagingDirectory: "$(Build.ArtifactStagingDirectory)"'
+
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/dist/hello-ng-v13'
+    ArtifactName: 'publish'
+    publishLocation: 'Container'
+    displayName: 'Publish build artifact'
+
+
+================================================================================
+
+Configure deployment credentials for Azure App Service
+*******************************************************
+
+https://docs.microsoft.com/en-us/azure/app-service/deploy-configure-credentials?tabs=portal
+
+Azure App Service supports two types of credentials 
+
+for local Git deployment and 
+FTP/S deployment. 
+
+These credentials are not the same as your Azure subscription credentials.
+
+user-level credentials
+
+  one set of creds for the entire Azure account.
+  it can be used to deploy to App Service for any app, in any sub, that the Azure account has 
+  permission to access.
+
+app-level creds
+
+  one set of creds for each app.
+
+  it can be used to deploy to that app only.
+  the credentials for each app are generated automatically at app creation.
+  They can't be configured manually, but can be reset at any time.
+
+
+Configure user-scope credentials
+---------------------------------
+
+Azure Portal
+
+  From the left menu of your app
+
+    >  Deployment Center > FTPS credentials or Local Git/FTPS credentials
+
+  Scroll down to User scope, configure Username and Password, and Save.
+
+
+
+Use user-scope credentials with FTP/FTPS
+----------------------------------------
+
+
+Authenticating to an FTP/FTPS endpoint using user-scope credentials requires a username in the following format: 
+
+  <app-name>\<user-name>
+
+
+Get application-scope credentials
+----------------------------------
+
+From the left menu of your app, select 
+
+  > Deployment center > FTPS credentials or Local Git/FTPS credentials.
+
+
+Reset application-scope credentials
+-----------------------------------
+
+
+
+================================================================================
+
+  Azure Pipeline Variables
+  *************************
+
+https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables
+
+
+
+User-defined variables
+-----------------------
+
+When you define a variable, you can use different syntaxes (
+
+  macro, 
+  template expression, or 
+  runtime
+
+) and what syntax you use will determine where in the pipeline your variable will render.
+
+
+In YAML pipelines, you can set variables at the root, stage, and job level.
+
+
+
+
+System variables
+----------------
+
+
+
+
+Macro syntax variables
+-----------------------
+
+
+
+
+
+================================================================================
