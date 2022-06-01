@@ -1360,9 +1360,68 @@ NOTE:
 	Angular FormGroup reset() does not reset validators
 	***************************************************
 
+https://stackoverflow.com/questions/48216330/angular-5-formgroup-reset-doesnt-reset-validators	
+
 
 There's an open issue mat-form-field does not remove mat-form-field-invalid class on FormGroup reset
 https://github.com/angular/components/issues/4190
+
+
+There are some workarounds:
+
+        this.form.reset()
+
+        Object.keys(this.form.controls).forEach(key => {
+          this.form.controls[key].setErrors(null)
+        });
+
+
+this one is probably BEST
+
+in your <form> define FormGroupDirective in addition to FormGroup
+
+          <form
+              id="inputsDemoFormGroup"
+              [formGroup]="inputsDemoFormGroup"
+              #formDirective="ngForm"
+              (ngSubmit)="onSubmit()"
+            >
+
+Then, use it in your reset()  method to call  FormGroupDirective.resetForm()
+
+              <button
+                sfg-button
+                type="button"
+                [palette]="'primary'"
+                (click)="onReset(formDirective)"
+                class="me-2"
+              >
+                Reset Form
+              </button>
+
+
+  onReset(formDirective: FormGroupDirective) {
+    this.inputsDemoFormGroup.reset();
+    formDirective.resetForm()  <--- ####
+    console.log(`Form reset: `, JSON.stringify(this.inputsDemoFormGroup.value));
+  }                          
+
+
+
+And if you want to reset after sumbit, do this:
+
+
+<form [formGroup]="myForm" #formDirective="ngForm" 
+  (ngSubmit)="submitForm(myForm, formDirective)">
+
+
+And in your component class, call formDirective.resetForm():
+
+
+private submitForm(formData: any, formDirective: FormGroupDirective): void {
+    formDirective.resetForm();
+    this.myForm.reset();
+}  
 
 
 
