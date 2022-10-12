@@ -1095,32 +1095,16 @@ A:
 switchMap vs (flatMap or mergeMap)
 --------------------------------------------------------------------------
 
-"merge" - think use everything on all the steams, or merge everything
+switchMap when a new value gets emitted, switchMap immediately cancels that subscription
+and subscribes to the new value
 
-"swtich" - switch to using data on the newer stream
-
-
-  with switchMap, the moment the inner$ observable becomes avaiable, the 
-  output no longer listens to data from outer$ - switchMap effectively 
-  switches over to inner$ and unsubscribes from outer$
-
-  ex:
-
-  console.log('---------------- switchMap ---------------------');
-
-  const outer$:Observable<number> = Observable.interval(50).take(5);
-  const inner$:Observable<number> = Observable.interval(2000).take(1);
-
-  const source$:Observable<string> = outer$.switchMap( x => {
-      return inner$.map( y => `${x}:${y}`);
-  });
-
-  source$.subscribe( r => console.log(r) );
-
-  // outputs "4:0", all previous values that outer$ generated a lost
-  // switchMap switched to listening to inner$ which was more recent.
+mergeMap always waits until the first items is finished before subscribing to the next one.
 
 
+e.g. switchMap cancels previous HTTP requests that are still in progress, while mergeMap lets all of them finish.
+
+
+A good use case for switchMap would be an autocomplete input, where we should discard all but the latest results from the user’s input.
 
 
 ================================================================================
@@ -2591,6 +2575,32 @@ or
   ------------
   https://levelup.gitconnected.com/auto-unsubscribing-in-angular-components-like-a-pro-742220b01d0c
 
+
+
+================================================================================
+
+  Create Observable Array from static array in typescript
+  -------------------------------------------------------
+
+If you want the entire array to be emitted as a single emissions use Observable.of instead:
+
+  const arraySource = Observable.of([1, 2, 3, 4, 5]);
+
+Observable.from iterates the array and emits each item separately while Observable.of takes it as without any further logic.
+
+
+Alternatively, you could also nest two arrays but that's probably too confusing:
+
+  const arraySource = Observable.from([[1, 2, 3, 4, 5]]);  
+
+
+
+================================================================================
+
+  Custom RxJS DEBUG operator to replace tap()
+  -------------------------------------------
+
+https://blog.angular-university.io/debug-rxjs/
 
 
 ================================================================================

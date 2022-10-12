@@ -1,8 +1,31 @@
 *************************
 
 	angular-fontawecome
+	Font Awesome
 
 **************************	
+
+
+
+Resources:
+
+https://www.angularjswiki.com/angular/how-to-use-font-awesome-icons-in-angular-applications/
+
+https://www.codementor.io/@dopaminedriven/hacking-the-font-awesome-library-with-next-js-typescript-for-custom-icon-support-19if0bsarn
+
+How to build your own tree shakable SVG icons library in less than 30 minutes!
+https://kevinkreuzer.medium.com/how-to-build-your-own-tree-shakable-svg-icons-library-in-less-than-30-minutes-9f7a4a324d29
+
+
+
+
+
+https://betterprogramming.pub/how-to-optimise-angular-bundle-size-if-you-use-font-awesome-ef774f629c35
+
+
+Shows some of the customization options for font awesome
+https://www.angularjswiki.com/angular/how-to-use-font-awesome-icons-in-angular-applications/
+
 
 
 This is the list of icons that the design spec references.
@@ -163,3 +186,346 @@ import { faBell as fasBell } from '@fortawesome/free-solid-svg-icons';
   <fa-icon [icon]="fasBell"></fa-icon>
   <fa-icon [icon]="farBell"></fa-icon>
 </div> 
+
+
+
+================================================================================
+
+
+add your own Custom Icons to Font Awesome library
+-------------------------------------------------
+
+https://dev.to/astagi/add-custom-icons-to-font-awesome-4m67
+
+
+
+1) First of all create a folder called myicons and add your icon definition inside a js file (fa-duckduckgo.js in my case)
+
+export const faDuckDuckGo = {
+  prefix: "fab",
+  iconName: "duckduckgo",
+  icon: [
+    24,
+    24,
+    [],
+    "e001",
+    "M12 0C5.373 0 0 ... .616.484z"
+  ]
+};
+
+
+prefix and iconName are respectively the icon group (fab -> Font Awesome brands in this case) and the icon name, so that you can render the icon in this way
+
+	<i class="fab fa-duckduckgo"></i>
+
+the icon section contains the SVG viewbox (24, 24 in this case), the unicode point which represents this custom icon (e001) and the single-path SVG.
+
+
+
+2) Create an index file myicons/index.js to export your custom icons
+
+	export { faDuckDuckGo } from "./fa-duckduckgo";
+
+
+3) Install fontawesome-svg-core package
+
+	yarn add @fortawesome/fontawesome-svg-core
+
+
+to make your custom icons available in Font Awesome.
+
+	import { library, dom } from "@fortawesome/fontawesome-svg-core";
+	import { faDuckDuckGo } from "./myicons";
+
+	library.add(faDuckDuckGo);
+
+	dom.watch();
+
+In the code above your custom icons gets imported from the myicons module you created before and then added to Font Awesome's library. dom.watch method watches the DOM for any additional icons being added or modified.
+
+================================================================================
+
+add your own custom icon to Font Awesome library in Angular application
+------------------------------------------------------------------------
+
+https://www.codementor.io/@dopaminedriven/hacking-the-font-awesome-library-with-next-js-typescript-for-custom-icon-support-19if0bsarn
+
+
+A quick look under the hood
+----------------------------
+
+
+Head to the @fortawesome package in node_modules. 
+Then, open fontawesome-svg-core/index.d.ts to inspect the contents of the declaration file
+
+
+Examine the first two lines of this file. The very same Interfaces imported are exported immediately thereafter. What's important to note when viewing declaration files like this is where Interfaces of potential utility such as IconDefinition and IconLookup reside. So let's head on over to fontawesome-common-types/index.d.ts and view the contents of its declaration file.
+
+
+fontawesome-common-types/index.d.ts
+-----------------------------------
+
+`IconPrefix` dictates which prefixes will be allowed.
+
+
+export type IconPrefix = "fas" | "fab" | "far" | "fal" | "fad";
+
+
+
+export interface IconLookup {
+  prefix: IconPrefix;
+  // IconName is defined in the code that will be generated at build time and bundled with this file.
+  iconName: IconName;
+}
+
+export interface IconDefinition extends IconLookup {
+  icon: [
+    number, // width
+    number, // height
+    string[], // ligatures
+    string, // unicode
+    IconPathData // svgPathData
+  ];
+}
+
+
+and `IconName` defines EVERY permissible icon name:
+
+
+
+export type IconName = '500px' | 
+  'accessible-icon' | 
+  'accusoft' | 
+  'acquisitions-incorporated' |
+ // ...7,846 lines later...
+  'wrench' | 
+  'x-ray' | 
+  'yen-sign' | 
+  'yin-yang';
+
+
+IconLookup
+----------
+
+This Interface describes two values, prefix and iconName. The prefix value is a string corresponding to "faX" as defined by the IconPrefix type above (where X=b, d, l, r, or s). The free version of Fontawesome supports "fab" and "fas" prefixes which denote brand and solid icon styles, respectively. Then there's iconName which is defined by the IconName type. This type describes an array of strings totaling out to 7,854 icon names in length.
+
+export type IconPrefix = "fas" | "fab" | "far" | "fal" | "fad";
+export type IconPathData = string | string[]
+
+export interface IconLookup {
+  prefix: IconPrefix;
+  // IconName is defined in the code that will be generated at build time and bundled with this file.
+  iconName: IconName;
+}
+
+export type IconName = '500px' | 
+  'accessible-icon' | 
+  'accusoft' | 
+  'acquisitions-incorporated' |
+ // ...7,846 lines later...
+  'wrench' | 
+  'x-ray' | 
+  'yen-sign' | 
+  'yin-yang';
+
+
+IconDefinition
+--------------
+
+export interface IconDefinition extends IconLookup {
+  icon: [
+    number, // width
+    number, // height
+    string[], // ligatures
+    string, // unicode
+    IconPathData // svgPathData -> string | string[]
+  ];
+}
+
+
+Note that the IconDefinition Interface extends the IconLookup interface. This implies that the shape described by the IconLookup interface is extended, or copied, to the IconDefinition Interface. So, while it is evident that the shape of an icon is described by an array of five scalar values, it may not be as straightforward that the prefix and iconName values described by the IconLookup Interface will be prepended to the structure of our derived icon definition. IconDefinition extending IconLookup implies that our custom definition should look as follows:
+
+const CustomIconExample: IconDefinition & IconLookup = {
+  prefix: 'fab',
+  iconName: 'example-icon',
+  icon: [
+    64, // viewBox width
+    64, // viewBox height
+    [], // ligatures
+    '#000000', // fill/fillColor
+    'M24 22.525H0' // iconPath(s)
+  ]
+}
+
+width and height
+
+	Width and Height values derived from an SVG's viewBox comprise the first two scalar values required when defining an icon. The viewBox of an SVG defines the position and dimension of a user viewport. There are always four numerical values in a viewBox which are invariably ordered as follows:
+
+	[min-x min-y width height]
+
+
+ligatures
+
+The third value involved in defining an icon corresponds to ligatures which are not important for our purposes. Read more about ligatures here: 
+
+	https://fontawesome.com/how-to-use/on-the-desktop/referencing-icons/using-ligatures
+
+
+unicode
+
+	the unicode point which represents this custom icon (e001)
+	should be incremented for your own icons
+
+
+IconPathData
+
+	either single-path SVG path or 
+	If an SVG contains more than one path (d-value) a single space is used to denote the end of one path and the beginning of the next. This value is always confined to a single line of code (horizontal scrolling needs love too).
+
+
+
+create your own icon definition 
+--------------------------------
+
+Create your own library, or library folder,  or Angular module 
+f.e.
+
+my-icon-lib/
+	icons/
+		index.ts
+		myShiny.icon.ts
+	fap-custom-icons.module.ts
+
+
+
+myShiny.icon.ts
+----------------
+
+	NOTE: you can also use "fac"   fa-custom for Custom icons
+
+import { IconDefinition, IconLookup } from '@fortawesome/fontawesome-svg-core';
+import { IconPrefix, IconName } from '@fortawesome/fontawesome-common-types';
+
+export const faMyBell: IconDefinition & IconLookup = {
+  prefix: 'fap' as IconPrefix,
+  iconName: 'my-bell' as IconName,
+  icon: [
+    52,
+    52,
+    [],
+    'e001',
+    'm51 19.478c0-1 . . . 9-4.3478-4.3479z'
+  ]
+};
+
+
+fap-custom-icons.module.ts
+--------------------------
+
+@NgModule({
+  declarations: [],
+  imports: [CommonModule]
+})
+export class PrismIconLibModule {
+  constructor(library: FaIconLibrary) {
+
+    library.addIcons(faAbacus, faAddressBook, faAlarmClock, faBarcodeAlt, faMyBell);
+
+
+    // debug
+    const myBell: IconDefinition = library.getIconDefinition(
+      'fac' as IconPrefix,
+      'my-bell' as IconName
+    );
+    console.log('myBell: ', myBell);
+  
+  }
+}
+
+TSLint error
+-------------
+
+	Type '"fap"' is not assignable to type 'IconPrefix'.
+
+	Type '"my-bell"' is not assignable to type 'IconName'.
+
+
+But wait, a TSLint error?! Not to worry, this is easily rectified. Navigate back to the @fortawesome package in node_modules and open 
+
+	fontawesome-common-types/index.d.ts
+
+
+append "fac" to IconPrefix:
+
+
+export type IconPrefix = "fas" | "far" | "fal" | "fat" | "fad" | "fab" | "fak" | "fac";
+
+
+
+add "my-bell" to the beginning of the IconName type
+
+
+export type IconName = 'my-bell' | '500px' | 
+  'accessible-icon' | 
+  'accusoft' | 
+  'acquisitions-incorporated' | // ...
+
+
+
+patch the library
+---------------------
+
+install patch-package and postinstall
+
+
+	npm install patch-package postinstall-postinstall --save-dev
+
+run 
+
+	npx patch-package @fortawesome/fontawesome-common-types
+
+
+This generates a patches folder in your directory that contains a file outlining local updates made to the targeted package. In our case, it's the library in which we added "vercel-icon" to type IconName and "fac" to type IconPrefix. 
+
+
+Then, add the following postinstall script in package.json:
+
+
+"scripts": {
++  "postinstall": "patch-package"
+ }
+
+
+The postinstall script persists local changes made to node_modules even when package version updates are made.
+
+
+
+
+================================================================================
+
+How to create your own Font Awesome
+***********************************
+
+How to build your own tree shakable SVG icons library in less than 30 minutes!
+
+https://kevinkreuzer.medium.com/how-to-build-your-own-tree-shakable-svg-icons-library-in-less-than-30-minutes-9f7a4a324d29
+
+
+
+================================================================================
+
+	Combining multi-path SVG into single path SVG
+	---------------------------------------------
+
+https://stackoverflow.com/questions/42819350/how-to-combine-two-svg-paths-together-without-spaces
+
+
+I found the easiest solution was:
+
+Open the SVG file in Inkscape (Free software, cross platform https://inkscape.org)
+Select the paths to merge
+From the Path menu, choose Union
+Save the file
+
+
+================================================================================

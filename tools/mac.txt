@@ -114,6 +114,7 @@ cmd-;
 $ mkfile <size>G your-file-name.ext
 $ mkfile --help
 
+$ mkfile 5m 5mb.docx
 
 --------------------------------------------------------------------------------
 Intellij IDEA shortcuts
@@ -605,6 +606,16 @@ kill process on port on mac
 $ lsof -i :4200
 $ ps -ef | grep i <name>
 $ kill -9 <PID>
+
+================================================================================
+
+	Accessibility Shortcuts
+	------------------------
+
+Zoom Opt-Cmd-F5  or  Touch ID  tree times
+
+
+
 
 ================================================================================
 

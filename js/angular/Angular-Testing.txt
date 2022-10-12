@@ -5,6 +5,15 @@
 https://angular.io/guide/testing
 
 
+ng-mock
+https://www.sitepen.com/blog/simplify-angular-unit-test-authoring
+
+@ng-neat/spectator
+
+testing forms that use CVA
+https://jenniferwadella.com/blog/testing-forms-using-CVA
+
+
 ================================================================================
 
   Jasmine
@@ -15,7 +24,6 @@ https://jasmine.github.io/api/edge/
 
 Jamsine built-in matchers
 -------------------------
-
 
 toBe()
 toBeNull()
@@ -2035,6 +2043,28 @@ and add reporters array:
 
 
 
+================================================================================
+
+  How to test private methods and variables
+  -----------------------------------------
+
+
+  Accessing private methog
+
+  component['privateMethodName'](argument)
+
+      expect(component['acceptedFileTypeRequirementMet'](mockFileList)).toBeFalse();
+
+  Accessing private class member
+
+  component['privateClassMemberName'] 
+
+      expect(component['offendingFileTypeList'].length).toEqual(1);
+      expect(component['offendingFileTypeList'][0]).toEqual('pdf');
+
+================================================================================
+================================================================================
+================================================================================
 ================================================================================
 
   Can't bind to 'formGroup' since it isn't a known property of 'form'.'

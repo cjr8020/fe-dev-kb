@@ -6,19 +6,17 @@
 
 Resources:
 
-	https://storybook.js.org/docs/basics/writing-stories/
-	https://storybookjs.netlify.com/
-
-	angular material storybook
-		https://amcdnl.github.io/material-storybook/
-		https://github.com/amcdnl/material-storybook
 
 
-	https://github.com/IBM/carbon-components-angular
+================================================================================
 
+Update
+-------
 
-	Building a Component Library with Angular and Storybook
-	https://morioh.com/p/3f422b81f6d3
+$ npx storybook@latest upgrade
+
+npx storybook@next automigrate
+
 
 
 ================================================================================
@@ -26,30 +24,486 @@ Resources:
 	Storybook for Angular
 	*********************
 
-	https://www.learnstorybook.com/intro-to-storybook/angular/en/get-started/
+https://rubenr.dev/en/angular-libraries-storybook/
+https://www.excellarate.com/blogs/introduction-of-storybook-using-angular-part-1/
+
+https://storybook.js.org/docs/angular/get-started/install
+https://rubenr.dev/en/angular-libraries-storybook/
 
 
-as of 09.2020
+as of 08.2022
+------------------------------------------------------------
 
-	$ sudo npm i @storybook/cli -g
+	@angular/cli is the pre-req
 
-	$ sb info
-
-Environment Info:
-
-  Binaries:
-    Node: 12.18.3 - /usr/local/bin/node
-    Yarn: 1.22.4 - /usr/local/bin/yarn
-    npm: 6.14.6 - /usr/local/bin/npm
-  Browsers:
-    Chrome: 85.0.4183.102
-    Firefox: 74.0
-    Safari: 13.1.1
-  npmGlobalPackages:
-    @storybook/cli: 6.0.21
+	$ npx sb init
 
 
-	$ npx -p @storybook/cli sb init
+ sb init - the simplest way to add a Storybook to your project.
+
+ • Detecting project type. ✓
+ • Adding Storybook support to your "Angular" app	
+
++ @compodoc/compodoc@1.1.19
++ react-is@18.2.0
++ @storybook/addon-essentials@6.5.9
++ @storybook/angular@6.5.9
++ @storybook/addon-actions@6.5.9
++ @storybook/addon-links@6.5.9
+added 1586 packages from 592 contributors, removed 1 package, updated 1 package and audited 3191 packages in 183.627s
+
+323 packages are looking for funding
+  run `npm fund` for details
+
+found 110 vulnerabilities (6 moderate, 88 high, 16 critical)
+  run `npm audit fix` to fix them, or `npm audit` for details
+. ✓
+ • Preparing to install dependencies. ✓	
+
+
+default ./.storybook/tsconfig.json
+
+{
+  "extends": "../libs/ng-components/tsconfig.lib.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "exclude": [
+    "../src/test.ts",
+    "../src/**/*.spec.ts",
+    "../projects/**/*.spec.ts"
+  ],
+  "include": [
+    "../src/**/*",
+    "../projects/**/*"
+  ],
+  "files": [
+    "./typings.d.ts"
+  ]
+}
+
+
+scripts created by the installer
+--------------------------------
+
+    "****** Storybook ******": "*****************************",
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
+    "storybook": "npm run docs:json && start-storybook -p 6006",
+    "build-storybook": "npm run docs:json && build-storybook"
+
+
+docs:json  
+	generates documentation.json file in project root 
+
+
+
+
+================================================================================
+
+	Run storybook
+	-------------
+
+See also:
+https://storybook.js.org/docs/react/api/cli-options
+
+Trouble shoot storybook not loading stories:
+https://stackoverflow.com/questions/61011265/how-to-troubleshoot-storybook-not-loading-stories
+
+
+NPM scripts from `package.json`:
+
+
+To build compodoc
+
+    "sb:docs": "compodoc -p ./tsconfig.json -e json -d .",
+
+To build storybook + compodoc:
+
+    "sb:build": "npm run sb:docs && build-storybook -o dist/storybook",
+
+To serve storybook:
+
+    "sb:serve": "start-storybook -p 6006",
+
+
+
+If you need to pass parameters when executing storybook with `npm run` use this syntax
+
+	$ npm run build-storybook -- -o ./path/to/build.
+
+================================================================================
+
+	Issues
+	******
+
+WebpackOptionsValidationError: Webpack has been initialised using a configuration object that does not match the API schema
+------------------------------
+
+https://stackoverflow.com/questions/69159274/angular-storybook-webpackoptionsvalidationerror-webpack-has-been-initialised
+
+angular 13
+info => Using default Webpack4 setup
+ERR! WebpackOptionsValidationError: Invalid configuration object. Webpack has been initialised using a configuration object that does not match the API schema.
+ERR!  - configuration.module.rules[6].rules[0].oneOf[0].type should be one of these:
+ERR!    "javascript/auto" | "javascript/dynamic" | "javascript/esm" | "json" | "webassembly/experimental"
+ERR!    -> Module type to use for the module
+ERR!     at webpack (/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/@storybook/builder-webpack4/node_modules/webpack/lib/webpack.js:31:9)
+ERR!     at builderGeneratorFn (/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/@storybook/builder-webpack4/dist/cjs/index.js:209:18)
+ERR!     at builderGeneratorFn.next (<anonymous>)
+ERR!     at Object.build (/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/@storybook/builder-webpack4/dist/cjs/index.js:289:34)
+ERR!     at async Promise.all (index 1)
+ERR!     at async buildStaticStandalone (/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/@storybook/core-server/dist/cjs/build-static.js:218:28)
+ERR!     at async Object.buildStatic (/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/@storybook/core-server/dist/cjs/build-static.js:254:5)
+
+https://github.com/storybookjs/storybook/issues/14909#issuecomment-856190196
+
+This also fix my issue, I would like to add more information about it
+you need to run
+npm i @storybook/builder-webpack5
+and
+npm i @storybook/manager-webpack5
+and then, in this file
+.storybook/main.js
+add
+
+module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
+};
+
+Source: https://www.npmjs.com/package/@storybook/builder-webpack5
+
+
+!!!! SOLVED:
+
+
+npm run sb:build-only
+
+> sfg-ng-components@20.0.1-SNAPSHOT.10 sb:build-only /Users/blah/ws/standard/libs/sfg-ng-components
+> build-storybook -o dist/storybook
+
+info @storybook/angular v6.5.9
+info 
+info => Cleaning outputDir: /Users/blah/ws/standard/libs/sfg-ng-components/dist/storybook
+info => Loading presets
+info => Compiling preview..
+info Addon-docs: using MDX1
+info => Using implicit CSS loaders
+info => Loading angular-cli config for angular >= 13.0.0
+info => Using angular project with "tsConfig:/Users/blah/ws/standard/libs/sfg-ng-components/.storybook/tsconfig.json"
+WARN Your Storybook startup uses a solution that will not be supported in version 7.0. 
+WARN You must use angular builder to have an explicit configuration on the project used in angular.json
+WARN Read more at:
+WARN - https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#sb-angular-builder)
+WARN - https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#angular13)
+info => Using angular project "storybook:build" for configuring Storybook
+Warning: Entry point 'ng2-pdf-viewer' contains deep imports into '/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/pdfjs-dist/legacy/build/pdf', '/Users/blah/ws/standard/libs/sfg-ng-components/node_modules/pdfjs-dist/legacy/web/pdf_viewer'. This is probably not a problem, but may cause the compilation of entry points to be out of order.
+Browserslist: caniuse-lite is outdated. Please run:
+  npx browserslist@latest --update-db
+  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
+info => Using default Webpack5 setup
+info => Preview built (52 s)
+WARN asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+WARN This can impact web performance.
+WARN Assets: 
+WARN   main.43e59c2a.iframe.bundle.js (2.21 MiB)
+WARN   487.e469fbf3.iframe.bundle.js (807 KiB)
+WARN   14.7bd8ad9b.iframe.bundle.js (5.37 MiB)
+WARN entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+WARN Entrypoints:
+WARN   main (7.59 MiB)
+WARN       runtime~main.3b23be6a.iframe.bundle.js
+WARN       14.7bd8ad9b.iframe.bundle.js
+WARN       main.43e59c2a.iframe.bundle.js
+WARN 
+info => Output directory: /Users/blah/ws/standard/libs/sfg-ng-components/dist/storybook
+
+
+
+
+
+================================================================================
+
+	Serving static assets 
+	---------------------
+
+Images, Fonts, and assets
+
+https://storybook.js.org/docs/angular/configure/images-and-assets
+
+
+
+================================================================================
+
+ Configure Storybook
+ -------------------
+
+https://storybook.js.org/docs/angular/configure/overview
+
+Cannot change output dir for build-storybook
+https://github.com/storybookjs/storybook/issues/10570
+
+
+storybook not loading stories 
+https://stackoverflow.com/questions/61011265/how-to-troubleshoot-storybook-not-loading-stories
+
+
+
+Manager 
+----------
+
+Configure Storybook’s UI
+
+https://storybook.js.org/docs/angular/configure/overview#configure-storybooks-ui
+
+
+To control the behavior of Storybook’s UI (the “manager”), you can create a .storybook/manager.js file.
+
+This file does not have a specific API but is the place to set UI options and to configure Storybook’s theme.
+
+UI options / Features
+https://storybook.js.org/docs/angular/configure/features-and-behavior
+Theming
+https://storybook.js.org/docs/angular/configure/theming
+
+================================================================================
+
+Configure Global Styles for Storybook
+-------------------------------------
+
+https://betterprogramming.pub/6-ways-to-configure-global-styles-for-storybook-faa1517aaf1a
+
+configure global styles for Storybook, such as background color, color, font family, and font sizes.
+
+6 different ways:
+
+Pink background: Use stylesheet in preview-head.html.
+Chocolate background: Configure previewHead in main.js.
+Yellow background: Import stylesheet in preview.js.
+Purple background: Configure previewBody in main.js.
+Beige background: Set style inside preview-body.html.
+aquamarine background: Configure decorator in preview.js.
+
+
+In Storybook, stories are rendered in a particular “preview” iframe (the Canvas tab). 
+The Storybook web application reads .storybook/preview-head.html if it exists, 
+which directly controls the <head> element in the rendered HTML.
+
+
+.storybook/preview-head.html
+----------------------------
+
+Create .storybook/preview-head.html as follows:
+
+	<link rel="stylesheet" href="./style.css" />
+
+
+html, body {
+  background: pink;
+}
+
+the style change does not apply to any document page.
+This is the expected behavior. 
+For every story, selecting the Docs tab, we can verify that the markdown page is not impacted by story styling.
+
+
+.storybook/main.js
+------------------
+
+It is also possible to modify the preview head HTML programmatically using a preset defined in the main.js file.
+
+
+module.exports = {
+  "stories": [
+    "../src/**/*.stories.mdx",
+    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+    "@storybook/preset-create-react-app"
+  ],
+  "framework": "@storybook/react",
+  "core": {
+    "builder": "webpack5"
+  },
+  "previewHead": (head) => (`
+    ${head}
+    <style>
+      html, body {
+        background: chocolate;
+      }
+    </style>
+  `),
+}
+
+
+preview.js
+---------------
+Inside the .storybook folder, there is a file named preview.js, which sets the global setting for decorators, parameters, and global types.
+
+Here is the default content of .storybook/preview.js:
+
+export const parameters = {
+  actions: { argTypesRegex: "^on[A-Z].*" },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+}
+
+Create the stylesheet, .storybook/style.css:
+
+html, body {
+  background: yellow;
+}
+
+Import this style file into .storybook/preview.js (line 1):
+
+import './style.css';
+
+export const parameters = {
+  actions: { argTypesRegex: "^on[A-Z].*" },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+}
+
+This import has higher precedence than the head styling. !!
+
+ previewBody in main.js
+ ----------------------
+
+Similar to previewHead, we can modify the preview body HTML programmatically using a preset defined in the main.js file.
+
+It is recommended to have the CSS declared before <body> starts. Therefore, the styling should be set in previewHead, instead of previewBody.
+
+However, it still works. The browser re-renders the page when the body styles are parsed.
+
+Here is the modified ./sotrybook/main.js:
+
+
+module.exports = {
+  "stories": [
+    "../src/**/*.stories.mdx",
+    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+    "@storybook/preset-create-react-app"
+  ],
+  "framework": "@storybook/react",
+  "core": {
+    "builder": "webpack5"
+  },
+  "previewHead": (head) => (`
+    ${head}
+    <style>
+      html, body {
+        background: chocolate;
+      }
+    </style>
+  `),
+  "previewBody": (body) => (`
+    <style>
+      html, body {
+        background: purple;
+      }
+    </style>
+    ${body}
+  `),
+}
+
+
+
+.storybook/preview-body.html
+------------------------------
+
+
+Similar to preview-head.html. The Storybook web application reads .storybook/preview-body.html if it exists, which directly controls the <body> element in the rendered HTML.
+
+As we have said, the styling should be set in head, i.e. preview-head.html, instead of preview-body.html.
+
+However, it still works.
+
+Create .storybook/preview-body.html as follows:
+
+
+<style>
+  html, body {
+    background: beige;
+  }
+</style>
+
+
+
+./storybook/preview.js:
+------------------------
+
+
+A decorator is a way to wrap a story in extra “rendering” functionality. 
+Naturally, we can use a decorator to wrap stories with additional styling, extra markup, context mocking, or anything.
+
+
+Here is the modified ./storybook/preview.js:
+---------------------------------------------
+
+
+import './style.css';
+
+export const parameters = {
+  actions: { argTypesRegex: '^on[A-Z].*' },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+};
+
+const withBackground = (Story, context) => {
+  document.documentElement.style.background = 'aquamarine';
+  document.body.style.background = 'aquamarine';
+  return <Story {...context} />;
+};
+
+export const decorators = [withBackground];
+
+
+Lines 13–17 define the decorator, withBackground, which defines the html background color (line 14) and body background color (line 15). Since this is an HOC (High Order Component), there are many possible ways to set styling.
+
+Line 19 configures decorators with withBackground.
+
+
+
+
+
+================================================================================
+
+	Testing with Storybook
+	-----------------------
+
+https://storybook.js.org/blog/test-component-interactions-with-storybook/
+
+with Cypress
+
+https://itnext.io/cypress-component-testing-vs-storybook-interaction-testing-fe1f0270d30a
+
+
+
+================================================================================
+
 
 
 setup Jest with Angular
@@ -59,51 +513,33 @@ npm install -D jest @types/jest jest-preset-angular@7.1.1 @testing-library/angul
 
 --------------------------------------------------------------------------------
 
-$ npx -p @storybook/cli sb init --type angular
 
-manually:
----------
+Mocking data for Storybook
+---------------------------
 
-	$ npm install @storybook/angular --save-dev
-	$ npm install babel-loader @babel/core --save-dev 
+https://resthooks.io/docs/guides/storybook
 
-add npm script:
 
-	{
-	  "scripts": {
-	    "storybook": "start-storybook"
-	  }
-	}
+================================================================================
 
-create main file:
 
-	.storybook/main.js
+Reuse your Storybook stories in Angular tests.
+----------------------------------------------
 
-	module.exports = {
-		stories: ['../src/**/*.stories.[tj]s'],
-	};
+https://storybook.js.org/addons/@storybook/testing-angular
 
-storybook typescript configuration:
 
-	.storybook/tsconfig.json
 
-	{
-		"extends": "../tsconfig.json",
-		"exclude": [
-		  "../src/test.ts",
-		  "../src/**/*.spec.ts",
-		  "../projects/**/*.spec.ts"
-		],
-		"include": [
-		  "../src/**/*",
-		  "../projects/**/*"
-		]
-	}	
 
 ================================================================================
 
 	writing stories
 	***************
+
+https://storybook.js.org/tutorials/intro-to-storybook/angular/en/simple-component/
+https://storybook.js.org/docs/angular/writing-stories/introduction
+https://storybook.js.org/docs/angular/api/csf
+
 
 A Storybook is a collection of stories. Each story represents a single visual state of a component.
 
@@ -227,13 +663,7 @@ supported formats
 			excludeStories: /.*Data$/
 
 
-	storiesOf API 
-	------------------------------------------------------------------------------
 
-
-		storiesOf('atoms/Button', module)
-	  .add('text', () => <Button>Hello</Button>)
-	  .add('emoji', () => <Button>😀😎👍💯</Button>);
 
 
 
@@ -242,6 +672,344 @@ supported formats
 	------------------------------------------------------------------------------
 
 
+
+
+
+
+================================================================================
+
+	Storybook Decorators
+	---------------------
+
+NOTE: Dropped support for addon-actions addDecorators
+
+https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#dropped-support-for-addon-actions-adddecorators
+
+Prior to SB6.5, addon-actions provided an option called addDecorators. In SB6.5, decorators are applied always. This is technically a breaking change, so if this affects you please file an issue in Github and we can consider reverting this in a patch release.
+
+
+LOOK INTO Addon API 
+
+https://storybook.js.org/docs/angular/addons/addons-api
+
+
+-----------------------  DOESN'T SEEM TO WORK ANYMORE  -------------------------
+
+
+https://medium.com/@tanya/storybook-decorators-for-angular-5bb9e851d15f	
+
+A decorator is a way to wrap a story in extra “rendering” functionality.
+When writing stories, decorators are typically used to wrap stories with extra markup or context mocking.
+
+A decorator in Storybook is a function that can modify a story's HTML, CSS, and JavaScript
+to make it look or act differently from the default.
+
+
+
+
+Where to put your decorators
+
+	one option is a folder in `.storybook` folder for reusable decorators.
+
+	/.storybook
+	  /addons
+	    /addon-custom-layout
+	      index.js
+	      readme.md
+	  main.js
+	  manager.js
+	  preview.js
+	  tsconfig.json
+
+
+Write your decorator function
+
+	All the code for your decorator will need to go in the new index.js file that you created for your addon.
+
+	This file should export a function that uses the makeDecorator function provided by Storybook to create the custom decorator.
+
+	.storybook/addons/addon-custom-layout/index.ts
+
+	import { makeDecorator } from "@storybook/addons";
+	
+	export const withCustomLayout = makeDecorator({
+	  name: 'withCustomLayout',
+	  parameterName: 'customLayout',
+	  skipIfNoParametersOrOptions: true,
+
+	  wrapper: (getStory, context, { parameters }) => {
+
+	    // get a reference to the active story
+	    const story = getStory(context);
+
+	    // modify the story's content as a string
+	    const decoratedStory = `<div>${ story }</div>`;
+
+	    // return the modified story string
+	    return decoratedStory;
+  	}
+	});
+
+	The above ^^^ function simply adds a <div> wrapper around the original story, 
+	and returns the new story template as a string.
+
+
+	parameterName:
+
+		The parameterName is the property name you’ll use to enable this decorator for stories.
+
+	skipIfNoParametersOrOptions:
+
+		The skipIfNoParametersOrOptions property is set to true so that the decorator will only be applied if a story has included the parameter customLayout in its parameters list.
+
+	story
+		just a plain JavaScript string that you can modify using whatever method you like.
+
+
+	The example above uses a template string `<div>${story}</div>` but you could just as easily use string concatenation if that feels more familiar to you.
+
+	In a more complex example, you might also add an inline <script> or <style> block, which might look something like this:
+
+
+		import { makeDecorator } from "@storybook/addons";
+
+		export const withCustomLayout = makeDecorator({
+		  name: 'withCustomLayout',
+		  parameterName: 'customLayout',
+		  skipIfNoParametersOrOptions: true,
+		  wrapper: (getStory, context, { parameters }) => {
+		
+		    // get a reference to the active story
+		    const story = getStory(context);
+		
+		    // modify the story's content as a string
+		    const decoratedStory = `
+		      <style>
+		        .custom-wrapper {
+		          border: 2px solid red;
+		        }
+		      </style>
+		      <script>
+		        console.log('custom script');
+		      </script>
+		      <div class="custom-wrapper">
+		        ${ story }
+		      </div>
+		    `;
+		
+		    // return the modified story
+		    return decoratedStory;
+		  }
+		});
+
+
+	Register your decorator
+
+
+	The easiest way to consume a custom decorator is to register it globally, then use a parameter to enable it for the story or stories where you’d like it to be applied.
+
+	To register the decorator globally, add it to the decorators array in your Storybook preview.js file. You can read more about preview.js under “Configure story rendering” in the Storybook docs.
+
+
+	If you don’t have the preview.jsfile, you’ll need to create it. Storybook automatically reads this file and applies the settings it finds there.
+
+		// .storybook/preview.js
+		
+		import { withCustomLayout } from './addons/addon-custom-layout';
+		
+		export const decorators = [
+		  withCustomLayout
+		];
+
+	The customLayout decorator will now be available on all stories, and will be activated if the story’s parameters include the customLayout param.
+
+
+	Apply your decorator to a story
+
+
+	Storybook paramters
+	https://storybook.js.org/docs/react/writing-stories/parameters
+	can be set at the level of a single story, a group of stories (a component), or globally. The parameters are inherited, so setting a parameter at a higher level will flow down to each story.
+
+	To apply your decorator to a single story, add the customLayout parameter to the story’s parameters:
+
+		export const Primary = Template.bind({});
+
+		Primary.args = {
+		  primary: true,
+		  label: 'Button',
+		};
+		
+		Primary.parameters = {
+		  customLayout: true,
+		};	
+
+	See the Storybook docs about parameters for more information on how to apply parameters at different levels.
+
+
+	Using parameters to configure a decorator
+
+
+	In the example above, the parameters set customLayout: true so that the decorator will be applied. 
+	In the makeDecorator function we configured the decorator with skipIfNoParametersOrOptions: true. 
+
+	Because of this setting, a story only requires the customLayout property to be set to something — doesn’t matter what it’s set to.
+
+
+	If the customLayout parameter is set to a more complex object, then that object can be accessed inside the decorator function. This is how you can configure your decorator to apply changes to a story based on parameters which can be different for each story.
+
+
+	For example, a story using the decorator could configure a color property for the customLayout parameter:
+
+
+	export const Primary = Template.bind({});
+	
+	Primary.args = {
+	  primary: true,
+	  label: 'Button',
+	};
+
+	Primary.parameters = {
+	  customLayout: {
+	    color: 'blue',
+	  },
+	};
+
+
+	This color property can then be accessed in the decorator function, and applied to the story:
+
+
+		import { makeDecorator } from "@storybook/addons";
+
+		export const withCustomLayout = makeDecorator({
+		  name: 'withCustomLayout',
+		  parameterName: 'customLayout',
+		  skipIfNoParametersOrOptions: true,
+		
+		  wrapper: (getStory, context, { parameters }) => {
+		
+		    // get a reference to the active story
+		    const story = getStory(context);
+		
+		    // get the color from the story parameters
+		    // with a fallback to blue as default
+		    const color = parameters.color || 'blue';
+		
+		    // modify the story's content as a string
+		    const decoratedStory = `
+		      <style>
+		        .custom-wrapper {
+		          border: 2px solid ${color};
+		        }
+		      </style>
+		      <script>
+		        console.log('custom script');
+		      </script>
+		      <div class="custom-wrapper">
+		        ${ story }
+		      </div>
+		    `;
+		    // return the modified story
+		    return decoratedStory;
+		  }
+		});
+
+
+--------------------------------------------------------------------------------
+
+
+makeDecorator API
+- - - - - - - - -
+
+https://storybook.js.org/docs/angular/addons/addons-api
+
+Use the makeDecorator API to create decorators in the style of the official addons.
+
+// .storybook/my-addon/manager.js
+
+import { makeDecorator } from '@storybook/addons';
+
+export makeDecorator({
+  name: 'withSomething',
+  parameterName: 'something',
+  wrapper: (storyFn, context, { parameters }) => {
+    // Do something with `parameters`, which are set via { something: ... }
+
+    // Note you may alter the story output if you like. 
+    // Although generally that's not advised.
+
+    return storyFn(context);
+  }
+})
+
+
+
+
+
+Decorator applied to ALL stories 
+- - - - - - - - -- - ---- --  --
+
+export default {
+  /* 👇 The title prop is optional.
+  * See https://storybook.js.org/docs/angular/configure/overview#configure-story-loading
+  * to learn how to generate automatic titles
+  */
+  title: 'YourComponent',
+  component: YourComponent,
+  decorators: [componentWrapperDecorator((story) => `<div style="margin: 3em">${story}</div>`)],
+} as Meta;
+
+
+
+Decorator applied to single story
+- - - - - - - - - - - - - - - - -
+
+
+
+Using decorators to provide data
+---------------------------------
+
+https://storybook.js.org/docs/angular/writing-stories/decorators#using-decorators-to-provide-data
+
+If your components are “connected” and require side-loaded data to render, you can use decorators to provide that data in a mocked way without having to refactor your components to take that data as an arg. There are several techniques to achieve this. Depending on exactly how you are loading that data -- read more in the building pages in Storybook section.
+
+
+================================================================================
+
+addons API
+----------
+
+
+https://storybook.js.org/docs/angular/addons/addons-api
+
+
+
+
+
+
+
+================================================================================
+
+
+	Storybook Docs
+	---------------
+
+https://storybook.js.org/docs/angular/writing-docs/docs-page
+https://storybook.js.org/addons/@storybook/addon-docs
+
+
+DocsPage
+addon-docs
+
+DocsPage. 
+
+	Out of the box, all your stories get a DocsPage. DocsPage is a zero-config aggregation of your component stories, text descriptions, docgen comments, props tables, and code examples into clean, readable pages.
+
+MDX. 
+	
+	If you want more control, MDX allows you to write long-form markdown documentation and stories in one file. 
+
+	You can also use it to write pure documentation pages and embed them inside your Storybook alongside your stories.
 
 
 
@@ -271,14 +1039,11 @@ declare module '*.md';
 
 ================================================================================
 
-	angular material 
-	****************
+	Images, fonts and assets
+	-------------------------
 
-angular material stories examples
----------------------------------
+https://storybook.js.org/docs/angular/configure/images-and-assets
 
-https://github.com/amcdnl/material-storybook
-https://amcdnl.github.io/material-storybook/
 
 
 
@@ -287,6 +1052,318 @@ https://amcdnl.github.io/material-storybook/
 
 	debug storybook
 	***************
+
+
+
+================================================================================
+
+	Storybook SCSS import paths for angular library
+	-----------------------------------------------
+
+https://stackoverflow.com/questions/71073685/setting-storybook-scss-import-paths-for-angular-library
+
+https://bitsnpixels.dev/blog/import-your-angular-scss-files-in-storybook.html
+
+
+================================================================================
+
+
+	
+
+
+================================================================================
+
+	Fontawesome with storybook
+-----------------------------
+
+This guide explains how to use Font Awesome within storybook.
+https://github.com/FortAwesome/angular-fontawesome/blob/master/docs/guide/storybook.md
+
+
+angular-fontawesome + FaIconLibrary + Angular + Storybook.js
+https://stackoverflow.com/questions/58175700/angular-fontawesome-faiconlibrary-angular-storybook-js/58672268#58672268
+
+
+One option is to use Angular's APP_INITIALIZER function to execute arbitrary code when storybook is loaded. In this particular case you can configure FaIconLibrary with the necessary icons during the app initialisation process.
+
+Let's assume you have the below component which uses fa-icon and you want to use it inside the story book:
+
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-user-detail',
+  template: `
+    <h1>
+      <fa-icon icon="user"></fa-icon>
+      {{ fullName }}
+    </h1>
+    <p>Full name: {{ fullName }}</p>
+  `,
+})
+export class UserDetailComponent {
+  @Input()
+  fullName: string;
+}
+
+In a story book for this component you can provide an APP_INITIALIZER in the moduleMetadata call. This code will be executed when storybook is loaded and will configure FaIconLibrary:
+
+
+import { APP_INITIALIZER } from '@angular/core';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { moduleMetadata, storiesOf } from '@storybook/angular';
+import { UserDetailComponent } from '../app/user-detail.component';
+
+storiesOf('User Detail', module)
+  .addDecorator(
+    moduleMetadata({
+      imports: [ FontAwesomeModule ],
+      declarations: [ UserDetailComponent ],
+      // The key bit is the providers array below.
+      providers: [
+        {
+          provide: APP_INITIALIZER,
+          useFactory: (iconLibrary: FaIconLibrary) => {
+            return async () => {
+              // Add the necessary icons inside the initialiser body.
+              iconLibrary.addIcons(faUser);
+            };
+          },
+          // When using a factory provider you need to explicitly specify its 
+          // dependencies.
+          deps: [ FaIconLibrary ],
+          multi: true,
+        },
+      ],
+    }),
+  )
+  .add('default', () => {
+    return {
+      template: `<app-user-detail [fullName]="fullName"></app-user-detail>`,
+      props: {
+        fullName: 'John Doe',
+      },
+    };
+  });
+
+  Full Example
+
+  https://github.com/devoto13/fa-storybook
+
+
+================================================================================
+
+	Storybook Addons
+	-----------------
+
+addon-actions
+
+
+: {
+	...args,
+	onViewDetails: { onViewDetails: action('onViewDetails')},
+	onEdit: { onViewDetails: action('onEdit')}
+}
+
+
+================================================================================
+================================================================================
+================================================================================
+
+Publishing to Chromatic
+-----------------------
+
+https://www.chromatic.com/docs/setup#install
+https://www.chromatic.com/docs/access
+
+
+
+Create unlinked project on Chromatic
+
+
+$ npm install --save-dev chromatic
+
++ chromatic@6.7.3
+added 2 packages from 1 contributor, removed 1 package and audited 3267 packages in 18.137s
+
+--------------------------------------------------------------------------
+
+
+$ npx chromatic --project-token=4071fcc1952d
+
+Chromatic CLI v6.7.3
+https://www.chromatic.com/docs/cli
+
+✖ Build script not found
+The CLI didn't find a script called "build-storybook" in your package.json.
+Make sure you set the --build-script-name option to the value of the script name that builds your Storybook.
+→ View the full stacktrace below
+
+
+If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+You can also email the team at support@chromatic.com if chat is not an option.
+
+Please provide us with the above CLI output and the following info:
+{
+  "timestamp": "2022-08-05T21:58:42.966Z",
+  "sessionId": "a27674f3-b9f8-4306-8093-cc81e5fb5ece",
+  "nodePlatform": "darwin",
+  "nodeVersion": "14.17.0",
+  "packageName": "chromatic",
+  "packageVersion": "6.7.3",
+  "flags": {
+    "projectToken": [
+      "4071fcc1952d"
+    ],
+    "outputDir": [],
+    "storybookBuildDir": [],
+    "externals": [],
+    "untraced": [],
+    "interactive": true,
+    "appCode": []
+  },
+  "exitCode": 0,
+  "exitCodeKey": "OK",
+  "errorType": "Error",
+  "errorMessage": "✖ Build script not found"
+}
+
+--------------------------------------------------------------------------
+
+$ npx chromatic --project-token=4071fcc1952d --build-script-name=sb:build
+
+Chromatic CLI v6.7.3
+https://www.chromatic.com/docs/cli
+
+  ✔ Authenticated with Chromatic
+    → Using project token '********952d'
+  ✔ Retrieved git information
+    → Commit '0e5b265' on branch 'storybook-chromatic'; no ancestor found
+  ✔ Collected Storybook metadata
+    → Storybook 6.5.9 for Angular; using the webpack5 builder (6.5.9); supported addons found: Links, Essentials
+  ✔ Initialized build
+    → Build 1 initialized
+  ✔ Storybook built in 53 seconds
+    → View build log at /Users/craiskin/ws/standard/libs/sfg-ng-components/build-storybook.log
+  ✔ Publish complete in 2 seconds
+    → View your Storybook at https://62ed913dc110fe62771e0af3-pvvuavqgif.chromatic.com
+  ✔ Started build 1
+    → Continue setup at https://www.chromatic.com/setup?appId=62ed913dc110fe62771e0af3
+  ✔ Build 1 auto-accepted
+    → Tested 9 stories across 4 components; captured 9 snapshots in 9 seconds
+
+Using custom npm registry: https://nexus.standard.com/nexus/repository/npm-all
+
+Could not retrieve package info from registry; skipping update check
+
+✔ Build passed. Welcome to Chromatic!
+We found 4 components with 9 stories and took 9 snapshots.
+ℹ Please continue setup at https://www.chromatic.com/setup?appId=62ed913dc110fe62771e0af3
+
+⚠ No 'chromatic' script found in your package.json
+Would you like me to add it for you? [y/N]y
+
+✔ Added script 'chromatic' to package.json
+You can now run it here or in CI with 'npm run chromatic' or 'yarn chromatic'.
+
+ℹ Your project token was added to the script via the --project-token flag.
+If you're running Chromatic via continuous integration, we recommend setting
+the CHROMATIC_PROJECT_TOKEN environment variable in your CI environment.
+You can then remove the --project-token from your package.json script.
+
+
+
+
+================================================================================
+
+	Constructor Injection
+	----------------------
+
+https://github.com/storybookjs/storybook/issues/13080
+
+
+
+
+================================================================================
+
+	Storybooking Custom ControlValueAccessor Form Controls
+	-------------------------------------------------------
+
+	https://bitsnpixels.dev/blog/storybooking-custom-control-value-accessor-form-controls.html
+
+	https://github.com/storybookjs/storybook/discussions/15602
+
+
+
+
+================================================================================
+
+	Stories with ng-content
+	------------------------
+
+
+To do that you need to create a template for your story.
+
+
+// paper.component.ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'cx-paper',
+  template: `
+    <div class="paper" [ngStyle]="{ width: width, height: height }">
+      <ng-content></ng-content>
+    </div>
+  `,
+  styles: [
+    `
+      .paper {
+        border: navy solid 2px;
+        padding: 10px;
+      }
+    `,
+  ],
+})
+export class PaperComponent {
+  @Input()
+  width: string;
+
+  @Input()
+  height: string;
+}
+
+
+The story for this component
+- - - - - - - - - - - - - - -
+
+// paper.stories.ts
+import { Story, Meta } from '@storybook/angular';
+import { PaperComponent } from './paper.component';
+
+export default {
+  title: 'Example/Paper',
+  component: PaperComponent,
+} as Meta;
+
+const Template: Story<PaperComponent> = (args: PaperComponent) => ({
+  props: args,
+  template: `
+  <cx-paper [height]="height" [width]="width">
+  This is a template test.
+  </cx-paper>`,
+});
+
+export const SimpleExample = Template.bind({});
+
+SimpleExample.args = {
+  height: '50px',
+  width: '300px',
+} as Partial<PaperComponent>;
+
+
+
+
+================================================================================
 
 
 

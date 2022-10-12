@@ -114,10 +114,22 @@ $ npmrc -c newprofile
 
 ==============================================================================
 
-	Using NPM
-	*********
+	differences between npm and npx
+	-------------------------------
+
+npm
+	package manager used to install, delete, and update Javascript packages on your machine
+
+npx
+	package executer, and it is used to execute javascript packages directly, without installing them
+
+If you execute something rarely, use `npx`
+If you execute somethig often, install to project's node_modules
 
 ==============================================================================
+
+	Using NPM
+	*********
 
 
 
@@ -1037,6 +1049,61 @@ https://stackoverflow.com/questions/46609152/npm-run-parallel-task-but-wait-unti
 https://github.com/open-cli-tools/concurrently
 
 https://github.com/jeffbski/wait-on
+
+
+
+==============================================================================
+
+	patch-package
+	-------------
+
+https://www.npmjs.com/package/patch-package
+https://javascript.plainenglish.io/live-npm-package-patching-with-patch-package-b8f30d47779c
+
+
+patch-package lets app authors instantly make and keep fixes to npm dependencies. 
+It's a vital band-aid for those of us living on the bleeding edge.
+
+
+setup
+-----
+
+add to your package.json
+
+"scripts": {
++  "postinstall": "patch-package"
+ }
+
+
+npm install patch-package postinstall-postinstall --save-dev
+
+
+How to use
+-----------
+
+To use patch-package, 
+
+	make your changes right in the package code in node_modules and 
+	run patch-package:
+
+		$ npx patch-package <package-name>
+
+That’s it! It’ll create a patches folder containing the diffs needed to update the package version you installed with the changes you made.
+
+
+
+==============================================================================
+
+	postinstall
+	-----------
+
+Transform files of Node.js modules with simple and powerful package.json configurations. Meant to be used by packages lifecycle events:
+
+prepare use it to transform devDependencies, while developing or before publishing
+postinstall use it to deploy dependencies.
+
+
+	npm install postinstall --save-dev
 
 
 

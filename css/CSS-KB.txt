@@ -139,339 +139,6 @@ inline-block
 	The element itself is formatted as an inline element, but you can apply height and width values
 
 
-================================================================================
-
-CSS Grid
-********
-
-References:
-
-https://moderncss.dev/container-query-solutions-with-css-grid-and-flexbox/#solutions
-
-https://css-tricks.com/introduction-fr-css-unit/  
-
-
-fr  CSS length unit
--------------------
-
-https://css-tricks.com/introduction-fr-css-unit/
-https://gridbyexample.com/video/series-the-fr-unit/
-
-benefits: more legible and maintainable code
-
-the `fr` unit is a fraction, can be used like any other CSS length, like  %,  px  or  em
-
-
-	.grid-container {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);  <-- fixes overflow
-		grid-column-gap: 10px;  
-	}
-
-1fr takes that 10px into account automatically and subtracts it from the total width available for each column.
-
-
-or in a different scenario:
-let’s say we want our navigation on the left followed by a twelve column grid
-
-
-without `fr` we have to perform the following caculation:
-
-	the width of each column = ((width of viewport - width of nav) / number of columns) * 1%
-
-but with `fr`
-
-	.grid {
-	  display: grid;
-	  grid-template-columns: 250px repeat(12, 1fr);
-	  grid-column-gap: 10px;
-	}
-
-
-What we’re doing here is setting a fixed width in pixels (250px) for the first column and then creating twelve separate columns which are set at one “fraction of the free space” (literally how the spec phrases it). 
-
-
-Main and Sidebar
------------------
-
-When you have a sidebar and Main, CSS grid is a perfect solution for building them.
-
-
-<div class="wrapper">
-  <aside>Sidebar</aside>
-  <main>Main</main>
-</div>
-
-
-@media (min-width: 800px) {
-  .wrapper {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    grid-gap: 16px;
-  }
-
-  aside {
-    align-self: start;
-  }
-}
-
-
-Cards Grid
------------
-
-
-Grid Container contains Grid Items
-
-Grid Lines   column axis and row axis  =  Grid Tracks (aka grid rows or columns)
-
-Grid Cells is where grid lines intersect.
-
-
-Grid Areas
-	any prortion of the grid contained within 4 lines
-
-
-
-
-grid container
----------------
-
-	display: grid;
-					 insline-grid;  // grid items will take only as much space as they require.
-
-
-	To define columns
-
-		grid-template-columns: width width width width width;
-
-	To define rows
-
-		grid-template-rows: height height height height height;
-
-
-or combine
-
-		grid:  column column / row row;
-
-
-use `repeat`:
-
-		grid-template-columns: repeat(4, 6em);
-
-
-
-Custom named grid lines and grid areas
---------------------------------------------------------------------------------
-
-	grid-template-columns: [name1] [name2] [name3]; 
-
-	grid-template-rows: [name1] [name2] [name3];
-
-
-
-.grid-container {
-    display: grid;
-    height: calc(100vh - 2em);
-    grid-template-rows: 6em 1em 1fr;
-    grid-template-columns:
-      [main-content-start] 1fr
-      [main-content-end] 1em
-      [sidebar-start] 25%
-      [sidebar-end];
-}
-
-.grid-item-content {
-    background-color: #9BC850;
-    grid-row: 3 / 4;
-    grid-column: main-content-start / main-content-end;
-}
-
-.grid-item-sidebar {
-    background-color: #9BC850;
-    grid-row: 3 / 4;
-    grid-column: sidebar-start / sidebar-end;
-}
-
-.grid-item-header {
-    background-color: #A62E5C;
-    grid-row: 1 / 2;
-    grid-column: main-content-start / sidebar-end;
-}
-
-.grid-item {
-	color: #fff;
-    box-sizing: border-box;
-	font-size: 1.2em;
-	padding: 1em;
-    overflow: hidden;
-	text-align: center;
-}
-
-.grid-item strong {
-	display: block;
-	font-size: 130%;  
-}		
-
-
-
-Named Grid Areas
---------------------------------------------------------------------------------
-
-.media-item-title {
-	grid-area: title;
-}
-
-
-.media-container {
-    display: grid;
-
-    grid: auto auto / 8em 1fr;
-    grid-template-areas:
-        "title title"        <--  we repeat the grid-area name twice for each column - so it spans
-        "thumbnail content";
-    gap: 1em;
-
-    grid: auto 1em auto / 8em 1.5em 1fr;
-    grid-template-areas:
-        "title title title"
-        ". . ."              <--  row for spacing
-        "thumbnail . content";
-}
-
-
---------------------------------------------------------------------------------
-
-
-Placing Grid Items
--------------------
-
-
-	grid-column-start
-	grid-column-end
-	grid-row-start
-	gird-row-end
-
-
-	.grid-item {
-		grid-column-start: 1; 
-		grid-column-end: 3;
-	}
-
-or to combine
-
-
-	grid-row: row-start / row-end;
-
-	grid-column:  column-start / column-end;
-
-
-or combine in `grid-area`
-
-
-	grid-area: row-start / column-start / row-end / column-end;
-
-
-you can also use `span`:
-
-
-	grid-column: 2 / span 2;
-	grid-row: 2 / span 1;
-
-
-
-
-Gap
----------------
-
-	same as with flexbox
-
-
-	.grid-container {
-		display: grid;
-
-		/*gap: 1em;*/
-		row-gap: 1em;
-		column-gap: 1.5em;
-	}
-
-
-
-Auto features
-----------------------------
-
-.grid-container {
-	
-
-}
-
-Implicit grid lines are created when items are added beyond explicitly defined
-rows and columns
-
-
-
-Responsive CSS grid
-----------------------------
-
-https://css-tricks.com/look-ma-no-media-queries-responsive-layouts-using-css-grid/
-
-
-
-
-
-================================================================================
-================================================================================
-
-
-Combining CSS Grid And Flexbox
-------------------------------
-
-
-	A list of cards.
-	Grid is used to lay out the cards, and flexbox is used for the card component itself.
-
-
-	Here are the requirements for the layout:
-
-The height of the cards for each row should be equal
-The read more link should be positioned at the end of the card, no matter its height.
-The grid should use minmax() function
-
-
-<div class="wrapper">
-  <article class="card">
-    <img src="sunrise.jpg" alt="" />
-    <div class="card__content">
-      <h2><!-- Title --></h2>
-      <p><!-- Desc --></p>
-      <p class="card_link"><a href="#">Read more</a></p>
-    </div>
-  </article>
-</div>
-
-
-@media (min-width: 500px) {
-  .wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 16px;
-  }
-}
-
-.card {
-  display: flex; /* [1] */
-  flex-direction: column; /* [2] */
-}
-
-.card__content {
-  flex-grow: 1; /* [3] */
-  display: flex; /* [4] */
-  flex-direction: column;
-}
-
-.card__link {
-  margin-top: auto; /* [5] */
-}
-
 
 ================================================================================
 
@@ -1324,9 +991,17 @@ ul li {
 	box-sizing
 	**********
 
+
+content-box   (default)
+border-box
+
+
+
 https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing
 
-sets how the total with and height of an element is calculated.
+- sets how the total with and height of an element is calculated
+- allows us to include the padding and border in an elements's total width and height
+
 
 	content-box  (DEFAULT)
 	----------------------
@@ -1343,66 +1018,6 @@ sets how the total with and height of an element is calculated.
 	with the area for content being 330px wide. 
 
 
-jsfiddle:  https://jsfiddle.net/********/r5wknefh/21/
-
-
-<head>
-  <title>Links</title>
-</head>
-
-<body>
-  
-  <div class="content-box">
-    content-box
-  </div>
-  
-  </div>
-  
-  <div class="border-box">
-    border-box
-  </div>
-  
-</body>
-
-
-* {
-  margin: 0px;
-  padding: 0px;
-}
-
-*, *::before, *::after { box-sizing: inherit; }
-
-html {
-  box-sizing: border-box;
-}
-
-body {
-  background: #efefef;
-  color: #333;
-  font-family: basic-sans, sans-serif;
-}
-
-.content-box {
-  box-sizing: content-box;
-  width: 500px;
-  padding: 25px;
-  border: 5px solid red;
-  background: #4dfff3;
-}
-
-.scale {
-  width: 500px;
-  height: 50px;
-  background: #615756;
-}
-
-.border-box {
-  box-sizing: border-box;
-  padding: 25px;
-  border: 5px solid red;
-  width: 500px;
-  background: #52ffb8;
-}
 
 
 
@@ -1844,6 +1459,28 @@ body {
 
 
 
+for screen and print
+-------------------
+
+  @media print, screen and (min-width: p.$bootstrap-breakpoint-small) {
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'shortcuts shortcuts'
+      'resources resources'
+      'helpful-links . ';
+  }
+
+  @media print, screen and (min-width: p.$bootstrap-breakpoint-medium) {
+    grid-template-rows: auto;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas:
+      'shortcuts shortcuts'
+      'resources helpful-links';
+  }
+
+
+
 @media query
 -------------
 
@@ -1876,6 +1513,24 @@ Syntax
 	}
 }
 
+
+mediatypes
+
+	all: default
+	print: used for printers
+	screen: used for computer screens, tablets and smart-phones
+	speech: used for screenreaders
+
+
+not: 
+	the `not` keyword inverts the meaning of an entire media query
+
+only
+	the `only` keyword prevents older browsers that do not support media queries from applying the specified rule.
+	it has no effect on modern browsers.
+
+and 
+	the `and` keyword combines a media feature with a media types or other media features.
 
 
 
@@ -2270,25 +1925,6 @@ html { font-size: 16px; }
 
 ================================================================================
 
-	CSS Grid
-	********
-
-two dimensional grid with rows and columns.
-
-Browser Support
-----------------
-
-	IE 11+
-	Edge 15+
-	Firefox 57+
-	Chrome 61+
-
-Can you build your layout without the CSS grid?
-
-
-
-
-================================================================================
 
 	id your body 
 	************
@@ -2741,6 +2377,129 @@ body {
 }	
 
 
+
+================================================================================
+
+
+CSS Positions
+-------------
+
+until 3 years ago, there were 4 CSS positions:
+
+static
+relative
+absolute
+fixed
+
+static & relative keep their natural space in the flow of the document
+
+absolute & fixed don’t — their space is removed and they have a floating behavior
+
+
+position: sticky
+-----------------
+
+https://elad.medium.com/css-position-sticky-how-it-really-works-54cd01dc2d46
+
+
+On the first try 
+
+.some-component{
+    position: sticky;
+    top: 0;
+} 
+
+the element sticks when the viewport gets to the defined position.
+The problem is that sometimes it works while other times it doesn’t.
+
+when an element with a position: sticky style is wrapped, and it is the only element inside the wrapper element, this element, which was defined position: sticky will not stick.
+
+<!-- DOESN'T WORK!!! -->
+<style>
+    .sticky{
+        position: sticky;
+        top: 0;
+    }
+</style>
+<div class="wrapper">
+   <div class="sticky">
+        SOME CONTENT
+   </div>
+</div>
+
+When I added more elements inside the wrapper element, it started working.
+
+
+Why is that?
+The reason for that is that when an element is given the position: sticky style, the sticky item’s container is the only area in which the sticky item can stick. The item doesn’t have any elements to float over since it can only float over sibling elements, which, being an only child, it doesn’t have.
+
+
+How CSS Position Sticky Really Works!
+--------------------------------------
+
+CSS position sticky has two main parts, 
+
+ - sticky item 
+ - sticky container
+
+Sticky Item
+
+	is the element that we defined with the position: sticky styles. 
+	The element will float when the viewport position matches the position definition, 
+	for example: top: 0px .
+
+		.some-component{
+		    position: sticky;
+		    top: 0px;
+		}
+
+Sticky Container
+
+	is the HTML element which wraps the sticky item. This is the maximum area that the sticky item can float in.
+
+	When you define an element with position: sticky  
+	you’re automatically defining the parent element as a sticky container! <=========== !!!!!!
+
+
+Browsers Support
+-----------------
+
+Position Sticky is supported by all major modern browsers, except for old IE.
+
+For Safari browsers you will need to add the -webkit prefix.
+
+
+position: -webkit-sticky; /* Safari */  
+position: sticky;
+
+
+================================================================================
+
+	Sticky footer
+	--------------
+
+Use position:fixed;bottom:0px; to display your footer at bottom
+
+footer{
+	position:fixed;
+	bottom:0px;
+	background-color:pink;
+	width:100%;
+}
+
+<main flex layout="column">
+      <div>
+        <div ui-view="" ></div>
+      </div>
+</main>
+
+<footer>
+  <md-toolbar class="md-hue-2 md-scroll-shrink">
+    <div layout="row" layout-align="center center" flex>
+      Powered by Webocity Technologies
+    </div>
+  </md-toolbar>
+</footer>
 
 
 

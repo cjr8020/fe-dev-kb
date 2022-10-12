@@ -1,0 +1,14 @@
+stackblitz 
+***********
+
+
+================================================================================
+
+
+how to npm install packages on stackblitz
+------------------------------------------
+
+Under the "Files" tree is a "Dependencies" section. You can add your dependencies there. If you just want the latest version you can just use the package name (ex: ngx-bootstrap) or you can target a specific version (ex: ngx-bootstrap@5.3.0).
+
+
+================================================================================

@@ -3,17 +3,92 @@
  	*************
 
 
+References:
+
+https://indepth.dev/posts/1143/a-thorough-exploration-of-angular-forms
+
+
 
 According to angular 6+,
 - valid: This property returns true if the element’s contents are valid and false otherwise.
 - invalid: This property returns true if the element’s contents are invalid and false otherwise.
-= pristine: This property returns true if the element’s contents have not been changed.
+- pristine: This property returns true if the element’s contents have not been changed.
 - dirty: This property returns true if the element’s contents have been changed.
 - untouched: This property returns true if the user has not visited the element.
 - touched: This property returns true if the user has visited the element.
 
 
 ================================================================================
+
+Angular 14:  Strictly typed forms in Angular
+--------------------------------------------
+
+
+https://blog.ninja-squad.com/2022/04/21/strictly-typed-forms-angular/
+
+
+
+
+
+================================================================================
+
+
+	Base Entities
+	--------------
+
+
+AbstractControl
+---------------
+
+Common ancestor of FormControl and FormGroup and FormArray
+
+	- running validators
+	- changing and calculating UI status 
+			markAsDirty()
+			markAsTouched()
+			etc
+
+	- reset status
+	- keeping track of validation status
+
+Multiple AbstractControls can be seen as tree where the leaves are always going to be FormControl instances 
+and the other 2 (FormArray, FormGroup) can be thought of as AbstractControl containers, 
+which entails that they can't be used as leaves 
+because they must contain at least on AbstractControl instance.
+
+
+// FG - FormGroup
+// FA - FormArray
+// FC - FormControl
+
+    FG
+  /   \
+FC    FG
+    /    \
+  FC     FA
+        / | \
+      FC FC FC
+
+
+The above tree can be the result of
+
+
+	<form>
+	  <input type="text" formControlName="companyName">
+
+	  <ng-container formGroupName="personal">
+	    <input type="text" formControlName="name">
+
+	    <ng-container formArrayName="hobbies">
+	      <input type="checkbox" formControlName="0">
+	      <input type="checkbox" formControlName="1">
+	      <input type="checkbox" formControlName="2">
+	    </ng-container>
+	  </ng-container>
+	</form>
+
+
+
 
   FormControl
   -----------
@@ -23,6 +98,17 @@ encapsulates the field's value, and states such as valid, dirty, or has errors.
 
 To build up forms, we create FormControls (and groups of FormControls) and then
 attach metadata and logic to them.
+
+
+	FormArray
+	---------
+
+It extends AbstractControl and its job is to group multiple AbstractControls together.
+
+From a tree perspective, it is a node that must contain at least one descendant.
+Its validation status, dirtiness, touched status and value usually depends on its descendants.
+
+
 
 
 	FormGroup
@@ -35,10 +121,23 @@ object, which each control name as the key.
 It calculates its status by reducing the statuses of its children.  E.g. if one of the controls in a group is invalid, the entire group become
 
 
-  AbstractControl
-  ---------------
+AbstractControlDirective
+-------------------------
 
-Common ancestor of FormControl and FormGroup.
+It is the base class for form-control-based directives(NgModel, FormControlName, FormControlDirective)
+
+contains boolean getters that reflect the current status of the bound control(valid, touched, dirty etc...)
+
+Form control are bound to a DOM element with the help of a concrete implementation of 
+	
+	AbstractControlDirective(NgModel, FormControlName) and a 
+	ControlValueAccessor
+
+
+Thus, this class can be thought of as a middleman that connects ControlValueAccessor(view layer) with AbstractControl(model layer)
+
+
+	ControlValueAccessor(view layer) <-- AbstractCongrolDirective -->   AbstractControl(model layer)
 
 
   ngModel
@@ -51,10 +150,213 @@ ngModel mimics two-way data binding.
 There are still good reasons to aoivd 
 
 
+<form>
+  <input ngModel name="option" value="value1" type="radio">
+
+  <input ngModel="value3" name="option" value="value2" type="radio">
+
+  <input ngModel="value1" name="option" value="value3" type="radio">
+</form>
+
+
+As a side note, providing a default value right from the template can be achieved by setting the last ngModel directive's value to the value of the radio button you want to be checked by default. In the above snippet, the first button will be checked.
+
+
+
+AbstractFormGroupDirective
+---------------------------
+
+It's a container for AbstractFormGroupDirective and AbstractControlDirective instances and its useful when you want to create a sub-group of AbstractControls(eg: address: { city, street, zipcode }) or run validators for some specific AbstractControls(eg: min-max validator that makes sure that min control can't have a value that is greater than max control's value).
+
+
+Its concrete implementations are: formGroupName, formArrayName, ngModelGroup.
+
+
+
+
+ControlValueAccessor
+--------------------
+
+ControlValueAccessor is an essential part for the Forms API and can be thought of as the view layer.
+
+
+Its job is to connect a DOM element(eg: <input>, <textarea>) or a custom component(eg: <app-custom-input>) with an AbstractControlDirective (eg:NgModel, FormControlName).
+
+AbstractControlDirective will eventually become a bridge between ControlValueAccessor(view layer) and AbstractControl(model layer). This way, the 2 layers can interact with each other.
+
+	ControlValueAccessor(view layer) <-- AbstractControlDirective -->   AbstractControl(model layer)
+
+
+E.g.
+
+when user is typing into an input: View -> Model
+when the value is set programmatically(FormControl.setValue('newValue')): Model -> View
+
+
+Only FormControl instances can 'directly' interact with a ControlValueAccessor, because, in a tree of AbstractControls, a FormControl can only be the leaf node as it is not supposed to contain other nodes. Along these lines, we can deduce that updates that come from the view will start from leaf nodes.
+
+// FG - FormGroup
+// FA - FormArray
+// FC - FormControl
+                                  FG
+                                /   \
+user typing into an input  <- FC    FA
+                                   / | \
+                                FC  FC  FC <- user selecting checkbox
+
+
+
+export interface ControlValueAccessor {
+  writeValue(obj: any): void;
+
+  registerOnChange(fn: any): void;
+
+  registerOnTouched(fn: any): void;
+
+  setDisabledState?(isDisabled: boolean): void;
+}
+
+
+writeValue() - 
+
+	writes a new value to an element; 
+	the new value comes from the MODEL
+
+	 FormControl.setValue -> ControlValueAccessor.writeValue -> update element -> change is visible in the UI
+
+registerOnChange() - 
+
+	registers a callback function that will be called whenever the value changes in the UI and 
+	will propagate the new value to the model.
+
+registerOnTouched() - 
+	registers a callback function that will be called when the blur event occurs; 
+	the FormControl will be notified of this event as it may need to perform some updates when this event occurs.
+
+setDisabledState - 
+	will disable/enable the DOM element depending on the value provided; 
+	this method is usually called as a result of a change in the MODEL.
+
+
+
+There are 3 types of ControlValueAccessors
+-----------------
+
+	1. default
+	2. built-in
+	3. custom
+
+
+default
+	
+	DefaultValueAccessor
+
+
+biult-in
+
+	const BUILTIN_ACCESSORS = [
+	  CheckboxControlValueAccessor,
+	  RangeValueAccessor,
+	  NumberValueAccessor,
+	  SelectControlValueAccessor,
+	  SelectMultipleControlValueAccessor,
+	  RadioControlValueAccessor,
+	];
+
+custom
+
+	@Component({
+	  selector: 'app-custom-input',
+	  providers: [
+	    {
+	      provide: NG_VALUE_ACCESSOR,
+	      useExisting: CustomInputComponent,
+	      multi: true,
+	    }
+	  ]
+	  /* ... */
+	})
+	export class CustomInputComponent implements ControlValueAccessor { }
+
+
+<form>
+  <app-custom-input ngModel name="name"></app-custom-input>
+</form>
+
+
+Remember that ngModel is a form-control-based directive, so it will become a bridge between a ControlValueAccessor(view) and FormControl(model).
+
+
+Connecting FormControl with ControlValueAccessor
+------------------------------------------------
+
+https://indepth.dev/posts/1143/a-thorough-exploration-of-angular-forms#connecting-formcontrol-with-controlvalueaccessor
+
+
+  -------------------------- 
+  |                        | 
+  |  ControlValueAccessor  |  <--- View Layer
+  |                        | 
+  -------------------------- 
+    |                 ▲
+    |                 |
+    |                 |
+    ▼                 |
+------------------------------ 
+|                            | 
+|  AbstractControlDirective  | 
+|                            | 
+------------------------------ 
+        |           ▲
+        |           |
+        |           |
+        ▼           |
+      ----------------- 
+      |               | 
+      |  FormControl  |  <--- Model Layer
+      |               | 
+      ----------------- 
+
+
+
 
 ===============================================================================
   	Angular Reactive Forms
 ===============================================================================
+
+
+export const REACTIVE_DRIVEN_DIRECTIVES: Type<any>[] =
+    [
+    	FormControlDirective, 
+    	FormGroupDirective, 
+    	FormControlName, 
+    	FormGroupName, 
+    	FormArrayName]
+    ;
+
+
+FormControlDirective
+
+	It is a form-control-based directive, it is the bridge between the 2 main layers: view and model.
+
+
+FormGroupDirective
+
+
+	In the model layer, it is a top-level FormGroup instance
+
+		<form [formGroup]="formGroupInstance">
+
+FormControlName
+
+	
+
+
+Validators
+---------------------------
+
+
+
 
  	Reactive forms is an Angular technique for creating forms in a reactive 
  	style that favor explicit management of the data flowing between a non-UI data model (typically retrieved from a server) and a UI-oriented form model
@@ -129,6 +431,17 @@ While this means less code in component class, template-driven forms are asynchr
 
  	Template-Driven forms are asynchronous
  	--------------------------------------
+
+
+
+===============================================================================
+
+Understanding of the AbstractControl tree
+-----------------------------------------
+
+https://indepth.dev/posts/1143/a-thorough-exploration-of-angular-forms#a-better-understanding-of-the-abstractcontrol-tree
+
+
 
 
 
@@ -337,6 +650,9 @@ patchValue  for a subset
 updateOn option 
 ------------------
 
+NOTE: updateOn option affects not only when the validation is executed by also 
+when the model will be updated.  SEE BELOW.
+
 
 https://indepth.dev/posts/1311/the-update-on-option-in-angular-forms
 
@@ -489,6 +805,19 @@ With reactive forms,  the only way to set the updateOn option is in the construc
 
 
 Thanks to the updateOn option we can use less aggressive update strategies in our Angular forms. This little option can have a huge positive impact in the performance of your Angular applications.
+
+
+
+
+
+updateOn option affects not only when the validation is executed by also 
+when the model will be updated
+-------------------------------------------
+
+
+with 'blur' the model gets updated ony when the user leaves the input text
+
+
 
 
 
@@ -1198,6 +1527,15 @@ Use the $any() type-cast function in certain contexts to opt out of type-checkin
 
 ================================================================================
 
+	custom input to work with <mat-form-field>
+	-------------------------------------------
+
+https://material.angular.io/guide/creating-a-custom-form-field-control
+
+
+
+================================================================================
+
 
 	Implement Custom Input Component
 	--------------------------------
@@ -1231,6 +1569,14 @@ export class CustomInputComponent implements ControlValueAccessor {
 Inside the constructor we inject NgControl to bind the FormControl object to the DOM element:
 
 
+/**
+ * Inject NgControl to bind the FormControl object to the DOM element.
+ * @Self(): we ant to retrieve the dependency only from the local injector,
+ * not from the parent or ancestors
+ * @Optional(): we want to be able to use the component without a form,
+ * so we mark the dependency as optional.
+ * @param ngControl represents FormControl associated with this custom input component.
+ */
 constructor(
   @Self()
   @Optional()
@@ -1427,4 +1773,34 @@ private submitForm(formData: any, formDirective: FormGroupDirective): void {
 
 ================================================================================
 
+Angular Material with ControlValueAccessor
+-------------------------------------------
 
+https://stackoverflow.com/questions/67078438/how-to-correctly-use-angular-material-with-reactive-forms-controlvalueaccessor
+
+https://stackblitz.com/edit/angular-mat-reactive-form-control-ddssy1?file=src%2Fstyles.scss,src%2Fapp%2Fcomponents%2Fcustom-select.component.ts,src%2Fapp%2Fcomponents%2Fcustom-select.component.html
+
+================================================================================
+
+https://stackblitz.com/edit/angular-mat-reactive-form-control-ddssy1?file=src%2Fstyles.scss,src%2Fapp%2Fcomponents%2Fcustom-select.component.ts,src%2Fapp%2Fcomponents%2Fcustom-select.component.html
+
+
+
+  .flex-container {
+    flex-direction: row;
+  }
+
+
+  ==============================================================================
+
+
+   Angular INPUT field to accept only numbers
+   ------------------------------------------
+
+  https://stackoverflow.com/questions/41465542/angular2-input-field-to-accept-only-numbers
+
+  
+
+
+
+  ==============================================================================

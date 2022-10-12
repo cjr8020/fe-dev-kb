@@ -1,0 +1,44 @@
+
+
+	Web Components
+
+
+Resources:
+
+https://blog.logrocket.com/what-happened-to-web-components/
+
+
+================================================================================
+
+Frameworks support for Web Components
+
+
+Angular support for Web Components
+----------------------------------
+
+Angular + Web Components: a complete guide
+
+https://indepth.dev/posts/1116/angular-web-components-a-complete-guide
+
+Angular Elements
+
+
+
+React support for Web Components
+--------------------------------
+
+https://reactjs.org/docs/web-components.html
+
+As a developer, you are free to use React in your Web Components, or to use Web Components in React, or both.
+
+
+Vue support for Web Components
+------------------------------
+
+https://vuejs.org/guide/extras/web-components.html
+
+We consider Vue and Web Components to be primarily complementary technologies. Vue has excellent support for both consuming and creating custom elements. Whether you are integrating custom elements into an existing Vue application, or using Vue to build and distribute custom elements, you are in good company.
+
+
+
+================================================================================

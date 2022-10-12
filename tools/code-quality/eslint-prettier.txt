@@ -1,0 +1,131 @@
+ESlint - Prettier
+*****************
+
+
+================================================================================
+
+ESLint rules
+-------------
+
+
+You can disable one or more specific ESLint rules for a whole file by adding on a few lines:
+
+	/* eslint-disable no-debugger, no-console */
+	console.log('test')
+
+
+or you can just do so in a block, re-enabling it afterwards:
+
+	/* eslint-disable no-debugger, no-console */
+	console.log('test')
+	/* eslint-enable no-alert, no-console */
+
+
+Or you can disable the rule on a specific line:
+
+	console.log('test') // eslint-disable-line no-console
+	debugger // eslint-disable-line no-debugger
+	alert('test') // eslint-disable-line no-alert
+
+
+
+To disable in eslintrc
+
+
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "no-unused-vars": "off"
+    }
+  },
+
+
+  or 
+
+
+  "rules": {
+             
+  	"@typescript-eslint/no-explicit-any": ["off"]
+	}
+
+or
+
+	/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
+
+================================================================================
+
+customize @typescript-eslint/ban-types Rule
+---------------------------------------
+
+https://smartdevpreneur.com/how-to-use-and-disable-typescript-eslint-ban-types/
+
+Here is the current list of syntax banned by default:
+
+String
+Number
+Boolean
+Symbol
+
+Here are the types banned by default:
+
+Function
+Object
+{}
+
+The @typescript-eslint/ban-types rule is configured in your .eslintrc.json file in the "rules" section. Here’s an example configuration:
+
+"@typescript-eslint/ban-types": [
+    "error",
+    {
+        "types": {
+            "Bar": "Don't use Bar because it is unsafe",
+            "Person": {
+                "message": "Person is too generic!",
+                "fixWith": "Employee"
+            },
+            "Function": false
+        },
+        "extendDefaults": true
+    }
+]
+
+The “error” line tells the compiler to throw an error if any rules are broken. The alternative “warn” value tells the compiler to simply print a warning value.
+
+Each field in the “types” object has three parts:
+
+The disallowed type
+The message to display
+the fixWith type
+For example, I have disallowed the “Person” type. If it is used, the linter displays the message “Person is too generic!”. If I auto-fix, the Person type will be replaced with the Employee type.
+
+
+Notice that I have set “Function”: false. Function is disallowed by default but this enables Function type for my project.
+
+Take a look at this example code that uses the above configuration:
+
+
+
+
+
+================================================================================
+
+Prettier Ignore
+----------------
+
+https://prettier.io/docs/en/ignore.html#markdown
+
+
+Typescript
+
+// prettier-ignore
+
+disables prettier for the next line or block denoted by pair of { }
+
+
+
+================================================================================

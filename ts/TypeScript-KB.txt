@@ -112,6 +112,12 @@ terminal
         "I'll be " + (age + 1) + " years old next month."
 
 
+  String Literal types
+  --------------------
+
+  type style =  "collapse" | "expand" | "end-expand" | "none";
+
+
 
   Array  
   -----
@@ -1326,50 +1332,31 @@ The following return the same result
 
 
 If we don’t know how many arguments are specified in a function we can use these three dots … . 
+spread operator indicating "rest parameters"
+https://www.typescriptlang.org/docs/handbook/2/functions.html#rest-parameters-and-arguments
+
+
 The argument must be an array in this case.
 
 
-    function doSomething(...args: string[]) {
-        args.forEach((value: string, index: number) => {
-            console.log(`${index}:${value}`);
-        });
-    }
-    const strs = "HELLO";
-    const array = ["chair", "desk", "smartphone"];
-    doSomething(...strs);
-    // 0:H
-    // 1:E
-    // 2:L
-    // 3:L
-    // 4:O
-    doSomething(...array);
-    // 0:chair
-    // 1:desk
-    // 2:smartphone
+  // ✅ Example 1 (Named function)
+  function getArgsAsArray(...args: string[]) {
+    console.log(args); // 👉️ ['a', 'b', 'c']
+
+    return args;
+  }
 
 
-
-Rest (of the) Parameters
-------------------------
-  without rest parameters, passing an unknown list of arguments is cumbersome:
-
-    function makeArray(arg1: number, arg2: number) {
-      return [arg1, arg2];
-    }
-    console.log(makeArray(1, 2));  
+Make sure rest parameters come last:
 
 
-  Rest parameters are treated as a boundless number of optional parameters.
+  // 👇️ rest parameter must come last
+  function getArgsAsArray(str: string, ...args: string[]) {
+    console.log(str); // 👉️ "a"
+    console.log(args); // 👉️ ['b', 'c']
 
-    function makeArray(...args: number[]) {
-      return args;
-    }
-    console.log(makeArray(1, 2, 6, 7));
-
-
-  The ellipses (...) is also used in the type of the function with rest params:
-
-    let buildNameCopy: (fname: string, ...rest: string[]) => string = buildName;
+    return args;
+  }
 
 
 
@@ -2892,6 +2879,28 @@ http://stackoverflow.com/questions/35370414/how-to-iterate-over-string-indexed-a
 
 
 ==============================================================================
+
+
+  forEach loop does not break or return 
+  -------------------------------------
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+
+There is no way to stop or break a forEach() loop other than by throwing an exception. 
+If you need such behavior, the forEach() method is the wrong tool.  
+
+
+Early termination may be accomplished with:
+
+A simple for loop
+A for...of / for...in loops
+Array.prototype.every()
+Array.prototype.some()
+Array.prototype.find()
+Array.prototype.findIndex()
+
+
+==============================================================================
   cast doesn't work
   *****************
 
@@ -2944,6 +2953,135 @@ compiler options
 "typeRoots": [ "../node_modules/@types" ]
 ...
 
+
+
+==============================================================================
+
+In TypeScript 3.7 we have now 
+
+Optional chaining
+*****************
+
+  let x = foo?.bar.baz();
+
+this code will check if foo is defined otherwise it will return undefined
+
+old way :
+
+  if (foo != null && foo != undefined) {
+     x = foo.bar.baz();
+  } 
+
+
+
+==============================================================================
+
+  null or undefined check
+  ***********************
+
+
+Strict check vs.  juggling check
+
+  juggling check 
+
+    it is where the type is juggled (i.e. "can we make this type a boolean"). 
+    So an empty string is treated as a boolean false, for example. 
+    A common bug when juggling is: "false" == false a non-empty string like "false" evaluates to true.
+
+Using a juggling-check, you can test both null and undefined in one hit:
+
+  if (x == null) {
+
+If you use a strict-check, it will only be true for values set to null and won't evaluate as true for undefined variables:
+
+  if (x === null) {
+
+
+You can try this with various values using this example:
+
+var a: number;
+var b: number = null;
+
+function check(x, name) {
+    if (x == null) {
+        console.log(name + ' == null');
+    }
+
+    if (x === null) {
+        console.log(name + ' === null');
+    }
+
+    if (typeof x === 'undefined') {
+        console.log(name + ' is undefined');
+    }
+}
+
+check(a, 'a');
+check(b, 'b');
+
+
+  if( value ) {
+  }
+
+will evaluate to true if value is not:
+
+  null
+  undefined
+  NaN
+  empty string ''
+  0
+  false
+
+typescript includes javascript rules.
+
+
+
+==============================================================================
+
+  FileList operations
+  --------------------
+
+
+  /**
+   * Creates mock FileList. Uses DataTransfer object
+   * because FileList has no constructor.
+   * @param file to be added to FileList
+   * @param files optional array of File objects
+   */
+  function createMockFileList(file: File, ...files: File[]) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    if (files) {
+      Array.from(files).forEach((file) => {
+        dt.items.add(file);
+      });
+    }
+    return dt.files;
+  }
+
+
+    const mockFilePdf: File = new File(['xyz'], 'blah.pdf');
+    Object.defineProperty(mockFilePdf, 'size', { value: 1024 * 1024 * 5 }); // 5mb
+
+    const mockFileJpg: File = new File(['blah'], 'blah.jpg');
+    Object.defineProperty(mockFileJpg, 'size', { value: 1024 * 1024 * 2 }); // 2mb
+
+
+    it('should return false if at least one file in FileList exceeds maxFileSize', () => {
+      const mockFileTooBig: File = new File(['xyz'], 'blah.pdf');
+      Object.defineProperty(mockFileTooBig, 'size', { value: 1024 * 1024 * 5 + 1 }); // 5mb + 1
+      const mockFileList: FileList = createMockFileList(mockFileTooBig, mockFileJpg);
+      expect(mockFileList.length).toBe(2);
+      expect(component['fileSizeLimitMet'](mockFileList, maxFileSize)).toBeFalse();
+    });      
+
+
+NOTE: 
+  If you tried this and it didn't work, try adding configurable: true to your options (third) argument for Object.defineProperty 
+  So you'd get something like: 
+
+
+    Object.defineProperty(file, 'size', { value: 1024 * 1024 + 1, configurable: true })
 
 
 ==============================================================================

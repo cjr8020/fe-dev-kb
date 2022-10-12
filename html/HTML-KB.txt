@@ -490,6 +490,32 @@ Alternatively, you can use the YouTube Data API (v3) to get thumbnail images.
 
 =================================================================  
 
+  anchor tag 
+  ----------
+
+The <a>nchor element is simply an anchor to or from some content. 
+
+As far as semantics and styling is concerned, the <a> element isn't a link (:link) unless it has an [href] attribute.
+
+
+anchor tag without href
+-----------------------
+
+In HTML5, using an anchor element without an href attribute is valid. 
+https://www.w3.org/TR/2011/WD-html5-20110525/text-level-semantics.html#the-a-element
+
+  If the a element has no href attribute, then the element represents a placeholder for where a link might otherwise have been placed, if it had been relevant.
+
+
+
+It is considered to be a “placeholder hyperlink.” You can use class and other attributes, but you can not use target, download, rel, hreflang, and type.
+
+  tabindex=0 to make it focusable
+
+NOTE: Take note that without an href the cursor: pointer style will not be automatically added to the element
+
+
+
 open link in new tab
 --------------------
 
@@ -501,15 +527,6 @@ To create a new link
 To open link in a new tab
 
 <p>Check out <a href="https://www.freecodecamp.org/" target="_blank" rel="noopener noreferrer">freeCodeCamp</a>.</p>
-
-
-Setting it to noopener noreferrer is to prevent a type of phishing known as tabnabbing.
-
-Tabnabbing, sometimes called reverse tabnabbing, is an exploit that uses the browser's default behavior with target="_blank" to gain partial access to your page through the window.object API.
-
-With tabnabbing, a page that you link to could cause your page to redirect to a fake login page. This would be hard for most users to notice because the focus would be on the tab that just opened – not the original tab with your page.
-
-Then when a person switches back to the tab with your page, they would see the fake login page instead and might enter their login details.
 
 
 
@@ -528,6 +545,18 @@ https://www.online-toolz.com/tools/text-unicode-entities-convertor.php
 
 ©  Copyright Sign
 https://www.toptal.com/designers/htmlarrows/symbols/copyright-sign/
+
+
+=================================================================  
+
+  HTML title attribute
+  ---------------------
+
+Decrease Delay and Also Display on Click
+https://stackoverflow.com/questions/69325215/html-title-attribute-decrease-delay-and-also-display-on-click
+
+
+
 
 
 =================================================================  

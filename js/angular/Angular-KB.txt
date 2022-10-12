@@ -2154,6 +2154,16 @@ ngClass provides several ways to add classes conditionally
     }"
 
 
+<td [ngClass]="val > 10 ? 'red' : 'green'">{{ val }}</td>
+
+<input type="text" [ngClass]="control.isInvalid ? 'error' : ''" />
+
+but the less verbose way:
+
+<input type="text" [ngClass]="{ error: control.isInvalid }" />
+
+
+
 
 type one
 
@@ -4682,6 +4692,36 @@ decorator
 
 
 
+  export function RequiredProperty(message?: string) {
+    return function (target: Object, propertyKey: PropertyKey) {
+      Object.defineProperty(target, propertyKey, {
+        get() {
+          throw new Error(message || `Attribute ${String(propertyKey)} is required`);
+        },
+        set(value) {
+          Object.defineProperty(this, propertyKey, {
+            value,
+            writable: true
+          });
+        }
+      });
+    };
+  }
+
+
+and putting it to use
+
+
+  @Input()
+  @RequiredProperty('Please provide [officeName]="<value>" in the template.')
+  officeName: string;
+
+  @Input()
+  @RequiredProperty()
+  address: OfficeAddress;
+
+
+
 
 
 ================================================================================
@@ -4786,6 +4826,488 @@ viewProviders:[MyProvider, MyProvider1]
 Then, create an object into the constructor.
 
 constructor(public obj:MyProvider, public obj1:MyProvider1)
+
+
+================================================================================
+
+  Pass Component to a Component
+  *****************************
+
+https://stackoverflow.com/questions/43933783/pass-component-to-a-component-in-angular
+
+
+
+
+
+
+================================================================================
+
+  ContentChild and ContentChildren
+  ----------------------------------
+
+
+they are decorators that we use to query and get a reference to the Projected Content 
+in the DOM.  
+
+Projected content is the content that this component receives from a parent component.
+
+ContentChild and ContentChildren are very similar to ViewChild and ViewChildren
+
+We use ViewChild and ViewChildren to query and get a reference to any DOM element in the component.
+It can be an HTML element, Child Component or directive, etc.   But we cannot
+use the ViewChild or ViewChildren to get the reference to the template inserted
+using the Content projection.
+
+
+For example
+
+
+  @Component({
+    selector: 'card',
+    template: `
+   
+      <div class="card">
+        <ng-content select="header"></ng-content>
+        <ng-content select="content"></ng-content>
+        <ng-content select="footer"></ng-content>
+      </div> 
+     
+    `,
+    styles: [
+      ` .card { min- width: 280px;  margin: 5px;  float:left  } 
+      `
+    ]
+  })
+  export class CardComponent {
+   
+  }
+
+The component defines 3 ng-content slots.
+
+And the CardListComponent can project content into those slots:
+
+
+      <card>
+        <header><h1 #header>Angular</h1></header>
+        <content>One framework. Mobile & desktop.</content>
+        <footer><b>Super-powered by Google </b></footer>
+      </card>
+
+
+Now, we can use @ContentChild to query the "header" from the projected content
+in the CardComponent:
+
+<ng-content select="header"></ng-content>
+
+
+  @ContentChild("header") cardContentHeader: ElementRef;
+
+
+cardContentHeader is the variable. 
+We apply the @ContentChild decorator on that variable. 
+The header is the template variable, that we want to read. 
+
+
+  <header><h1 #header>Angular</h1></header>
+
+
+Since it is applied on h1 tag, it is going to return the ElementRef.
+
+the cardContentHeader will not be available to use immediately.
+
+The angular initializes the component first. 
+It then raises the 
+
+  ngOnChanges, 
+  ngOnInit & 
+  ngDoCheck
+
+The projected components are initialized next. 
+then Angular raises the 
+
+  AfterContentInit & 
+  AfterContentChecked hooks. 
+
+Hence the cardContentHeader is available to use only after the AfterContentInit hook.
+
+Once, we have reference to the DOM Element, we can use the renderor2 to manipulate its styles etc.
+
+
+
+  ngAfterContentInit() {
+     
+      this.renderor.setStyle(this.cardContentHeader.nativeElement,"font-size","20px")
+   
+  }
+
+
+
+ContentChild(selector: string | Function | Type<any>, opts: { read?: any; static: boolean; }): any
+
+
+//Using a Template Reference Variable
+@ContentChild("header") cardContentHeader: ElementRef;
+
+
+static 
+
+
+  True to resolve query results before change detection runs, false to resolve after change detection. Defaults to false.
+
+
+================================================================================
+
+Angular decorators
+------------------------------
+
+
+Decorators in Angular
+https://medium.com/@bilkiss.dulloo/decorators-in-angular-16e20efcd17c
+
+
+Building custom typescript decorators for angular
+https://levelup.gitconnected.com/building-custom-typescript-decorators-for-angular-4595816e7b87
+
+
+
+https://medium.com/angular-in-depth/implementing-custom-component-decorator-in-angular-4d037d5a3f0d
+
+
+https://angular-training-guide.rangle.io/features/typescript/decorators
+
+
+Decorators
+**********
+
+
+Decorators are proposed for a future version of JavaScript, but the Angular team really wanted to use them, and they have been included in TypeScript.
+
+Decorators are functions that are invoked with a prefixed @ symbol, and immediately followed by a class, parameter, method or property. The decorator function is supplied information about the class, parameter or method, and the decorator function returns something in its place, or manipulates its target in some way. Typically the "something" a decorator returns is the same thing that was passed in, but it has been augmented in some way.
+
+
+Decorators are functions, and there are four things (class, parameter, method and property) that can be decorated; consequently there are four different function signatures for decorators:
+
+
+class: 
+
+  declare type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
+
+property: 
+
+  declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
+
+method: 
+
+  declare type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;
+
+
+parameter: 
+
+  declare type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+
+
+
+Class decorators
+----------------
+
+https://angular-training-guide.rangle.io/features/typescript/class_decorators
+
+
+
+
+Method decorators
+-----------------
+https://medium.com/@bilkiss.dulloo/decorators-in-angular-16e20efcd17c
+
+
+decorators are simple TS functions
+
+
+
+function confirmable(target: Object, propertyKey: string, descriptor: PropertyDescriptor)
+
+
+  target 
+    represents the class containing the method we're decorating
+
+  propertyKey
+    represents the method name
+
+
+  descriptor 
+    contains the method implementation
+
+
+
+Reference:
+
+  https://angular-training-guide.rangle.io/features/typescript/decorators
+
+
+
+Property Decorators
+-------------------
+
+https://angular-training-guide.rangle.io/features/typescript/property_decorators
+
+
+Using Property Decorators in Typescript with a real example
+https://dev.to/danywalls/using-property-decorators-in-typescript-with-a-real-example-44e
+
+
+
+function ReadOnly(target: any, key: string) {
+  Object.defineProperty(target, key, { writable: false });
+}
+
+class Test {
+  @ReadOnly             // notice there are no `()`
+  name: string;
+}
+
+const t = new Test();
+t.name = 'jan';         
+console.log(t.name); // 'undefined'
+
+
+Example
+
+  declare Min function as decorator
+
+
+    /**
+     * Min funtion expects the limit number and 
+     * returns another function - that expects the Object and the property key
+     */
+    function Min(limit: number) {
+
+      return function(target: Object, propertyKey: string) { 
+        let value : string;
+        const getter = function() {
+          return value;
+        };
+        const setter = function(newVal: string) {
+           if(newVal.length < limit) {
+            Object.defineProperty(target, 'errors', {
+              value: `Your password should be bigger than ${limit}`
+            });
+          }
+          else {
+            value = newVal;
+          }      
+        }; 
+        Object.defineProperty(target, propertyKey, {
+          get: getter,
+          set: setter
+        }); 
+      }
+
+    }  
+
+
+    class User {
+      username: string;
+
+      @Min(8)
+      password: string;
+
+      constructor(username: string, password: string) {
+        this.username = username;
+        this.password = password;
+      }
+    }
+
+
+
+Example 
+
+https://stackoverflow.com/questions/35528395/make-directive-input-required
+
+      export function RequiredInput(message?: string) {
+        console.log('im a required input');
+
+        return function (target: Object, propertyKey: PropertyKey) {
+          Object.defineProperty(target, propertyKey, {
+            get() {
+              throw new Error(message || `Attribute ${String(propertyKey)} is required`);
+            },
+            set(value) {
+              Object.defineProperty(this, propertyKey, {
+                value,
+                writable: true
+              });
+            }
+          });
+        };
+      }
+
+
+
+
+Parameter Decorators
+--------------------
+
+https://angular-training-guide.rangle.io/features/typescript/parameter_decorators
+
+
+================================================================================
+
+  How to pass a function to a child component in Angular
+  -------------------------------------------------------
+
+https://medium.com/@7hwyl/how-to-pass-a-function-to-a-child-component-in-angular-719fc3d1ee90
+
+Sometimes your child components need to notify a parent when something happens. There are a number of ways to accomplish this, but one of the easiest is by passing a function to the child component that it can then call back when needed.
+
+Step 1 — Define your parent callback function in your parent component
+
+In your parent component, create a new arrow function:
+
+  myCallbackFunction = (args: any): void => {
+    //callback code here
+  }
+
+
+Step 2 — Pass the function to the child component
+In your parent component’s html, pass the callback function as a bound attribute to the child component:
+
+  <app-child-component [callbackFunction]=”myCallbackFunction”></app-child-component>
+
+
+Step 3 — Set up an input variable in child component
+In your child component, add an @Input variable to bind the parent component’s passed function:
+
+  @Input() callbackFunction: (args: any) => void;
+
+Make sure that the signature definition of your @Input() function matches the myCallbackFunction that you defined in the parent component.
+
+Step 4 — Call the callback function
+
+When needed, you can invoke the callback function just like any other:
+
+  this.callbackFunction(someArgs);
+
+Conclusion
+
+This gives you a very simple approach for notifying a parent component of events that happen within a child.
+
+
+
+
+================================================================================
+
+
+Pass function as Input
+-----------------------
+
+https://medium.com/@7hwyl/how-to-pass-a-function-to-a-child-component-in-angular-719fc3d1ee90
+
+https://stackoverflow.com/questions/65720447/angular-pass-function-as-input   2021
+
+https://stackoverflow.com/questions/35328652/angular-pass-callback-function-to-child-component-as-input-similar-to-angularjs
+
+
+https://stackblitz.com/edit/angular-ivy-bkzeg7?file=src%2Fapp%2Fapp.component.html
+
+  child-with-button.ts
+  ---------------------
+
+  @Input()
+  callbackFunction!: (args: any) => void;
+
+
+  callCallbackFunction(): void {
+    this.callbackFunction('Test');
+  }
+
+  child-with-button.html
+  ----------------------
+
+  <button (click)="callCallbackFunction()">Call the Callback FN</button>
+
+
+  parent.ts
+  -----------
+
+  myCallbackFn = (args: string): void => {
+    console.log(`myCallbackFn args: `, args);
+  }
+
+
+  parent.html
+  ------------
+
+  <app-child-with-button
+    [callbackFunction]="myCallbackFn"
+  ></app-child-with-button>
+
+
+
+
+Output + EventEmitter solution
+------------------------------
+
+//////parent.component.html
+
+<child-selector
+  ($buttonClicked)=clickAction($event)>
+</child-selector>
+
+//////parent.component.ts
+...
+export class ParentComponent {
+  public clickAction(value: string): void {
+    console.log(value);//will log 'something1234 when child button is clicked
+  }
+}
+
+
+
+//////child.component.ts
+...
+import { Output, Component, EventEmitter } from '@angular/core';
+...
+export class ChildComponent {
+  @Output() $buttonClicked = new EventEmitter<string>();
+
+  public click(): void {
+    this.$buttonClicked.emit('something1234');
+  }
+}
+
+//////child.component.html
+<button (click)="click()">
+
+
+Subject
+---------------
+
+Interface responses using your modalService+subject+observables
+
+
+
+
+
+================================================================================
+
+Cannot invoke an object which is possibly 'undefined'
+------------------------------------------------------
+
+occurs when we try to invoke a function property that could be undefined, e.g. is marked as optional. To solve the error, use the optional chaining operator (?.), e.g. employee.doWork?.().
+
+
+type Employee = {
+  doWork?: () => void;
+};
+
+const employee: Employee = {};
+
+// ✅ Works now
+employee.doWork?.();
+
+
+The optional chaining (?.) operator short-circuits instead of throwing an error if the reference is undefined or null.
+
 
 
 ================================================================================

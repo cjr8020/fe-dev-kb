@@ -50,6 +50,15 @@ steps:
 
 ================================================================================
 
+  Azure ADO git access
+  --------------------
+
+Create a PAT
+copy and paste when git prompts for authentication
+
+
+================================================================================
+
 
 $(Build.ArtifactStagingDirectory)  /home/vsts/work/1/a
 

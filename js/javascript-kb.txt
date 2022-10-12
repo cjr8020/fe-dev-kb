@@ -497,6 +497,37 @@ To work with relative path
 
 ===============================================================================
 
+	Regular Expressions RegEx
+	--------------------------
+
+Testers
+https://www.debuggex.com/r/XCRXcsFXx_oqaU9H
+
+https://regex.observepoint.com/
 
 
+
+Test to see if a string matches
+
+use test()	
+
+
+ private mimeType = new RegExp('^(\\w+)/(.*$)'); // contains '/' but not the first char
+ private mimeTypeWithWildCardRegex = new RegExp('^.*\\*$'); // mime type contains '*'
+
+
+		// contains asterisk
+    return this.mimeTypeWithWildCardRegex.test(mimeType);
+
+ exec() 
+
+return the first element in the result array [1]
+   * because it contains the value of the first group which is what contains the 'type'
+
+    const match = this.mimeType.exec(mimeType);
+    if (match) {
+      return match[1];
+    } else {
+      return undefined;
+    }
 ===============================================================================

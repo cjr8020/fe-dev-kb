@@ -1,0 +1,186 @@
+
+	Angular Elements
+	****************
+
+
+How to set up your Angular workspace to build Web Components
+------------------------------------------------------------
+
+Steps to creating a reusable UI library
+
+
+1. create a new workspace
+
+		ng new APP_NAME
+
+2. create a new library
+
+		ng g library components
+
+
+3. generate `elements` application
+
+
+		ng g application elements
+
+
+	Currently, Angular Elements only supports projects of type application to 
+	create Custom Elements.
+
+	This means you need to generate an additional application. The sole purpose of the application is to import your angular components and output them as Custom Elements.
+
+4. add @angular/elements schematic
+
+	ng add @angular/elements --project elements
+
+
+5. Configure `elements` app 
+
+	- import angular modules and components into the `elements` project
+	- add ngDoBootstrap method hook
+	- for every component, 
+			- create an element using the `createCustomElement` function, 
+			- define the element using web's native `customerElements.define` function, specifying a selector
+
+			e.g.
+
+			    const element = createCustomElement(ComponentsComponent, { injector: this.injector })
+    			customElements.define("lib-components", element);
+
+6. optionally remove zone.js
+
+
+
+================================================================================
+
+	Training
+
+https://egghead.io/lessons/angular-communicate-with-angular-elements-using-inputs-and-events
+
+
+================================================================================
+
+	Tutorials
+	---------
+
+Angular Elements: Create a Component Library for Angular and the Web
+
+https://medium.com/swlh/angular-elements-create-a-component-library-for-angular-and-the-web-8f7986a82999
+
+
+2020 (is this still true?)
+
+Currently, Angular Elements only supports projects of type application to create Custom Elements. This means you need to generate an additional application. 
+
+The sole purpose of the application is to import your angular components and output them as Custom Elements.
+
+	so when you run `build that app`, it will output your custom components in dist.
+
+
+If you want to publish your components as Custom Elements, cd into `./projects/elements` and create a package.json using
+
+	npm init
+
+
+
+Remove zone.js (optional)
+--------------------------
+
+Angular Elements without Zone.Js
+
+https://www.angulararchitects.io/aktuelles/angular-elements-part-iii/
+
+
+Removing zone.js is probably a good idea. Read more about it in this great article. Just keep in mind that you need to handle change detection yourself.
+
+
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic()
+  .bootstrapModule(AppModule, { ngZone: 'noop' })
+  .catch(err => console.error(err));
+
+
+
+================================================================================
+
+
+Disable NgZone makeDirty() 
+--------------------------
+
+https://angular.io/guide/zone
+
+
+https://stackoverflow.com/questions/64030656/angular-changedetectionstrategy-and-disabling-zone-js
+
+https://itnext.io/angular-9-snake-web-component-96f61e63b158
+
+When we disable Zone.js, we still have the Change Detector, but nobody will run the change detection for us. We have to mark the Component as dirty ourselves.
+
+
+
+
+To remove Zone.js, make the following changes.
+----------------------------------------------
+
+https://angular.io/guide/zone#noopzone
+
+
+1. Remove the zone.js import from polyfills.ts:
+
+content_copy
+/***************************************************************************************************
+ * Zone JS is required by default for Angular itself.
+ */
+// import 'zone.js';  // Included with Angular CLI.
+
+
+
+2. Bootstrap Angular with the noop zone in src/main.ts:
+
+content_copy
+platformBrowserDynamic().bootstrapModule(AppModule, { ngZone: 'noop' })
+.catch(err => console.error(err));
+
+
+
+When disabling zone.js (we still have a ChangeDetector) and by using the default strategy (instead of the OnPush) and triggering the change detection manually (with markDirty), the ChangeDetector will check the whole tree (assuming every component has default change detection strategy). But when using OnPush, the ChangeDetector will only check the component at hand.
+
+
+================================================================================
+
+	HTML attributes vs DOM properties
+	---------------------------------
+
+https://angular.io/guide/binding-syntax#html-attribute-vs-dom-property
+
+
+https://christianlydemann.com/how-to-pass-complex-values-to-angular-elements-in-react/
+
+
+
+================================================================================
+
+	Passing complex objects as @Input
+	----------------------------------
+
+
+	https://github.com/angular/angular/issues/24415
+
+
+Custom elements behave just as regular elements. This means, you can't pass anything other than string values via attributes. As with regular elements, if you want to set a non-string value, you can use an element's property.
+
+(If you are using a framework, it might allow declaratively binding to an element's property via the template, but if you are using "vanilla" JS, you need to imperatively set the element's property (e.g. myElement.prop = /*non-string value*/.)
+
+Closing since there is nothing we can do (this is essentially how HTML works).
+
+
+================================================================================

@@ -1352,3 +1352,78 @@ https://github.com/angular-material-extensions/password-strength
 
 ================================================================================
 
+  Material mat-error 
+-------------------------
+
+  ErrorStateMatcher
+
+  Custom Validator
+
+how to change the default behavior of Angular Material input and other form controls.
+
+https://material.angular.io/components/input/overview#custom-error-matcher
+
+If you wish to override this behavior (e.g. to show the error as soon as the invalid control is dirty or when a parent form group is invalid), you can use the errorStateMatcher property of the matInput. The property takes an instance of an ErrorStateMatcher object. An ErrorStateMatcher must implement a single method isErrorState which takes the FormControl for this matInput as well as the parent form and returns a boolean indicating whether errors should be shown. (true indicating that they should be shown, and false indicating that they should not.)
+
+
+https://stackoverflow.com/questions/46745171/angular-material-show-mat-error-on-button-click
+
+I would make a separate file such as default.error-matcher.ts
+
+/** Error when invalid control is dirty or touched*/
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+}
+
+
+Then in the TS file add:
+
+matcher = new MyErrorStateMatcher();
+
+Then change the input to use matcher:
+
+<mat-form-field>
+    <input matInput 
+    placeholder="Due Date" 
+    name="dueDate" 
+    [(ngModel)]="dueDate" 
+    [formControl]="dueDateValidator" 
+    [errorStateMatcher]="matcher" 
+    required>
+    <mat-error *ngIf="dueDateValidator.invalid">Due Date is required for Tasks</mat-error>
+</mat-form-field>
+
+
+Angular: mat-error is not working on custom validator
+---------------------
+https://stackoverflow.com/questions/68937343/angular-mat-error-is-not-working-on-custom-validator
+
+https://stackblitz.com/edit/angular-mat-form-validation-eg-mcnmba?file=app%2Finput-error-state-matcher-example.html,app%2Finput-error-state-matcher-example.ts
+
+
+function dateCheck(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: boolean } | null => {
+    if (
+      control.value.end_date &&  //<--check only if has value, not !==undefined
+      (isNaN(control.value.end_date) ||
+        control.value.end_date < control.value.start_date)
+    ) {
+      return { validator: true };  //<--see that it's "validator"
+    }
+    return null;
+  };
+}
+
+
+export class DateEndMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    //see the comparision
+    return !!(control && (control.invalid || form.invalid) && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+================================================================================
+

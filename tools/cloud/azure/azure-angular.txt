@@ -59,3 +59,26 @@ https://medium.com/@dtkatz/3-ways-to-fix-the-cors-error-and-how-access-control-a
 
 
 ================================================================================
+
+Azure WebApp not loading my fonts
+----------------------------------
+
+https://stackoverflow.com/questions/45534332/azure-webapp-not-loading-my-fonts
+https://support.sitecore.com/kb?id=kb_article_view&sysparm_article=KB0474250
+
+web.config
+-----------
+
+<system.webServer>
+<staticContent>
+  <remove fileExtension=".woff" />
+  <mimeMap fileExtension=".woff" mimeType="application/font-woff" />
+
+  <remove fileExtension=".woff2" />
+  <mimeMap fileExtension=".woff2" mimeType="application/font-woff2" />
+</staticContent>
+</system.webServer>
+
+
+
+================================================================================
