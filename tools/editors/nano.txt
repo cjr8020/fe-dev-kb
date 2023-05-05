@@ -1,0 +1,53 @@
+Nano
+
+
+
+Save and Close 				Control+X
+
+Save and Continue 		Control+O
+
+Search 								Control+W
+
+Skip to Line 					Control+_
+
+Cut 									Control+K
+
+Paste 								Control+U
+
+
+Navigating Through Code
+--------------------------
+
+Go to beginning of file 			Alt+\
+
+Go to end of file 						Alt+/
+
+Move forward one screenful 		Ctrl+v
+
+Move backward one screenful 	Ctrl+y
+
+Go to a target line number 		Alt+g
+
+Jump to matching open/close symbol 		Alt+]
+
+NOTE: Very useful for finding mismatched brace compiler errors!
+
+
+
+
+Search and Replace
+==================
+
+Search for a target string 		Ctrl+w
+
+NOTE: Once this command has been entered, notice the new menu items at the bottom of the screen, 
+such as toggling the direction of the search (Alt+B) or 
+replacing the search string with a different string (Ctrl+R)
+
+
+Repeat the last search 			Alt+w
+
+Toggle direction for next search 		Ctrl+w followed by Ctrl+b
+
+Search and replace 					Alt+r
+

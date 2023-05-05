@@ -560,3 +560,17 @@ https://stackoverflow.com/questions/69325215/html-title-attribute-decrease-delay
 
 
 =================================================================  
+
+  back-to-top button with CSS and HTML
+  ------------------------------------
+
+https://stackoverflow.com/questions/32102747/how-to-make-a-back-to-top-button-using-css-and-html-only
+
+
+<a id="top"></a>
+<!--content here-->
+<a href="#top">Back to top</a>
+
+http://jsfiddle.net/qf0m9arp/1/
+
+=================================================================  

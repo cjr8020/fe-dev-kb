@@ -177,6 +177,26 @@ Resource Manager
 
 ================================================================================
 
+
+TFSec - https://github.com/aquasecurity/tfsec#installation 
+
+TFLint - https://github.com/terraform-linters/tflint#installation
+
+
+$ brew install tfsec
+$ brea install tflint
+
+
+
+$ tfsec -v
+v1.28.1
+
+$ tflint -v
+TFLint version 0.45.0
++ ruleset.terraform (0.2.2-bundled)
+
+================================================================================
+
 Azure Client
 -------------
 https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos

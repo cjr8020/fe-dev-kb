@@ -194,43 +194,78 @@ Stop the Observable stream to avoid memory leaks
   sub.unsubscribe();
 
 
-Create observables using creation function (preferred)
--------------------------------------------
-
-Some creation functions:
-
-  of()
-  from()
-  fromEvent()
-  interval()
 
 
-of() static function will emit every argument passed into it;
+================================================================================
 
+  takeUntil  vs Subscription unsubscribe
+  ---------------------------------------
 
-  const appleStream = of('Apple');            // will emit one apple
-  const appleStream = of('Apple1', 'Apple2'); // will emit two apples
+https://stackoverflow.com/questions/58428791/angular-rxjs-observable-takeuntil-vs-unsubscribe-with-a-subscription
 
 
 
-from() static function takes an object and emits every element of that array:
+Option 1: takeUntil
+Using RxJS takeUntil to unsubscribe
+------------------------------------
 
-  const appleStream = from(['Apple1', 'Apple2']); will emit all elements of the array
+@Component({
+  selector: "app-flights",
+  templateUrl: "./flights.component.html"
+})
+export class FlightsComponent implements OnDestroy, OnInit {
+  private readonly destroy$ = new Subject();
+
+  public flights: FlightModel[];
+
+  constructor(private readonly flightService: FlightService) {}
+
+  ngOnInit() {
+    this.flightService
+      .getAll()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(flights => (this.flights = flights));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
 
 
-    from([20, 15, 10, 5]).subscribe(
-      item => console.log(`resulting item .. ${item}`),
-      err => console.log(`error occurred ${err}`),
-      () => console.log('complete')
-    );
+
+Option 2: .unsubscribe()
+Explict call .unsubscribe(), e.g. by using a separate subscription instance
+----------------------------------------------------------------------------
+
+@Component({
+  selector: "app-flights",
+  templateUrl: "./flights.component.html"
+})
+export class FlightsComponent implements OnDestroy, OnInit {
+  private readonly subscriptions = new Subscription();
+
+  public flights: FlightModel[];
+
+  constructor(private readonly flightService: FlightService) {}
+
+  ngOnInit() {
+    const subscription = this.flightService
+      .getAll()
+      .subscribe(flights => (this.flights = flights));
+
+    this.subscriptions.add(subscription);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+}
 
 
-these are equivalent:
-
-  const apples = ['Apple1', 'Apple2'];
-
-  from(apples);
-  of( ... apples);  // using the spread operator
+NOTE: you can use  sub.add() to add more subscriptions to this UBER subscription
+and then unsubscribe all at once.
 
 
 

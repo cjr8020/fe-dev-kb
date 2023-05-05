@@ -257,10 +257,23 @@ means element that has both class name1 and name2 eg: class="name1 name2"
 
 ================================================================================
 
-	Attributes selector
+	Attribute selector
 	-------------------
 
 The [attribute] selector is used to select elements with a specified attribute.
+
+This is how angular style isolation works.
+Angular adds an attribute 
+
+	<a _ngcontent-gif-c1 ... 
+
+and the styles are then re-written to include an attribute selector
+
+a [_ngcontent-gif-c1] {
+	
+}
+
+
 
 img[alt=spacer] {
 	// selects img that have  alt="spacer" attribute
@@ -537,7 +550,7 @@ what does the "+" (plus sign) CSS selector mean?
 
 	 In other words
 
-	 	it selects all sibiling elements of a specified element.
+	 	it selects all sibling elements of a specified element.
 
 
 	 	.a ~ .b {
@@ -2501,6 +2514,22 @@ footer{
   </md-toolbar>
 </footer>
 
+
+
+================================================================================
+
+to change background-color i needed display: block
+--------------------------------------------------
+
+
+:host {
+  display: block ;
+}
+
+:host-context( .light-theme ) {
+  background-color: $light-background-color;
+  color: $light-color;
+}
 
 
 ================================================================================

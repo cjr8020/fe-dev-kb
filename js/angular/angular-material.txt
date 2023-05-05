@@ -1069,6 +1069,30 @@ Get rid of the spinner for now
       </ng-template>
 
 
+
+
+EventListener on mat-paginator last or first button
+---------------------------------------------------
+
+
+I need to listen when I especially click on mat-paginator last-button.
+
+
+MatPaginator have method lastPage you can trigger it from ts file like in this example:
+
+@ViewChild(MatPaginator) paginator: MatPaginator;
+
+ ngAfterViewInit() {
+  this.paginator.lastPage = () => this.yourMethodToTrigger();
+ }
+
+ yourMethodToTrigger(){
+  console.log('Triggered!')
+ }
+
+https://material.angular.io/components/paginator/api
+
+
 ================================================================================
 
   mat-input-container
@@ -1424,6 +1448,97 @@ export class DateEndMatcher implements ErrorStateMatcher {
     return !!(control && (control.invalid || form.invalid) && (control.dirty || control.touched || isSubmitted));
   }
 }
+
+================================================================================
+
+  Angular Material CDK Overlay
+  ****************************
+
+Custom Overlays with Angular's CDK
+
+https://blog.thoughtram.io/angular/2017/11/20/custom-overlays-with-angulars-cdk.html  
+
+
+https://levelup.gitconnected.com/help-popup-with-angular-material-cdk-overlay-babc2ab127a
+
+
+https://juanac2021.medium.com/angular-create-your-own-overlay-with-customized-position-strategy-builder-to-attach-overlay-to-fde54a5eeea7
+
+
+
+
+The overlay package provides a way to open floating panels on the screen.
+
+The CDK overlays depend on a small set of structural styles to work correctly. If you're using Angular Material, these styles have been included together with the theme, otherwise if you're using the CDK on its own, you'll have to include the styles yourself. 
+
+
+  @import '@angular/cdk/overlay-prebuilt.css';
+
+
+
+Position strategies
+====================
+
+
+The positionStrategy configuration option determines how the overlay will be positioned on-screen. There are two position strategies available as part of the library: 
+
+GlobalPositionStrategy 
+
+  and 
+
+ConnectedPositionStrategy
+
+
+GlobalPositionStrategy
+-----------------------
+
+  is used for overlays that require a specific position in the viewport, unrelated to other elements. 
+  This is commonly used for modal dialogs and application-level notifications.
+
+ConnectedPositionStrategy
+--------------------------
+
+  is used for overlays that are positioned relative to some other "origin" element on the page. This is commonly used for menus, pickers, and tooltips. When using the connected strategy, a set of preferred positions is provided; the "best" position will be selected based on how well the overlay would fit within the viewport.
+
+
+
+// top-left
+originX: 'start', // left corner of the button
+originY: 'bottom', // bottom corner of the button
+overlayX: 'start', // left corner of the overlay to the origin
+overlayY: 'top', // top corner of the overlay to the origin
+
+// top-right
+originX: 'end', // right corner of the button
+originY: 'bottom', // bottom corner of the button
+overlayX: 'end', // right corner of the overlay to the origin
+overlayY: 'top', // top corner of the overlay to the origin
+
+// bottom-left
+originX: 'start', // left corner of the button
+originY: 'top', // top corner of the button
+overlayX: 'start', // left corner of the overlay to the origin
+overlayY: 'bottom', // top corner of the overlay to the origin
+
+// bottom-right
+originX: 'end', // right corner of the button
+originY: 'top', // top corner of the button
+overlayX: 'end', // right corner of the overlay to the origin
+overlayY: 'bottom', // top corner of the overlay to the origin
+
+
+Custom Position Strategy
+------------------------
+
+  A custom position strategy can be created by implementing the PositionStrategy interface. Each PositionStrategy defines an apply method that is called whenever the overlay's position should be updated. A custom position strategy can additionally expose any other APIs necessary as related to the positioning of the overlay element.
+
+
+
+
+Scroll strategies
+-----------------
+
+
 
 ================================================================================
 

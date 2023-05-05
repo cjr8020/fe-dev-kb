@@ -150,6 +150,35 @@ Alt-F12         open terminal | cmd window
 
 
 
+Multiple Cursors
+----------------
+
+Shift-Cmd-8  to enable/disable  "Edit / Column Selection Mode"
+
+             then press Shift and  use  Up/Down Arrow keys to extend the cursor to line above/below
+
+             use Esc to exit
+
+
+
+Caret Cloning
+-------------
+
+Same functionality of creating new cursors can be achieved with 
+
+Clone Caret Above
+Clone Caret Below  commands
+
+Quickly hit Ctrl Twice and Hold,  then use  Up/Down arrow till clone the cursor
+
+
+
+
+Add / Remove another caret
+--------------------------
+
+Shirt + Ctrl + click    at the target location to add/remove
+
 
 
 HTML/JavaScript support
@@ -184,6 +213,30 @@ Ctrl-W			quickly selects blocks of adjasent code
 Alt-Ctrl-T		sourround selection with code, e.g. with <div> tag...
 
 Ctrl-Alt-L		reformat code according to your style settings
+
+=====================================================================================
+
+    Templates
+    *********
+
+Cmd-J / Ctrl-J  to see all templates available in current context.
+
+To insert
+
+    <template-abbr> -> / Tab
+
+
+To create your own template:
+
+
+Preferences/Settings | Editor | Live Templates and select group (or create new group)
+
+JavaScript 
+
+DON'T forget to define context if you're creating a new group.
+
+
+
 
 =====================================================================================
 

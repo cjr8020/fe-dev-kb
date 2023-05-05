@@ -6,6 +6,66 @@
 
 Resources:
 
+Carbon design system
+
+https://angular.carbondesignsystem.com/?path=/story/components-welcome--to-carbon-angular
+
+
+gilbarbara Design System
+- - - - - - - - - - - - -
+
+https://storybook.js.org/showcase/gilbarbara-components
+
+Gilbarbara storybook
+https://components.gilbarbara.dev/ <-- Example of adding more Description to stories
+
+Gilbarbara github
+https://github.com/gilbarbara/components
+
+
+Gemini - example of completely custom (auto-generated) doc?
+
+https://gemini.opensesame.com/latest/?path=/docs/components-button-base--button-base
+
+
+================================================================================
+
+
+  controls
+  ********
+
+Disable controls per story (completely remove the "Controls" tab)
+NOTE: but controls are still present on the docsPage.
+
+export default {
+  title: 'Components/MyNiceComponent',
+  component: MyNiceComponent,
+  parameters: {
+    controls: {
+      disabled: true,
+    }
+  }
+}
+
+
+================================================================================
+
+
+argTypes
+********
+
+Leaving the prop for documentation purposes only and disabling the ability to change the component can be done like so:
+
+component: MyComponent,
+title: 'MyComponent',
+argTypes: {
+    multiple: {
+        control: { type: null }
+    }
+}
+
+
+
 
 
 ================================================================================
@@ -672,6 +732,7 @@ supported formats
 	------------------------------------------------------------------------------
 
 
+https://kabartolo.github.io/chicago-docs-demo/docs/mdx-guide/writing/
 
 
 
@@ -1365,6 +1426,364 @@ SimpleExample.args = {
 
 ================================================================================
 
+write custom addons
+*******************
+
+
+Custom Tabs
+------------
+https://storybook.js.org/docs/react/addons/addon-types
+
+
+https://stackoverflow.com/questions/67021916/add-new-tab-in-storybook-story
+
+
+
+Create Custom Panel
+--------------------
+https://storybook.js.org/docs/react/addons/writing-addons
+
+================================================================================
+
+
+
+Creating a Material Dialog Story
+https://yinjisheng.medium.com/using-material-design-dialog-in-angular-storybook-b20fb0feca4
+
+
+Angular Storybook Material Dialog
+https://stackoverflow.com/questions/63855532/angular-storybook-material-dialog
+
+
+
 
 
 ================================================================================
+
+
+Importing / Reusing Stories in other Stories
+---------------------------------------------
+
+https://stackoverflow.com/questions/62712420/import-stories-file-into-another-stories-file-with-storybook
+
+
+https://codesandbox.io/s/cocky-shannon-d0p34?file=/src/stories/0-Welcome.stories.tsx
+
+
+import React from "react";
+import { action } from "@storybook/addon-actions";
+import { Button } from "@storybook/react/demo";
+
+export default {
+  title: "Button",
+  component: Button
+};
+
+export const Text = () => (
+  <Button onClick={action("clicked")}>Hello Button</Button>
+);
+
+export const Emoji = () => (
+  <Button onClick={action("clicked")}>
+    <span role="img" aria-label="so cool">
+      😀 😎 👍 💯
+    </span>
+  </Button>
+);
+
+
+import React from "react";
+import { Text, Emoji } from "./1-Button.stories";
+
+export default {
+  title: "Welcome"
+};
+
+export const AllComponents = () => (
+  <section>
+    <h1>Buttons</h1>
+    <Text />
+    <Emoji />
+  </section>
+);
+
+
+
+
+================================================================================
+
+Can't import/use angular Router stuff in stories
+************************************************
+
+https://github.com/storybookjs/storybook/issues/13467
+
+To Reproduce
+Create a story as simple as:
+
+import { RouterModule } from '@angular/router';
+
+export default {
+  title: 'MyStory'
+}
+
+export const primary = () => ({
+  moduleMetadata: {imports: [RouterModule]},
+  template: '<a [routerLink]="go">goo</a>'
+})
+
+
+A:
+
+export const primary = () => ({
+  moduleMetadata: {
+    imports: [RouterModule.forRoot([])],
+    providers: [
+        {
+            provide: APP_BASE_HREF,
+            useValue: '/',
+        },
+    ],
+  },
+  template: '<a [routerLink]="go">goo</a>',
+});
+`
+
+
+
+
+
+    moduleMetadata({
+      declarations: [PrismHeaderComponent],
+      imports: [
+        RouterModule.forRoot([], { useHash: true }),
+        BrowserAnimationsModule,
+        PrismHeaderSearchModule,
+        PrismMobileNavModule,
+        PrismSearchButtonModule,
+        PrismUtilityNavModule,
+        PrismBrandmarkModule,
+        SfgButtonModule
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/'
+        }
+      ]
+    })
+
+
+
+================================================================================
+
+
+Storybook error:
+
+Error: Cannot match any routes. URL Segment: 'iframe.html'
+-----------------------------------------------------------
+
+
+A: A simple fix is to use hash strategy for storybook specifically. For example:
+
+    moduleMetadata({
+      declarations: [],
+      imports: [
+        CommonModule,
+        RouterModule.forRoot([], { useHash: true }),
+      ],
+    })
+
+
+
+=================================================================================
+
+
+Header Search Story
+--------------------
+
+
+import { PrismHeaderSearchComponent } from './prism-header-search.component';
+import { moduleMetadata } from '@storybook/angular';
+import { PrismCloseButtonModule } from '../../prism-close-button/prism-close-button.module';
+import { Meta } from '@storybook/angular/types-6-0';
+import { PrismIconModule } from '../../prism-icon/prism-icon.module';
+import { PrismIconLibModule } from '../../prism-icon-lib/prism-icon-lib.module';
+import { Component } from '@angular/core';
+import { PrismSearchButtonModule } from '../../prism-search-button/prism-search-button.module';
+
+@Component({
+  selector: 'storybook-dialog-launcher',
+  template: `
+    <section>
+      <h3>Search button with label</h3>
+      <p>Click the button to show the header search component.</p>
+      <prism-search-button
+        ariaLabel="search button"
+        keyID="search1"
+        searchButtonLabel="Search"
+        (searchAction)="showSearch()"
+      >
+      </prism-search-button>
+      <div
+        class="header-search-wrapper"
+        *ngIf="isSearchShown"
+      >
+        <prism-header-search (closeButtonAction)="closeSearch()"></prism-header-search>
+      </div>
+    </section>
+  `,
+  styles: [
+    `
+      .header-search-wrapper {
+        border: 1px solid grey;
+        padding: 16px;
+        margin-top: 24px;
+        max-width: 500px;
+      }
+    `
+  ]
+})
+export class HeaderSearchLauncherComponent {
+  public isSearchShown = false;
+
+  public showSearch() {
+    return (this.isSearchShown = true);
+  }
+
+  public closeSearch() {
+    return (this.isSearchShown = false);
+  }
+}
+
+export default {
+  title: 'Page/Search',
+  component: HeaderSearchLauncherComponent,
+  decorators: [
+    moduleMetadata({
+      declarations: [PrismHeaderSearchComponent],
+      imports: [
+        PrismSearchButtonModule,
+        PrismIconModule,
+        PrismIconLibModule,
+        PrismCloseButtonModule
+      ]
+    })
+  ]
+} as Meta;
+
+const Template = (args) => ({
+  props: args
+});
+
+export const Default = Template.bind({});
+
+
+
+=================================================================================
+
+Angular FormGroup in Storybook: Converting circular structure to JSON
+---------------------------------------------------------------------
+
+https://github.com/storybookjs/storybook/issues/13888
+https://github.com/storybookjs/storybook/issues/16688
+
+How to use Angular Reactive forms in Storybook
+----------------------------------------------
+
+We've detected a cycle in arg 'components-select-dropdown--options.formGroup'. Args should be JSON-serializable.
+
+
+https://stackoverflow.com/questions/67857008/angular-formgroup-in-storybook-converting-circular-structure-to-json
+
+https://github.com/storybookjs/storybook/discussions/15602
+
+
+
+Issue still persist in Angular 15 + Storybook 7.0.2. Any of the proposed solutions/workarounds worked for me, so I did this:
+
+  const form = new FormGroup({ test: new FormControl('') })
+  delete form['controls']['test']['_parent']
+
+And then this form can be used as args and it is even visible in the UI
+
+^^ this basically removes form control properties from the FormGroup making it serializable
+
+
+Another option is to create a Wrapper angular component
+-------------------------------------------------------
+
+// a-story.component.ts
+
+@Component({
+    selector: 'a-component-story',
+    template: `<a-component [model]="model"></a-component>`,
+})
+export class AStoryComponent implements OnInit {
+
+    @Input() model!: any;
+
+    constructor() {}
+
+    ngOnInit() {
+        // Converts the "formGroup" property I specified in a.stories.ts to the real formGroup object.
+        convertStoryModelToRealModel(this.model);
+    }
+
+}
+
+
+// a.stories.ts
+
+import { Validators } from '@angular/forms';
+import { Meta, moduleMetadata, Story } from '@storybook/angular';
+
+export default {
+    title: 'Example/A',
+    component: AStoryComponent,
+    decorators: [
+        moduleMetadata({
+            declarations: [AStoryComponent, AComponent],
+            imports: [
+                CommonModule,
+                ReactiveFormsModule,
+            ],
+        }),
+    ],
+} as Meta;
+
+const Template: Story<AStoryComponent> = (args: AStoryComponent) => ({
+    props: args,
+});
+
+export const Costs = Template.bind({});
+Costs.args = {
+    model: {
+        questions: [
+            {
+                ...,
+                "question": "lorem ipsum",
+                "formGroup": {
+                    answers: [
+                        {
+                            "Q020_A001": [null, [Validators.required]],
+                            "Q020_A002": [null, [Validators.required]],
+                        },
+                    ],
+                },
+                "answers": [
+                    {
+                        ...,
+                        "answerCode": "Q020_A001",
+                    },
+                    {
+                        ...,
+                        "answerCode": "Q020_A002",
+                    },
+                ],
+            }
+        ],
+    } as any,
+};
+
+
+=================================================================================

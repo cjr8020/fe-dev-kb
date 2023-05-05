@@ -1,4 +1,25 @@
-azure
+**********
+
+	 azure
+
+**********
+
+Pricing Calculator
+
+https://azure.microsoft.com/en-us/pricing/calculator/
+
+
+Architecture Center
+
+https://learn.microsoft.com/en-us/azure/architecture/
+
+
+App Service Architecture
+https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/app-service-web-app/scalable-web-app
+
+
+================================================================================
+
 
 
 cloud computing advantages

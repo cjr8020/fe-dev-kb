@@ -1,0 +1,141 @@
+**********
+
+	Mocha
+
+**********
+
+
+Interfaces
+------------------
+
+https://mochajs.org/#interfaces
+
+Mocha’s “interface” system allows developers to choose their style of DSL. 
+
+Mocha has BDD, TDD, Exports, QUnit and Require-style interfaces.
+
+BDD
+----
+
+The BDD interface provides 
+
+describe(), 
+context(), 
+it(), 
+specify(), 
+before(), 
+after(), 
+beforeEach(), and 
+afterEach().
+
+context() is an alias for describe()
+
+
+There are some functions. describe is used for grouping tests. 
+
+context is just an alias for describe, so we can replace it with describe. 
+it is used for a test. 
+
+A test logic is written in this callback function.
+
+The top level describe contains a class name
+The second level describe contains a function name
+context contains a explanation for the test group
+it contains a test title and test logic
+
+
+describe("RankingHolder", () => {
+    describe("average", () => {
+        context("when having multiple results", () => {
+            it("should be something", () =>{
+                // write first test here
+            });
+
+            it("should be something2", () =>{
+                // write second test here
+            });
+        });
+    });
+});
+
+
+
+TDD
+---
+The TDD interface provides 
+suite(), 
+test(), 
+suiteSetup(), 
+suiteTeardown(), 
+setup(), and 
+teardown():
+
+
+
+
+Testing Asynchronous code with Mocha
+----------------------------------------
+
+https://mochajs.org/#asynchronous-code
+
+
+
+
+================================================================================
+================================================================================
+================================================================================
+
+	Chai
+
+
+Value comparisons
+------------------
+
+import { expect } from "chai";
+
+
+expect(variable).to.be.null;
+expect(variable).to.be.false;
+expect(variable).to.be.true;
+expect(variable).to.equal(50);
+expect(variable).to.be.true;
+expect(instance.average).to.be.instanceOf(Something);
+
+
+
+
+
+
+================================================================================
+================================================================================
+================================================================================
+
+	API Testing with Mocha / Chai
+	*****************************
+
+
+npm i body-parser lowdb uuid supertest --save-dev
+
+
+body-parser: 
+
+	This is a middleware that will parse our incoming request bodies
+
+uuid: 
+
+	We will use this to generate unique ids.
+
+lowdb: 
+
+	This is a small JSON database for node, electron, and the browser. Suitable for a small project like this one
+
+supertest: 
+
+	A library for HTTP assertions
+
+
+
+
+================================================================================
+================================================================================
+================================================================================

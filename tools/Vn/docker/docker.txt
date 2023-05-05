@@ -1,0 +1,236 @@
+
+**********
+
+	Docker 
+
+**********
+
+
+
+================================================================================
+
+	Dockerfile Reference
+	--------------------
+
+
+# Stage 1: Compile and Build angular codebase
+
+# Use official node image as the base image
+FROM node:16 as build
+
+# Set the working directory (it is created if doesn't exist)
+WORKDIR /usr/local/app
+
+# Add the source code from project root to workdir
+COPY ./ /usr/local/app/
+
+# Install all the dependencies
+RUN npm ci
+
+# Generate the build of the application
+RUN npm run build
+
+
+# Stage 2: Serve app with nginx server
+
+# Use official nginx image as the base image
+FROM nginx:latest
+
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /usr/local/app/dist/hello-prism /usr/share/nginx/html
+
+# Expose port 4200
+EXPOSE 4200
+
+
+Stage 1:
+
+	FROM – Initializes a new build stage, and sets the latest node image from DockerHub registry as the base image for executing subsequent instructions relevant to the angular app’s configuration. The stage is arbitrarily named as "build", to reference this stage in the nginx configuration stage.
+
+	WORKDIR – Sets the default working directory in which the subsequent instructions are executed. The directory is created, if the path is not found. In the above snippet, an arbitrary path of usr/local/app is chosen as the directory to move the angular source code into.
+
+	COPY – Copies the source files from the project’s root directory on the host machine to the specified working directory’s path on the container’s filesystem.
+
+	RUN – Executes the angular build in a new layer on top of the base node image. After this instruction is executed, the build output is stored under usr/local/app/dist/sample-angular-app and the compiled image will be used for the subsequent steps in the Dockerfile.
+
+
+Stage 2:
+
+	FROM – Initializes a secondary build stage, and sets the latest nginx image from dockerhub registry as the base image for executing subsequent instructions relevant to nginx configuration.
+
+	COPY – Copies the build output generated in stage 1 (--from=build) to replace the default nginx contents.
+
+	EXPOSE – Informs Docker that the nginx container listens on network port 4200 at runtime. By default, the nginx server runs on port 4200, 
+	hence we are exposing that specific port.
+
+
+
+================================================================================
+
+	Running a Docker Container
+	--------------------------
+
+$ docker build .
+$ docker build . -t blah/smample-app
+
+	-t  <image-tag-name>
+
+
+$ docker images 
+$ docker ps
+
+
+
+================================================================================
+
+Docker Hub
+-----------
+
+hub.docker.com
+
+
+
+
+================================================================================
+
+Docker Desktop on MacOS (M1)
+----------------------------
+
+Docker binaries
+/usr/local/bin
+
+startup task in 
+/Users/<user>/.docker/run/docker.sock -> /var/run/docker.sock
+
+
+
+================================================================================
+
+	Demo
+	****
+
+$ docker run --name repo alpine/git clone https://github.com/docker/getting-started.git
+$ docker cp repo:/git/getting-started/ .
+
+$ cd getting-started
+$ docker build -t docker101tutorial .
+
+$ docker run -d -p 80:80 --name docker-tutorial docker101tutorial
+
+
+================================================================================
+
+	Docker and Intellij IDEA
+	------------------------
+
+https://www.jetbrains.com/help/idea/docker.html#enable_docker
+
+cmd , 	Settings | Plugins
+
+cmd 8 (cmd-fn-8)	
+				Services
+
+				Select the configured Docker connection node and click > run (or connect)
+
+In the Services tool window (View|Tool|Windows|Services)
+you can pull and push images,  create and run containers,  manage Docker Compose services, etc.
+
+Managing Images
+
+	You can run pre-built images from a Docker registry
+
+	build images locally from a Dockerfile
+
+	Push your images to a Docker Registry
+
+
+
+Build an image from a Dockerfile
+--------------------------------
+
+
+
+
+
+================================================================================
+
+
+FROM node:16 as build
+
+WORKDIR /app
+
+#COPY    ./angular-cli .
+COPY    package.json package-lock.json
+COPY    . .       
+
+RUN     npm install 
+RUN     npm install -g @angular/cli
+
+EXPOSE  4200
+# Angular installation if it fails, 
+
+CMD     ["ng", "serve"]
+
+================================================================================
+
+ 
+
+===================================================
+
+	access Azure artificats NPM feed from docker build
+	--------------------------------------------------
+
+https://www.marcinlovescode.com/cloud/accessing-azure-npm-feed-from-docker-build
+https://github.com/marcinlovescode/azure-feed-from-docker-build
+
+
+build my frontend app using Azure DevOps pipelines and push it to Azure Container Registry. The problem was, that I was using a package from my private Azure Artifacts feed. It’s just like the NPM registry but requires you to authenticate.
+
+To do so, Azure Documentation[2] suggests creating two .npmrc files. On project scoped, which stores a reference to the private feed. The second one - user-level - contains the “Personal Access Token” (PAT).
+
+Basically PAT is something like an API key and it would mean to put the PAT token somehow into the container. I didn’t like the solution so I started digging in and found an interesting article on how to do it securely[1]. NPM CLI can replace such symbols ${} with an environment variable . It was exactly what I was looking for. I mixed two approaches, the one from the Azure docs and the one from the NPM docs. I ended up with my project scoped .npmrc looking like that:
+
+
+registry=https://pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/registry/ 
+                        
+always-auth=true
+
+; begin auth token
+//pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/registry/:username=marcinlovescode
+//pkgs.dev.azure.com/marcinlovescode/_packaging/ marcinlovescode/npm/registry/:_password=${NPM_TOKEN}
+//pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/registry/:email=npm requires email to be set but doesn't use the value
+//pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/:username=marcinlovescode
+//pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/:_password=${NPM_TOKEN}
+//pkgs.dev.azure.com/marcinlovescode/_packaging/marcinlovescode/npm/:email=npm requires email to be set but doesn't use the value
+; end auth token
+
+
+Then, I had to pass my environment variable to the docker build. Take a look at the second and third lines of a Dockerfile.
+
+FROM node:16.14-alpine AS build
+ARG NPM_TOKEN=default_value
+COPY package.json package-lock.json .npmrc ./
+RUN npm i
+COPY . .
+RUN npm run build
+
+FROM nginx:1.21.6-alpine
+COPY --from=build public /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+
+Finally, it’s ready to be built. Type docker build --build-arg NPM_TOKEN=<YOUR TOKEN> . to make it happen.
+
+
+	$ docker build . --build-arg NPM_TOKEN=<YOUR TOKEN> -t IMAGE_NAME
+
+
+
+
+
+
+
+
+
+================================================================================
+

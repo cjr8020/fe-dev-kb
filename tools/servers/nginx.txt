@@ -1,0 +1,105 @@
+*********
+
+  NginX
+
+*********
+
+
+
+
+
+
+====================================================================================================
+
+
+Configure SSL for Docker
+-------------------------
+https://help.kendis.io/en/articles/3382550-configure-ssl-for-docker
+
+
+
+====================================================================================================
+
+
+	on MacOS
+	========
+
+
+Start:
+
+	$ brew services start nginx
+
+	$ curl http://localhost:8080
+
+
+Stop: 
+
+	$ nginx -s stop
+
+
+
+
+Install
+-------
+
+$ brew install nginx
+
+
+Docroot is: /opt/homebrew/var/www
+
+The default port has been set in /opt/homebrew/etc/nginx/nginx.conf to 8080 so that
+nginx can run without sudo.
+
+nginx will load all files in /opt/homebrew/etc/nginx/servers/.
+
+To start nginx now and restart at login:
+
+  brew services start nginx
+
+
+Configure
+---------
+
+/opt/homebrew/etc/nginx/
+
+test configuration:
+
+	$ nginx -t
+
+	nginx: the configuration file /opt/homebrew/etc/nginx/nginx.conf syntax is ok
+	nginx: configuration file /opt/homebrew/etc/nginx/nginx.conf test is successful
+
+
+By default, Homebrew will set the Nginx listening port to 8080. 
+
+You should be able to access the default web page at either of the following addresses.
+
+
+  -s signal     : send signal to a master process: stop, quit, reopen, reload
+
+
+Autostart
+---------
+
+NGINX does not start automatically by default, regardless of your chosen installation method. 
+In development or testing, NGINX autostart may not be a requirement. 
+
+But if you need to, you can configure NGINX to run at boot using the launchd process.
+
+
+Run the below command to enable NGINX to autostart. 
+
+The start command starts NGINX immediately and registers it to launch at boot.
+
+$ sudo brew services start nginx
+
+
+To disable the NGINX autostart state, run the below command. As you can see, the only part of the command to change is from start to stop. This command also gracefully exits the NGINX server immediately.
+
+$ sudo brew services stop nginx
+
+
+
+
+====================================================================================================
+

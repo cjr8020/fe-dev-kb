@@ -359,8 +359,134 @@ RouterLinkActive binding
 
 
 
+Lazy Loading
+-------------
+https://enlear.academy/angular-lazy-loading-7450dbab8bf0
 
 
+
+Eager Loading Modules
+---------------------
+
+https://enlear.academy/eager-loading-in-angular-7aab94c09ab3
+
+
+
+
+Scroll to top on every Route click
+-------------------------------------
+
+https://stackoverflow.com/questions/48048299/angular-5-scroll-to-top-on-every-route-click
+
+
+Option 1
+<router-outlet (activate)="onActivate($event)"></router-outlet>
+
+Option 2
+
+for eagerly loaded modules:
+
+RouterModule.forRoot(appRoutes, { scrollPositionRestoration: 'enabled' })
+
+
+
+
+
+
+Router Fragment Scrolling
+--------------------------
+
+
+  For eager loaded modules
+  -------------------------
+
+
+Configure Router options in your App Routing Module or in your app module.
+
+const routerOptions: ExtraOptions = {
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled',
+  // onSameUrlNavigation: 'reload',
+  scrollOffset: [0, 50],
+  // relativeLinkResolution: 'legacy',
+}  
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes, routerOptions)],
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+
+NEED TO READ
+Angular 5 Scroll to top on every Route click
+https://stackoverflow.com/questions/48048299/angular-5-scroll-to-top-on-every-route-click
+
+
+
+https://stackoverflow.com/questions/39941656/scroll-to-anchor-not-working
+
+https://codecraft.tv/courses/angular/routing/nested-routes/
+
+https://stackoverflow.com/questions/54574986/angular-7-x-x-easiest-way-to-scroll-to-a-fragment
+
+https://stackoverflow.com/questions/44441089/angular4-scrolling-to-anchor/64185407#64185407
+
+
+
+scroll position restoration
+https://blog.angular.io/angular-v6-1-now-available-typescript-2-9-scroll-positioning-and-more-9f1c03007bb6
+
+
+on EAGERLY LOADED MODULES
+
+Since Angular6.1, we can also use { scrollPositionRestoration: 'enabled' } on eagerly loaded modules and it will be applied to all routes:
+
+RouterModule.forRoot(appRoutes, { scrollPositionRestoration: 'enabled' })
+
+
+
+does not work when the data is loaded asynchronously
+
+https://github.com/angular/angular/issues/24547
+
+
+  For lazy loaded modules
+  -----------------------
+
+You don't need extra router options for this.
+
+component html template
+
+  at the top of your component template
+
+    <a id="top"></a>
+    or
+    <h1id="top">My Header</h1>
+
+  ToC section
+
+
+      <section id="toc">
+        <br>
+        <h2>Table of Contents</h2>
+        <ul>
+          <li><a routerLink="/lib-components/icon" fragment="font-awesome-icons">Font Awesome Icons</a></li>
+          <li><a routerLink="/lib-components/icon" fragment="custom-decorative-icons">Custom Decorative Icons</a></li>
+        </ul>
+      </section>
+
+  Later in the document
+
+
+      <section id="custom-decorative-icons">
+        <a routerLink="/lib-components/icon" fragment="top">Back to top</a>
+
+        yada yada content
+
+      </section>
 
 
 ================================================================================
@@ -828,6 +954,11 @@ Type
     event and property:   <input [(ngModel)]="name">
 
 
+
+================================================================================
+
+
+
 6. Directives
 ----------------------------------------
 
@@ -846,6 +977,52 @@ Type
 
 Directives do not require a view.  They should be responsible for rendering 
 logic: adding/removing elements and adding custom behavior to DOM elements or components.
+
+
+
+
+  Directives Selectors
+  ---------------------
+
+
+Selectors:
+
+selector : 'your-option'    // element selector
+selector : '[your-option]'  // property selector
+selector : '.your-option'   // class selector
+
+To use this in HTML
+
+<your-option></your-option>      /* this is element selector usage
+<div your-option></div>          /* this is property selector usage
+<div class="your-option"></div>  /* this is class selector usage
+
+
+
+
+
+  Anatomy of Angular Attribute @Directive selector
+  -------------------------------------------------
+  https://medium.com/swlh/anatomy-of-angular-attribute-directive-selector-a1d83a73242
+
+
+
+Selectors can be declared using any of the following as per the angular documentation:
+
+    element name or tag name
+    [attribute] or [attribute=value]
+    .class
+    :not(sub_selector)
+    selector1, selector2
+
+
+
+
+
+
+
+
+
 
 
 Properties of Directives
@@ -939,130 +1116,43 @@ Properties of Directives
 
       <input [(ngModel)]="hero.name">
 
-  custom attribute directive
-  .....................................
-
-  $ ng g d highlight
-
-    import { Directive, ElementRef, Renderer } from '@angular/core';
-
-    @Directive({
-      selector: '[highlight]'
-    )}
-    export class HighlightDirective {
-
-      // this is a short cut for creating a private field at the class level
-      // and assigning to it in the constructor/method call
-      constructor(private elementRef: ElementRef, private renderer: Renderer) {
-        this.renderer.setElementStyle(
-          this.elementRef.nativeElement, 
-          'background-color', 
-          'green');
-      }
-
-    }
-
-  Creating Custom Directives
-  ......................................
-
-  great example: 
-    https://github.com/anein/angular2-trim-directive
-
-    also a good example of creating a angular-friendly npm module
 
 
-    Decorators
+================================================================================
 
-      @HostListener
-        function decorator
-        provides a way to detect if the user is hovering over the host element
+  Create Custom Direcive
+  **********************
 
-        @HostListener({ 
-          eventName?: string
-          args?: string[]
-        })
+- Create a basic directive and declare on an NgModule
+- Use Selectors to associate an element with a directive based on HTML attribute.
+- interactive with the raw DOM element of the associated element from the directive.
 
-        accepts
-          - (optional) eventName
-          - (optional) args string[]
-        e.g.
-        @HostListener('mouseover') onHover() {
-          // window.alert("Hover");
-        }
-
-      @HostBinding
-
-        allows us to bind to `input properties` in the host element
-        this directive can change the properties of the host element, such as
-        list of classes taht are set on the host element as well as a number
-        of other properties.
-
-    selector?: string
-
-      The CSS selector that trigger the instantiation of a directive.
-      Angular only allows directives to trigger on CSS selectors that 
-      do not cross element boundaries.
-
-      selector may be declared as one of the following:
-
-        - element-name: select by element name
-        - .class: select by class name
-        - [attribute] select by attribute name
-        - [attribute=value] selecte by attribute name and value
-        - :not(sub_selector): select only if the element does NOT match the sub_s
-        - selector1, selector2 : select if either selector1 or selector2 matches
-          
-        Example:
-
-          selector: 'input[type=text]'
-
-          <form>
-            <input type="text">
-            <input type="radio">
-          </form>
-
-        The directive would only be instantiated on the <input type="text"> element.
-
-      providers?: Provider[]
-
-        defines the set of injectable objects that are visible to a Directive
-        and its light DOM children
-
-    example of custom directive:
-
-      @Directive({
-        selector: 'input[lgnInputTextTrim]',
-        providers: [
-          { provide: NG_VALUE_ACCESSOR, useExisting: InputTextTrimDirective, multi: true }
-        ]
-      })
-      export class InputTextTrimDirective extends DefaultValueAccessor {
-
-        // set a new value to the field and model.
-        private set value( val: any ) {
-          // update element
-          this.writeValue( val );
-          // update model
-          this.onChange( val );
-        }
-
-        /**
-         * Updates the value on 'blur' event.
-         * @param {string} event  event.type that triggered
-         * @param {string} value  event.target.value
-         */
-        @HostListener('blur', ['$event.type', '$event.target.value'])
-        onInput(event: string, value: string): void {
-          // if defined - trim, otherwise don't
-          this.value = (value) ? value.trim() : value;
-        }
-      }    
+- use the renderer
 
 
 
+## Generate new directive module
+
+  $ ng g m common/directives --project au-components
+
+and then a new directive
+
+  $ ng g d common/directives/input-ref --project au-components
+
+
+NOTE: that the selector 
+
+  selector: '[libInputRef]'
+
+is wrapped in square brackets - that's because angular uses CSS matching rules 
+to match a component or directive to an HTML element
+
+We want to associate the directive with an HTML element as an attibute (not as a css class)
+that's why we use square brackets
 
 
 
+================================================================================
 
 7. Services
 ----------------------------------------
@@ -1861,6 +1951,183 @@ ngDoCheck()
     ngOnInit() on the first run
 
 
+
+OnChanges
+------------------------------------------------------
+
+ngOnChanges
+
+https://dev.to/nickraphael/ngonchanges-best-practice-always-use-simplechanges-always-1feg
+
+use this lifecycle hook to respond to changes to our @Input() variables.
+
+
+  ngOnChanges(changes: SimpleChanges): void {}
+
+
+Typical antipattern - ngOnChanges gets called multiple times for each Input that changes.
+
+  ngOnChanges() {
+    if (this.myFirstInputParameter) {
+      this.doSomething(this.myFirstInputParameter);
+    }
+  }  
+
+
+What is SimpleChanges
+
+  SimpleChange {
+      previousValue: any;
+      currentValue: any;
+      firstChange: boolean;
+
+
+How can we use SimpleChanges?
+-----------------------------
+
+ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes['YOUR_PROP'].currentValue);
+}
+
+
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    let change = changes['myInputProperty'];
+
+    if(!change.firstChange) {
+      this.someOtherClassField(change.currentValue);  // here we set some other field to current value but ONLY when not 1st change.
+    }
+
+  }
+
+
+another example
+
+
+  ngOnChanges(changes: SimpleChanges) {
+        console.log('OnChanges');
+        console.log(JSON.stringify(changes));
+ 
+        // tslint:disable-next-line:forin
+        for (const propName in changes) {
+             const change = changes[propName];
+             const to  = JSON.stringify(change.currentValue);
+             const from = JSON.stringify(change.previousValue);
+             const changeLog = `${propName}: changed from ${from} to ${to} `;
+             this.changelog.push(changeLog);
+        }
+    }
+
+
+
+
+Always use `SimpleChanges`
+------------------------------------
+
+Better Practices
+- - - - - - - - -
+https://medium.com/angular-in-depth/creatively-decouple-ngonchanges-fab95395cc6e
+
+
+
+This example creates a reusable function
+- - - - - - -
+
+https://generic-ui.com/blog/how-to-make-angular-onChanges-better
+
+
+    function ifChanged(
+       prop: SimpleChange,
+       callback: (value: any) => void
+    ): void {
+       if (prop !== undefined && prop.currentValue !== undefined) {
+          callback(prop.currentValue);
+       }
+    }
+
+
+https://stackblitz.com/edit/angular-ivy-6dwdue?file=src%2Fapp%2Fhello.component.ts
+
+
+    @Component({ ... })
+    export class UserComponent implements OnChanges {
+
+       @Input()
+       user: User;
+
+       constructor(private readonly service: UserService) {}
+
+       ngOnChanges(changes: SimpleChanges) {
+          ifChanged(changes.user, () => service.set(changes.user))
+       }
+    }
+
+
+This example runs a for loop
+- - - - - - - - - - - - -- - 
+
+the changes parameter tells us which @Input() caused the call. 
+SimpleChanges also happens to provide the old value of the @Input() if there has been multiple changes to that value - pretty handy.
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        let change = changes[propName];
+        switch (propName) {
+          case 'pageSize': {
+            console.log(`pageSize changed to:`, change.currentValue);
+          }
+        }
+      }
+    }
+  }
+
+
+we should always take the SimpleChanges parameter in our ngOnChanges methods. 
+Even if we only have a single @Input() on our component. 
+I don't want code that assumes there will always be only one @Input().
+
+
+
+I think that '' if (changes.hasOwnProperty(propName)) '' is useless
+better to use '' if (changes[propName].currentValue) ''
+
+
+
+
+
+
+
+
+
+Testing your implementation of onOnChanges
+------------------------------------------
+
+@Component({
+  selector: 'greeter',
+  inputs: ['name'],
+  template: `<div>{{ greeting }}</div>`,
+})
+export class Greeter implements OnChanges {
+  @Input() name: string;
+  greeting: string;
+  
+  constructor() {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['name']) {
+      this.data = 'Hello ' + this.name;
+    }
+  }
+}
+
+
+
+
+
+
 ==============================================================================
 
   Twitter Bootstrap
@@ -2133,60 +2400,121 @@ ngModel
 
 
 
+===============================================================================
+
+
+class and style binding
+----------------------------------------------------------
+
+https://angular.io/guide/class-binding
+
+https://angular.io/guide/style-precedence#style-precedence
+
+
+single class binding
+
+Angular adds the class the bound expression, onSale, is truthy, and it removes it
+when the expression is falsy.
+
+  [class.sale]="onSale"
+
+
+multiple class binding
+
+  [class]="classExpression"
+
+
+
 ngClass
 ----------------------------------------------------------
 
+ngClass is a directive in Angular that adds and removes CSS classes on an HTML element.
 
 
-ngClass provides several ways to add classes conditionally
+Property binding and interpolation:
+
+  <!-- Normal HTML -->
+  <input placeholder="some text">
+
+  <!-- Interpolation -->
+  <input placeholder="{{ variable }}">  
+
+  <!-- Property Binding -->
+  <input [placeholder]="variable">
 
 
-<div [ngClass]="{ 'classname' : condition }"></div>
-
-
-    [ngClass]="{
-      'sfg-tooltip-content__wrapper--large': tooltipDescription.length > 55,
-      'sfg-tooltip-content__wrapper--base': tooltipMode === 'base',
-      'sfg-tooltip-content__wrapper--brand': tooltipMode === 'brand',
-      'sfg-tooltip-content__wrapper--good': tooltipMode === 'good',
-      'sfg-tooltip-content__wrapper--warning': tooltipMode === 'warning',
-      'sfg-tooltip-content__wrapper--bad': tooltipMode === 'bad'
-    }"
-
-
-<td [ngClass]="val > 10 ? 'red' : 'green'">{{ val }}</td>
-
-<input type="text" [ngClass]="control.isInvalid ? 'error' : ''" />
-
-but the less verbose way:
-
-<input type="text" [ngClass]="{ error: control.isInvalid }" />
+  [ngClass]="{
+    'prism-dialog-small': this.size === 'small',
+    'prism-dialog-medium': this.size === 'medium',
+    'prism-dialog-large': this.size === 'large'
+  }"
 
 
 
+Supports three types of expression "return values":
 
-type one
+string, array and Object
 
-  [class.my-class]="step === 'step1'"
-
-type two
-
-    [ngClass]="{'my-class': step === 'step1'}"
-
-  and multiple option:
-
-    [ngClass]="{'my-class': step === 'step1', 'my-class2':step === 'step2' }"
+<div [ngClass]="'first second'">
+<div [ngClass]="['first', 'second']">
+<div [ngClass]="{first: true, second: true, third: true}">
+<div [ngClass]="{'first second': true}">
 
 
-type three
 
-    [ngClass]="{1:'my-class1',2:'my-class2',3:'my-class4'}[step]"
+<!-- Given that val="foo", the class of the following div would be "foofoo" -->
+<div [ngClass]="val + val">
 
-type four
+<!-- Given that val="foo", the class of the following div would be "foo" -->
+<div [ngClass]="[val]">
 
-    [ngClass]="(step=='step1')?'my-class1':'my-class2'"
+<!-- Given that func is a function that returns "foo", the class of the following div would be "foo" -->
+<div [ngClass]="func()">
 
 
+Using ngClass with a simple condition
+--------------------------------------
+
+  <td [ngClass]="val > 10 ? 'red' : 'green'">{{ val }}</td>
+
+or if we want to toggle
+
+  <input type="text" [ngClass]="control.isInvalid ? 'error' : ''" />
+
+
+
+How to work with Object Literals and ngClass
+--------------------------------------------
+
+When we use object literals,  the 'key' represents the 'class' that are going
+to configure for the element, while the 'value' represents whether the class
+should be applied to the element.
+
+The 'key' will be applied if the 'value' is truthy.
+
+so here
+
+  <i [ngClass]="classes"></i>
+
+ngClass will be assigned the value of Object literal `classes` 
+
+  get classes() {
+    const cssClasses = {
+      'fa': true
+    }
+
+    if (this.icon) {
+      cssClasses['fa-' + this.icon] = true;
+    }
+    return cssClasses;
+  }
+
+so <i>  will get `fa` class (set to true) and `fa-something` class (also set to true)
+
+
+
+
+===============================================================================
 
 ngStyle
 
@@ -2393,7 +2721,7 @@ ngSwitch
 
 
 
-nfFor
+ngFor
   
   is a repeater directive - our goal is to represent a list of items.
   we define a block of HTML that defines how  a single item should be 
@@ -2434,6 +2762,38 @@ nfFor
     </template>
 
 
+ngFor with Index
+----------------
+
+https://www.angularjswiki.com/angular/how-to-get-index-of-element-in-ngfor-angular/
+
+
+     this.books = [
+        {id:1,name:"Angular"},
+        {id:2,name:"Typescript"},
+        {id:3,name:"Javascript"},
+        {id:4,name:"HTML"}
+     ];
+
+
+
+  <ul>
+      <li *ngFor="let book of books; let indexOfelement=index;">
+        ngFor index: {{indexOfelement}} value : {{book.name}} 
+      </li>
+  </ul>
+
+or  `i` instead of indexOfElement:
+
+  <ul>
+      <li *ngFor="let book of books; index as i">
+        ngFor index: {{indexOfelement}} value : {{book.name}} 
+      </li>
+  </ul>
+
+
+
+
 
 
 Custom Attribute directives 
@@ -2443,7 +2803,41 @@ Custom Attribute directives
     class decorators
     prefer using these to the 'host' property of the @Directive and @Component decorators
 
-    
+
+
+HostBinding('value') myValue;     // is exactly the same as [value]="myValue"
+
+
+HostListener('click') myClick(){ } // is exactly the same as (click)="myClick()"
+
+================================================================================
+
+  @HostBinding
+  ************
+
+
+function decorator 
+allows you to set properties of the host element from the directive class.
+
+@HostBinding() decorator takes one parameter - the name of the host element property 
+which value we want to assign in the directive.
+
+
+
+How I understood @HostBinding in Directives
+https://medium.com/geekculture/how-i-understood-hostbinding-in-directives-34f4d64b6ec1
+
+@HostBinding and Renderer2 are two good ways to manipulate the DOM without directly accessing it.
+
+
+@HostBinding can manipulate the properties, attributes and classes of a DOM element.
+
+Example 1: Toggle a class
+----------
+
+
+
+
 
 
 use @HostBinding to set class on host component
@@ -2497,14 +2891,15 @@ angular-cli.json
   go back browser back button
   ***************************
 
-to navigate one step in the browser's history stack using the 'Location' service
+Go back button in Angular. Save route history.
+----------------------------------------------
 
-  this.location.back()
+https://medium.com/quick-code/go-back-button-in-angular-save-route-history-in-angular-374f28c4a793
 
-Going back too far could take us out of the application.
-Guard against that with
 
-  CanDeactivate guard  
+How to Navigate to Previous Page in Angular
+https://nils-mehlhorn.de/posts/angular-navigate-back-previous-page
+
 
 ================================================================================    
 
@@ -2560,6 +2955,15 @@ unless:
   Event emits, or
   a bound Observable emits
 
+
+
+OnPush — your new Default
+
+https://medium.com/angularwave/onpush-your-new-default-ba3fd5bc9f6e
+
+Container-Presentation pattern
+
+https://indepth.dev/posts/1478/designing-angular-architecture-container-presentation-pattern
 
 
 ================================================================================
@@ -2986,6 +3390,9 @@ https://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observa
 https://www.bersling.com/2017/06/05/state-management-ngrxstore-vs-angular-services/
 
 
+NOTE: if NgRx or Redux is overkill - try @angular-extensions/model  library.
+
+
 
 origins: facebook counter bug
 
@@ -3312,26 +3719,88 @@ or
 
 
 
-2. using directive ng-template-outlet
--------------------------------------
+ng-template variables
+---------------------
 
-<ng-container
-  *ngTemplateOutlet="primary; context: {
-    text: 'Primary',
-    theme1: 'btn-primary'
-  }"
->
-</ng-container>
+you can define variables on `ng-template` thru  `let-name`
+
+using $implicit in the context object will set its value as default
 
 
-<ng-template #primary let-text="text" let-theme="theme1">
-  <div>
-    <button
-      class="btn btn-primary"
-      [ngClass]="theme"
-    >{{text}}</button>
-  </div>
-</ng-template>
+================================================================================
+
+
+  ngTemplateOutlet
+  ****************
+
+
+it is a structural directive.
+we use it to insert a template (created by ngTemplate)
+
+you can define a few templates to display an item and use them display at several places in the View and also swap that template as per the user’s choice.
+
+
+
+
+
+Passing data to ngTemplateOutlet
+-------------------------------
+
+
+The following code creates a template. We name it as messageTemplate. 
+The let-value creates a local variable with the name value
+
+
+  <ng-template let-value="value" #messageTemplate>  
+      <p>Value Received from the Parent is  {{value}}</p>
+  </ng-template>
+
+
+We can pass any value to the value using the ngTemplateOutletContextproperty
+
+
+  <ng-container [ngTemplateOutlet]="messageTemplate" 
+         [ngTemplateOutletContext] ="{value:'1000'}">
+  </ng-container>  
+
+
+Alternatively you can also use the following syntax.
+
+  <ng-container *ngTemplateOutlet="messageTemplate; context:{value:100}">
+  </ng-container> 
+
+
+Pass more than one value
+
+
+  <ng-template let-name="nameVar" let-message="messageVar" #template3>  
+    <p>Dear {{name}} , {{message}} </p>
+  </ng-template>
+   
+   
+  <ng-container [ngTemplateOutlet]="templates" 
+            [ngTemplateOutletContext] ="{nameVar:'Guest',messageVar:'Welcome to our site'}">
+  </ng-container> 
+
+
+Using $implicit
+-----------------
+
+
+If you use the key $implicit in the context object will set its value as default for all the local variables.
+
+For Example we have not assigned anything to the let-name so it will take the value from the $implicit, which is Guest.
+
+
+  <ng-template let-name let-message="message" #template3>  
+    <p>Dear {{name}} , {{message}} </p>
+  </ng-template>
+   
+  <ng-container [ngTemplateOutlet]="templates" 
+                [ngTemplateOutletContext] ="{$implicit:'Guest',message:'Welcome to our site'}">
+  </ng-container> 
+
+
 
 
 ================================================================================
@@ -3346,56 +3815,56 @@ The Angular @ViewChild decorator is one of the first decorators that you will ru
 as it's also one of the most commonly used decorators.
 
 
-When do we need the @ViewChild decorator?
------------------------------------------
 
-in Angular we define a component template by combining plain HTML elements with other Angular components.
-as an example
+Q: I want to access the DOM of a component using ViewChild. But when I try to access the nativeElement property, it's undefined.
 
-    <h2>Choose Brand Colors:</h2>
-
-    <color-sample [color]="primary" #primaryColorSample>
-    </color-sample>
-
-    <mat-input-container>
-      <mat-label>Primary Color</mat-label>
-      <input matInput #primaryInput [(colorPicker)]="primary" [(ngModel)]="primary"/>
-    </mat-input-container>
-
-this template includes
-   - plain HTML elms like <h2> and <div>
-   - custom app components like <color-sample>
-   - 3rd-party (colo-picker)
-   - multiple Angujar components
-
-Many times we can coordinate these mutliple components and HTML elements directly 
-in the template by using template references like #primaryinput or #primaryColorSample
-without using the `AppComponent` class.
-
-But not always - sometimes, the `AppComponent` might need references to the multiple 
-elements that it contains inside the template, in order to mediate the interaction.
-
-We can obtain references to those template elements and have them injected into the 
-AppComponent class by querying the template: THAT'S WHAT @ViewChild is FOR.
+https://stackoverflow.com/questions/45921819/angular-nativeelement-is-undefined-on-viewchild
 
 
-Using @ViewChild to inject a reference to a component
------------------------------------------------------
-
-Let's say that AppComponent needs a reference to the <color-sample> component
-that is used inside its template, in order to call a method directly on it.
-
-In that case, we can inject a reference to <color-sample> instance named 
-#primaryColorSample by using @ViewChild:
+  <app-alert #alert>
+    My alert
+  </app-alert>
+  <button (click)="showAlert()">Show Alert</button>`
 
 
-  @ViewChild(ColorSampleComponent)
-  primarySampleComponent: ColorSampleComponent;
+export class AppComponent implements AfterViewInit {
+  @ViewChild('alert') alert;
+
+  showAlert() {
+    console.log('alert (showalert)', this.alert.nativeElement);
+    this.alert.show();
+  }
+
+  ngAfterViewInit() {
+    console.log('alert (afterviewinit)', this.alert.nativeElement);
+  }
+}
 
 
 
-When are variables injected via @ViewChild available?
------------------------------------------------------
+A:
+
+  If you want to get a reference of an element that hosts a component or directive 
+  you need to specify that you want the element instead of the component or directive
+
+  In Angular, there's a DOM element that hosts the component, and then there's the component itself.
+
+
+  export class AppComponent implements AfterViewInit {
+    @ViewChild('alert') alert;
+    @ViewChild('alert', {read: ElementRef}) alertElement:ElementRef;
+
+    showAlert() {
+      console.log('alert (showalert)', this.alertElement.nativeElement);
+      this.alert.show();
+    }
+    
+    ngAfterViewInit() {
+      console.log('alert (afterviewinit)', this.alertElement.nativeElement);
+    }
+  }
+
+
 
 The AfterViewInit Lifecycle Hook
 --------------------------------
@@ -3453,9 +3922,66 @@ how to use @ViewChild to inject one of the multiple directives applied to a sing
 
 
 
+When should I use static:true vs static:false?
+------------------------------------------------
 
-4. 
----------------------------------------
+https://stackoverflow.com/questions/56359504/how-should-i-use-the-new-static-option-for-viewchild-in-angular-8
+
+
+
+So as a rule of thumb you can go for the following:
+
+{ static: true } needs to be set when you want to access the ViewChild in ngOnInit.
+
+{ static: false } can only be accessed in ngAfterViewInit. This is also what you want to go for when you have a structural directive (i.e. *ngIf) on your element in your template.
+
+
+
+static property informs angular about the availability of our child
+
+For example: if static is set to true, we are informing angular our child is available on the page from the beginning ( meaning it is not dependent of *ngIf,page bindings,API calls etc) so angular looks for it at the earliest lifecycle hook ( ngOnInit) and never looks for it again
+
+In case we set static to false we are informing angular that our child is dependent on some conditional directives, so angular tries to look for our child after every change detection cycle and if it is available we can access it in ngAfterViewInit() life cycle hook
+
+
+
+Dealing with ExpressionChangedAfterItHasCheckedError
+****************************************************
+
+https://stackoverflow.com/questions/71978152/how-can-i-fix-this-specific-ng0100-expressionchangedafterithasbeencheckederror
+
+Option 1: next macrotask (setTimeout)
+Option 2: ChangeDetectorRef.detectChanges()
+Option 3: fetching data in OnInit + data binding
+
+
+https://blog.angular-university.io/angular-debugging/
+
+https://blog.angular-university.io/angular-viewchild/
+
+
+
+
+
+Option 2: ChangeDetectorRef.detectChanges()
+--------------------------------------------
+
+Inform angular to run another detection cycle after you modified the data that is displayed.
+
+in either ngAfterViewInit() or ngAfterContentChecked()
+
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
+
+  ngAfterViewInit() {
+    this.getData().subscribe((data) => {
+      this.childSelector.loadRecipeRoadmap(data.name);
+    });
+    this.changeDetectorRef.detectChanges();
+  }
+
+
 
 
 ================================================================================
@@ -3470,6 +3996,134 @@ https://github.com/caroso1222/ng-lib-schematics
   Angular Component Communication
   *******************************
 
+
+================================================================================
+
+Communication between hierarchical components
+=============================================
+
+across many layers of components in between without direct parent/child relationship
+
+
+Mastering the Subject: Communication Options in RxJS | Dan Wahlin
+https://www.youtube.com/watch?v=_q-HL9YX_pk
+
+How pass a event from deep nested child to parent in Angular
+https://stackoverflow.com/questions/56290722/how-pass-a-event-from-deep-nested-child-to-parent-in-angular-2
+
+
+Event model
+-----------
+
+nav-events.model.ts
+--------------------
+
+export enum PrismNavEvents {
+  logout = 'logout'
+}
+
+export interface PrismNavEvent {
+  name: PrismNavEvents;
+  value?: any;
+}
+
+
+nav-event.service.ts
+-----------------------
+
+
+
+import { Injectable } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { PrismNavEvent, PrismNavEvents } from '../models';
+import { filter, map } from 'rxjs/operators';
+
+/**
+ * PrismNavEventService provides a communication mechanism across multiple
+ * layers of the nav system.
+ *
+ * Components emitting events use emit() method:
+ *   this.navEventService.emit({
+ *     name: 'logout'
+ *   });
+ *
+ * Events are defined in PrismNavEvents enum.  This allows subscribers to
+ * filter events and apply different actions based on events received.
+ *
+ * New event types should be added to PrismNavEvents enum.
+ *
+ *  Components wanting to be notified will use the on() method:
+ *   this.logoutEventSubscription = this.navEventService.on(PrismNavEvents.logout, () => {
+ *     this.logoutRequestEvent.emit();
+ *   });
+ */
+@Injectable()
+export class PrismNavEventService {
+  private subject$ = new Subject();
+
+  /**
+   * Use this method to emit an event.
+   * @param event of type PrismNavEvent (also see PrismNavEvents enum)
+   */
+  emit(event: PrismNavEvent) {
+    this.subject$.next(event);
+  }
+
+  /**
+   * Use this method to be notified of events.
+   * @param event of type PrismNavEvent (also see PrismNavEvents enum)
+   * @param action the function to be executed when the event is received.
+   * Typically, it's an anonymous function like so
+   *   () => console.log('I'm a helpful little fn.')
+   */
+  on(event: PrismNavEvents, action: any): Subscription {
+    return this.subject$
+      .pipe(
+        filter((e: PrismNavEvent) => e.name === event),
+        map((e: PrismNavEvent) => e.value)
+      )
+      .subscribe(action);
+  }
+}
+
+
+You want to emit an event from Child 3
+---------------------------------------
+
+
+export class Child3Component implements OnInit {
+
+  constructor(public eventservice : EventService ) {}
+
+  private emitLogoutEvent(): void {
+    this.navEventService.emit({
+      name: PrismNavEvents.logout
+    });
+  }
+
+}
+
+
+
+now, your parent compnent can call this method to get the event
+
+
+ export class ParentComponent implements OnInit {
+
+    constructor(public eventservice : EventService ) {}
+ 
+    ngOnInit(): void {
+      this.logoutEventSubscription = this.navEventService.on(PrismNavEvents.logout, () => {
+        this.logoutRequestEvent.emit();
+      });
+    }
+ 
+ }
+
+
+
+
+================================================================================
 
 Communicating with a Template
 ------------------------------
@@ -3845,54 +4499,6 @@ Property Bag vs State Management Service
                                   consider getting fresh data before updating/deleting
                                   state is not immutable
 
-
-Binding and Change Detection
------------------------------
-
-Angular change detection watches all the property changes that are bound 
-to templates, even if the property changes in the service:
-
-
-template
-
-  // template binding to a property in component
-  name: {{product.productName}}
-
-component
-
-  export class ProductDetailComponent {
-    // bound property
-    product: IProduct;
-
-    ...
-
-      this.product.productName = 'Steel Hammer';
-  }
-
-service
-
-  export class ProductService {
-
-    // bound property
-    currentProduct: IProduct;
-  }
-
-product shell list component
-
-  onSelected(product: IProduct) {
-    this.productService.currentProduct = product;
-  }
-
-product detail component
-
-  // getter is bound to property in the service
-  get product(): IProduct {
-    return this.productService.currentProduct;
-  }
-
-product detail template
-  // template binding to component property
-  Name: {{product.productName}}
 
 
 
@@ -4845,18 +5451,39 @@ https://stackoverflow.com/questions/43933783/pass-component-to-a-component-in-an
   ContentChild and ContentChildren
   ----------------------------------
 
+https://www.tektutorialshub.com/angular/contentchild-and-contentchildren-in-angular/
+
+Code Craft TV
+https://codecraft.tv/courses/angular/components/viewchildren-and-contentchildren/
+
 
 they are decorators that we use to query and get a reference to the Projected Content 
 in the DOM.  
 
 Projected content is the content that this component receives from a parent component.
 
-ContentChild and ContentChildren are very similar to ViewChild and ViewChildren
+ContentChild and ContentChildren are very similar to ViewChild and ViewChildren.
+
+
+  ViewChild and ViewChildren
+  . . . . . . . . . . . . . .
+
+The view children of a given component are the elements used WITHIN its template - its VIEW.
+
 
 We use ViewChild and ViewChildren to query and get a reference to any DOM element in the component.
-It can be an HTML element, Child Component or directive, etc.   But we cannot
-use the ViewChild or ViewChildren to get the reference to the template inserted
+It can be an HTML element, Child Component or directive, etc.   
+
+But we cannot use the ViewChild or ViewChildren to get the reference to the template inserted
 using the Content projection.
+
+
+  Content Projection Recap
+  . . . . . . . . . . . . . .
+
+Content projection is a way to pass the HTML content from the parent to the child
+component.
+
 
 
 For example
@@ -4914,6 +5541,7 @@ The header is the template variable, that we want to read.
 Since it is applied on h1 tag, it is going to return the ElementRef.
 
 the cardContentHeader will not be available to use immediately.
+------------------------------
 
 The angular initializes the component first. 
 It then raises the 
@@ -4927,6 +5555,11 @@ then Angular raises the
 
   AfterContentInit & 
   AfterContentChecked hooks. 
+
+
+Injected content is available after   AfterContentInit() hook
+-------------------------------------------------
+
 
 Hence the cardContentHeader is available to use only after the AfterContentInit hook.
 
@@ -4953,6 +5586,35 @@ static
 
 
   True to resolve query results before change detection runs, false to resolve after change detection. Defaults to false.
+
+
+  #What is the difference between static and dynamic queries? 
+
+    The static option for @ViewChild() and @ContentChild() queries determines when the query results become available.
+
+
+    With dynamic queries (static: false), the query resolves after either ngAfterViewInit() or ngAfterContentInit() for @ViewChild() and @ContentChild() respectively. The result will be updated for changes to your view, such as changes to ngIf and ngFor blocks.
+
+
+    With static queries (static: true), the query resolves once the view has been created, but before change detection runs. The result, though, will never be updated to reflect changes to your view, such as changes to ngIf and ngFor blocks.
+
+
+ContentChildren
+===============
+
+Use the ContentChildren decorator to get the list of element references from the projected content.
+
+ContentChildren is different from the ContentChild. ContentChild always returns the reference to a single element. 
+
+If there are multiple elements the ContentChild returns the first matching element,
+
+
+ContentChildren always returns all the matching elements as a QueryList. 
+You can iterate through the list and access each element.
+
+
+
+
 
 
 ================================================================================
@@ -5152,6 +5814,44 @@ https://angular-training-guide.rangle.io/features/typescript/parameter_decorator
 
 ================================================================================
 
+
+Four ways of listening to DOM events in Angular
+***********************************************
+
+https://medium.com/claritydesignsystem/four-ways-of-listening-to-dom-events-in-angular-part-2-hostlistener-1b66d45b3e3d
+https://medium.com/claritydesignsystem/four-ways-of-listening-to-dom-events-in-angular-part-3-renderer2-listen-14c6fe052b59
+
+
+Event Binding: One-way data binding, in which information is sent from a component’s template to the component’s class
+
+@HostListener: Angular decorator that handles events on the host element
+
+Renderer2: Using Renderer2 .listen() method for a target event and element
+
+RxJS: Using RxJS .fromEvent() operator that turns events into observable sequences
+
+
+
+
+Part 3: Renderer2.listen
+
+
+================================================================================
+
+  Angular Pseudo-Events
+  ----------------------
+
+https://medium.com/claritydesignsystem/angular-pseudo-events-d4e7f89247ee
+
+
+Through pseudo-events, Angular allows you to directly bind to a specific keystroke or keystroke combination. 
+That means a keyboard event will be only fired on that specific key or key combination instead of on all key events.
+
+
+
+
+================================================================================
+
   How to pass a function to a child component in Angular
   -------------------------------------------------------
 
@@ -5191,6 +5891,74 @@ Conclusion
 
 This gives you a very simple approach for notifying a parent component of events that happen within a child.
 
+
+
+
+================================================================================
+
+
+  Observable Service
+  ******************
+
+@Injectable
+export class InventoryService {
+  
+  latestProduct: Product;
+
+  private inventorySubject$ = new BehaviorSubject<Product>(this.latestProduct);
+
+  inventoryChanges$ = this.inventorySubject$.asObservable();
+
+  addToInventory(product: Product) {
+
+    this.latestProduct = product;
+    this.inventorySubject$.next(product);
+
+  }
+
+
+}
+
+
+export class InventoryComponent implments OnInit, OnDestroy {
+  
+  @Input() products: Products[] = [];
+
+  constructor(private inventoryService: InventoryService) {}
+
+  ngOnInit() {
+    this.subsink.sink = 
+      this.inventoryService.inventoryChanges$.subscribe(
+        prod => this.products.push(prod)
+      );
+  }
+
+  ngOnDestroy() {
+    this.subsink.unsubscribe();
+  }
+
+}
+
+
+
+================================================================================
+
+  Stopping Angular Click Events from Propagating
+
+  https://fireflysemantics.medium.com/stopping-angular-click-events-from-propagating-105bfba75a51
+
+
+
+
+
+
+
+================================================================================
+
+  Understanding @Output and EventEmitter in Angular
+  --------------------------------------------------
+
+  https://dzone.com/articles/understanding-output-and-eventemitter-in-angular
 
 
 
@@ -5290,6 +6058,135 @@ Interface responses using your modalService+subject+observables
 
 ================================================================================
 
+
+  :host
+
+  :host-context
+
+  ::ng-deep
+
+
+    ::ng-deep, /deep/ and >>> deprecation
+    .....................................
+
+
+    The ::ng-deep pseudo-class selector also has a couple of aliases: >>> and /deep/, and all three are soon to be removed.
+
+    The main reason for that is that this mechanism for piercing the style isolation sandbox around a component can potentially encourage bad styling practices.
+
+    The situation is still evolving, but right now, ::ng-deep can be used if needed for certain use cases.
+
+
+
+
+  Angular View Encapsulation
+  --------------------------
+
+https://blog.angular-university.io/angular-host-context/
+
+https://blog.angular-university.io/angular-ngclass-ngstyle
+
+
+:host
+
+  Sometimes we want to style the component custom HTML element itself.
+  Styles inside the component stylesheet are scoped to elements in the template, 
+  not the outer component element itself
+
+  If we want to style the host element of the component itself, we need the special
+  :host pseudo-class selector.
+
+  Combining the :host selector with other selectors
+
+  :host h2    <-- would only apply to h2 inside the template
+
+
+==>  NOTE <===   
+:host will not take effect if you have encapsulation: ViewEncapsulation.None in the component's definition as shown below.
+
+
+Use the component selector in the stylesheet when ViewEncapsulation.None:
+
+
+  // A method to style the :host element when ViewEncapsulation.None
+  drag-and-drop-file-upload {
+    min-height: $file-upload-min-height;
+  }
+
+
+::ng-deep
+
+  if we want our component styles to cascade to all child elements of a component
+  but not to any other element on the page, we can do this by combining 
+
+
+  :host ::ng-deep h2 {}  <-- would apply to h2 in all children of this component
+
+
+
+:host-context
+
+
+  Using CSS Host-Context To Theme Components In Angular 6.1.3
+  https://www.youtube.com/watch?v=NxUXcoYQg30
+
+
+  Sometimes, we also want to have a component apply a style to some element outside of it.
+
+  One possible common use case - for theme enabling classes.
+
+  E.g. say we want to ship a component with multiple alternative themes.
+  Each theme can be enabled via adding CSS class to a parent element of the component.
+
+
+      template: `
+            <button class="btn btn-theme">Themeable Button</button>
+      `,
+      styles: [`
+          :host-context(.red-theme) .btn-theme {
+            background: red;
+          }
+          :host-context(.blue-theme) .btn-theme {
+              background: blue;
+          }
+      `]
+
+  The above themed styles are deactivated by default.
+  In order to activate one theme, we need to add to any parent element of this 
+  component on of the theme-activating classes.
+
+
+
+      <div class="blue-theme">
+          <themeable-button></themeable-button>
+      </div>
+
+
+
+
+:host vs :host-context
+-----------------------
+
+https://stackoverflow.com/questions/42583629/cannot-understand-the-use-of-host-in-components-in-angular2/42583926#42583926
+
+:host selector comes from shadow DOM spec
+
+  ...This scoped subtree is called a shadow tree. The element it's attached to is its shadow host.
+
+  In angular world, a component's template is a shadow tree. 
+  The component's element is a shadow host. 
+  So when you're defining styles for :host selector, the styles are applied to the component's element.
+
+
+
+:host-context
+
+  Now, :host-context is also applied to the host element, but the function (parenthesis) takes a selector that is checked not against the host element itself, but against all ancestors up to document root. If such element is found, the styles are applied.
+
+
+
+================================================================================
+
 Cannot invoke an object which is possibly 'undefined'
 ------------------------------------------------------
 
@@ -5308,6 +6205,87 @@ employee.doWork?.();
 
 The optional chaining (?.) operator short-circuits instead of throwing an error if the reference is undefined or null.
 
+
+
+================================================================================
+
+angular library component or directive matching '.. 'is outside the scope of the current template
+
+
+A:  is it exported in your library module?
+
+
+================================================================================
+
+Angular Theme Branding
+---------------------
+
+
+https://blog.kalvad.com/branding-angular-app/
+
+
+================================================================================
+
+  angular.json  styles and stylesPreprocessorOptions
+  --------------------------------------------------
+
+https://dev.to/danywalls/how-to-simplify-and-clean-your-sass-import-with-angular-json-57pg
+
+
+When we work with Sass and Angular, import files is a very common task, and if you have more than 10 files and want to change the path of your sass structure
+
+
+@import 'shared/styles/colors';
+@import 'shared/forms/input';
+@import 'shared/forms/select';
+@import 'shared/mixis/grid';
+
+
+All files need to be updated and are not nice, let angular help with it.
+
+
+Go to angular.json file, under styles add stylePreprocessorOptions object 
+with includePaths option and define all paths available in an array with your file paths, 
+
+it should be relative to the angular.json.
+
+
+"styles": [
+   "src/styles.scss"
+   ],
+"stylePreprocessorOptions": {
+   "includePaths": [
+        "src/share/forms",
+        "src/share/styles",
+        "src/share/mixins"
+        ]
+}...
+
+
+Angular will compile using these paths, and 
+you can remove them from your files, and the compiler found these files.
+
+
+@import 'colors';
+@import 'input';
+@import 'select';
+@import 'grid';
+
+
+
+================================================================================
+
+Detect Responsive Screen Sizes in Angular
+------------------------------------------
+
+https://www.digitalocean.com/community/tutorials/detect-responsive-screen-sizes-in-angular
+
+
+Angular BreakpointObserver
+--------------------------
+
+How to Manage Breakpoints using BreakpointObserver in Angular
+https://www.thisdot.co/blog/how-to-manage-breakpoints-using-breakpointobserver-in-angular
 
 
 ================================================================================

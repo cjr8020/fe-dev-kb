@@ -120,6 +120,10 @@ $ mkfile 5m 5mb.docx
 Intellij IDEA shortcuts
 -----------------------
 
+cmd - , 				IDE settings
+
+cmd 8 (cmd-fn-8) Serivces
+
 new file
 
 command + 1			shift focus to project view (arrow down/up to folder)
@@ -143,6 +147,11 @@ cmd-sh-N 				open file
 sh-cmd-enter			complete construct
 
 sh-ctrl					find in Path
+
+
+
+
+
 
 
 multiple cursor
@@ -615,6 +624,45 @@ $ kill -9 <PID>
 Zoom Opt-Cmd-F5  or  Touch ID  tree times
 
 
+
+
+================================================================================
+================================================================================
+
+	Screen recording on mac
+	-----------------------
+
+with Screenshot tool
+
+1. Cmd + Shift + 5  to open screen recording tools
+2. To record a part of your screen, make selection
+3. optionally set countdown
+4. Hit record
+5. when done, hit Stop icon in top menu bar.
+
+The file will be saves on your desktop
+
+Options:
+
+Show Mouse Pointer
+Remember Last Selection
+Timer
+Save To
+
+
+
+
+================================================================================
+
+	Dictation
+	*********
+
+Shortcut: The default shortcut to start dictation after it’s enabled is to click the Fn key on your keyboard twice (On newer macOS versions, it can be Press Control Key Twice). 
+
+	Fn Fn
+
+To choose a different shortcut, pick one from the drop-down list. 
+To create your own, select Customize and press the keys you want to use.
 
 
 ================================================================================

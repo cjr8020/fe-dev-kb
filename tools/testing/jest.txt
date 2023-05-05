@@ -1,0 +1,12 @@
+*********
+
+	Jest
+
+*********
+
+
+
+Did you setup jest with Babel? Jest doesn't understand Typescript so it relies on babel for transpiling.
+
+Problems with TypeScript config
+

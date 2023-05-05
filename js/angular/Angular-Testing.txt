@@ -16,6 +16,26 @@ https://jenniferwadella.com/blog/testing-forms-using-CVA
 
 ================================================================================
 
+
+Component Fixture - a test harness for interacting with the created component and its corresponding element.
+
+
+
+  let component: BannerComponent;
+  let fixture: ComponentFixture<BannerComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({declarations: [BannerComponent]});
+    
+    fixture = TestBed.createComponent(BannerComponent);
+    component = fixture.componentInstance;
+  });
+
+
+
+
+================================================================================
+
   Jasmine
   *******
 
@@ -2045,6 +2065,324 @@ and add reporters array:
 
 ================================================================================
 
+
+Expect ngOnInit to throw Error
+-------------------------------
+
+
+expect(() => component.ngOnInit()).toThrowError(       'MyComponent: My error message.'     );
+
+
+https://jasmine.github.io/api/2.9/matchers.html
+
+
+toThrowError(expectedopt, messageopt)
+expect a function to throw an Error.
+
+
+message RegExp | String <optional>
+The message that should be set on the thrown Error
+
+Example
+expect(function() { return 'things'; }).toThrowError(MyCustomError, 'message');
+expect(function() { return 'things'; }).toThrowError(MyCustomError, /bar/);
+expect(function() { return 'stuff'; }).toThrowError(MyCustomError);
+expect(function() { return 'other'; }).toThrowError(/foo/);
+expect(function() { return 'other'; }).toThrowError();
+
+
+example
+
+  fit('should throw an error when passed iconName not found in map', () => {
+    // initialize with bad name
+    component.iconName = 'not-that-star';
+    // partial match on error message
+    expect(() => component.ngOnInit()).toThrowError(/not found in iconNameMap/);
+  });
+
+================================================================================
+
+
+  how to test ngOnChange
+  ----------------------
+
+https://medium.com/@christophkrautz/testing-ngonchanges-in-angular-components-bbb3b4650ee8
+
+Component:
+
+  @Component({
+    selector: 'greeter',
+    inputs: ['name'],
+    template: `<div>{{ greeting }}</div>`,
+  })
+  export class Greeter implements OnChanges {
+    @Input() name: string;
+    greeting: string;
+    
+    constructor() {}
+
+    ngOnChanges(changes: SimpleChanges) {
+      if (changes['name']) {
+        this.greeting = 'Hello ' + this.name;
+      }
+    }
+  }
+
+first attempt:
+
+
+  describe('Component: Greeter', () => {
+    let fixture, greeter, element, de;
+    
+    //setup
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [ Greeter ]
+      });
+    fixture = TestBed.createComponent(Greeter);
+      greeter = fixture.componentInstance;
+      element = fixture.nativeElement;
+    });
+    
+    //specs
+    it('should render `Hello World!`', () => {
+      greeter.name = 'World';
+      
+      fixture.detectChanges();
+      expect(element.querySelector('h1').innerText).toBe('Hello World!');
+    });
+  })
+
+
+However, this test will fail, since we manually changed a property of the Greeter component. 
+his means that when we call detectChanges Angular will not detect any changes and not call ngOnChanges. So, how can change our test so ngOnChanges is called?
+
+We have two options. Either we
+
+1. call ngOnChanges ourselves, or
+2. wrap Greeter in a host component on which we can change the name property.
+
+
+1. Calling ngOnChanges directly
+- - - - - - - - - - - - - - - - 
+
+Calling ngOnChanges ourselves follows the view of “isolated unit tests”. 
+By using TestBed we have anyway already diverged from this path so we could also give a try to the second approach. 
+
+However, let’s quickly look at the first approach, so we can later see the difference to the second one:
+
+  it('should render `Hello World!`', () => {
+    greeter.name = 'World';
+      
+    //directly call ngOnChanges
+    greeter.ngOnChanges({
+      name: new SimpleChange(null, greeter.name)
+    });
+    fixture.detectChanges();
+    expect(element.querySelector('h1').innerText).toBe('Hello World!');
+  });
+
+2. Wrapping Greeter into a host component
+- - - - - - - - - - - - - - - - - - - - -
+
+Now let’s look at the second approach. We first define a new component with a property ‘name’ that we can later set during the test:
+
+  @Component({
+    template: '<greeter [name]="name"></greeter>'
+  })
+  class TestHostComponent {
+    name: string
+  }
+
+
+During the test we let Angular create the host component instead of Greeter and set the name on the host component. 
+Calling detectChanges will then sync the host component’s name property with its template and thus yield ngOnChanges of Greeter to be called:
+
+
+  describe('Component: Greeter w/ host', () => {
+    let fixture, testHost, element, de;
+    
+    //setup
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [ Greeter, TestHostComponent ]
+      });
+    fixture = TestBed.createComponent(TestHostComponent);
+      testHost = fixture.componentInstance;
+      element = fixture.nativeElement;
+      de = fixture.debugElement;
+    });
+    
+    //specs
+    it('should render `Hello World!`', () => {
+      testHost.name = 'World';
+      
+      //trigger change detection
+      fixture.detectChanges();
+      expect(element.querySelector('h1').innerText).toBe('Hello World!');
+    });
+  })
+  @Component({
+    template: '<greeter [name]="name"></greeter>'
+  })
+  class TestHostComponent {
+    name: string
+  }
+
+
+
+Another example of testing with HostComponent
+- - - - - - - - - - - - - - - - - - - - - - - 
+
+
+Testing Angular Components With @Input()
+https://betterprogramming.pub/testing-angular-components-with-input-3bd6c07cfaf6
+
+
+
+describe('ComponentUnderTestComponent', () => {
+  let testHostComponent: TestHostComponent;
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ComponentUnderTestComponent, TestHostComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
+    testHostFixture.detectChanges();
+  });
+
+  it('should show TEST INPUT', () => {
+    expect(testHostFixture.nativeElement.querySelector('div').innerText).toEqual('TEST INPUT');
+  });
+
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test input="test input"></component-under-test>`
+  })
+  class TestHostComponent {
+  }
+});
+
+
+
+
+ it('should show TEST INPUT', () => {
+    testHostComponent.setInput('test input');
+    testHostFixture.detectChanges();
+    expect(testHostFixture.nativeElement.querySelector('div').innerText).toEqual('TEST INPUT');
+  });
+
+  it('should show DIFFERENT TEST INPUT', () => {
+    testHostComponent.setInput('different test input');
+    testHostFixture.detectChanges();
+    expect(testHostFixture.nativeElement.querySelector('div').innerText).toEqual('DIFFERENT TEST INPUT');
+  });
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test [input]="input"></component-under-test>`
+  })
+  class TestHostComponent {
+    private input: string;
+
+    setInput(newInput: string) {
+      this.input = newInput;
+    }
+  }
+
+
+
+
+Now, imagine we have to bind not only one but multiple inputs to our component. Do we now need to write a setter method for each input?
+
+Luckily, the answer is no!
+
+
+  it('should show DIFFERENT TEST INPUT', () => {
+    testHostComponent.componentUnderTestComponent.input = 'different test input';
+    testHostFixture.detectChanges();
+    expect(testHostFixture.nativeElement.querySelector('div').innerText).toEqual('DIFFERENT TEST INPUT');
+  });
+  @Component({
+    selector: `host-component`,
+    template: `<component-under-test></component-under-test>`
+  })
+  class TestHostComponent {
+    @ViewChild(ComponentUnderTestComponent)
+    public componentUnderTestComponent: ComponentUnderTestComponent;
+  }
+
+
+Instead of having a setter at all, we can also get a reference to our component from within the host component and pass it into our test. There we have full control over our component and can modify any field we want.
+
+
+
+
+------------------
+
+xdescribe('PrismIconComponent via TestHost', () => {
+  let component: PrismIconComponent;
+  let fixture: ComponentFixture<PrismIconComponent>;
+
+  let testHostComponent: TestHostComponent;
+  let testHostFixture: ComponentFixture<TestHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [PrismIconComponent, TestHostComponent],
+      imports: [FontAwesomeModule, PrismIconLibModule]
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PrismIconComponent);
+    component = fixture.componentInstance;
+    // component.iconName = 'star;';
+
+    testHostFixture = TestBed.createComponent(TestHostComponent);
+    testHostComponent = testHostFixture.componentInstance;
+
+    testHostFixture.detectChanges();
+  });
+
+  it('should TEST INPUT', () => {
+    testHostComponent.setIconName('bad-circle-notch');
+    testHostFixture.detectChanges();
+
+    // expect(() =>
+    //   component.ngOnChanges({
+    //     name: new SimpleChange(null, 'bad-circle-notch', false)
+    //   })
+    // ).toThrowError(/not found in iconNameMap/);
+
+    expect(() => component.validateIconNameAndSetIconProperty('bad-circle-notch')).toThrowError(
+      /not found in iconNameMap/
+    );
+  });
+});
+
+@Component({
+  selector: `host-component`,
+  template: `<prism-icon [iconName]="iconName"></prism-icon>`
+})
+class TestHostComponent {
+  iconName: string = 'star';
+
+  setIconName(newIconName: string) {
+    console.log('setting iconName: ', newIconName);
+    this.iconName = newIconName;
+  }
+}
+
+
+
+================================================================================
+
   How to test private methods and variables
   -----------------------------------------
 
@@ -2071,6 +2409,21 @@ and add reporters array:
 
  you need to import ReactiveFormsModule
  
+
+
+================================================================================
+
+  Error: No provider for MyService
+  ----------------------------------
+
+add providers
+
+
+beforeEach(async(() => {
+  TestBed.configureTestingModule({
+    providers: [MyService]
+  });
+}));
 
 
 ================================================================================

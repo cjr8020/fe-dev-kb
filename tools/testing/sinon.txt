@@ -1,0 +1,382 @@
+
+*******************
+
+	 Sinon Testing 
+
+*******************
+
+
+https://sinonjs.org/
+
+Resources:
+
+https://semaphoreci.com/community/tutorials/best-practices-for-spies-stubs-and-mocks-in-sinon-js
+
+
+
+Standalone test spies, stubs and mocks for JavaScript.
+Works with any unit testing framework.
+
+
+
+Test Doubles
+-------------
+
+- Functions without side effects
+
+		Functions without side effects are simple: 
+		the result of such a function is only dependent on its parameters — 
+		the function always returns the same value given the same parameters.
+
+
+- And functions with side effects
+
+		A function with side effects can be defined as a function that depends on something external, such as the state of some object, the current time, a call to a database, or some other mechanism that holds some kind of state. 
+
+		The result of such a function can be affected by a variety of things in addition to its parameters.
+
+
+
+Example
+-------
+
+	function setupNewUser(info, callback) {
+	  var user = {
+	    name: info.name,
+	    nameLowercase: info.name.toLowerCase()
+	  };
+
+	  try {
+	    Database.save(user, callback);
+	  }
+	  catch(err) {
+	    callback(err);
+	  }
+	}
+
+
+The function we want to test - setupNewUser - depends on two other functions
+
+	toLowerCase - fn without side effects
+	Database.safe - fn with side effects
+
+We need test doubles for functions with side effects.
+
+
+
+====================================================================================================
+
+	sinon Best Practices
+	********************
+
+https://semaphoreci.com/community/tutorials/best-practices-for-spies-stubs-and-mocks-in-sinon-js	
+
+
+Use sinon.test  for Sinon's automatic clean-up.
+-----------------------------------------------
+
+https://github.com/sinonjs/sinon-test#usage
+
+
+Instead of writing tedious setup and teardown code for each individual test case you can let Sinon do all the cleanup for you.
+
+So instead of doing this (using Mocha syntax)
+
+	var spy1;
+	var spy2;
+
+	afterEach(() => {
+	    spy1.restore();
+	    spy2.restore();
+	});
+
+	it("should do something", () => {
+	    spy1 = sinon.spy(myFunc);
+	    spy2 = sinon.spy(myOtherFunc);
+	    myFunc(1);
+	    myFunc(2);
+	    assert(spy1.calledWith(1));
+	    assert(spy1.calledWith(2));
+	});
+
+
+You could write:
+
+	it(
+	    "should do something",
+	    test(function () {
+	        var spy1 = this.spy(myFunc);
+	        var spy2 = this.spy(myOtherFunc);
+	        myFunc(1);
+	        myFunc(2);
+	        assert(spy1.calledWith(1));
+	        assert(spy1.calledWith(2));
+	    })
+	); //auto-cleanup
+
+Sinon will take care of removing all the spies and stubs from the wrapped functions for you. It does this by using sinon.sandbox internally.
+
+==>  NOTE: Do notice that we use a function and not a arrow function (ES2015) when wrapping the test with sinon.test as it needs to be able to access the this pointer used inside of the function, which using an arrow function would prevent.
+
+
+Example:
+--------
+
+it('should call save once', sinon.test(function() {
+  var save = this.spy(Database, 'save');
+
+  setupNewUser({ name: 'test' }, function() { });
+
+  sinon.assert.calledOnce(save);
+}));
+
+
+Note the three differences: 
+
+1. in the first line, we wrap the test function with sinon.test. 
+2. In the second line, we use this.spy instead of sinon.spy. 
+3. And lastly, we removed the save.restore call, as it’s now being cleaned up automatically.
+
+
+You can make use of this mechanism with all three test doubles:
+
+sinon.spy becomes this.spy
+sinon.stub becomes this.stub
+sinon.mock becomes this.mock
+
+
+
+Async Tests with sinon.test and Fake Timers
+--------------------------------------------
+
+You may need to disable fake timers for async tests when using sinon.test.
+
+This is a potential source of confusion when using Mocha’s asynchronous tests together with sinon.test.
+
+
+To make a test asynchronous with Mocha, you can add an extra parameter into the test function:
+
+	it('should do something async', function(done) {
+
+This can break when combined with sinon.test:
+
+	it('should do something async', sinon.test(function(done) {
+
+Combining these can cause the test to fail for no apparent reason, displaying a message about the test timing out. 
+
+
+This is caused by Sinon’s fake timers which are enabled by default for tests wrapped with sinon.test, so you’ll need to disable them.
+
+This can be fixed by changing sinon.config somewhere in your test code or in a configuration file loaded with your tests:
+
+
+sinon.config
+------------
+sinon.config = {
+  useFakeTimers: false
+};
+
+
+
+Create Shared Stubs in beforeEach
+----------------------------------
+
+If you need to replace a certain function with a stub in all of your tests, consider stubbing it out in a beforeEach hook.
+
+	describe('Something', function() {
+	  var save;
+	  beforeEach(function() {
+	    save = sinon.stub(Database, 'save');
+	  });
+
+	  afterEach(function() {
+	    save.restore();
+	  });
+
+	  it('should do something', function() {
+	    //you can use the stub in tests by accessing the variable
+	    save.yields('something');
+	  });
+	});
+
+Make sure to also add an afterEach and clean up the stub. Without it, the stub may be left in place and it may cause problems in other tests.
+
+	  afterEach(function() {
+	    save.restore();
+	  });
+
+
+Checking the Order of Function Calls or Values Being Set
+--------------------------------------------------------
+
+If you need to check that certain functions are called in order, 
+you can use spies or stubs together with sinon.assert.callOrder:
+
+
+	var a = sinon.spy();
+	var b = sinon.spy();
+
+	a();
+	b();
+
+	sinon.assert.callOrder(a, b);
+
+
+If you need to check that a certain value is set before a function is called, you can use the third parameter of stub to insert an assertion into the stub:
+
+var func = sinon.stub(example, 'func', function() {
+  assert.equal(object.value, expectedValue);
+});
+
+
+
+	var object = { };
+	var expectedValue = 'something';
+	var func = sinon.stub(example, 'func', function() {
+	  assert.equal(object.value, expectedValue);
+	});
+
+	doSomethingWithObject(object);
+
+	sinon.assert.calledOnce(func);
+
+The assertion within the stub ensures the value is set correctly before the stubbed function is called. 
+
+
+==>  Remember to also include a sinon.assert.calledOnce check to ensure the stub gets called. Without it, your test will not fail when the stub is not called.
+
+
+
+====================================================================================================
+
+
+
+Spies
+******
+
+
+	Spies are used to get information about functions calls
+	e.g. how many times a fn was called, what arguments each call had.. what errors were thrown
+
+	a spy is a good choice whenever the goal of a test is to verify something happened. Combined with Sinon’s assertions, we can check many different results by using a simple spy.
+
+
+	We can check how many times a function was called using 
+	----------------------------
+
+		sinon.assert.callCount, 
+		sinon.assert.calledOnce, 
+		sinon.assert.notCalled, 
+		and similar. 
+
+e.g:
+
+	it('should call save once', function() {
+	  var save = sinon.spy(Database, 'save');
+
+	  setupNewUser({ name: 'test' }, function() { });
+
+	  save.restore();
+	  sinon.assert.calledOnce(save);
+	});
+
+
+	We can check what arguments were passed to a function using 
+	-----------------------------------------
+
+	sinon.assert.calledWith, or 
+
+	by accessing the call directly using 
+
+		spy.lastCall or 
+		spy.getCall(). 
+
+
+
+
+Stubs
+******
+
+	Stubs are like spies, except in that they replace the target function.
+
+	They can also contain custom behavior, such as returning values or throwing exceptions. 
+	They can even automatically call any callback functions provided as parameters.
+
+
+	Stubs have a few common uses:
+
+	You can use them to replace problematic pieces of code
+	You can use them to trigger code paths that wouldn’t otherwise trigger – such as error handling
+	You can use them to help test asynchronous code more easily
+
+
+
+	You can use them to replace problematic pieces of code
+	-------------------------------------------------------
+
+	The following stubs out Database.save()
+
+		var save = sinon.stub(Database, 'save');
+
+
+	Stubs can also be used to trigger different code paths.
+	-------------------------------------------------------
+
+	If the code we’re testing calls another function, we sometimes need to test how it would behave under unusual conditions — most commonly if there’s an error. We can make use of a stub to trigger an error from the code:
+
+		var expectedError = new Error('oops');
+  	var save = sinon.stub(Database, 'save');
+  	save.throws(expectedError);
+
+
+
+  You can use them to help test asynchronous code more easily
+  ------------------------------------------------------------
+
+
+  If we stub out an asynchronous function, we can force it to call a callback right away, making the test synchronous and removing the need of asynchronous test handling.
+
+
+  var expectedResult = { success: true };
+  var save = sinon.stub(Database, 'save');
+  save.yields(null, expectedResult);
+
+  var callback = sinon.spy();
+
+  setupNewUser({ name: 'foo' }, callback);
+
+
+
+
+
+Mocks
+*****
+
+Mocks should be used primarily when you would use a stub, but need to verify multiple more specific behaviors on it.
+
+Note that, with a mock, we define our expectations UP FRONT. 
+
+Normally, the expectations would come last in the form of an assert function call. With a mock, we define it directly on the mocked function, and then only call verify in the end.
+
+
+	var expectedUser = {
+	    name: info.name,
+	    nameLowercase: info.name.toLowerCase()
+	};
+	var database = sinon.mock(Database);
+	database.expects('save').once().withArgs(expectedUser);
+
+	setupNewUser(info, function() { });
+
+  database.verify();
+  database.restore();
+
+
+In this test, we’re using once() and withArgs() to define a mock which checks both the number of calls and the arguments given. 
+
+If we use a stub, checking multiple conditions require multiple assertions, which can be a code smell.
+
+
+
+
+

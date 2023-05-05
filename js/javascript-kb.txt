@@ -4,6 +4,18 @@
 
 ===============================================================================
 
+
+Async/Await
+**************
+
+https://javascript.info/async-await
+https://www.theodinproject.com/lessons/node-path-javascript-async-and-await
+
+
+
+
+===============================================================================
+
 How to give name to a Blob uploaded as FormData a filename
 ----------------------------------------------------------
 
@@ -273,6 +285,26 @@ reduce
 		[0, 1, 2, 3, 4].reduce( (acc, n) => (acc + n), 5);
 
 
+
+some
+-----
+
+The some() method checks if any array elements pass a test (provided as a callback function).
+The some() method executes the callback function once for each array element.
+
+The some() method returns true (and stops) if the function returns true for one of the array elements.
+
+
+const ages = [3, 10, 18, 20];
+
+ages.some(checkAdult);
+function checkAdult(age) {
+  return age > 18;
+}
+
+
+
+
 ===============================================================================
 
 	String functions
@@ -286,6 +318,28 @@ indexOf
 
 	returns the index within the calling String object of the first occurence of the specified value, starting the search at 'fromIndex'
 	returns -1 if the value not found
+
+
+String Case Insensitive Search
+------------------------------
+Both String#includes() and String#indexOf() are case sensitive. Neither function supports regular expressions. 
+To do case insensitive search, you can use regular expressions and the String#match() function, or you can convert both the string and substring to lower case using the String#toLowerCase() function.
+
+const str = 'arya stark';
+
+// The most concise way to check substrings ignoring case is using
+// `String#match()` and a case-insensitive regular expression (the 'i')
+str.match(/Stark/i); // true
+str.match(/Snow/i); // false
+
+// You can also convert both the string and the search string to lower case.
+str.toLowerCase().includes('Stark'.toLowerCase()); // true
+str.toLowerCase().indexOf('Stark'.toLowerCase()) !== -1; // true
+
+str.toLowerCase().includes('Snow'.toLowerCase()); // false
+str.toLowerCase().indexOf('Snow'.toLowerCase()) !== -1; // false
+
+
 
 
 ===============================================================================
@@ -530,4 +584,1745 @@ return the first element in the result array [1]
     } else {
       return undefined;
     }
+===============================================================================
+
+
+Promises  Async/Await Resources
+
+## Resources
+
+JavaScript Promises done right
+https://medium.com/twodigits/javascript-promises-done-right-6aa729da9db0
+
+5 async/await best practices
+https://levelup.gitconnected.com/5-async-await-best-practices-c80c17c13f89
+
+Asynchronous JavaScript: From Callback Hell to Async and Await
+https://www.toptal.com/javascript/asynchronous-javascript-async-await-tutorial
+
+What are Promises in Angular: Beginners' Guide
+https://www.knowledgehut.com/blog/web-development/what-is-promise-in-angularjs
+
+https://javascript.info/promise-api
+
+Unit Testing a TypeScript Library
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/unit-testing/
+
+How to Write a TypeScript Library
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/
+
+A quick introduction to “Promises” and “Async/Await” (with new features)
+https://medium.com/jspoint/typescript-promises-and-async-await-b842b55ee3fd
+
+### Error Handling and Debugging
+
+https://javascript.info/async-await
+
+Async/Await Error Handling
+https://wesbos.com/javascript/12-advanced-flow-control/71-async-await-error-handling
+
+Mastering Async Await Error Handling in JavaScript
+https://codedamn.com/news/javascript/javascript-async-await-error
+
+
+
+
+
+
+===============================================================================
+
+
+	Async / await
+
+	*************
+
+https://www.toptal.com/javascript/asynchronous-javascript-async-await-tutorial	
+
+5 async/await best practices
+https://levelup.gitconnected.com/5-async-await-best-practices-c80c17c13f89
+
+https://javascript.info/async-await
+
+Async/Await is a way to write asynch code that looks and behaves like synchronous code.
+It allows you to pause the execution of a function, wait for a promise to resolve, and
+then pick up where you left off.
+
+
+	Benefits:
+
+		Improved performance and scalability
+	allows you to write non-blocking code
+
+		Enhanced UX
+	enables more responsive ineractive apps leading to better UX
+
+		Better code structure and readability
+	enables clean and organized code
+
+		Increased productivity
+	simplifies asynch programming 
+
+
+
+Async is a keyword placed before a function to allow the function to return a promise.
+
+Async functions let us write promise-based codee as if it were synchronous, but 
+without blocking the execution thread.
+
+The purpose of async/await is to simplify the syntax necessary to consume 
+promise-based APIs..
+
+Async functions always return a Promise.
+
+
+	async function f() {
+	  return 1;
+	}
+
+	f().then(alert); // 1
+
+
+…We could explicitly return a promise, which would be the same:
+
+
+	async function f() {
+	  return Promise.resolve(1);
+	}
+
+	f().then(alert); // 1
+
+
+So, async ensures that the function returns a promise, and wraps non-promises in it. 
+
+Simple enough, right? 
+But not only that. 
+
+There’s another keyword, await, that works only inside async functions, and it’s pretty cool.
+
+
+AWAIT
+-----
+
+The keyword await makes JavaScript wait until that promise settles and returns its result.
+
+	async function f() {
+
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 1000)
+	  });
+
+	  let result = await promise; // wait until the promise resolves (*)
+
+	  alert(result); // "done!"
+	}
+
+	f();
+
+
+Let’s emphasize: 
+	await literally suspends the function execution until the promise settles, and then resumes it with the promise result. 
+
+	That doesn’t cost any CPU resources, because the JavaScript engine can do other jobs in the meantime: execute other scripts, handle events, etc.
+
+It’s just a more elegant syntax of getting the promise result than promise.then. And, it’s easier to read and write.
+
+
+
+Why should you start using the JavaScript async function today?
+----------------------------------------------------------------
+
+1. The resulting code is much cleaner.
+
+2. Error handling is much simpler and it relies on try/catch just like in any other synchronous code.
+
+3. Debugging is much simpler. Setting a breakpoint inside a .then block will not move to the next .then because it only steps through synchronous code. But, you can step through await calls as if they were synchronous calls.
+
+
+
+	const verifyUser = async function(username, password){
+	   try {
+	       const userInfo = await dataBase.verifyUser(username, password);
+	       const rolesInfo = await dataBase.getRoles(userInfo);
+	       const logStatus = await dataBase.logAccess(userInfo);
+	       return userInfo;
+	   }catch (e){
+	       //handle errors as needed
+	   }
+	};
+
+
+Best practices for Async/Await
+----------------------------------
+
+1.  Use async/await for all async code.
+- - - - - - - - - - - - - - - - - - - - 
+
+consistency
+makes it easy to catch and handle errors using try/catch
+
+
+	// Example 1: Using async/await with promises
+	async function getData() {
+	  try {
+	    const response = await fetch('https://example.com/data');
+	    const data = await response.json();
+	    return data;
+	  } catch (error) {
+	    console.error(error);
+	  }
+	}
+
+	// Example 2: Using async/await with async/await functions
+	async function processData(data) {
+	  try {
+	    const processedData = await transformData(data);
+	    await saveData(processedData);
+	  } catch (error) {
+	    console.error(error);
+	  }
+	}
+
+
+
+2.  Use async/await inside try/catch
+- - - - - - - - - - - - - - - - - - - - 
+
+3.  Avoid using .then() and .catch() with async/await
+- - - - - - - - - - - - - - - - - - - - 
+
+But see this opinion "Combine the syntaxes" @
+https://medium.com/twodigits/javascript-promises-done-right-6aa729da9db0
+
+
+
+
+4.  Avoid async void functions, except for event handlers
+- - - - - - - - - - - - - - - - - - - - 
+
+Async void functions are functions that are marked with the async keyword, but do not return a value.
+
+	async void DoWork() {
+	  // Async code here
+	}
+
+Async void functions can be problematic because they don’t return a value, which makes it difficult to handle errors and determine when the function has completed.
+
+Instead of using async void functions, it’s generally a better idea to use async Task or async Task<T> functions. These types of functions allow you to return a value and handle errors more easily.
+
+	async Task DoWork() {
+	  // Async code here
+	}
+
+There is one situation where it’s okay to use async void functions: event handlers. Async void event handlers are commonly used in UI programming to perform asynchronous operations without blocking the UI thread.
+
+
+	private async void Button_Click(object sender, RoutedEventArgs e) {
+	  // Async code here
+	}
+
+
+5.  Don’t mix sync and async code without proper consideration
+- - - - - - - - - - - - - - - - - - - - 
+
+Mixing sync and async code can lead to a number of problems, including performance issues, deadlocks, and race conditions. It’s generally a good idea to avoid mixing sync and async code unless you have a good reason to do so.
+
+Here's an example of calling an async method from a sync method:
+
+	public void DoWork() {
+	  // Sync code here
+	  await DoAsyncWork();
+	  // Sync code here
+	}
+
+	public async Task DoAsyncWork() {
+	  // Async code here
+	}
+
+
+===============================================================================
+
+
+	The Awaited Type
+	****************
+
+TypeScript 4.5 introduces a new utility type called the Awaited type. 
+
+This type is meant to model operations like await in async functions, or the .then() method on Promises - specifically, the way that they recursively unwrap Promises.
+
+
+If you need to unwrap the type of the Promise from a function's return type, use the Awaited utility type.
+
+	function getPromise(a: number): Promise<number> {
+	  return Promise.resolve(a);
+	}
+
+	// 👇️ Unwrap promise type if necessary
+	// 👇️ type T = number
+	type T = Awaited<ReturnType<typeof getPromise>>;
+
+
+The Awaited utility type recursively unwraps a promise and returns its type.
+
+
+
+===============================================================================
+
+	Observables versus Promises
+	***************************
+
+https://www.stackchief.com/blog/Observable%20vs%20Promise%20%7C%20Which%20is%20Better%3F
+
+
+Observable are not native to JavaScript
+---------------------------------------
+
+With the release of ES6, the Promise is native to JavaScript...
+
+let myPromise = new Promise((reject, resolve) => resolve(1))
+
+==> If you don't want to rely on third party libraries like RxJs then use Promises to handle async activity.
+
+
+
+A Promise can't be canceled
+---------------------------
+
+If you want the ability to cancel an async activity use observables. 
+
+==> If you always want to handle the completion of a single event use promises.
+
+
+Observables can emit multiple values
+------------------------------------
+
+Observables emit streams of data over time. 
+Promises reject/resolve a single event. 
+An Observable will emit events where a defined callback executes for each event.
+
+==> If you want to handle a single event, use a Promise. 
+==> If you want to stream multiple events from the same API, use Observables.
+
+
+
+Eager vs. lazy execution
+-------------------------
+
+There is a difference in how Observables and Promises are executed. 
+Promises are executed eagerly whilst Observables are executed lazily. What does that mean?
+
+
+Eager: The Promise callback will execute right away at the constructor level.
+
+Lazy: The Producer function will only trigger after there is a subscription created for that Observable. Otherwise, it will stay idle.
+
+
+
+
+===============================================================================
+
+	Promise API Training
+	---------------------
+
+Promise API 2022
+https://javascript.info/promise-api
+
+JavaScript Promises done right
+Apr 4, 2022
+https://medium.com/twodigits/javascript-promises-done-right-6aa729da9db0
+
+
+How to call APIs using TypeScript?
+Sun May 08 2022
+https://rapidapi.com/guides/api-call-typescript
+
+How to use Typescript with native ES6 Promises ?
+https://www.geeksforgeeks.org/how-to-use-typescript-with-native-es6-promises/
+
+
+How to use Typescript with native ES6 Promises?
+https://www.tutorialspoint.com/how-to-use-typescript-with-native-es6-promises
+
+
+Promises in TypeScript
+https://javascript.plainenglish.io/promises-in-typescript-27d887a8d380
+
+
+HTTP Example with Promises
+https://codecraft.tv/courses/angular/http/http-with-promises/
+
+
+Making REST API calls with TypeScript (With Examples)
+August 18, 2021
+https://www.sohamkamani.com/typescript/rest-http-api-call/#usage-and-examples
+
+===============================================================================
+
+	Declaring functions with Promise Return type
+	--------------------------------------------
+
+// ✅ Named function
+function getPromise(): Promise<number> {
+  return Promise.resolve(5);
+}
+
+
+// ✅ Named async function
+async function getPromise2(): Promise<number> {
+  return 10;
+}
+
+
+
+===============================================================================
+
+Promise API
+***********
+
+https://javascript.info/promise-api
+
+
+3 stages of a Promise
+
+// Pending
+
+// complete promise --> resolve
+
+// did not complete --> reject
+
+
+
+A promise is a TypeScript object which is used to write asynchronous programs. 
+A promise is always a better choice when it comes to managing multiple asynchronous operations, error handling and better code readability.
+
+
+A Promise is a class-based object, it is created using the `new` keyword.
+
+A Promise is defined by passing a callback function, aka the executor function, 
+or executor code as an argument 
+
+
+new Promise(function(resolve, reject) {
+	// logic
+});
+
+
+Understand TypeScript Promise Parameter
+----------------------------------------
+
+A promise accepts callback function as a parameter.
+
+Callback function accepts 2 parameter resolve and reject.
+
+If condition is true then it returns resolve else it returns the reject.
+
+
+What are Promise States:
+------------------------
+
+pending	
+	This state refers to the first state when the promise is neither fulfilled nor rejected.
+fulfilled	
+	As the name suggested when the promise operation executed successfully.
+rejected	
+	This state refers to the state when the promise operation is failed.
+
+
+
+A Promise is said to be SETTLED if it is either fulfilled or rejected.
+
+
+
+
+pending
+
+
+
+Promise   fulfill  .then(onFullfillment) -- return ->  
+
+             or                                        Promise
+
+          reject  .then(onRejection)     -- return -> 
+                  .catch(onRejection)
+
+
+
+
+
+
+
+
+There are 6 static methods of Promise API
+=========================================
+
+Promise.resolve(value)
+----------------------
+
+	makes a resolved promise with the given value
+
+Promise.reject(error)
+---------------------
+
+	makes a rejected promise with the given error
+
+
+Promise.all(promises)
+----------------------
+
+	waits for all promises to resolve and returns an array of their results.
+	If any of the given promises rejects, it becomes an error of Promise.all,
+	and all other results are ignored.
+
+
+Promise.allSettled(promises)
+----------------------------
+
+Promise.race(promises)
+----------------------
+
+	waits for the first promise to fulfill, and it's result becomes the outcome.
+
+
+Promise.any(promises)
+---------------------
+
+	waits for the first promise to fulfill, and its result becomes the outcome.
+	if all of the givem promises rejected, AggregateError becomes the error of
+	Promise.any.
+
+
+
+
+
+Promise.all
+------------
+
+Let’s say we want many promises to execute in parallel and wait until all of them are ready.
+
+For instance, download several URLs in parallel and process the content once they are all done.
+
+That’s what Promise.all is for.
+
+
+	let promise = Promise.all(iterable);
+
+Promise.all takes an iterable (usually, an array of promises) and returns a new promise.
+The new promise resolves when all listed promises are resolved, and the array of their results becomes its result.
+
+For instance, the Promise.all below settles after 3 seconds, and then its result is an array [1, 2, 3]:
+
+	Promise.all([
+	  new Promise(resolve => setTimeout(() => resolve(1), 3000)), // 1
+	  new Promise(resolve => setTimeout(() => resolve(2), 2000)), // 2
+	  new Promise(resolve => setTimeout(() => resolve(3), 1000))  // 3
+	]).then(alert); // 1,2,3 when promises are ready: each promise contributes an array member
+
+
+===============================================================================
+
+	 error TS2794: Expected 1 arguments, but got 0. Did you forget to include 'void' in your type argument to 'Promise'?
+
+
+The error "Expected 1 argument, but got 0. Did you forget to include 'void' in your type argument to Promise" occurs when we use the Promise constructor without passing it an argument.
+
+
+	function getPromise() {
+	  return new Promise((resolve, reject) => {
+	    // ⛔️ Error: Expected 1 arguments, but got 0.
+	    // Did you forget to include 'void' in your type argument to 'Promise'?ts(2794)
+	    resolve();
+	  });
+	}
+
+
+To solve the error, use a generic to type the value of the Promise to void.
+
+By default the Promise constructor takes 1 argument of type unknown, 
+so we should either pass it an argument or update the type of its parameters.
+
+	function getPromise() {
+	  // 👇️ type Promise value as void
+	  return new Promise<void>((resolve, reject) => {
+	    resolve();
+	  });
+	}
+
+The void type represents the return value of a function that doesn't return anything.
+
+
+If you need to resolve the Promise with a value of another type, pass the specific type to the generic.
+
+
+function getPromise() {
+  return new Promise<number>((resolve, reject) => {
+    resolve(1000);
+  });
+}
+
+
+https://bobbyhadz.com/blog/typescript-function-return-type-promise
+
+
+
+===============================================================================
+
+	JavaScript Promises done right
+	------------------------------
+
+	https://medium.com/twodigits/javascript-promises-done-right-6aa729da9db0
+
+Use `async`
+
+
+// Don't do this!
+function asyncFunction (myBoolean) {
+  return new Promise((resolve, reject) => {
+    if (myBoolean) {
+      resolve('Success');
+    } else {
+      reject('Failure');
+    }
+  });
+}
+
+
+I would always use the async keyword to make my function return a Promise and if I need to reject, throw an error. 
+
+The syntax looks way cleaner to me.
+
+
+	// 👇️ Do this instead:
+	async function asyncFunction (myBoolean) {
+	  if (myBoolean) {
+	    return 'Success';
+	  } else {
+	    throw new Error('Failure');
+	  }
+	}
+
+
+Use Await
+----------
+
+NOTE 😡
+
+error TS1378: Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', or 'nodenext', and the 'target' option is set to 'es2017' or higher.
+
+
+
+Only use await, when you need to access the resolved value of the Promise. If not, you might block your execution prematurely and run into performance issues.
+
+
+// Don't do this!
+async function asyncFunction() {
+  const a = await fetch("https://abc.com/a").then(res => res.json());
+  const b = await fetch("https://abc.com/b").then((res) => res.json());
+  const c = await fetch("https://abc.com/c").then((res) => res.json());
+  return a + b + c
+}
+
+
+Here, await is being used exactly at the point where the resolved value is needed.
+
+
+// 👇️ Do this instead:
+async function asyncFunction() {
+  const a = fetch("https://abc.com/a").then(res => res.json());
+  const b = fetch("https://abc.com/b").then((res) => res.json());
+  const c = fetch("https://abc.com/c").then((res) => res.json());
+  return await a + await b + await c
+}
+
+
+Array.map with Promises
+------------------------
+
+This one is an interesting myth: “ You can’t use Promises with Array.map”. Yes, you can, and you probably should. Using a for loop might lead you to again await too early. The only thing you need to be aware of is that if you apply an async function to Array.map, you will end up with an array of Promises. This in turn means that you need to unwrap those Promises if you want to access their values. You can use Promise.all, or Promise.allSettled to do that.
+
+
+// Don't do this!
+async function asyncFunction(myArray) {
+  let myResults = []
+  for (const element of myArray) {
+    const result = await fetch(`https://myelement.com/${element}`).then(res => res.json());
+    myResults.push(result);
+  }
+  return myResults;
+}
+
+// Do this instead:
+async function asyncFunction(myArray) {
+  return Promise.all(myArray.map(element => fetch(`https://myelement.com/${element}`).then(res => res.json())));
+}
+
+
+Combine the Syntaxes
+---------------------
+
+	await  +  then()
+
+
+you shouldn’t use await for things that are intermediary, like a response that still needs to be parsed. 
+
+// Don't do this!
+async function asyncFunction(element) {
+  let myDomainText = '';
+  try {
+    const resultJson = await fetch(`https://myelement.com/${element}`);
+    myDomainText = resultJson.json();
+  } catch {
+    myDomainText = "myDefaultValue if the call fails";
+  }
+  console.log(myDomainText);
+}
+
+
+
+// 👇️ Do this instead:
+async function asyncFunction(element) {
+  const myDomainText = await fetch(`https://myelement.com/${element}`)
+    .then((res) => res.json())
+    .catch(() => "myDefaultValue if the call fails");
+  console.log(myDomainText);
+}
+
+
+
+
+===============================================================================
+
+	Handling errors in Await/Async
+	-------------------------------
+
+
+Promises have three states:
+
+Pending: The initial state; neither fulfilled nor rejected.
+Fulfilled: The operation completed successfully, resulting in a resulting value.
+Rejected: The operation failed, resulting in a reason (typically an error).
+
+Promises can be consumed with 
+
+	then() to attach  callbacks that will be called when the promise is fulfilled
+or
+	catch() - when the promise is rejected
+
+
+Example
+
+
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Success!');
+  }, 1000);
+});
+
+promise.then((value) => {
+  console.log(value); // 'Success!'
+}).catch((error) => {
+  console.log(error);
+});
+
+
+
+Error Handling Strategies for Async - Await
+===========================================
+
+1. Using try-catch
+2. Handling errors at the Call Site - when the async function is called
+3. Handling errors with custom Error Handlers
+4. Error Handling with Promise.all()
+
+
+
+
+
+
+
+1. try and catch
+-------------
+
+
+async function f() {
+
+  try {
+    let response = await fetch('http://no-such-url');
+  } catch(err) {
+    alert(err); // TypeError: failed to fetch
+  }
+}
+
+f();
+
+
+Example:
+--------
+
+
+async function go() {
+  try {
+    const pizza = makePizza(['pineapple']);
+    console.log('in try.  pizza: ', pizza);
+  } catch (error) {
+    console.log('Oh no!');
+    console.error('in catch, error: ', error);
+  }
+}
+
+==> but I'm still getting 
+
+[UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "Seriously? Get out Pineapple!".] {
+  code: 'ERR_UNHANDLED_REJECTION'
+}
+
+
+
+
+
+
+2. Handling errors at the Call Site - when the async function is called
+
+If we don't catch within the function, then we can append .catch() when we call it
+
+
+	f().catch((error) => {
+		console.error('Error: ', error);
+	}); 
+
+
+
+
+
+3. Handling errors with custom Error Handlers
+-----------------------------------------------
+
+
+class NetworkError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
+
+
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    if (!response.ok) {
+      throw new NetworkError(`Request failed with status ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    if (error instanceof NetworkError) {
+      console.error('Network Error:', error.message);
+    } else {
+      console.error('Error:', error);
+    }
+  }
+}
+
+fetchData();
+
+
+
+
+
+
+mix and match: use async/await with Promise syntax for error handling
+---------------------------------------------------------------------
+
+define 
+
+	function handleError(err) {
+		// handle error
+	}
+
+then 
+
+async function go() {
+	const pizza = await makePizza(['pineapple']).catch(handleError);
+}
+
+here ^^ we are using await() to get the data from the Promise instead of using the .then()
+but we are still using Promise.catch() to invoke our error handler.
+
+
+This is helpful when you want to handle the error at the time that you define the funciton.
+Sometimes you may want to handle the error at the time you CALL the function
+
+
+	go.catch(handleError)
+
+
+
+
+4. Error Handling with Promise.all()
+--------------------------------------------------------------------
+
+When using Promise.all() to execute multiple async functions concurrently, 
+be aware that Promise.all() rejects as soon as any of the passed Promises reject. 
+
+
+	Promise.allSettled()
+	--------------------
+
+
+To handle errors in this scenario, you can use Promise.allSettled() instead, 
+which waits for all Promises to settle (either fulfilled or rejected) and 
+returns an array of objects describing the outcome of each Promise.
+
+
+
+async function fetchData(url) {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
+const urls = ['https://api.example.com/data1', 'https://api.example.com/data2'];
+
+Promise.allSettled(urls.map(fetchData)).then((results) => {
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Data ${index + 1}:`, result.value);
+    } else {
+      console.error(`Error fetching data ${index + 1}:`, result.reason);
+    }
+  });
+});
+
+
+
+How do I handle multiple errors in a try-catch block?
+------------------------------------------------------
+
+
+async function fetchData() {
+  try {
+    // ...
+  } catch (error) {
+    if (error instanceof NetworkError) {
+      // Handle NetworkError
+    } else if (error instanceof SyntaxError) {
+      // Handle SyntaxError
+    } else {
+      // Handle other errors
+    }
+  }
+}
+
+
+
+
+How can I handle async errors in a loop?
+----------------------------------------
+
+
+When handling async errors in a loop, you can use a 
+
+	try-catch block inside the loop body to catch errors for each iteration 
+
+or 
+
+	use Promise.allSettled() to handle errors after all iterations have completed.
+
+
+
+async function fetchData(url) {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
+const urls = ['https://api.example.com/data1', 'https://api.example.com/data2'];
+
+// Option 1: try-catch inside loop
+// ----------
+(async () => {
+  for (const url of urls) {
+    try {
+      const data = await fetchData(url);
+      console.log(`Data for ${url}:`, data);
+    } catch (error) {
+      console.error(`Error fetching data for ${url}:`, error);
+    }
+  }
+})();
+
+// Option 2: Promise.allSettled()
+// ------------------------------
+Promise.allSettled(urls.map(fetchData)).then((results) => {
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Data ${index + 1}:`, result.value);
+    } else {
+      console.error(`Error fetching data ${index + 1}:`, result.reason);
+    }
+  });
+});
+
+
+
+
+
+
+===============================================================================
+
+	JavaScript fetch()  Fetch API
+	*****************************
+
+
+--------------------------------------------------------------------------------
+
+Install
+-------
+	
+
+The fetch() method starts the process of fetching a resource from a server.
+
+The fetch() method returns a Promise that resolves to a Response object.
+
+What is the point of ESM 3.x when node doesn't support it? At least for tsc. 
+Maybe ts-node supports it. But tsc should be compatible with ts-node.
+
+https://stackoverflow.com/questions/70142391/importing-node-fetch-in-node-project-with-typescript
+
+
+Downgrade or install v2. 😡
+
+$ npm install node-fetch@2 && npm install --save-dev @types/node-fetch@2.x 
+
+
+import { default as fetch, Headers } from 'node-fetch';
+
+
+tsconfig
+
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 12",
+    "compilerOptions": {
+      "lib": ["es2019"],
+      "module": "commonjs",
+      "target": "es2019",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node"
+    },
+    "include": [
+        "**/*.ts"
+    ]
+  }
+
+
+
+NOTE: I suggest using cross-fetch, it is almost the same but works everywhere, it helped me because I was not able to run node-fetch in TypeScript
+
+
+--------------------------------------------------------------------------------
+
+
+	Fetch API
+	=========
+
+fetch() call returns a promise which resolves to the `Response` object 
+associated with the resource.
+
+
+	Response object
+	--------
+
+
+Response.body (readable stream of the body contents)
+
+Response.bodyUsed (boolean)
+
+Response.headers
+
+Response.ok  (a boolean indicating whether the response was successful (200-299), or not)
+
+Response.redirected 
+
+Response.status Status code of the response.
+
+Response.statusText
+
+Response.url
+
+
+Static methods
+---------------
+
+Response.error()  - returns a new Response object associated with network error.
+Response.redirect() - creates a new response with a different URL.
+
+
+Instance methods
+-----------------
+
+Response.arrayBuffer() - returns a promise that resolves with an ArrayBuffer representation of the response body.
+
+Response.blob()	- returns a promise that resolves with a Blob representation of the response body.
+
+Response.close() - clones 
+
+Response.formData()  -  returns a promise formData representation of the response body.
+
+Response.json() - returns a promise  the result of parsing the response body text as JSON.
+
+Response.text() - returns a promise that resolves with a text representation of the response body.
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+	Two styles for writing async functions
+	--------------------------------------
+
+using then /  catch
+--------------------
+
+
+  public async getSession(): Promise<CiamResponse> {
+    const url = this.configuration.apiUrl + `/session`;
+    const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    const config: RequestInit = {
+      method: 'GET',
+      agent: httpsAgent
+    };
+
+    return fetch(url, config)
+      // handle network err/success
+      .then(handleErrors)
+      // process response
+      .then( (response) => {
+        return {
+          status: response.status,
+          data: response.statusText
+        }
+      });
+  }
+
+
+
+using async / await
+-------------------
+
+
+  public async getSessionNew(): Promise<CiamResponse> {
+    const url = this.configuration.apiUrl + `/session`;
+    const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    const config: RequestInit = {
+      method: 'GET',
+      agent: httpsAgent
+    };
+
+    const fetchResponse = await fetch(url, config);
+    if (!fetchResponse.ok) {
+      handleErrors(fetchResponse);
+    }
+    const responseData = await fetchResponse.text();
+    return {
+      status: fetchResponse.status,
+      data: responseData
+    }
+  }
+
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+
+Fetch with async / await
+**************************
+
+
+https://dmitripavlutin.com/javascript-fetch-async-await/
+
+how to fetch data, 
+handle fetch errors, 
+cancel a fetch request
+
+
+To start a request, call the special function fetch():
+-------------------
+
+which accepts 2 arguments:
+
+resource: the URL string, or a Request object
+options: the configuration object with properties like method, headers, body, credentials, and more.
+
+
+fetch() starts a request and returns a promise. When the request completes, the promise is resolved with the Response object. If the request fails due to some network problems, the promise is rejected.
+
+async/await syntax fits great with fetch() because it simplifies the work with promises with syntactic sugar.
+
+For example, let's make a request to fetch movies:
+
+	async function fetchMovies() {
+	  const response = await fetch('/movies');
+	  // waits until the request completes...
+	  console.log(response);
+	}
+
+fetchMovies() is an asynchronous function since it's marked with the async keyword.
+
+await fetch('/movies') starts an HTTP request to '/movies' URL. Because the await keyword is present, the asynchronous function is paused until the request completes.
+
+When the request completes, response is assigned with the response object of the request. Let's see in the next section how to extract useful data, like JSON or plain text, from the response.
+
+
+2. Fetching JSON
+----------------
+
+The response object, returned by the await fetch(), is a generic placeholder for multiple data formats.
+
+For example, you can extract the JSON object from a fetch response:
+
+	async function fetchMoviesJSON() {
+	  const response = await fetch('/movies');
+	  const movies = await response.json();
+	  return movies;
+	}
+
+	fetchMoviesJSON().then(movies => {
+	  movies; // fetched movies
+	});
+
+
+response.json() is a method of the Response object that allows a JSON object to be extracted from the response. The method returns a promise, so you have to wait for the JSON: await response.json().
+
+The Response object offers a lot of useful methods (all returning promises):
+
+	response.json() returns a promise resolved to a JSON object
+	response.text() returns a promise resolved to raw text
+	response.formData() returns a promise resolved to FormData
+	response.blob() returns a promise resolved to a Blob (a file-like object of raw data)
+	response.arrayBuffer()() returns a promise resolved to an ArryBuffer (raw generic binary data)
+
+3. Handling fetch errors
+------------------------
+
+When I was familiarizing with fetch(), I was surprised that fetch() doesn't throw an error when the server returns a bad HTTP status, e.g. client errors (400–499) or server errors (500–599).
+
+For example, let's access a non-existing page '/oops' on the server. As expected, such request ends in a 404 response status:
+
+async function fetchMovies404() {
+  const response = await fetch('/oops');
+  
+  response.ok;     // => false
+  response.status; // => 404
+
+  const text = await response.text();
+  return text;
+}
+
+fetchMovies404().then(text => {
+  text; // => 'Page not found'
+});
+
+
+When fetching the URL '/oops' the server responds with status 404 and text 'Page not found'. Surprisingly, fetch() doesn't throw an error for a missing URL, but considers this as a completed HTTP request.
+
+fetch() rejects only if a request cannot be made or a response cannot be retrieved. This can happen during network problems: no internet connection, host not found, the server is not responding.
+
+Fortunately, response.ok property lets you distinguish good from bad HTTP response statuses. The property is set to true only if the response has status 200-299.
+
+In the above example, the response.ok property is false because the response has the status 404.
+
+To throw an error on a bad HTTP status (outside of the range 200-299), check the value of response.ok property and throw an error manually:
+
+
+	async function fetchMoviesBadStatus() {
+	  const response = await fetch('/oops');
+
+	  if (!response.ok) {
+	    const message = `An error has occured: ${response.status}`;
+	    throw new Error(message);
+	  }
+
+	  const movies = await response.json();
+	  return movies;
+	}
+
+	fetchMoviesBadStatus().catch(error => {
+	  error.message; // 'An error has occurred: 404'
+	});
+
+
+
+4. Canceling a fetch request
+----------------------------
+
+Unfortunately, fetch() API alone doesn't allow to cancel a fetch request once started. To cancel a fetch request you need an additional tool AbortController.
+
+Connecting fetch() and AbortController requires 3 steps:
+
+// Step 1: instantiate the abort controller
+const controller = new AbortController();
+
+// Step 2: make the fetch() aware of controller.signal
+fetch(..., { signal: controller.signal });
+
+// Step 3: call to cancel the request
+controller.abort();
+A) Before starting the request, create an abort controller instance: controller = new AbortController().
+
+B) When starting the request properly, use the options argument of fetch(url, { signal: controller.signal }) and set signal property to be controller.signal.
+
+C) Finally, if you need to cancel the request, just call controller.abort() method.
+
+For example, let's implement 2 buttons that control a fetch request. Clicking the button Fetch movies starts a fetch() request, while clicking Cancel fetch aborts the request in progress:
+
+
+let controller = null;
+
+	fetchMoviesButton.addEventListener('click', async () => {
+	  controller = new AbortController();
+	  try {
+	    const response = await fetch('/movies', { 
+	      signal: controller.signal 
+	    });
+	  } catch (error) {
+	    console.log('Fetch error: ', error);
+	  }
+	  controller = null;
+	});
+
+	cancelFetchButton.addEventListener('click', () => {
+	  if (controller) {
+	    controller.abort();
+	  }
+	});
+
+
+Demo:
+https://codesandbox.io/p/sandbox/cancel-fetch-request-ggieh?file=%2Fsrc%2Findex.html&selection=%5B%7B%22endColumn%22%3A15%2C%22endLineNumber%22%3A28%2C%22startColumn%22%3A15%2C%22startLineNumber%22%3A28%7D%5D
+
+
+Click Fetch movies to start the request, then right away click Cancel fetch to cancel it. This makes the active request cancel: await fetch() gets rejected by throwing an abort error. The catch block then catches the abort error.
+
+The abort controller instances are not reusable. Each time you start a fetch() request, you have to create a new abort controller instance for each request.
+
+On a side note, if you'd like to timeout a fetch() request, follow my post How to Timeout a fetch() Request.
+
+
+
+index.html
+----------
+<!DOCTYPE html>
+
+<head>
+    <title>My Website</title>
+    <style>
+      button {
+        margin-right: 20px;
+      }
+      #message {
+        margin-top: 10px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+    </style>
+</head>
+
+<body>
+  <button id="fetchMovies">Fetch Movies</button>
+  <button id="cancelFetch">Cancel fetch</button>
+  <div id="message"></div>
+  <script>
+    const fetchMoviesButton = document.getElementById("fetchMovies");
+    const cancelFetchButton = document.getElementById("cancelFetch");
+
+    let controller = null;
+
+    fetchMoviesButton.addEventListener("click", async () => {
+      controller = new AbortController();
+      try {
+        log("Request started...");
+        const response = await fetch("/movies", {
+          signal: controller.signal
+        });
+        const movies = await response.json();
+        log(`Fetched movies: ${JSON.stringify(movies)}`);
+      } catch (error) {
+        log(`Fetch error: ${error.name}`);
+      }
+      controller = null;
+    });
+
+    cancelFetchButton.addEventListener("click", () => {
+      if (controller) {
+        controller.abort();
+      }
+    });
+
+    function log(message) {
+      document.getElementById("message").innerText = message;
+    }
+  </script>
+</body>
+
+</html>
+
+
+
+5. Parallel fetch requests
+--------------------------
+
+To perform parallel fetch requests use the Promise.all() helper function.
+
+Let's start 2 parallel requests to fetch movies and categories:
+
+async function fetchMoviesAndCategories() {
+  const [moviesResponse, categoriesResponse] = await Promise.all([
+    fetch('/movies'),
+    fetch('/categories')
+  ]);
+
+  const movies = await moviesResponse.json();
+  const categories = await categoriesResponse.json();
+
+  return [movies, categories];
+}
+
+fetchMoviesAndCategories().then(([movies, categories]) => {
+  movies;     // fetched movies
+  categories; // fetched categories
+}).catch(error => {
+  // /movies or /categories request failed
+});
+await Promise.all([...]) starts fetch requests in parallel, and waits until all of them are resolved.
+
+If any request fails, then the whole parallel promise gets rejected right away with the failed request error.
+
+In case if you want all parallel requests to complete, despite any of them fail, consider using Promise.allSettled().
+
+
+
+How to Timeout a fetch() Request
+---------------------------------
+https://dmitripavlutin.com/timeout-fetch-request/
+
+
+
+
+--------------------------------------------------------------------------------
+
+
+
+dealing with returned Promises in a Fetch API request
+-------------------------------
+
+https://dev.to/ramonak/javascript-how-to-access-the-return-value-of-a-promise-object-1bck
+
+Every fetch() method begins the process of requesting a resource and returns a Promise.
+
+
+fetch("https://jsonplaceholder.typicode.com/users/1") //1
+  .then((response) => response.json()) //2
+  .then((user) => {
+    console.log(user.address); //3
+  });
+
+
+ Here we 
+ 
+ (1) fetch data from the API, 
+ (2) transform it into JSON object and then 
+ (3) print user's address value to the console.
+
+
+const address = fetch("https://jsonplaceholder.typicode.com/users/1")
+  .then((response) => response.json())
+  .then((user) => {
+    return user.address;
+  });
+
+const printAddress = async () => {
+  const a = await address;
+  console.log(a);
+};
+
+printAddress();
+
+
+
+
+--------------------------------------------------------------------------------
+
+Using fetch with Typescript types
+----------------------------------
+
+https://www.newline.co/@bespoyasov/how-to-use-fetch-with-typescript--a81ac257
+
+The main problem with fetch function is that it isn't a generic function. This makes it harder to type response data without writing additional wrappers.
+
+
+type User = {
+  name: string;
+  age: number;
+}
+
+// This won't work.
+fetch<User>('/api/user/42').then(user => {
+  
+  // `user` will be of `unknown` type.
+})
+
+
+Wrapper Module
+
+Let's create a function request that will handle network requests:
+
+// Make the `request` function generic
+// to specify the return data type:
+function request<TResponse>(
+  url: string,
+  // `RequestInit` is a type for configuring 
+  // a `fetch` request. By default, an empty object.
+  config: RequestInit = {}
+   
+// This function is async, it will return a Promise:
+): Promise<TResponse> {
+    
+  // Inside, we call the `fetch` function with 
+  // a URL and config given:
+  return fetch(url, config)
+    // When got a response call a `json` method on it
+    .then((response) => response.json())
+    // and return the result data.
+    .then((data) => data as TResponse);
+    
+    // We also can use some post-response
+    // data-transformations in the last `then` clause.
+}
+
+
+Now we can call this function as we would call fetch:
+
+request<User>('/api/users/42').then(user => {
+  // Now, however, a `user` variable has the `User` type.
+})
+
+Or, since it is an async function we can use await:
+
+const user = await request<User>('/api/users/42');
+
+
+Error Handling
+--------------
+Right now the request function doesn't handle errors. To solve that we have 2 options:
+
+Handle errors inside of the request function;
+
+Let another module handle errors.
+
+There are no obligatory rules for this but Single Responsibility Principle tells us not to mix those concerns in a single function.
+
+However, we will take a look at both ways. The first one is to handle errors inside of the request function:
+
+function request<TResponse>(
+  url: string, 
+  config: RequestInit
+): Promise<TResponse> {
+  return fetch(url, config)
+    .then(response => response.json())
+    .then(data => data)
+    .catch(error => {
+      // Handle the error.
+    })
+}
+
+We can use catch to handle unresolved promises. There is a catch though (no pun intended).
+
+We can pass incorrect arguments to fetch and error will arise before the very first then;
+
+We may even not know how to handle an error in catch yet ¯\_(ツ)_/¯ 
+
+The first issue we can solve making the function async and using try-catch:
+
+async function request<TResponse>(
+  url: string, 
+  config: RequestInit
+): Promise<TResponse> {
+  try {
+    const response = await fetch(url, config);
+    return await response.json();
+  }
+  catch (error) {
+    // Handle the error.
+  }
+}
+
+However, this doesn't solve the second issue with not knowing how to handle the error. We can handle some basic network errors (Page Not Found, Bad Request) but we cannot handle any business-logic errors.
+
+With async/await approach, we can handle errors outside of the request function:
+
+async function request<TResponse>(
+  url: string, 
+  config: RequestInit
+): Promise<TResponse> {
+  const response = await fetch(url, config);
+  return await response.json();
+}
+
+// Handling errors outside:
+(async () => {
+  try {
+    const user = await request<User>('/api/users/42');
+  }
+  catch (error) {
+    // Handle any error happened.
+  }
+})()
+
+Key Takeaways
+-------------
+The fetch function is not generic. 
+
+To type the response result we need to create a wrapper generic-function ourselves.
+
+We can handle errors in that same wrapper or outside. Either approach has pros and cons.
+
+We can use then as well as await with Promise-based functions but await is a bit more convenient when it comes to error handling.
+
+--------------------------------------------------------------------------------
+
+
+
+
+Error Handling with Fetch API
+-----------------------------
+
+https://web.dev/fetch-api-error-handling/
+
+
+https://stackoverflow.com/questions/50330795/fetch-api-error-handling
+
+
+according to This Article :
+
+Per MDN, the fetch() API only rejects a promise when
+
+“a network error is encountered, although this usually means permissions issues or similar.”
+
+Basically fetch() will only reject a promise if the user is offline, or some unlikely networking error occurs, such a DNS lookup failure.
+
+
+https://stackoverflow.com/questions/72671749/try-catch-doesnt-working-when-the-fetch-api-returns-a-404
+
+
+
+
+
+Per Fetch API https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API#differences_from_jquery
+
+The Promise returned from fetch() won't reject on HTTP error status even if the response is an HTTP 404 or 500. Instead, it will resolve normally (with ok status set to false), and it will only reject on network failure or if anything prevented the request from completing.
+
+
+this will NOT run into catch() block:
+
+fetch('https://httpstat.us/404')
+  .then(function(){
+    console.log('200 OK');
+  }).catch(function(){
+    console.console.log('404');
+  })
+
+ So you can do something like this:
+
+
+class FetchError extends Error {
+  constructor(response) {
+    super(`HTTP error ${response.status}`);
+    this.response = response;
+  }
+}
+
+function fetchSomething(...args) {
+  return fetch(...args)
+  .then(response => {
+    if (!response.ok) {
+      throw new FetchError(response);
+    }
+    return response;
+  });
+}
+
+
+================================================================================
+
+	Debugging Fetch API
+	-------------------
+
+Depending on how your function is set up, the Promise will get rejected with no 
+aditional information.
+
+using await() rather than then(), you might be able to get more imformation.
+
+
+async function getData() {
+  const url = 'https://test';
+  const httpsAgent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+  const response = await fetch(url, {
+    method: 'GET',
+    agent: httpsAgent
+  });
+  const jsonResponse = await response.json();
+  console.log('jsonResponse: ', jsonResponse);
+}
+
+
+E.g.
+
+
+FetchError: request to https://test failed, reason: self signed certificate in certificate chain
+	...
+  type: 'system',
+  errno: 'SELF_SIGNED_CERT_IN_CHAIN',
+  code: 'SELF_SIGNED_CERT_IN_CHAIN'
+}
+
+
+
+
+===============================================================================
+
+	Angular Image Upload
+
+https://academind.com/tutorials/angular-image-upload-made-easy
+
+
+===============================================================================
+
+
+	Open Native Camera in Mobile Browsers
+	--------------------------------------
+
+
+	https://jakub-kozak.medium.com/how-to-open-the-native-camera-in-mobile-browsers-327820fa669a
+
+
+	https://stackoverflow.com/questions/8581081/how-to-access-a-mobiles-camera-from-a-web-app
+
+	https://stackoverflow.com/questions/50869083/access-mobile-camera-from-html-angular-application
+
+
+https://www.npmjs.com/package/ngx-webcam
+
+https://github.com/basst314/ngx-webcam/
+
+https://github.com/basst314/ngx-webcam-demo  - Demo project
+
+
 ===============================================================================

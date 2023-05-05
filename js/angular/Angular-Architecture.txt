@@ -70,6 +70,20 @@ To resolve the issue you need to create a specific service module and import tha
 https://wesleygrimes.com/angular/2019/02/24/angular-routing-best-practices-for-enterprise-applications.html
 
 
+
+With client-side SPAs, we have two strategies to implement client-side routing:
+
+  HashLocationStrategy
+  PathLocationStrategy (default)
+
+
+PathLocationStrategy
+--------------------
+
+It takes advantage of a relatively new HTML5 API called pushstate (from the HTML5 history API).
+
+
+
 ==============================================================================
 
   Angular Service Injectables  Service Singleton

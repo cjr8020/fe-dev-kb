@@ -347,8 +347,9 @@ Another ES6 syntactic sugar is "object literal property value shorthand"
 ==============================================================================
 
 
-Destructuring
-=============
+Object Destructuring | Destructuring Assignment
+=====================
+
   ECMAScript 2015 feature.
   http://exploringjs.com/es6/ch_destructuring.html
 
@@ -638,13 +639,126 @@ Coercing
 
 
 
-non-null assertion operator
------------------------------
+non-null assertion operator  (exlamation mark)
+----------------------------- 
 
 
-A new ! post-fix expression operator may be used to assert that its operand is non-null and non-undefined in contexts where the type checker is unable to conclude that fact. 
+The exclamation mark (non-null assertion) operator removes null and undefined from the type of an expression. 
 
-Specifically, the operation x! produces a value of the type of x with null and undefined excluded. Similar to type assertions of the forms <T>x and x as T, the ! non-null assertion operator is simply removed in the emitted JavaScript code.
+
+It is used when we know that a variable that TypeScript thinks could be null or undefined actually isn't.
+
+
+The non-null assertion operator is most commonly used when you have to get around incorrect typings of a third-party package or in any other case when we have information about the type of a value that TypeScript can't know about.
+
+
+
+
+
+Optional chaining:  The ? (question mark) operator in TypeScript
+---------------------------------------------------
+
+https://mariusschulz.com/blog/optional-chaining-the-operator-in-typescript 
+
+
+?.
+?.[]
+?.()
+
+
+`options` is an optional parameter
+
+function serializeJSON(value: any, options?: SerializationOptions) {
+  const indent = options.formatting.indent;
+  return JSON.stringify(value, null, indent);
+}
+
+If we have the --strictNullChecks option enabled
+
+  Object is possibly 'undefined'.
+
+The options parameter is optional, and as a result it might hold the value undefined. 
+We should first check whether options holds the value undefined before accessing options.formatting
+
+
+  function serializeJSON(value: any, options?: SerializationOptions) {
+    const indent = options !== undefined
+      ? options.formatting.indent
+      : undefined;
+    return JSON.stringify(value, null, indent);
+  }
+
+
+We could also use a slightly more generic null check instead that will check for both null and undefined — 
+
+NOTE: that we're deliberately using != instead of !== in this case:
+
+  function serializeJSON(value: any, options?: SerializationOptions) {
+    const indent = options != null
+      ? options.formatting.indent
+      : undefined;
+    return JSON.stringify(value, null, indent);
+  }
+
+
+Now the type error goes away
+
+
+
+The ?. Operator: Dot Notation
+------------------------------
+
+
+We can use the ?. operator to access options.formatting.indent with checks for nullish values at every level of this property chain:
+
+
+  function serializeJSON(value: any, options?: SerializationOptions) {
+    const indent = options?.formatting?.indent;
+    return JSON.stringify(value, null, indent);
+  }
+
+
+The ?.[] Operator: Bracket Notation
+-----------------------------------
+
+another operator in the optional chaining family.
+
+Let's say that our indent property on the SerializationOptions type was called indent-level instead. We'll need to use quotes to define a property that has a hyphen in its name:
+
+type SerializationOptions = {
+  formatting?: {
+    "indent-level": number;
+  };
+};
+
+However, the following attempt to access the indent-level property using optional chaining is a syntax error:
+
+  const indent = options?.formatting?."indent-level";
+
+We cannot use the ?. operator directly followed by a string literal 
+
+  const indent = options?.formatting?.["indent-level"];
+
+
+
+The ?.() Operator: Method Calls
+-------------------------------
+
+We can use the ?.() operator to invoke a method which may not exist.
+
+type SerializationOptions = {
+  formatting?: {
+    getIndent?: () => number;
+  };
+};
+
+
+const indent = options?.formatting?.getIndent?.();
+
+
+
+
+====================================================================================================
 
 
 
@@ -722,29 +836,20 @@ Object Types
 Type alias
 ------------
 
+type ID = number | string;
+
+thype Point = {
+  x: number;
+  y: number;
+};
+
+type InputType = 'email' | 'number' | 'password' | 'tel' | 'text';
+
+  @Input()
+  public type: InputType = 'text';
+
+
 Type alias allows us to create a Type definition.
-(another option for creating a type blueprint is oviously a Class)
-
-  // complex object
-  // this object has two properties - "data" and "output"
-  let complex: {data: number[], output: (all: boolean) => number[]} = {
-    data: [100, 3.99, 10],
-    output: function(all: boolean): number[] {
-      return this.data;
-    }
-  };
-
-  // new object - with the same declaration
-  let complex2: {data: number[], output: (all: boolean) => number[]} = {
-    data: [100, 2.33, 10],
-    output: function(all: boolean): number[] {
-      return this.data;
-    }
-  }
-
-  // how do I store the type definition? classes is one option.
-  // another option is a Type Alias
-  type Complex = {data: number[], output: (all: boolean) => number[]};
 
 
 
@@ -1261,6 +1366,91 @@ Default parameter for object parameter type:
 
 
 
+keyof type Operator
+-------------------
+
+
+
+Element implicitly has an 'any' type because expression of type 'string' can't be used to index type
+https://bobbyhadz.com/blog/typescript-element-implicitly-has-any-type-expression
+
+
+How to use the keyof operator in TypeScript
+https://blog.logrocket.com/how-to-use-keyof-operator-typescript/
+
+
+
+The keyof operator takes an object type and produces a string or numeric literal union of its keys. 
+
+We apply the keyof operator to the Staff type, and we get a staffKeys type in return, which represents all the property names. The result is a union of string literal types: “name” | “salary“:
+
+
+  type Staff = {
+   name: string;
+   salary: number;
+   } 
+  type staffKeys = keyof Staff; // "name" | "salary"
+
+
+Object.keys vs. keyof operator
+
+
+In JavaScript, Object.keys are used to return an array of keys of the Object.
+Object.keys works similarly in TypeScript. 
+
+
+const user = {
+  name: 'John',
+  age: 32
+};
+
+console.log(Object.keys(user));
+// output: Array ["name", "age"]
+
+Object.keys(user).forEach(key => {
+  console.log(user[key]);  // <---   ERROR
+}) // output: John, 32
+
+
+ERROR: 
+
+  Element implicitly has an 'any' type because 
+  expression of type 'string' can't be used to index type 
+    '{ name: string; age: number; }'.
+  No index signature with a parameter of type 'string' was found on type '{ name: string; age: number; }'.
+
+The error is because we try to use the `string` type key to access the object with 
+union type "name" | "age"
+
+
+
+
+
+
+To workaround this restriction, the simplest solution is to use type assertion with the keyof operator:
+
+
+type userKeyType = keyof typeof user; //  "name" | "age"
+Object.keys(user).forEach((key) => {
+ console.log(user[key as userKeyType])
+})
+
+
+
+A more elegant solution is to extend the ObjectConstructor interface by declaration merge:
+
+  interface ObjectConstructor {   // <--- defining this interface magically removes the ERROR above
+    keys<T>(o: T): (keyof T)[];
+  }
+
+  Object.keys(user).forEach((key) => {
+    console.log(user[key]);
+  });
+
+
+
+================================================================================
+
 
 Spread Operator
 ---------------
@@ -1357,6 +1547,21 @@ Make sure rest parameters come last:
 
     return args;
   }
+
+
+In JavaScript we can capture rest parameters like this
+
+  function Test(a){
+    console.log(a); // 1
+    
+    const restOfParameters = Array.from(arguments).slice(1)
+    console.log(restOfParameters); // [2,3]
+  }
+  Test(1,2,3);
+
+TypeScript offers
+
+
 
 
 
@@ -2247,6 +2452,51 @@ or
 
 ==============================================================================
 
+  Modules
+  -------
+
+In TypeScript, a module is a file containing values, functions, or classes. 
+You can make some of them public, i.e. visible from other modules, by exporting them. 
+
+
+You can consume modules using `import` keyword.
+
+If you want to use all the exported functions or a module, you can 
+
+
+// Import the math module as a *namespace*
+import * as math from "./math";
+
+
+
+
+What makes a Module a Module?
+
+
+Any TS file that  has either import or export statements.
+
+Modules are always evaluated in strict mode.
+
+Modules are never evaluated in Global scope.
+
+Modules are always deferred.
+
+
+
+
+Internal vs External Modules
+----------------------------
+
+now a Module is what used to be known an External module (imports/exports).
+
+Typescript has "module" keyword - internal module.
+
+Internal modules are now Namespaces.
+
+
+
+==============================================================================
+
   Modules and Namespaces
   **********************
 
@@ -2535,195 +2785,6 @@ tsconfig.js - TS compiler options
 
 
 ==============================================================================
-
-  JS function invocation and 'this'
-  *********************************
-http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/
-
-The core primitive - a Function's call() method
-------------------
-  here is what it does:
-
-  1. make an argList out of params 1 thru end
-  2. the first param is 'thisValue'
-  3. invoke the function with 'this' set to 'thisValue' and 'argList'
-
-    function hello(thing) {
-      console.log(this + " says hello " + thing);
-    }
-    hello.call("Yehuda", "world"); // outputs "Yehuda says hello world"
-
-Obviously, invoking functions with call() all the time would be pretty annoying.
-JS allows us to invoke functions directly using the parens syntax:
-
-  function hello(thing) {
-    console.log("Hello " + thing);
-  }
-  hello("World");
-  // which is really:
-  hello.call(window, "World");
-
-This behaviour changed in ECMAScript 5 ONLY when using STRICT mode:
-
-  // with ES5 "use strict"
-  hello.call(undefined, "world");  
-
-In other words:
-
-  fn(...args)  <==>  fn.call(window [ES5-strict: undefined], ...args)
-
-                     function being called should change its 'thisValue'
-                     to the global object when not in strict mode.
-
-
-Member Functions
-----------------
-
-  var person = {
-    name: "Brendan Eich",
-    hello: function(thing) {
-      console.log(this + " says hello " + thing);
-    }
-  }
-  person.hello("world");
-
-// same as
-
-  person.hello.call(person, "world"); 
-
-// And if we attach 'hello' method dynamically .. 
-
-  function hello(thing) {
-    console.log(this + " say hello " + thing);
-  }
-  person = { name: "Brendan Eich" }
-  person.hello = hello;
-  person.hello("world"); // still same as person.hello.call(person, "world")
-
-  // but calling the standalone function (in non-strict mode)
-  
-  hello("world"); // "[object DOMWindow]world"
-
-NOTE: the function doesn't have a PERSISTENT notion of its 'this'  -- it is 
-always set at call time based upon the way it was invoked by the caller.
-
-
-Using Function.prototype.bind
-------------------------------
-
-sometimes it can be convenient to have a reference to a function with a
-PERSISTENT 'this' value -- so people have used a simple closure trick to convert
-a function into one with an unchanging 'this':
-
-  var person = {
-    name: "Brendan Eich",
-    hello: function(thing) {
-      console.log(this.name + " says hello " + thing);
-    }
-  }
-
-  var boundHello = function(thing) { 
-    return person.hello.call(person, thing);
-  }
-    
-General purpose trick - ES5 introduced new method: bind() on all Function objects
-
-  var person = {
-    name: "Brendan Eich",
-    hello: function(thing) {
-      console.log(this.name + " says hello " + thing);
-    }
-  }
-
-  var boundHello = person.hello.bind(person);
-  boundHello("world");
-
-
-==============================================================================
-
-  RxJs
-  ****
-
-$ npm install --save RxJs
-
-
-import Rx = require("rxjs/Rx");
-
-  error: cannot find Promise
-
-$ npm install --save-dev @types/core-js
-
-  error: cannot find type definition for 'chai'
-
-$ npm install --save-dev @types/chai
-
-$ npm start # start the lite-server
-$ npm run build # to run tsc and watch for changes
-
-
-
-
-
-==============================================================================
-
-  Using JS libraries with TypeScript
-  **********************************
-
-Using jQuery as example
-
-Install jQuery
---------------
-
-$ npm install --save jquery
-
-Import the library using SystemJS
-----------------------------------
-
-$ npm install --save systemjs
-
-index.html
-----------
-<head>
-    <script src="node_modules/systemjs/dist/system.js"></script>
-
-<body>
-<script>
-  // set out baseURL reference path
-  SystemJS.config({
-    map: {
-      "jQuery": "node_modules/jquery/dist/jquery.min.js"
-    },
-    baseURL: '/',
-    defaultJSExtensions: true
-  });
-  SystemJS.import('app.js');
-</script>
-
-create a tag to test
---------------------
-
-<div id="app">Change with jQuery</div>
-
-
-import jquery TS definitions from DefinitelyTyped
--------------------------------------------------
-
-jquery.d.ts
-
-$ npm install --save-dev @types/jquery
-
-  this adds line to package.json and an entry in 
-
-    node_modules/@types/jquery/...
-
-In your code:
-
-app.ts:
-
-  import "jQuery";
-  $("#app").css({"background-color": "green"});
-
-
 ==============================================================================
 
   using Webpack
@@ -3038,6 +3099,41 @@ typescript includes javascript rules.
 
 ==============================================================================
 
+  TypeError: Converting circular structure to JSON
+  ------------------------------------------------
+
+TypeError: Converting circular structure to JSON occurs when you try to reference your variable name within the JSON object.
+
+  var mycar ={}
+  mycar.a = mycar
+  JSON.stringify(mycar)
+
+
+/usercode/index.js:3
+JSON.stringify(mycar);
+     ^
+
+TypeError: Converting circular structure to JSON
+    at JSON.stringify (<anonymous>)
+
+
+Solutions:
+
+1. remove circular dependencies
+
+2. use the 'flatted' package
+
+  const {parse, stringify} = require('flatted/cjs');
+
+  const mycar = {};
+  mycar.a = mycar;
+
+  stringify(mycar);
+  console.log(mycar)
+
+
+==============================================================================
+
   FileList operations
   --------------------
 
@@ -3083,6 +3179,51 @@ NOTE:
 
     Object.defineProperty(file, 'size', { value: 1024 * 1024 + 1, configurable: true })
 
+
+==============================================================================
+
+
+  void function return value is used
+  ----------------------------------
+
+
+error/warning displayed by Intellij IDEA
+
+let firstRow = 12
+let lastRow = 59
+btn.addEventListener("click", autoInput(firstRow, lastRow))
+
+function autoInput(firstRow, lastRow){
+    print()
+}
+
+Complains: Void function return value is used
+
+
+A: 
+
+  .addEventListener() expects a callback function as its second argument. 
+  
+  You're currently invoking autoInput(), thus passing its return value to .addEventListener(). 
+
+  You can pass an anonymous function which invokes autoInput() instead:
+
+    btn.addEventListener("click", () => autoInput(firstRow, lastRow))
+
+
+  or you can do this
+
+    btn.addEventListener("click", function() { autoInput(firstRow, lastRow); })
+
+
+
+
+==============================================================================
+
+  --watch mode
+  --------------
+
+  
 
 ==============================================================================
 

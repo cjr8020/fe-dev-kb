@@ -1651,3 +1651,486 @@ For example, "includePaths": ["src/scss"] won't work with the folder structure m
 
 
 ================================================================================
+========                  Angular Schematics                      ==============
+================================================================================
+
+
+
+Angular 14 Change log
+----------------------
+
+https://github.com/angular/angular-cli/releases/tag/14.0.0
+
+
+Ignite UI custom schematic
+----------------------------
+
+https://github.com/IgniteUI/igniteui-cli/blob/master/packages/ng-schematics/src/component/index.ts
+https://github.com/angular/angular-cli/issues/23548
+
+
+
+
+References:
+
+Total Guide To Custom Angular Schematics
+https://tomastrajan.medium.com/total-guide-to-custom-angular-schematics-5c50cf90cdb4
+
+
+Angular/schematics-angular-builds
+https://github.com/angular/schematics-angular-builds/tree/main/component
+
+
+Custom Schematics For Your Application In Angular
+https://blog.devgenius.io/custom-schematics-for-your-application-in-angular-f691f6fd4dc
+
+
+How to create your own Angular Schematics
+https://javascript-conference.com/blog/how-to-create-your-own-angular-schematics/
+
+
+https://angular.io/guide/schematics-for-libraries
+
+
+https://github.com/angular/components/blob/main/src/cdk/schematics/utils/schematic-options.ts
+
+
+
+Reference Projects:
+
+
+schematic
+
+  downloaded from https://angular.io/guide/schematics-for-libraries
+
+ngx-schematics-for-storybook
+
+  https://github.com/kimamula/ngx-schematics-for-storybook
+
+
+
+================================================================================
+
+
+Creating a library - new schematics  project to create new schematics
+
+
+1. Install schematics-cli
+
+
+  $ npm install -g @angular-devkit/schematics-cli
+
+2. Create schematics project for a particular type of component
+
+  $ schematics blank --name=<my-component>
+
+
+      README.md
+      ---------
+
+      # Getting Started With Schematics
+      ----------------------------------
+
+      This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+
+      ### Testing
+
+      To test locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command line tool. 
+      That tool acts the same as the `generate` command of the Angular CLI, but also has a debug mode.
+
+      Check the documentation with
+
+      ```bash
+      schematics --help
+      ```
+
+      ### Unit Testing
+      ----------------
+
+      `npm run test` will run the unit tests, using Jasmine as a runner and test framework.
+
+      ### Publishing
+      ---------------
+
+      To publish, simply do:
+
+      ```bash
+      npm run build
+      npm publish
+      ```
+
+
+collection.json 
+
+  the main definition file of the whole schematics library and 
+  contains definitions of all schematics available in that library.
+
+  is like an index of the schematics in this project. 
+  It links the name of each schematic with the code that runs it.
+
+new-project/index.ts 
+
+  is the code run by our schematic.
+new-project/index_spec.ts 
+
+  contains the tests. We’re not going to worry about writing tests today, but testing your schematics is definitely possible.
+
+
+
+schema.d.ts
+-----------
+
+The schema.d.ts can also be generated automatically by using packages like dtsgenerator. 
+We can try navigating to ./src/hello (the folder which contains schema.json ) and 
+running 
+
+  npx -p dtsgenerator dtsgen schema.json -o schema.d.ts 
+
+which will generate our .d.ts file automatically!
+
+
+
+Build schematics
+----------------
+
+  $ npm run build
+
+Running build manually after every change would be a tedious task so let’s implement build:watch npm script instead!
+
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
+
+
+
+
+Run Schemaatics
+---------------
+
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "my-ngx-schematics": {
+      "description": "A blank schematic.",
+      "factory": "./my-ngx-schematics/index#prismNgxSchematics"
+    }
+  }
+}
+
+
+Typically we run
+
+  $ ng g .. 
+
+but our schematics project doesn't contain angular CLI...
+
+The `schematics` command allows us to specify package containing schematics:
+
+  $ schematics <package-name>: <schematic-name> [...optiosn]
+
+where 
+
+  package name: @schematics/angular
+  schematic name: component
+
+The `schematic` command will by default find packge inside `node_modules`.
+
+In the schematics project, we can use relative path:
+
+  $ scematics .:my-ngx-schematics
+
+
+Running outside of the schematics project folder
+---------------
+
+the relative path must point exactly to the `collection.json` instead of just the schematics folder:
+
+  $ schematics ../my-ngx-schematics/src/collection.json:myNgxSchematics
+
+
+
+running schematic installed as NPM package
+------------------------------------------
+
+# if you do not use ngx-schematics-for-storybook as the default collection
+
+  $ ng generate my-ngx-schematics:component foo 
+
+
+
+
+To configure your custom schematics as the default collection in your Angular CLI project
+==============================================================
+
+
+$ npm install <your-schematics>  --save-dev
+
+or 
+
+$ yarn add <your-schematics> --dev
+
+
+To use it as your default collection
+
+
+  $ ng config cli.defaultCollection <name-of-your-collection>
+
+This will change the `cli` section in `angular.json` to
+
+  "cli": {
+    "analytics": false,
+    "defaultCollection": "@sfg/prism-ngx-schematics"
+  }
+
+Then change the `schematics` for your project from this 
+
+
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+
+to this
+
+
+      "schematics": {
+        "@my/awesome-schematics:component": {
+          "style": "scss"
+        }
+
+
+
+Developing Schematics
+======================
+
+
+References:
+
+https://blog.devgenius.io/custom-schematics-for-your-application-in-angular-f691f6fd4dc
+
+https://github.com/angular/components/blob/main/src/cdk/schematics/utils/build-component.ts
+
+https://angular.io/guide/schematics-for-libraries
+
+https://javascript-conference.com/blog/how-to-create-your-own-angular-schematics/
+
+
+
+Schematics Concepts
+-------------------
+
+  Schematic Factory
+
+    index.ts contains a factory function which returns a `Rule`
+
+      export function prismNgxSchematics(_options: any): Rule {}
+
+  Rule
+
+    called with a `Tree` and a `SchematicContext`
+    once called, rule is supposeed to make adjustments to the tree and return it back
+    for further processing.
+
+  The Tree
+
+    The Rule receives Tree and makes changes to that tree.
+
+    Schematics is all about code generation and changing of existing files.
+
+    The Tree is the virtual representation of every file in the workspace.
+    Having a virtual tree instead of manipulating files directly allows us to
+
+     - commit changes ONLY when every schematic ran successfully
+     - preview changes with --dry-run
+     - the whole process is faster than direction I/O which happens only at the end.
+
+    (this is similar to React virtual DOM)
+
+
+    --dry-run enabled by default
+
+    We have two options to fix this situation. 
+    We can either run our command with --debug=false or --dry-run=false flag.
+
+
+
+
+create a file
+.............
+
+--force  does not always force to overwrite the file
+
+
+
+
+parameterize 
+.............
+
+_options contains all the flags passed on the command line
+
+we can also create `Schema` describing what kind of options we can pass to our schematic.
+With `Schema` schematics will perform validation of the options passed in.
+
+Schema -   schema.json
+
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the person.",
+      "$default": {                               
+        "$source": "argv",
+        "index": 0
+      }
+    }
+  },
+
+add a reference in collection in collection.json:
+
+  "schema": "./my-ngx-schematics/schema.json"
+
+
+default value
+- - - - - - - 
+
+  the $default object allows you to provide a default value.
+  in case of 
+
+      "$default": {                               
+        "$source": "argv",
+        "index": 0
+      }
+
+  default is the 1st argument the user passes in
+
+so either one will work:
+
+  $ schematic .:hello --name=blah
+
+or
+
+  $ schematic .:hello blah 
+
+
+x-prompt
+- - - - - 
+
+  is the prompt that the schematic will use to ask user for a value, if they don't supply one.
+
+
+
+
+
+generate schema.d.ts
+.....................
+https://tomastrajan.medium.com/total-guide-to-custom-angular-schematics-5c50cf90cdb4
+
+
+Now we can create also schema.d.ts which will provide us with type checking and code completion in our schematic implementation.
+
+The schema.d.ts can also be generated automatically by using packages like dtsgenerator. We can try navigating to ./src/hello (the folder which contains schema.json ) and running npx -p dtsgenerator dtsgen schema.json -o schema.d.ts which will generate our .d.ts file automatically!
+
+
+add npm script:
+
+"schema:gen": "npx -p dtsgenerator dtsgen ./src/prism-ngx-schematics/schema.json -o ./src/prism-ngx-schematics/schema.d.ts"
+
+
+
+
+
+use templates
+................
+
+
+Start by creating ./files/ folder in the folder containing your schema.json
+
+
+  ⚠️ We have to use ./files/ folder because it will be excluded from the Typescript compilation by default (see tsconfig.json in the root of the project). The folder has to be excluded because we don’t want to compile the templates!
+
+  ✔️ If we wanted to use ./templates/ folder we would have to adjust tsconfig.json accordingly!
+
+
+
+
+
+  The __ (double underscore) is a delimiter which separates name variable from rest of the normal string. 
+  The dasherize is a helper function which will receive value of the name variable and 
+  convert it to kebab case string and the @ is a way to apply variable to a helper function.
+
+
+
+
+
+schematic errors
+================
+
+An error occured:
+Error: NOT SUPPORTED: keyword "id", use "$id" for schema ID
+
+  use $id in schema.json
+
+    {
+      "$schema": "http://json-schema.org/schema",
+      "$id": "PrismNgxSchematics",
+
+
+
+An error occured:
+ReferenceError: classify is not defined
+
+
+Be sure to import strings
+
+    import { strings } from '@angular-devkit/core';
+    and then, pass strings to template engine, as below :
+
+    const sourceParametrizedTemplates = apply(sourceTemplates, [
+      template({
+        ...options,
+        ...strings,
+      })
+    ]);
+
+
+
+An error occured:
+Error: Pipe "if-flat" is not defined.
+
+  That's because you have 
+
+    files/
+      __name@dasherize@if-flat__/
+        __name@dasherize__.pipe.ts.template
+
+
+    const templateSource = apply(url('./files'), [
+      options.skipTests ? filter((path) => !path.endsWith('.spec.ts.template')) : noop(),
+      applyTemplates({
+        ...strings,
+        'if-flat': (s: string) => (options.flat ? '' : s),
+        ...options,
+      }),
+      move(parsedPath.path),
+    ]);
+
+
+
+
+
+================================================================================
+
+
+  NG-ADD Schematic support
+  ------------------------
+
+https://www.youtube.com/watch?v=MVqVBbM_gvw
+
+https://github.com/DMezhenskyi/ngx-schematics-lib-example
+
+
+Ignite UI Ng Add example
+https://github.com/IgniteUI/igniteui-angular/tree/master/projects/igniteui-angular/schematics
+
+================================================================================
+================================================================================
+

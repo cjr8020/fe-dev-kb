@@ -18,7 +18,29 @@ According to angular 6+,
 - touched: This property returns true if the user has visited the element.
 
 
-================================================================================
+=================================================================================
+
+
+value vs getRawValue()
+***********************
+
+
+value is a property of AbstractControl
+
+	ENABLED
+
+	it will display the values of enabled controls as object in key value pair format. 
+	When value property is used in FormArray it will display the values of enabled controls as an array
+
+
+getRawValue() is a FormGroup method
+
+	
+	get value of all controls,  both enabled or disabled
+
+
+
+=================================================================================
 
 Angular 14:  Strictly typed forms in Angular
 --------------------------------------------
@@ -26,6 +48,125 @@ Angular 14:  Strictly typed forms in Angular
 
 https://blog.ninja-squad.com/2022/04/21/strictly-typed-forms-angular/
 
+https://blog.angular-university.io/angular-typed-forms/
+
+
+FormControl now takes a generic type indicating the type of the value it holds.
+
+
+Migration to the Typed Forms API
+--------------------------------
+
+
+	export class RegisterComponent {
+	  registerForm: FormGroup;
+
+	  constructor() {
+	    this.registerForm = new FormGroup({
+	      login: new FormControl(null, Validators.required),
+	      passwordGroup: new FormGroup({
+	        password: new FormControl('', Validators.required),
+	        confirm: new FormControl('', Validators.required)
+	      }),
+	      rememberMe: new FormControl(false, Validators.required)
+	    });
+	  }
+	}
+
+
+Using automated migration, you end up with 
+
+
+	export class RegisterComponent {
+	  registerForm: UntypedFormGroup;
+
+	  constructor() {
+	    this.registerForm = new UntypedFormGroup({
+	      login: new UntypedFormControl(null, Validators.required),
+	      passwordGroup: new UntypedFormGroup({
+	        password: new UntypedFormControl('', Validators.required),
+	        confirm: new UntypedFormControl('', Validators.required)
+	      }),
+	      rememberMe: new UntypedFormControl(false, Validators.required)
+	    });
+	  }
+	}
+
+
+Our work is to remove all the Untyped* usage, and properly type the form. 
+Let’s start with the code in the constructor as this is the most straightforward.
+
+
+Each UntypedFormControl must be converted to FormControl<T>
+
+
+	UntypedFormControl -->  FormControl<T>
+
+
+Most of the time, TypeScript can infer this information based on the initial value given to the FormControl.
+
+passwordGroup: new FormGroup({
+  password: new FormControl('', Validators.required), // inferred as `FormControl<string | null>`
+  confirm: new FormControl('', Validators.required) // inferred as `FormControl<string | null>`
+}),
+
+
+Sometimes though, TypeScript can’t infer the type of the control based on the initial value. 
+For example, our login field is initialized with null, so TypeScript can’t know what type is intended here. 
+You can of course explicitly add it:
+
+	login: new FormControl<string | null>(null, Validators.required),
+
+
+
+
+
+Nullable form fields
+---------------------
+
+by default,  all form fields are considered to be nullable.
+This is because when we call form `reset()` method, Angular will all of the form fields to `null`.
+
+that's why we see <string | null>
+
+But we can also optionally declare a form field as non-nullable, meaning that
+the form field will be reset to it's initial value instead of null
+
+This can be done in two ways: 
+
+1. use nonNullibleFlag 
+
+form = new FormGroup({
+  email: new FormControl<string | null>("", {
+    validators: [Validators.required, Validators.email],
+    nonNullable: true
+  }),
+
+});
+
+2. use nonbNullable FormBuilder API
+
+form = this.fb.group({
+  email: this.fb.nonNullable.control("", {
+    validators: [Validators.required, Validators.email],
+  }),
+  password: ['', [Validators.required, Validators.minLength(8)]]
+});
+
+
+or use NonNullableFormBuilder Service to set EVERY field as non-nullible by default
+
+
+
+  form = this.fb.group({
+    email: ["", {
+      validators: [Validators.required, Validators.email]
+    }],
+    password: ["", [Validators.required, Validators.minLength(8)] ]
+  });
+
+  constructor(private fb: NonNullableFormBuilder) {
+  }
 
 
 

@@ -1,0 +1,414 @@
+
+
+
+
+Build an NPM Package in TypeScript from the Ground Up
+
+https://spin.atomicobject.com/2022/06/21/npm-package-typescript/
+
+
+
+
+================================================================================
+
+
+How to Write a TypeScript Library
+-----------------------------------
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/
+
+https://github.com/bersling/typescript-library-starter
+
+
+Step 1: Setup tsconfig.json
+---------------------------
+
+Create a project folder, in this tutorial we'll call it typescript-library. 
+
+
+Then proceed to create a tsconfig.json in typescript-library. 
+Your tsconfig.json file should look somewhat like this:
+
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "declaration": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
+
+
+Pretty much like a setup for a non-library project, but with one important addition: 
+
+You need to add the "declaration": true flag. 
+
+This will generate the .d.ts files (aka declaration files) which contain the types of your code. 
+This way, if someone is using your library and they also use TypeScript, they get the benefits of typesafety and autocomplete!
+
+
+
+Regarding the other options, let's quickly go through those: 
+
+module
+
+The module compiler option "module": "commonjs" is required if you want your code to run seamlessly with most current node.js applications. 
+Replace this with "module": "esnext" if you're building a library for the browser. 
+
+target
+
+"target": "es2015" specifies which version of JavaScript your code will get transpiled to. This needs to be aligned with the oldest version of node.js (or the oldest browser) you want to support. 
+Choosing es2015 as the compile target makes your library compatible with node.js version 8 and upwards. 
+
+outDir
+
+"outDir": "./dist" will write your compiled files into the dist folder 
+
+
+include
+
+and the include option specifies where your source code lives.
+
+
+
+Step 2: Implement your library
+------------------------------
+
+
+Proceed in the same way, as if you weren't writing a library. Create a src folder and put all the source files of your library (application logic, data, and assets) there.
+
+For this demo, we'll setup a silly hello-world.ts file, that looks like so:
+
+typescript-library/src/hello-world.ts
+export function sayHello() {
+  console.log('hi')
+}
+export function sayGoodbye() {
+  console.log('goodbye')
+}
+
+
+
+
+Step 3: Create an index.ts file
+-------------------------------
+
+Add an index.ts file to your src folder. 
+Its purpose is to export all the parts of the library you want to make available for consumers. 
+In our case it would simply be:
+
+
+typescript-library/src/index.ts
+-------------------------------
+export {sayHello, sayGoodbye} from './hello-world'
+
+
+The consumer would be able to use the library later on like so:
+
+someotherproject/src/somefile.ts
+--------------------------------
+import {sayHello} from 'hwrld'
+sayHello();
+
+You see that we have a new name here, "hwrld", we haven't seen anywhere yet. 
+What is this name? 
+It's the name of the library you're gonna publish to npm also known as the package name!
+
+
+Step 4: Configure the package.json
+----------------------------------
+
+The package name is what the consumer is going to use to import functionality from your library later on. 
+For this demo I have have chosen hwrld since it was still available on npm. 
+The package name is usually right at the top of the package.json. 
+
+The whole package.json would look like so:
+
+typescript-library/package.json
+-------------------------------
+{
+  "name": "hwrld",
+  "version": "1.0.0",
+  "description": "Can log \"hello world\" and \"goodbye world\" to the console!",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ]
+}
+
+name:
+
+If you don't have a package yet you can create one with npm init and it will guide you through the process. Remember, the package name you choose will be used by people for their imports, so choose wisely!
+
+types
+
+There's also one all-important flag in this package.json: You have to declare where to find the type declarations! This is done using "types": "dist/index.d.ts" Otherwise the consumer won't find your module!
+
+files:
+
+The final property files helps you to whitelist the files you want to ship to the npm registry. This is usually a much easier and safer route than using the `.npmignore` file!
+
+
+
+tep 5: Publish to npm
+---------------------
+
+To publish your first version to npm run:
+
+tsc
+npm publish
+
+Now you're all set to go! Consume your library anywhere you want by running:
+
+npm install --save hwrld
+and consume it using
+
+import {sayHello} from 'hwrld'
+sayHello();
+
+
+semvar
+------
+
+For subsequent releases, use the semvar principle. When you make a patch / bugfix to your library, you can run npm version patch, for new features run npm version minor and on breaking changes of your api run npm version major.
+
+Check out the full source of the demo library on github: https://github.com/bersling/typescript-library-starter.
+
+
+
+The above tutorial contains all the steps necessary to build & publish a working library. However, you should probably also include some unit tests and you might want to test the behavior of your library locally first, without publishing. Here are some more resources for this:
+
+How to unit test your library
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/unit-testing/
+
+How to set up a local consumer without publishing to npm
+How to make your library available as a system command
+
+
+================================================================================
+
+
+How to unit test your library
+-----------------------------
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/unit-testing/
+
+
+Step 1: Install packages for unit testing
+------------------------------------------
+
+Unit tests assert some properties of the code. For example a method add(x,y) should correctly add x and y. With a unit test you can then test some sample cases like assert(add(3,4)).equals(7). 
+To get this assert method and to execute tests in the first place, we need some testing software. 
+
+Here we'll choose Mocha and Chai. 
+
+
+To install mocha and chai, you can run:
+
+yarn add mocha @types/mocha chai @types/chai ts-node typescript --dev
+
+
+
+Step 2: Writing your first unit test
+------------------------------------
+
+Let's say you have the following unit:
+
+typescript-library/src/math.ts
+-------------------------------
+
+export function add(x: number, y: number) {
+  return x + y;
+}
+
+
+Then a first unit test could look like:
+
+typescript-library/src/math.test.ts
+------------------------------------
+
+import { add } from './math';
+
+import * as mocha from 'mocha';
+import * as chai from 'chai';
+
+const expect = chai.expect;
+describe('My math library', () => {
+
+  it('should be able to add things correctly' , () => {
+    expect(add(3,4)).to.equal(7);
+  });
+
+});
+
+
+================================================================================
+
+Exclude test files from Compilation in TypeScript
+
+https://bobbyhadz.com/blog/typescript-exclude-test-files-from-compilation
+
+To exclude test files from compilation, but still have them type checked, create a second configuration file, e.g. tsconfig.build.json that uses the exclude array to exclude your test files from compilation when running the tsc command.
+
+
+
+Here is the main tsconfig.json file.
+-----------------------------------
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "./build"
+  },
+  // 👇️ also include your test files in the `include` array
+  // if they are outside of the `src` directory
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+
+
+And here is the tsconfig.build.json file that's located in the same directory as the tsconfig.json file.
+
+
+tsconfig.build.json
+---------------------
+{
+  "extends": "./tsconfig.json",
+  // 👇️ this may vary depending on how you
+  // name your test files
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}
+
+
+Note that the tsconfig.build.json file extends from our tsconfig.json file.
+
+The path assumes that the two configuration files are located in the same directory.
+
+The file also excludes the test files from compilation, so they don't end up in your outDir (build in the example above).
+
+
+Now you have to pass the tsconfig.build.json configuration file when using the tsc command.
+
+shell
+tsc --project tsconfig.build.json
+
+
+
+Your build command is most likely in your package.json file, so you can update it to look something similar to the following.
+
+package.json
+------------
+{
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+  }
+}
+
+
+Now, whenever you run the tsc command, the test files won't get compiled and won't end up in your build directory but they will still be type checked.
+
+
+The exclude array in the tsconfig.build.json file in the example assumes that you place your test files in the src directory of your project and name them *.spec.ts or *.test.ts.
+
+
+
+
+================================================================================
+
+
+Unit Testing your TypeScript Library
+-------------------------------------
+https://www.tsmean.com/articles/how-to-write-a-typescript-library/unit-testing/
+
+
+
+Setting up Mocha tests
+
+How to pass a `spec` tsconfig to mocha
+---------------------------------------
+
+https://stackoverflow.com/questions/54509655/ts-node-with-mocha-doesnt-use-ts-node-project
+
+TS_NODE_PROJECT='src/tsconfig.json' mocha --require ts-node/register src/*_test.ts
+
+
+how to setup .mocharc.yaml
+--------------------------
+
+https://stackoverflow.com/questions/73340972/change-default-typescript-configuration-file-when-run-the-mocha-tests
+
+extension:
+  - ts
+
+spec: "src/**/*.spec.ts"
+
+require: ts-node/register
+
+
+
+Exclude test files from Compilation in TypeScript
+--------------------------------------------------
+https://bobbyhadz.com/blog/typescript-exclude-test-files-from-compilation
+
+
+
+
+
+================================================================================
+
+	Creating Barrel File 
+	********************
+
+
+Create Barrel for Typescript Project
+-------------------------------------
+
+https://www.rupeshtiwari.com/javascript/create-barrel/
+
+
+What is Barrel
+It is an index file where you export all of your files those you want to make them available publically.
+
+
+Using Barrlesby
+---------------
+
+https://www.npmjs.com/package/barrelsby
+
+$ npm i barrelsby --save-dev
+
+
+Create npm script
+
+"generate-barrel-file": "barrelsby --delete -d src -e .spec.ts .tests.ts -q",
+
+
+-d [path...] or --directory [path...]
+
+
+-D or --delete
+
+Deletes any existing barrels encountered by barrelsby. Disabled by default.
+
+
+-e [regex...] or --exclude [regex...]
+Excludes any files whose paths match any of the specified regular expressions.
+
+
+-q or --singleQuotes
+Use 'single quotes' in the generated barrel files instead of the default "double quotes".
+
+
+
+================================================================================
+
+
+
+

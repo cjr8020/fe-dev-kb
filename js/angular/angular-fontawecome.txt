@@ -198,6 +198,11 @@ add your own Custom Icons to Font Awesome library
 https://dev.to/astagi/add-custom-icons-to-font-awesome-4m67
 
 
+==> See detailed doc below on how to add a Custom Font Icon to FA Icon Registry:
+
+"create your own icon definition" 
+
+
 
 1) First of all create a folder called myicons and add your icon definition inside a js file (fa-duckduckgo.js in my case)
 
@@ -249,6 +254,14 @@ add your own custom icon to Font Awesome library in Angular application
 ------------------------------------------------------------------------
 
 https://www.codementor.io/@dopaminedriven/hacking-the-font-awesome-library-with-next-js-typescript-for-custom-icon-support-19if0bsarn
+
+
+==> See detailed doc below on how to add a Custom Font Icon to FA Icon Registry:
+
+"create your own icon definition" 
+
+this article provided the foundation.
+
 
 
 A quick look under the hood
@@ -384,6 +397,9 @@ IconPathData
 
 
 
+====================================================================================================
+
+
 create your own icon definition 
 --------------------------------
 
@@ -407,8 +423,8 @@ import { IconDefinition, IconLookup } from '@fortawesome/fontawesome-svg-core';
 import { IconPrefix, IconName } from '@fortawesome/fontawesome-common-types';
 
 export const faMyBell: IconDefinition & IconLookup = {
-  prefix: 'fap' as IconPrefix,
-  iconName: 'my-bell' as IconName,
+  prefix: 'fac' as IconPrefix,      // <-- NOTE as IconPrefix
+  iconName: 'my-bell' as IconName,  // <-- NOTE as IconName
   icon: [
     52,
     52,
@@ -419,14 +435,18 @@ export const faMyBell: IconDefinition & IconLookup = {
 };
 
 
-fap-custom-icons.module.ts
+fac-custom-icons.module.ts
 --------------------------
+
+import { IconName, IconPrefix } from '@fortawesome/fontawesome-common-types';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
 
 @NgModule({
   declarations: [],
   imports: [CommonModule]
 })
-export class PrismIconLibModule {
+export class FontIconLibModule {
   constructor(library: FaIconLibrary) {
 
     library.addIcons(faAbacus, faAddressBook, faAlarmClock, faBarcodeAlt, faMyBell);
@@ -434,8 +454,8 @@ export class PrismIconLibModule {
 
     // debug
     const myBell: IconDefinition = library.getIconDefinition(
-      'fac' as IconPrefix,
-      'my-bell' as IconName
+      'fac' as IconPrefix,    // <--  NOTE  as IconPrefix
+      'my-bell' as IconName   // <--  NOTE  as IconName
     );
     console.log('myBell: ', myBell);
   
@@ -445,7 +465,7 @@ export class PrismIconLibModule {
 TSLint error
 -------------
 
-	Type '"fap"' is not assignable to type 'IconPrefix'.
+	Type '"fac"' is not assignable to type 'IconPrefix'.
 
 	Type '"my-bell"' is not assignable to type 'IconName'.
 
@@ -497,6 +517,16 @@ Then, add the following postinstall script in package.json:
 
 
 The postinstall script persists local changes made to node_modules even when package version updates are made.
+
+
+
+Referencing your own custom icons with IconProp
+-----------------------------------------------
+
+Unless your custom icons are registered into the default `fas` prefex, you 
+will have to specific icon pack prefix via IconProp
+
+  <fa-icon [icon]="['fac','my-bell']" [fixedWidth]="true"></fa-icon>
 
 
 

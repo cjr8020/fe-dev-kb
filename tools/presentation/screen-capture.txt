@@ -1,0 +1,31 @@
+Screen Record 
+
+
+
+
+
+================================================================================
+
+How to Record Your Screen on a Mac
+
+https://www.hellotech.com/guide/for/how-to-screen-record-on-mac
+
+
+To record your screen on a Mac, press the Command + Shift + 5 keys on your keyboard. Then select either the Record Entire Screen or Record Selected Portion buttons in the pop-up toolbar that appears at the bottom of your screen. Finally, click Record.
+
+1. Press the Command + Shift + 5 keys on your keyboard. This will open the Screenshot Toolbar at the bottom of your screen.  
+
+
+2. Then select Record Entire Screen or Record Selected Portion. The fourth button after the “x” will let you record the entire screen. The fifth button will let you record a selected portion of the screen. You can see what each button does by hovering your mouse over each icon.
+
+
+3. Next, click Record. You will see this on the far-right side of the toolbar.
+
+
+4. Finally, click the square in circle icon at the top of your Mac’s screen to stop recording. Alternatively, you can also press Command + Control + Esc to stop recording.
+
+
+Note: If you want to record your voice or audio while screen recording, click the Options button in the screenshot toolbar. From here, you can also choose where to save your recording, set a timer before your recording starts, and show your mouse clicks in the video.
+
+
+================================================================================
